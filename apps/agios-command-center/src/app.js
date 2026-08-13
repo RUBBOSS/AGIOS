@@ -1727,7 +1727,7 @@ document.addEventListener("click", (event) => {
   if (agentMode) { state.agentMode = agentMode.dataset.agentMode; renderAgent(); window.setTimeout(() => void loadOperationalSurface(), 0); }
   if (period) { state.period = period.dataset.period; state.view === "performance" ? renderPerformance() : renderCommand(); }
   if (directive) openModal();
-  if (system) { state.selectedSystem = system.dataset.system; state.systemMode = system.dataset.system === "hermes" ? "chat" : "overview"; setView("system"); }
+  if (system) { state.selectedSystem = system.dataset.system; const sid = system.dataset.system; state.systemMode = terminalSurfaceForSystem(sid) ? "terminal" : "overview"; setView("system"); }
   if (systemMode) { state.systemMode = systemMode.dataset.systemMode; renderSystem(); window.setTimeout(() => void loadOperationalSurface(), 0); }
   if (studioMode) { state.systemMode = studioMode.dataset.studioMode; renderSystem(); window.setTimeout(() => void loadOperationalSurface(), 0); }
   if (studioToggle) { const id = studioToggle.dataset.toggleStudio; state.hiddenStudios[id] = !state.hiddenStudios[id]; saveLocalObject("agios.hiddenStudios", state.hiddenStudios); renderSystem(); }

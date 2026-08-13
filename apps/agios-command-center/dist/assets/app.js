@@ -11378,7 +11378,8 @@ document.addEventListener("click", (event) => {
   if (directive) openModal();
   if (system) {
     state.selectedSystem = system.dataset.system;
-    state.systemMode = system.dataset.system === "hermes" ? "chat" : "overview";
+    const sid = system.dataset.system;
+    state.systemMode = terminalSurfaceForSystem(sid) ? "terminal" : "overview";
     setView("system");
   }
   if (systemMode) {

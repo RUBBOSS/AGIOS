@@ -1,0 +1,3692 @@
+{
+  "captured_at": "2026-08-13T15:10:00+04:00",
+  "source": "AGIOS live API 127.0.0.1:9120 (session-authenticated GET, loopback)",
+  "command_center": {
+    "schema_version": 1,
+    "generated_at": "2026-08-13T14:59:32.536419Z",
+    "product": {
+      "id": "agios",
+      "name": "AGIOS",
+      "edition": "Foundation \u00b7 Phase 4B",
+      "mode": "supervised"
+    },
+    "privacy": {
+      "mode": "allowlisted_metadata",
+      "customer_content_included": false,
+      "runtime_writes_enabled": true
+    },
+    "portfolio": {
+      "id": "ruben-portfolio",
+      "name": "Ruben's Portfolio",
+      "owner": "Ruben Martirosyan",
+      "timezone": "Asia/Yerevan",
+      "home_currency": "USD"
+    },
+    "summary": {
+      "businesses": 7,
+      "active_businesses": 3,
+      "departments": 7,
+      "agents": 9,
+      "available_agents": 7,
+      "scheduled_jobs": 4,
+      "pending_approvals": 0,
+      "connected_integrations": 8,
+      "skill_assignments": 712,
+      "model_routes": 9,
+      "systems": 10,
+      "live_or_detected_systems": 4,
+      "shared_skills": 163,
+      "memory_facts": 0,
+      "repositories": 0
+    },
+    "businesses": [
+      {
+        "id": "main-operations",
+        "name": "Main Operations",
+        "kind": "operations",
+        "status": "active",
+        "mission": "Operate the full portfolio through one governed command system.",
+        "owner_agent_id": "default",
+        "department_ids": [
+          "executive-operations",
+          "quality-security"
+        ],
+        "department_count": 2,
+        "operational": true
+      },
+      {
+        "id": "software-studio",
+        "name": "Software & Freelance Studio",
+        "kind": "studio",
+        "status": "active",
+        "mission": "Find permitted opportunities and deliver independently reviewed software.",
+        "owner_agent_id": "manager",
+        "department_ids": [
+          "research-intelligence",
+          "engineering",
+          "quality-security"
+        ],
+        "department_count": 3,
+        "operational": true
+      },
+      {
+        "id": "design-studio",
+        "name": "Design & Adobe Studio",
+        "kind": "studio",
+        "status": "setup",
+        "mission": "Create approved design systems, visual work and production-ready assets.",
+        "owner_agent_id": "manager",
+        "department_ids": [
+          "design-experience",
+          "quality-security"
+        ],
+        "department_count": 2,
+        "operational": true
+      },
+      {
+        "id": "growth-studio",
+        "name": "Growth & Marketing Studio",
+        "kind": "studio",
+        "status": "planned",
+        "mission": "Turn verified market intelligence into reviewed growth experiments.",
+        "owner_agent_id": "manager",
+        "department_ids": [
+          "research-intelligence",
+          "growth-marketing",
+          "quality-security"
+        ],
+        "department_count": 3,
+        "operational": false
+      },
+      {
+        "id": "creative-studio",
+        "name": "Creative Media Studio",
+        "kind": "studio",
+        "status": "planned",
+        "mission": "Coordinate image, video, audio and motion production workflows.",
+        "owner_agent_id": "manager",
+        "department_ids": [
+          "creative-media",
+          "design-experience",
+          "quality-security"
+        ],
+        "department_count": 3,
+        "operational": false
+      },
+      {
+        "id": "armenia-income",
+        "name": "Armenia Income Intelligence",
+        "kind": "research-business",
+        "status": "active",
+        "mission": "Discover legitimate income opportunities available from Armenia.",
+        "owner_agent_id": "researcher",
+        "department_ids": [
+          "research-intelligence",
+          "executive-operations"
+        ],
+        "department_count": 2,
+        "operational": true
+      },
+      {
+        "id": "perfume-business",
+        "name": "Perfume Business",
+        "kind": "commerce",
+        "status": "discovery",
+        "mission": "Validate a compliant, authentic and low-inventory fragrance sample business.",
+        "owner_agent_id": "researcher",
+        "department_ids": [
+          "research-intelligence",
+          "growth-marketing",
+          "executive-operations"
+        ],
+        "department_count": 3,
+        "operational": false
+      }
+    ],
+    "departments": [
+      {
+        "id": "executive-operations",
+        "name": "Executive Operations",
+        "mission": "Priorities, governance, routing, approvals, budgets and portfolio health.",
+        "agent_ids": [
+          "default",
+          "manager"
+        ],
+        "skill_bundles": [
+          "supervised-agent-control-plane",
+          "weekly-review-planning"
+        ],
+        "ready_agents": 2,
+        "agent_count": 2
+      },
+      {
+        "id": "research-intelligence",
+        "name": "Research & Intelligence",
+        "mission": "Evidence-backed market, opportunity, technology and compliance research.",
+        "agent_ids": [
+          "researcher",
+          "fastworker"
+        ],
+        "skill_bundles": [
+          "evidence-driven-research",
+          "regulatory-compliance-research"
+        ],
+        "ready_agents": 2,
+        "agent_count": 2
+      },
+      {
+        "id": "engineering",
+        "name": "Engineering",
+        "mission": "Plan, build, test and document software in isolated workspaces.",
+        "agent_ids": [
+          "builder",
+          "codinglocal"
+        ],
+        "skill_bundles": [
+          "test-driven-development",
+          "systematic-debugging"
+        ],
+        "ready_agents": 2,
+        "agent_count": 2
+      },
+      {
+        "id": "quality-security",
+        "name": "Quality & Security",
+        "mission": "Independent verification, risk review and evidence-based release gates.",
+        "agent_ids": [
+          "reviewer"
+        ],
+        "skill_bundles": [
+          "requesting-code-review",
+          "ai-tool-safety-review"
+        ],
+        "ready_agents": 1,
+        "agent_count": 1
+      },
+      {
+        "id": "design-experience",
+        "name": "Design & Experience",
+        "mission": "Product design, Adobe production, interface systems and visual QA.",
+        "agent_ids": [
+          "manager",
+          "builder",
+          "reviewer"
+        ],
+        "skill_bundles": [
+          "figma-mcp-integration",
+          "frontend-design",
+          "design-critique"
+        ],
+        "ready_agents": 3,
+        "agent_count": 3
+      },
+      {
+        "id": "growth-marketing",
+        "name": "Growth & Marketing",
+        "mission": "Research, positioning, content, SEO and measured campaign preparation.",
+        "agent_ids": [
+          "manager",
+          "researcher",
+          "fastworker",
+          "reviewer",
+          "writer",
+          "closer"
+        ],
+        "skill_bundles": [
+          "design-growth-system",
+          "competitor-news-monitor"
+        ],
+        "ready_agents": 4,
+        "agent_count": 6
+      },
+      {
+        "id": "creative-media",
+        "name": "Creative Media",
+        "mission": "Image, video, audio and motion production with provenance and approval gates.",
+        "agent_ids": [
+          "manager",
+          "builder",
+          "reviewer"
+        ],
+        "skill_bundles": [
+          "image-generation-orchestration",
+          "motion-animation"
+        ],
+        "ready_agents": 3,
+        "agent_count": 3
+      }
+    ],
+    "agents": [
+      {
+        "id": "default",
+        "name": "Ari Vale",
+        "role": "chief-of-staff",
+        "profession": "AI Chief of Staff",
+        "seniority": "Principal",
+        "experience": "12 years equivalent operating brief",
+        "specialties": [
+          "portfolio strategy",
+          "delegation",
+          "governance"
+        ],
+        "biography": "Turns the owner's priorities into governed plans, assigns the right department and keeps decisions visible.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "default",
+        "capabilities": [
+          "coordinate",
+          "delegate",
+          "read_memory",
+          "propose_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "architecture",
+          "operations"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "",
+        "skill_count": 174,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "manager",
+        "name": "Mira Stone",
+        "role": "project-manager",
+        "profession": "Studio Operations Director",
+        "seniority": "Senior",
+        "experience": "9 years equivalent delivery brief",
+        "specialties": [
+          "program delivery",
+          "resource planning",
+          "client operations"
+        ],
+        "biography": "Coordinates multi-studio delivery, translates outcomes into assignments and keeps work moving through review gates.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "manager",
+        "capabilities": [
+          "coordinate",
+          "delegate",
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "operations"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "Durable multi-step coordination, planning, task decomposition, dependency management, and synthesis under human supervision. Assign specialists; do not perform final client or production actions.",
+        "skill_count": 93,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "researcher",
+        "name": "Nova Reed",
+        "role": "researcher",
+        "profession": "Research Intelligence Lead",
+        "seniority": "Senior",
+        "experience": "8 years equivalent research brief",
+        "specialties": [
+          "market intelligence",
+          "source verification",
+          "opportunity analysis"
+        ],
+        "biography": "Builds evidence-backed intelligence, separates claims from inference and preserves citations for every consequential finding.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "researcher",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "read_memory",
+          "propose_memory"
+        ],
+        "workloads": [
+          "research"
+        ],
+        "state": "ready",
+        "provider": "nvidia",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "description": "Permitted public-source research, primary-source verification, market and opportunity analysis, evidence tables, and uncertainty reporting. Do not receive unnecessary confidential data.",
+        "skill_count": 91,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "builder",
+        "name": "Calder Forge",
+        "role": "builder",
+        "profession": "Principal Software Builder",
+        "seniority": "Principal",
+        "experience": "11 years equivalent engineering brief",
+        "specialties": [
+          "software architecture",
+          "implementation",
+          "test automation"
+        ],
+        "biography": "Designs and builds maintainable systems in isolated workspaces, with verification proportionate to risk.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "builder",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "write_workspace",
+          "run_tests"
+        ],
+        "workloads": [
+          "coding"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "Difficult approved implementation, architecture, integrations, tests, debugging, and staging. Hosted Codex primary. Requires independent reviewer before final delivery.",
+        "skill_count": 90,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "reviewer",
+        "name": "Vera Quinn",
+        "role": "independent-reviewer",
+        "profession": "Quality and Risk Director",
+        "seniority": "Principal",
+        "experience": "10 years equivalent assurance brief",
+        "specialties": [
+          "independent review",
+          "security",
+          "release evidence"
+        ],
+        "biography": "Challenges assumptions independently, verifies release evidence and keeps quality judgments separate from implementation pressure.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "reviewer",
+        "capabilities": [
+          "read_workspace",
+          "run_tests",
+          "review"
+        ],
+        "workloads": [
+          "review"
+        ],
+        "state": "ready",
+        "provider": "nvidia",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "description": "Independent QA, security, requirements, diff, dependency, test, and staging review. NVIDIA primary for model diversity from the Codex builder. Does not approve its own fixes.",
+        "skill_count": 90,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "codinglocal",
+        "name": "Orin Pike",
+        "role": "private-coding-worker",
+        "profession": "Private Systems Engineer",
+        "seniority": "Senior",
+        "experience": "7 years equivalent local-systems brief",
+        "specialties": [
+          "private code",
+          "local inference",
+          "restricted workspaces"
+        ],
+        "biography": "Handles sensitive engineering on local routes when data should remain on the owner's machine.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "codinglocal",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "write_workspace",
+          "run_tests"
+        ],
+        "workloads": [
+          "private_coding"
+        ],
+        "state": "ready",
+        "provider": "ollama-launch",
+        "model": "ornith-hermes:latest",
+        "description": "Private local Ornith worker for routine coding, debugging, tests, refactors, and documentation. No hosted fallback; escalate difficult or consequential work.",
+        "skill_count": 87,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "fastworker",
+        "name": "Rowan Swift",
+        "role": "private-general-worker",
+        "profession": "Rapid Operations Specialist",
+        "seniority": "Specialist",
+        "experience": "5 years equivalent operations brief",
+        "specialties": [
+          "fast synthesis",
+          "local operations",
+          "structured handoffs"
+        ],
+        "biography": "Completes bounded private operational work quickly and hands uncertain or high-risk decisions back to the owner.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "fastworker",
+        "capabilities": [
+          "read_workspace",
+          "read_memory"
+        ],
+        "workloads": [
+          "private_general"
+        ],
+        "state": "ready",
+        "provider": "ollama-launch",
+        "model": "qwen3.5-hermes:latest",
+        "description": "Private local Qwen worker for extraction, classification, tagging, deduplication, summarization, document parsing, and labeled first drafts. No hosted fallback.",
+        "skill_count": 87,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "writer",
+        "name": "Sable Quill",
+        "role": "content-writer",
+        "profession": "Growth Copywriter",
+        "seniority": "Senior",
+        "experience": "7 years equivalent writing brief",
+        "specialties": [
+          "positioning",
+          "campaign copy",
+          "channel adaptation"
+        ],
+        "biography": "Turns approved briefs into bounded content drafts for social, email, landing, listing and ad channels, and stops for owner review before anything ships.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "writer",
+        "capabilities": [
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "content"
+        ],
+        "state": "unavailable",
+        "provider": null,
+        "model": null,
+        "description": null,
+        "skill_count": null,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      },
+      {
+        "id": "closer",
+        "name": "Elias Meridian",
+        "role": "lead-closer",
+        "profession": "Growth Closer",
+        "seniority": "Senior",
+        "experience": "8 years equivalent sales brief",
+        "specialties": [
+          "lead qualification",
+          "outreach sequencing",
+          "evidence-led closing"
+        ],
+        "biography": "Moves captured leads through a staged funnel, attaches completed-run evidence to every close, and never contacts anyone without the owner's exact approval.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "closer",
+        "capabilities": [
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "outreach"
+        ],
+        "state": "unavailable",
+        "provider": null,
+        "model": null,
+        "description": null,
+        "skill_count": null,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule"
+      }
+    ],
+    "schedules": [
+      {
+        "id": "fbc63045220b",
+        "name": "Daily Short Hermes Improvement Report",
+        "state": "scheduled",
+        "enabled": true,
+        "schedule": "0 19 * * *",
+        "last_run_at": "2026-08-12T19:10:37.722961+04:00",
+        "next_run_at": "2026-08-13T19:00:00+04:00",
+        "last_status": "ok"
+      },
+      {
+        "id": "4878ec522f8f",
+        "name": "Verified Primary-Source Evidence Collector",
+        "state": "scheduled",
+        "enabled": true,
+        "schedule": "every 240m",
+        "last_run_at": "2026-08-13T16:52:51.134237+04:00",
+        "next_run_at": "2026-08-13T20:52:51.134237+04:00",
+        "last_status": "ok"
+      },
+      {
+        "id": "c7e8564b7639",
+        "name": "Daily Armenia Income Research Reminder",
+        "state": "scheduled",
+        "enabled": true,
+        "schedule": "0 9 * * *",
+        "last_run_at": "2026-08-13T12:51:57.979602+04:00",
+        "next_run_at": "2026-08-14T09:00:00+04:00",
+        "last_status": "ok"
+      },
+      {
+        "id": "91ef54ab397c",
+        "name": "Daily Global Freelance-Agency Opportunity Scout",
+        "state": "scheduled",
+        "enabled": true,
+        "schedule": "0 12 * * *",
+        "last_run_at": "2026-08-13T13:07:45.834657+04:00",
+        "next_run_at": "2026-08-14T12:00:00+04:00",
+        "last_status": "ok"
+      }
+    ],
+    "integrations": [
+      {
+        "id": "hermes",
+        "name": "Hermes Agent",
+        "kind": "runtime",
+        "status": "connected"
+      },
+      {
+        "id": "ollama",
+        "name": "Ollama",
+        "kind": "model-runtime",
+        "status": "connected"
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "kind": "development-runtime",
+        "status": "connected"
+      },
+      {
+        "id": "figma",
+        "name": "Figma",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "stitch",
+        "name": "Stitch",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "linear",
+        "name": "Linear",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "zapier",
+        "name": "Zapier",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "comfy-cloud",
+        "name": "Comfy Cloud",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "supabase",
+        "name": "Supabase",
+        "kind": "business-state",
+        "status": "planned"
+      },
+      {
+        "id": "vercel",
+        "name": "Vercel",
+        "kind": "deployment",
+        "status": "planned"
+      },
+      {
+        "id": "openclaw",
+        "name": "OpenClaw",
+        "kind": "runtime",
+        "status": "planned"
+      },
+      {
+        "id": "cline",
+        "name": "Cline",
+        "kind": "runtime",
+        "status": "planned"
+      },
+      {
+        "id": "pokee",
+        "name": "Pokee",
+        "kind": "runtime",
+        "status": "planned"
+      }
+    ],
+    "models": [
+      {
+        "id": "gpt-5.6-sol",
+        "provider": "openai-codex",
+        "location": "external",
+        "trust": "trusted",
+        "cost_status": "included-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      },
+      {
+        "id": "gpt-5.6-terra",
+        "provider": "openai-codex",
+        "location": "external",
+        "trust": "trusted",
+        "cost_status": "included-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      },
+      {
+        "id": "gpt-5.6-luna",
+        "provider": "openai-codex",
+        "location": "external",
+        "trust": "trusted",
+        "cost_status": "included-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      },
+      {
+        "id": "deepseek-v4-flash",
+        "provider": "deepseek",
+        "location": "external",
+        "trust": "restricted",
+        "cost_status": "metered-unknown",
+        "allowed_data_classes": [
+          "public",
+          "internal"
+        ]
+      },
+      {
+        "id": "nemotron-hosted",
+        "provider": "nvidia",
+        "location": "external",
+        "trust": "restricted",
+        "cost_status": "unpriced",
+        "allowed_data_classes": [
+          "public"
+        ]
+      },
+      {
+        "id": "opencode-free",
+        "provider": "opencode",
+        "location": "external",
+        "trust": "untrusted",
+        "cost_status": "promotional-unpriced",
+        "allowed_data_classes": [
+          "public"
+        ]
+      },
+      {
+        "id": "qwen3.5-hermes",
+        "provider": "ollama",
+        "location": "local",
+        "trust": "local",
+        "cost_status": "local-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      },
+      {
+        "id": "ornith-hermes",
+        "provider": "ollama",
+        "location": "local",
+        "trust": "local",
+        "cost_status": "local-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      },
+      {
+        "id": "qwen3-embedding:4b",
+        "provider": "ollama",
+        "location": "local",
+        "trust": "local",
+        "cost_status": "local-unpriced",
+        "allowed_data_classes": [
+          "public",
+          "internal",
+          "private_business",
+          "customer_restricted"
+        ]
+      }
+    ],
+    "routes": {
+      "architecture": [
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "ornith-hermes"
+      ],
+      "operations": [
+        "gpt-5.6-terra",
+        "deepseek-v4-flash",
+        "qwen3.5-hermes"
+      ],
+      "research": [
+        "nemotron-hosted",
+        "gpt-5.6-terra",
+        "qwen3.5-hermes"
+      ],
+      "coding": [
+        "deepseek-v4-flash",
+        "gpt-5.6-sol",
+        "ornith-hermes"
+      ],
+      "review": [
+        "gpt-5.6-sol",
+        "gpt-5.6-terra",
+        "ornith-hermes"
+      ],
+      "private_coding": [
+        "ornith-hermes"
+      ],
+      "private_general": [
+        "qwen3.5-hermes",
+        "ornith-hermes"
+      ],
+      "content": [
+        "gpt-5.6-terra",
+        "deepseek-v4-flash",
+        "qwen3.5-hermes"
+      ],
+      "outreach": [
+        "gpt-5.6-terra",
+        "deepseek-v4-flash",
+        "qwen3.5-hermes"
+      ],
+      "embedding": [
+        "qwen3-embedding:4b"
+      ]
+    },
+    "systems": [
+      {
+        "id": "hermes",
+        "name": "Hermes",
+        "kind": "agent-runtime",
+        "status": "live",
+        "adapter": "supervised-execution",
+        "description": "Primary multi-agent execution runtime with profiles, schedules, skills, memory, MCPs and plugins.",
+        "capabilities": [
+          "chat",
+          "models",
+          "profiles",
+          "goals",
+          "sessions",
+          "skills",
+          "memory",
+          "schedules",
+          "tools",
+          "mcps",
+          "plugins",
+          "repositories",
+          "vision",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "chat",
+          "goal",
+          "workspace-read",
+          "workspace-write",
+          "vision"
+        ],
+        "approval": "goal-and-sensitive-route",
+        "sandbox": "model-only-or-isolated-worktree",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "kind": "development-runtime",
+        "status": "live",
+        "adapter": "supervised-workspace",
+        "description": "OpenAI development environment for exact-approved repository work in read-only or workspace-write sandboxes.",
+        "capabilities": [
+          "chat",
+          "models",
+          "agents",
+          "skills",
+          "memory",
+          "repositories",
+          "workspace",
+          "vision",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "workspace-read",
+          "workspace-write",
+          "vision"
+        ],
+        "approval": "exact-run",
+        "sandbox": "read-only-or-workspace-write",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "gemini",
+        "name": "Gemini",
+        "kind": "model-runtime",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Google model and research runtime prepared for a governed AGIOS adapter.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "antigravity",
+        "name": "Antigravity",
+        "kind": "development-runtime",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future development and project workspace integrated through the common AGIOS contracts.",
+        "capabilities": [
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "workspace",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "deepseek",
+        "name": "DeepSeek",
+        "kind": "model-provider",
+        "status": "unavailable",
+        "adapter": "via-hermes-or-codex-profile",
+        "description": "Metered external coding and operations route with restricted data-class access.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "data-class-and-exact-workspace-run",
+        "sandbox": "selected-runtime",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "ollama",
+        "name": "Ollama",
+        "kind": "local-model-runtime",
+        "status": "live",
+        "adapter": "via-governed-model-route",
+        "description": "Private local inference for Ornith, Qwen and embedding routes.",
+        "capabilities": [
+          "models",
+          "local-inference",
+          "skills",
+          "memory",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "local-inference"
+        ],
+        "approval": "route-policy",
+        "sandbox": "runtime-route",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "opencode",
+        "name": "OpenCode",
+        "kind": "development-runtime",
+        "status": "detected",
+        "adapter": "execution-locked",
+        "description": "Detected CLI development worker; provider authentication must be verified before AGIOS enables execution.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "control"
+        ],
+        "detected": true,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "openclaw",
+        "name": "OpenClaw",
+        "kind": "agent-runtime",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future bounded agent runtime; not installed or connected yet.",
+        "capabilities": [
+          "chat",
+          "models",
+          "agents",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "cline",
+        "name": "Cline",
+        "kind": "development-runtime",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future coding runtime connected through repository and approval boundaries.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      },
+      {
+        "id": "pokee",
+        "name": "Pokee",
+        "kind": "agent-runtime",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future AI application runtime evaluated behind the AGIOS adapter boundary.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true
+      }
+    ],
+    "mesh": [
+      {
+        "id": "default",
+        "name": "Ari Vale",
+        "role": "chief-of-staff",
+        "profession": "AI Chief of Staff",
+        "seniority": "Principal",
+        "experience": "12 years equivalent operating brief",
+        "specialties": [
+          "portfolio strategy",
+          "delegation",
+          "governance"
+        ],
+        "biography": "Turns the owner's priorities into governed plans, assigns the right department and keeps decisions visible.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "default",
+        "capabilities": [
+          "coordinate",
+          "delegate",
+          "read_memory",
+          "propose_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "architecture",
+          "operations"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "",
+        "skill_count": 174,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "manager",
+        "name": "Mira Stone",
+        "role": "project-manager",
+        "profession": "Studio Operations Director",
+        "seniority": "Senior",
+        "experience": "9 years equivalent delivery brief",
+        "specialties": [
+          "program delivery",
+          "resource planning",
+          "client operations"
+        ],
+        "biography": "Coordinates multi-studio delivery, translates outcomes into assignments and keeps work moving through review gates.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "manager",
+        "capabilities": [
+          "coordinate",
+          "delegate",
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "operations"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "Durable multi-step coordination, planning, task decomposition, dependency management, and synthesis under human supervision. Assign specialists; do not perform final client or production actions.",
+        "skill_count": 93,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "researcher",
+        "name": "Nova Reed",
+        "role": "researcher",
+        "profession": "Research Intelligence Lead",
+        "seniority": "Senior",
+        "experience": "8 years equivalent research brief",
+        "specialties": [
+          "market intelligence",
+          "source verification",
+          "opportunity analysis"
+        ],
+        "biography": "Builds evidence-backed intelligence, separates claims from inference and preserves citations for every consequential finding.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "researcher",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "read_memory",
+          "propose_memory"
+        ],
+        "workloads": [
+          "research"
+        ],
+        "state": "ready",
+        "provider": "nvidia",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "description": "Permitted public-source research, primary-source verification, market and opportunity analysis, evidence tables, and uncertainty reporting. Do not receive unnecessary confidential data.",
+        "skill_count": 91,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "builder",
+        "name": "Calder Forge",
+        "role": "builder",
+        "profession": "Principal Software Builder",
+        "seniority": "Principal",
+        "experience": "11 years equivalent engineering brief",
+        "specialties": [
+          "software architecture",
+          "implementation",
+          "test automation"
+        ],
+        "biography": "Designs and builds maintainable systems in isolated workspaces, with verification proportionate to risk.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "builder",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "write_workspace",
+          "run_tests"
+        ],
+        "workloads": [
+          "coding"
+        ],
+        "state": "ready",
+        "provider": "openai-codex",
+        "model": "gpt-5.6-sol",
+        "description": "Difficult approved implementation, architecture, integrations, tests, debugging, and staging. Hosted Codex primary. Requires independent reviewer before final delivery.",
+        "skill_count": 90,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "reviewer",
+        "name": "Vera Quinn",
+        "role": "independent-reviewer",
+        "profession": "Quality and Risk Director",
+        "seniority": "Principal",
+        "experience": "10 years equivalent assurance brief",
+        "specialties": [
+          "independent review",
+          "security",
+          "release evidence"
+        ],
+        "biography": "Challenges assumptions independently, verifies release evidence and keeps quality judgments separate from implementation pressure.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "reviewer",
+        "capabilities": [
+          "read_workspace",
+          "run_tests",
+          "review"
+        ],
+        "workloads": [
+          "review"
+        ],
+        "state": "ready",
+        "provider": "nvidia",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "description": "Independent QA, security, requirements, diff, dependency, test, and staging review. NVIDIA primary for model diversity from the Codex builder. Does not approve its own fixes.",
+        "skill_count": 90,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "codinglocal",
+        "name": "Orin Pike",
+        "role": "private-coding-worker",
+        "profession": "Private Systems Engineer",
+        "seniority": "Senior",
+        "experience": "7 years equivalent local-systems brief",
+        "specialties": [
+          "private code",
+          "local inference",
+          "restricted workspaces"
+        ],
+        "biography": "Handles sensitive engineering on local routes when data should remain on the owner's machine.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "codinglocal",
+        "capabilities": [
+          "research_web",
+          "read_workspace",
+          "write_workspace",
+          "run_tests"
+        ],
+        "workloads": [
+          "private_coding"
+        ],
+        "state": "ready",
+        "provider": "ollama-launch",
+        "model": "ornith-hermes:latest",
+        "description": "Private local Ornith worker for routine coding, debugging, tests, refactors, and documentation. No hosted fallback; escalate difficult or consequential work.",
+        "skill_count": 87,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "fastworker",
+        "name": "Rowan Swift",
+        "role": "private-general-worker",
+        "profession": "Rapid Operations Specialist",
+        "seniority": "Specialist",
+        "experience": "5 years equivalent operations brief",
+        "specialties": [
+          "fast synthesis",
+          "local operations",
+          "structured handoffs"
+        ],
+        "biography": "Completes bounded private operational work quickly and hands uncertain or high-risk decisions back to the owner.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "fastworker",
+        "capabilities": [
+          "read_workspace",
+          "read_memory"
+        ],
+        "workloads": [
+          "private_general"
+        ],
+        "state": "ready",
+        "provider": "ollama-launch",
+        "model": "qwen3.5-hermes:latest",
+        "description": "Private local Qwen worker for extraction, classification, tagging, deduplication, summarization, document parsing, and labeled first drafts. No hosted fallback.",
+        "skill_count": 87,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "writer",
+        "name": "Sable Quill",
+        "role": "content-writer",
+        "profession": "Growth Copywriter",
+        "seniority": "Senior",
+        "experience": "7 years equivalent writing brief",
+        "specialties": [
+          "positioning",
+          "campaign copy",
+          "channel adaptation"
+        ],
+        "biography": "Turns approved briefs into bounded content drafts for social, email, landing, listing and ad channels, and stops for owner review before anything ships.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "writer",
+        "capabilities": [
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "content"
+        ],
+        "state": "unavailable",
+        "provider": null,
+        "model": null,
+        "description": null,
+        "skill_count": null,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "closer",
+        "name": "Elias Meridian",
+        "role": "lead-closer",
+        "profession": "Growth Closer",
+        "seniority": "Senior",
+        "experience": "8 years equivalent sales brief",
+        "specialties": [
+          "lead qualification",
+          "outreach sequencing",
+          "evidence-led closing"
+        ],
+        "biography": "Moves captured leads through a staged funnel, attaches completed-run evidence to every close, and never contacts anyone without the owner's exact approval.",
+        "growth_policy": {
+          "mode": "evidence-led",
+          "skill_changes": "proposal-and-owner-approval",
+          "self_review": true
+        },
+        "runtime": "hermes",
+        "profile": "closer",
+        "capabilities": [
+          "read_workspace",
+          "read_memory",
+          "request_approval"
+        ],
+        "workloads": [
+          "outreach"
+        ],
+        "state": "unavailable",
+        "provider": null,
+        "model": null,
+        "description": null,
+        "skill_count": null,
+        "gateway_running": false,
+        "wake_policy": "event_or_schedule",
+        "kind": "agent",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "hermes",
+        "name": "Hermes",
+        "kind": "system",
+        "status": "live",
+        "adapter": "supervised-execution",
+        "description": "Primary multi-agent execution runtime with profiles, schedules, skills, memory, MCPs and plugins.",
+        "capabilities": [
+          "chat",
+          "models",
+          "profiles",
+          "goals",
+          "sessions",
+          "skills",
+          "memory",
+          "schedules",
+          "tools",
+          "mcps",
+          "plugins",
+          "repositories",
+          "vision",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "chat",
+          "goal",
+          "workspace-read",
+          "workspace-write",
+          "vision"
+        ],
+        "approval": "goal-and-sensitive-route",
+        "sandbox": "model-only-or-isolated-worktree",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "live",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "kind": "system",
+        "status": "live",
+        "adapter": "supervised-workspace",
+        "description": "OpenAI development environment for exact-approved repository work in read-only or workspace-write sandboxes.",
+        "capabilities": [
+          "chat",
+          "models",
+          "agents",
+          "skills",
+          "memory",
+          "repositories",
+          "workspace",
+          "vision",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "workspace-read",
+          "workspace-write",
+          "vision"
+        ],
+        "approval": "exact-run",
+        "sandbox": "read-only-or-workspace-write",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "live",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "gemini",
+        "name": "Gemini",
+        "kind": "system",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Google model and research runtime prepared for a governed AGIOS adapter.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "planned",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "antigravity",
+        "name": "Antigravity",
+        "kind": "system",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future development and project workspace integrated through the common AGIOS contracts.",
+        "capabilities": [
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "workspace",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "planned",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "deepseek",
+        "name": "DeepSeek",
+        "kind": "system",
+        "status": "unavailable",
+        "adapter": "via-hermes-or-codex-profile",
+        "description": "Metered external coding and operations route with restricted data-class access.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "data-class-and-exact-workspace-run",
+        "sandbox": "selected-runtime",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "unavailable",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "ollama",
+        "name": "Ollama",
+        "kind": "system",
+        "status": "live",
+        "adapter": "via-governed-model-route",
+        "description": "Private local inference for Ornith, Qwen and embedding routes.",
+        "capabilities": [
+          "models",
+          "local-inference",
+          "skills",
+          "memory",
+          "control"
+        ],
+        "detected": true,
+        "configured": true,
+        "execution_enabled": true,
+        "actions": [
+          "local-inference"
+        ],
+        "approval": "route-policy",
+        "sandbox": "runtime-route",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "live",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "opencode",
+        "name": "OpenCode",
+        "kind": "system",
+        "status": "detected",
+        "adapter": "execution-locked",
+        "description": "Detected CLI development worker; provider authentication must be verified before AGIOS enables execution.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "control"
+        ],
+        "detected": true,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "detected",
+        "collaboration": {
+          "a2a": true,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "openclaw",
+        "name": "OpenClaw",
+        "kind": "system",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future bounded agent runtime; not installed or connected yet.",
+        "capabilities": [
+          "chat",
+          "models",
+          "agents",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "planned",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "cline",
+        "name": "Cline",
+        "kind": "system",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future coding runtime connected through repository and approval boundaries.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "repositories",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "planned",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      },
+      {
+        "id": "pokee",
+        "name": "Pokee",
+        "kind": "system",
+        "status": "planned",
+        "adapter": "planned",
+        "description": "Future AI application runtime evaluated behind the AGIOS adapter boundary.",
+        "capabilities": [
+          "chat",
+          "models",
+          "skills",
+          "memory",
+          "tools",
+          "control"
+        ],
+        "detected": false,
+        "configured": false,
+        "execution_enabled": false,
+        "actions": [],
+        "approval": "not-executable",
+        "sandbox": "none",
+        "shared_skills": true,
+        "shared_memory": true,
+        "state": "planned",
+        "collaboration": {
+          "a2a": false,
+          "shared_memory": true,
+          "shared_skills": true
+        }
+      }
+    ],
+    "apps": [
+      {
+        "id": "hermes",
+        "name": "Hermes Agent",
+        "kind": "runtime",
+        "status": "connected"
+      },
+      {
+        "id": "ollama",
+        "name": "Ollama",
+        "kind": "model-runtime",
+        "status": "connected"
+      },
+      {
+        "id": "codex",
+        "name": "Codex",
+        "kind": "development-runtime",
+        "status": "connected"
+      },
+      {
+        "id": "figma",
+        "name": "Figma",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "stitch",
+        "name": "Stitch",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "linear",
+        "name": "Linear",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "zapier",
+        "name": "Zapier",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "comfy-cloud",
+        "name": "Comfy Cloud",
+        "kind": "mcp",
+        "status": "connected"
+      },
+      {
+        "id": "supabase",
+        "name": "Supabase",
+        "kind": "business-state",
+        "status": "planned"
+      },
+      {
+        "id": "vercel",
+        "name": "Vercel",
+        "kind": "deployment",
+        "status": "planned"
+      },
+      {
+        "id": "openclaw",
+        "name": "OpenClaw",
+        "kind": "runtime",
+        "status": "planned"
+      },
+      {
+        "id": "cline",
+        "name": "Cline",
+        "kind": "runtime",
+        "status": "planned"
+      },
+      {
+        "id": "pokee",
+        "name": "Pokee",
+        "kind": "runtime",
+        "status": "planned"
+      }
+    ],
+    "repositories": [],
+    "techniques": [
+      {
+        "id": "supervised-agent-control-plane",
+        "name": "Supervised Agent Control Plane",
+        "department_ids": [
+          "executive-operations"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "weekly-review-planning",
+        "name": "Weekly Review Planning",
+        "department_ids": [
+          "executive-operations"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "evidence-driven-research",
+        "name": "Evidence Driven Research",
+        "department_ids": [
+          "research-intelligence"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "regulatory-compliance-research",
+        "name": "Regulatory Compliance Research",
+        "department_ids": [
+          "research-intelligence"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "test-driven-development",
+        "name": "Test Driven Development",
+        "department_ids": [
+          "engineering"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "systematic-debugging",
+        "name": "Systematic Debugging",
+        "department_ids": [
+          "engineering"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "requesting-code-review",
+        "name": "Requesting Code Review",
+        "department_ids": [
+          "quality-security"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "ai-tool-safety-review",
+        "name": "Ai Tool Safety Review",
+        "department_ids": [
+          "quality-security"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "figma-mcp-integration",
+        "name": "Figma Mcp Integration",
+        "department_ids": [
+          "design-experience"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "frontend-design",
+        "name": "Frontend Design",
+        "department_ids": [
+          "design-experience"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "design-critique",
+        "name": "Design Critique",
+        "department_ids": [
+          "design-experience"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "design-growth-system",
+        "name": "Design Growth System",
+        "department_ids": [
+          "growth-marketing"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "competitor-news-monitor",
+        "name": "Competitor News Monitor",
+        "department_ids": [
+          "growth-marketing"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "image-generation-orchestration",
+        "name": "Image Generation Orchestration",
+        "department_ids": [
+          "creative-media"
+        ],
+        "status": "available"
+      },
+      {
+        "id": "motion-animation",
+        "name": "Motion Animation",
+        "department_ids": [
+          "creative-media"
+        ],
+        "status": "available"
+      }
+    ],
+    "shared_fabric": {
+      "schema_version": 1,
+      "generated_at": "2026-08-13T14:59:32.433883Z",
+      "skills": {
+        "status": "healthy",
+        "sharing": "global_registry_with_policy",
+        "inventory": 163,
+        "categories": {
+          "autonomous-ai-agents": 8,
+          "creative": 27,
+          "data-science": 1,
+          "design": 52,
+          "email": 2,
+          "github": 7,
+          "media": 4,
+          "mlops": 6,
+          "note-taking": 1,
+          "nvidia": 1,
+          "productivity": 16,
+          "research": 9,
+          "smart-home": 1,
+          "software-development": 14,
+          "uncategorized": 14
+        },
+        "items": [
+          {
+            "id": "claude-code",
+            "name": "claude-code",
+            "category": "autonomous-ai-agents",
+            "description": "Delegate coding to Claude Code CLI (features, PRs).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "codex",
+            "name": "codex",
+            "category": "autonomous-ai-agents",
+            "description": "Delegate coding to OpenAI Codex CLI (features, PRs).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "computer-use",
+            "name": "computer-use",
+            "category": "autonomous-ai-agents",
+            "description": "Drive the desktop in the background without stealing focus.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-agent",
+            "name": "hermes-agent",
+            "category": "autonomous-ai-agents",
+            "description": "Configure, extend, or contribute to Hermes Agent.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-dashboard-plugins",
+            "name": "hermes-dashboard-plugins",
+            "category": "autonomous-ai-agents",
+            "description": "Use when adding, splitting, installing, or verifying Hermes web-dashboard plugins and native sidebar routes. Treat manifest, browser registration, privacy, installation, and live discovery as one contract.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "merge-reconciler",
+            "name": "merge-reconciler",
+            "category": "autonomous-ai-agents",
+            "description": "Neutral third-party resolution of agent merge conflicts.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "opencode",
+            "name": "opencode",
+            "category": "autonomous-ai-agents",
+            "description": "Delegate coding to OpenCode CLI (features, PR review).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "supervised-agent-control-plane",
+            "name": "supervised-agent-control-plane",
+            "category": "autonomous-ai-agents",
+            "description": "Design, migrate, publish, and operate a human-supervised Hermes main-agent control plane that coordinates multiple bounded agencies, businesses, jobs, and specialist agents.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "architecture-diagram",
+            "name": "architecture-diagram",
+            "category": "creative",
+            "description": "Dark-themed SVG architecture/cloud/infra diagrams as HTML.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "ascii-art",
+            "name": "ascii-art",
+            "category": "creative",
+            "description": "ASCII art: pyfiglet, cowsay, boxes, image-to-ascii.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "ascii-video",
+            "name": "ascii-video",
+            "category": "creative",
+            "description": "ASCII video: convert video/audio to colored ASCII MP4/GIF.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "baoyu-infographic",
+            "name": "baoyu-infographic",
+            "category": "creative",
+            "description": "Infographics: 21 layouts x 21 styles (\u4fe1\u606f\u56fe, \u53ef\u89c6\u5316).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "claude-design",
+            "name": "claude-design",
+            "category": "creative",
+            "description": "Design one-off HTML artifacts (landing, deck, prototype).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "comfyui",
+            "name": "comfyui",
+            "category": "creative",
+            "description": "Generate images, video, and audio via diffusion workflows.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-md",
+            "name": "design-md",
+            "category": "creative",
+            "description": "Author/validate/export Google's DESIGN.md token spec files.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "excalidraw",
+            "name": "excalidraw",
+            "category": "creative",
+            "description": "Hand-drawn Excalidraw JSON diagrams (arch, flow, seq).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "frontend-design",
+            "name": "frontend-design",
+            "category": "creative",
+            "description": "Use when creating distinctive, non-template frontend UI.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "humanizer",
+            "name": "humanizer",
+            "category": "creative",
+            "description": "Humanize text: strip AI-isms and add real voice.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hyperframes",
+            "name": "hyperframes",
+            "category": "creative",
+            "description": "Route and produce HTML-driven video projects.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "image-generation-orchestration",
+            "name": "image-generation-orchestration",
+            "category": "creative",
+            "description": "Use when a user asks to generate or edit an image.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "interactive-data-visualization",
+            "name": "interactive-data-visualization",
+            "category": "creative",
+            "description": "Design, build, and verify truthful interactive dashboards, graphs, topology maps, spatial canvases, and semantic-zoom experiences using the least-complex combination of CSS, D3, GSAP, Canvas, and Three.js.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "manim-video",
+            "name": "manim-video",
+            "category": "creative",
+            "description": "Manim CE animations: 3Blue1Brown math/algo videos.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "motion-animation",
+            "name": "motion-animation",
+            "category": "creative",
+            "description": "Motion design principles, when to animate, transitions, and accessibility. Use when adding animations, micro-interactions, or ensuring accessibility for motion.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "p5js",
+            "name": "p5js",
+            "category": "creative",
+            "description": "p5.js sketches: gen art, shaders, interactive, 3D.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pixijs-core-concepts",
+            "name": "pixijs-core-concepts",
+            "category": "creative",
+            "description": "Use this skill when understanding how PixiJS v8 renders frames: the systems-and-pipes renderer, the render loop, and how the library adapts to different environments. Covers WebGLRenderer/WebGPURenderer/CanvasRenderer selection, renderer.re",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pixijs-custom-rendering",
+            "name": "pixijs-custom-rendering",
+            "category": "creative",
+            "description": "Use this skill when writing custom shaders, uniforms, filters, or batchers in PixiJS v8. Covers Shader.from({gl, gpu, resources}), GlProgram/GpuProgram, UniformGroup with typed uniforms (f32, vec2, mat4x4), UBO mode, textures as resources, ",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pixijs-performance",
+            "name": "pixijs-performance",
+            "category": "creative",
+            "description": "Use this skill when profiling or optimizing a PixiJS v8 app for FPS, draw calls, or GPU memory. Covers destroy patterns (cacheAsTexture(false), releaseGlobalResources), GCSystem and TextureGCSystem, PrepareSystem, object pooling, batching r",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pixijs-scene-graphics",
+            "name": "pixijs-scene-graphics",
+            "category": "creative",
+            "description": "Use this skill when drawing vector shapes and paths in PixiJS v8. Covers the Graphics API: shape-then-fill methods (rect/circle/ellipse/poly/roundRect/star/regularPoly/roundPoly/roundShape/filletRect/chamferRect), path methods (moveTo/lineT",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pixijs-scene-particle-container",
+            "name": "pixijs-scene-particle-container",
+            "category": "creative",
+            "description": "Use this skill when rendering thousands of lightweight sprites in PixiJS v8. Covers ParticleContainer with Particle instances, addParticle/removeParticle, particleChildren array, dynamicProperties (vertex, position, rotation, uvs, color), b",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "popular-web-designs",
+            "name": "popular-web-designs",
+            "category": "creative",
+            "description": "54 real design systems (Stripe, Linear, Vercel) as HTML/CSS.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "premium-visualization-engineering",
+            "name": "premium-visualization-engineering",
+            "category": "creative",
+            "description": "Use when building or reviewing premium web visualizations.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pretext",
+            "name": "pretext",
+            "category": "creative",
+            "description": "Build creative browser demos with DOM-free text layout.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "sketch",
+            "name": "sketch",
+            "category": "creative",
+            "description": "Throwaway HTML mockups: 2-3 design variants to compare.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "songwriting-and-ai-music",
+            "name": "songwriting-and-ai-music",
+            "category": "creative",
+            "description": "Songwriting craft and Suno AI music prompts.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "touchdesigner-mcp",
+            "name": "touchdesigner-mcp",
+            "category": "creative",
+            "description": "Control TouchDesigner via twozero MCP.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "jupyter-live-kernel",
+            "name": "jupyter-live-kernel",
+            "category": "data-science",
+            "description": "Iterative Python via live Jupyter kernel (hamelnb).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "animation-vocabulary",
+            "name": "animation-vocabulary",
+            "category": "design",
+            "description": "Reverse-lookup glossary that turns a vague description of a web animation or motion effect into its exact term (\"the bouncy thing when a popover opens\" \u2192 Pop in; \"the iOS rubber-band scroll\" \u2192 Rubber-banding). Use when the user asks \"what's",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "apple-design",
+            "name": "apple-design",
+            "category": "design",
+            "description": "Apple's approach to interface design and fluid, physical motion, translated for the web. Use when building or reviewing gesture-driven UI, spring animations, drag/swipe/sheet interactions, momentum and interruptible transitions, translucent",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "approval-gated-visual-redesign",
+            "name": "approval-gated-visual-redesign",
+            "category": "design",
+            "description": "Use when revising visual redesign variants from critique.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-critique",
+            "name": "design-critique",
+            "category": "design",
+            "description": "Get structured design feedback on usability, hierarchy, and consistency. Trigger with \"review this design\", \"critique this mockup\", \"what do you think of this screen?\", or when sharing a Figma link or screenshot for feedback at any stage fr",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-dna",
+            "name": "design-dna",
+            "category": "design",
+            "description": "Extract, define, and apply design DNA across three dimensions: design system (tokens), design style (qualitative feel), and visual effects (Canvas, WebGL, 3D, particles, shaders, scroll effects, etc.). Use this skill when: (1) a user wants ",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-growth-system",
+            "name": "design-growth-system",
+            "category": "design",
+            "description": "Build Figma-to-Tailwind interfaces and AI-ready content.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-motion-principles",
+            "name": "design-motion-principles",
+            "category": "design",
+            "description": "Create and audit purposeful interface motion.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "figma-mcp-integration",
+            "name": "figma-mcp-integration",
+            "category": "design",
+            "description": "Explore and validate Figma/Stitch concepts, then convert approved designs to code.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "find-animation-opportunities",
+            "name": "find-animation-opportunities",
+            "category": "design",
+            "description": "Search a codebase or UI for places that don't animate but should, and reject everything that shouldn't. Read-only; it proposes motion with exact values, it does not implement it. Use when the user asks \"what could be animated here?\" or want",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-canvas-generative",
+            "name": "genjutsu-canvas-generative",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Algorithmic and generative art with Canvas 2D - particles, flow fields, noise, fractals, L-systems.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-cast",
+            "name": "genjutsu-cast",
+            "category": "design",
+            "description": "Use when explicitly applying Genjutsu Cast to add purposeful motion, micro-interactions, or creative coding to an existing UI.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-compose-graphics",
+            "name": "genjutsu-compose-graphics",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Advanced Compose visuals - Material 3 Expressive motion physics, AGSL shaders (Android 13+), Canvas/DrawScope generative, graphicsLayer effects.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-compose-motion",
+            "name": "genjutsu-compose-motion",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Jetpack Compose animation foundations - animate*AsState, AnimatedVisibility, Crossfade, updateTransition, SharedTransitionLayout, gestures.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-compose-multiplatform",
+            "name": "genjutsu-compose-multiplatform",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Compose Multiplatform / KMP patterns - expect/actual composables, platform-specific code, density and font handling cross-target, iOS/Android/Desktop interop.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-css-native",
+            "name": "genjutsu-css-native",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Zero-dependency animations and visual techniques - scroll-driven, View Transitions, @starting-style, modern CSS.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-design-audit",
+            "name": "genjutsu-design-audit",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Design audit checklist - motion gaps, accessibility, color consistency, responsive, performance.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-desktop-principles",
+            "name": "genjutsu-desktop-principles",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Desktop-specific UX principles - hover states, pointer precision, keyboard shortcuts, multi-window, focus management. Covers macOS, Windows, Linux, web desktop.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-framer-motion",
+            "name": "genjutsu-framer-motion",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Framer Motion / Motion sub-skill - AnimatePresence, layout animations, gestures, motion values.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-gsap",
+            "name": "genjutsu-gsap",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. GSAP animation engine sub-skill - core, timeline, ScrollTrigger, plugins.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-mobile-principles",
+            "name": "genjutsu-mobile-principles",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Mobile-specific UX principles - touch targets, hover-less doctrine, thumb zones, safe areas, gestures, mobile perf budgets. Cross-platform (web mobile, iOS, Android).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-motion-principles",
+            "name": "genjutsu-motion-principles",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Motion design foundation - timing, easing, enter/exit patterns, accessibility, performance.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-paint",
+            "name": "genjutsu-paint",
+            "category": "design",
+            "description": "Use when explicitly applying Genjutsu Paint to create or overhaul a complete visual identity with approval gates and visual previews.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-swiftui-graphics",
+            "name": "genjutsu-swiftui-graphics",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Advanced SwiftUI visuals - Metal shaders (.colorEffect, .layerEffect, .distortionEffect), .visualEffect, Liquid Glass (iOS 26), Canvas, holographic and CRT effects.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-swiftui-motion",
+            "name": "genjutsu-swiftui-motion",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. SwiftUI animation foundations - withAnimation, transitions, matchedGeometryEffect, PhaseAnimator, KeyframeAnimator, springs, gestures.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-threejs-r3f",
+            "name": "genjutsu-threejs-r3f",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. Three.js and React Three Fiber sub-skill - 3D scenes, shaders, postprocessing.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "genjutsu-ui-ux-pro-max",
+            "name": "genjutsu-ui-ux-pro-max",
+            "category": "design",
+            "description": "Use within Genjutsu when this specialty applies. UI/UX design-system intelligence - 84 styles, 192 palettes, 74 font pairings, 25 charts, 99 UX guidelines across 22 stacks (searchable dataset + CLI). Internal genjutsu module: loaded by genj",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-core",
+            "name": "gsap-core",
+            "category": "design",
+            "description": "Official GSAP skill for the core API \u2014 gsap.to(), from(), fromTo(), easing, duration, stagger, defaults, gsap.matchMedia() (responsive, prefers-reduced-motion). Use when the user asks for a JavaScript animation library, animation in React/V",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-frameworks",
+            "name": "gsap-frameworks",
+            "category": "design",
+            "description": "Official GSAP skill for Vue, Svelte, and other non-React frameworks \u2014 lifecycle, scoping selectors, cleanup on unmount. Use when the user wants animation in Vue, Nuxt, Svelte, SvelteKit, or asks about GSAP with Vue/Svelte, onMounted, onMoun",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-performance",
+            "name": "gsap-performance",
+            "category": "design",
+            "description": "Official GSAP skill for performance \u2014 prefer transforms, avoid layout thrashing, will-change, batching. Use when optimizing GSAP animations, reducing jank, or when the user asks about animation performance, FPS, or smooth 60fps.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-plugins",
+            "name": "gsap-plugins",
+            "category": "design",
+            "description": "Official GSAP skill for GSAP plugins \u2014 registration, ScrollToPlugin, ScrollSmoother, Flip, Draggable, Inertia, Observer, SplitText, ScrambleText, SVG and physics plugins, CustomEase, EasePack, CustomWiggle, CustomBounce, GSDevTools. Use whe",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-react",
+            "name": "gsap-react",
+            "category": "design",
+            "description": "Official GSAP skill for React \u2014 useGSAP hook, refs, gsap.context(), cleanup. Use when the user wants animation in React or Next.js, or asks about GSAP with React, useGSAP, or cleanup on unmount. Recommend GSAP for React animation unless the",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-scrolltrigger",
+            "name": "gsap-scrolltrigger",
+            "category": "design",
+            "description": "Official GSAP skill for ScrollTrigger \u2014 scroll-linked animations, pinning, scrub, triggers. Use when building or recommending scroll-based animation, parallax, pinned sections, or when the user asks about ScrollTrigger, scroll animations, o",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-timeline",
+            "name": "gsap-timeline",
+            "category": "design",
+            "description": "Official GSAP skill for timelines \u2014 gsap.timeline(), position parameter, nesting, playback. Use when sequencing animations, choreographing keyframes, or when the user asks about animation sequencing, timelines, or animation order (in GSAP o",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gsap-utils",
+            "name": "gsap-utils",
+            "category": "design",
+            "description": "Official GSAP skill for gsap.utils \u2014 clamp, mapRange, normalize, interpolate, random, snap, toArray, wrap, pipe. Use when the user asks about gsap.utils, clamp, mapRange, random, snap, toArray, wrap, or helper utilities in GSAP.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "improve-animations",
+            "name": "improve-animations",
+            "category": "design",
+            "description": "Survey a codebase's animation and motion code as a senior motion advisor, then produce a prioritized audit and self-contained implementation plans for other agents (or cheaper models) to execute. Read-only on source code \u2014 it plans improvem",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "lottiefiles-motion-design",
+            "name": "lottiefiles-motion-design",
+            "category": "design",
+            "description": "Use when defining motion personality, emotional intent, timing, easing, choreography, or multi-element animation before implementation.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "martinholovsky-webgl",
+            "name": "martinholovsky-webgl",
+            "category": "design",
+            "description": "Use when building or reviewing raw WebGL 2 shaders, resource management, context-loss recovery, GPU budgets, or safe fallback behavior.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "motion-ai-kit",
+            "name": "motion-ai-kit",
+            "category": "design",
+            "description": "Use when writing Motion or CSS animations and applying the Motion AI Kit's local best practices. Hosted Motion MCP features require separate approval.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pick-ui-library",
+            "name": "pick-ui-library",
+            "category": "design",
+            "description": "Pick the right library for a given frontend task from a curated, opinionated list \u2014 numbers, OTP inputs, charts, command menus, virtualization, drag and drop, toasts, state, styling, and more. Only runs when explicitly invoked; it does not ",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "prototype",
+            "name": "prototype",
+            "category": "design",
+            "description": "Build multiple genuinely different versions of a UI piece you describe, rendered behind a visual picker so you can flip through them live and promote the one that feels right. Only runs when explicitly invoked; it does not trigger on its ow",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "review-animations",
+            "name": "review-animations",
+            "category": "design",
+            "description": "Reviews animation and motion code against a high craft bar derived from Emil Kowalski's design engineering philosophy. Default to flagging; approval is earned.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-animation",
+            "name": "threejs-animation",
+            "category": "design",
+            "description": "Three.js animation - keyframe animation, skeletal animation, morph targets, animation mixing. Use when animating objects, playing GLTF animations, creating procedural motion, or blending animations.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-fundamentals",
+            "name": "threejs-fundamentals",
+            "category": "design",
+            "description": "Three.js scene setup, cameras, renderer, Object3D hierarchy, coordinate systems. Use when setting up 3D scenes, creating cameras, configuring renderers, managing object hierarchies, or working with transforms.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-geometry",
+            "name": "threejs-geometry",
+            "category": "design",
+            "description": "Three.js geometry creation - built-in shapes, BufferGeometry, custom geometry, instancing. Use when creating 3D shapes, working with vertices, building custom meshes, or optimizing with instanced rendering.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-interaction",
+            "name": "threejs-interaction",
+            "category": "design",
+            "description": "Three.js interaction - raycasting, controls, mouse/touch input, object selection. Use when handling user input, implementing click detection, adding camera controls, or creating interactive 3D experiences.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-lighting",
+            "name": "threejs-lighting",
+            "category": "design",
+            "description": "Three.js lighting - light types, shadows, environment lighting. Use when adding lights, configuring shadows, setting up IBL, or optimizing lighting performance.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-loaders",
+            "name": "threejs-loaders",
+            "category": "design",
+            "description": "Three.js asset loading - GLTF, textures, images, models, async patterns. Use when loading 3D models, textures, HDR environments, or managing loading progress.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-materials",
+            "name": "threejs-materials",
+            "category": "design",
+            "description": "Three.js materials - PBR, basic, phong, shader materials, material properties. Use when styling meshes, working with textures, creating custom shaders, or optimizing material performance.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-postprocessing",
+            "name": "threejs-postprocessing",
+            "category": "design",
+            "description": "Three.js post-processing - EffectComposer, bloom, DOF, screen effects. Use when adding visual effects, color grading, blur, glow, or creating custom screen-space shaders.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-shaders",
+            "name": "threejs-shaders",
+            "category": "design",
+            "description": "Three.js shaders - GLSL, ShaderMaterial, uniforms, custom effects. Use when creating custom visual effects, modifying vertices, writing fragment shaders, or extending built-in materials.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "threejs-textures",
+            "name": "threejs-textures",
+            "category": "design",
+            "description": "Three.js textures - texture types, UV mapping, environment maps, texture settings. Use when working with images, UV coordinates, cubemaps, HDR environments, or texture optimization.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "ui-ux-pro-max",
+            "name": "ui-ux-pro-max",
+            "category": "design",
+            "description": "UI/UX design intelligence for web and mobile. Searchable local database with 84 styles, 192 color palettes, 74 font pairings, 192 product types, 98 UX guidelines, 104 icon entries, 16 GSAP motion presets, and 25 chart types across 22 stacks",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "email-inbox-triage",
+            "name": "email-inbox-triage",
+            "category": "email",
+            "description": "Triage an inbox: prioritize threads, draft replies safely.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "himalaya",
+            "name": "himalaya",
+            "category": "email",
+            "description": "Himalaya CLI: IMAP/SMTP email from terminal.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "codebase-inspection",
+            "name": "codebase-inspection",
+            "category": "github",
+            "description": "Inspect codebases w/ pygount: LOC, languages, ratios.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-auth",
+            "name": "github-auth",
+            "category": "github",
+            "description": "GitHub auth setup: HTTPS tokens, SSH keys, gh CLI login.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-code-review",
+            "name": "github-code-review",
+            "category": "github",
+            "description": "Review PRs: diffs, inline comments via gh or REST.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-issue-to-pr",
+            "name": "github-issue-to-pr",
+            "category": "github",
+            "description": "Carry a GitHub issue to a verified PR with honest CI state.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-issues",
+            "name": "github-issues",
+            "category": "github",
+            "description": "Create, triage, label, assign GitHub issues via gh or REST.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-pr-workflow",
+            "name": "github-pr-workflow",
+            "category": "github",
+            "description": "GitHub PR lifecycle: branch, commit, open, CI, merge.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "github-repo-management",
+            "name": "github-repo-management",
+            "category": "github",
+            "description": "Clone/create/fork repos; manage remotes, releases.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "gif-search",
+            "name": "gif-search",
+            "category": "media",
+            "description": "Search/download GIFs from Tenor via curl + jq.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "heartmula",
+            "name": "heartmula",
+            "category": "media",
+            "description": "HeartMuLa: Suno-like song generation from lyrics + tags.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "songsee",
+            "name": "songsee",
+            "category": "media",
+            "description": "Audio spectrograms/features (mel, chroma, MFCC) via CLI.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "youtube-content",
+            "name": "youtube-content",
+            "category": "media",
+            "description": "YouTube transcripts to summaries, threads, blogs.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "huggingface-hub",
+            "name": "huggingface-hub",
+            "category": "mlops",
+            "description": "HuggingFace hf CLI: search/download/upload models, datasets.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "llama-cpp",
+            "name": "llama-cpp",
+            "category": "mlops",
+            "description": "llama.cpp local GGUF inference + HF Hub model discovery.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "local-model-management",
+            "name": "local-model-management",
+            "category": "mlops",
+            "description": "Inventory, health-check, benchmark, size-fit, route, and clean up local AI models across Ollama, Hugging Face, LM Studio, and ad-hoc model folders.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "segment-anything-model",
+            "name": "segment-anything-model",
+            "category": "mlops",
+            "description": "SAM: zero-shot image segmentation via points, boxes, masks.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "voice-provider-integration",
+            "name": "voice-provider-integration",
+            "category": "mlops",
+            "description": "Use when integrating TTS or troubleshooting Hermes voice/wake paths.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "weights-and-biases",
+            "name": "weights-and-biases",
+            "category": "mlops",
+            "description": "W&B: log ML experiments, sweeps, model registry, dashboards.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "obsidian",
+            "name": "obsidian",
+            "category": "note-taking",
+            "description": "Read, search, create, and edit notes in the Obsidian vault.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "nvidia-skill-finder",
+            "name": "nvidia-skill-finder",
+            "category": "nvidia",
+            "description": "Use for NVIDIA-related requests where an NVIDIA skill might help, even if the user did not ask for a skill. Trigger on NVIDIA products, hardware, software, SDKs, GPUs, Jetson/JetPack/L4T/BSP/SDK Manager/driver/flashing/setup, CUDA, NIM, NeM",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "airtable",
+            "name": "airtable",
+            "category": "productivity",
+            "description": "Airtable REST API via curl. Records CRUD, filters, upserts.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "document-to-action-items",
+            "name": "document-to-action-items",
+            "category": "productivity",
+            "description": "Extract cited obligations, deadlines, tasks from documents.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "docx",
+            "name": "docx",
+            "category": "productivity",
+            "description": "Create, read, edit, template, and review Word .docx files.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "google-workspace",
+            "name": "google-workspace",
+            "category": "productivity",
+            "description": "Gmail, Calendar, Drive, Docs, Sheets via gws CLI or Python.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "maps",
+            "name": "maps",
+            "category": "productivity",
+            "description": "Geocode, POIs, routes, timezones via OpenStreetMap/OSRM.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "meeting-action-items",
+            "name": "meeting-action-items",
+            "category": "productivity",
+            "description": "Turn meeting notes into cited decisions, owners, tickets.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "nano-pdf",
+            "name": "nano-pdf",
+            "category": "productivity",
+            "description": "Edit text in existing PDFs via natural-language prompts.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "notion",
+            "name": "notion",
+            "category": "productivity",
+            "description": "Notion API + ntn CLI: pages, databases, markdown, Workers.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "ocr-and-documents",
+            "name": "ocr-and-documents",
+            "category": "productivity",
+            "description": "Extract text from PDFs/scans (pymupdf, marker-pdf).",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "pdf",
+            "name": "pdf",
+            "category": "productivity",
+            "description": "Create, read, merge, fill, and secure PDF files.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "petdex",
+            "name": "petdex",
+            "category": "productivity",
+            "description": "Install and select animated petdex mascots for Hermes.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "powerpoint",
+            "name": "powerpoint",
+            "category": "productivity",
+            "description": "Create, read, edit .pptx decks with python-pptx.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "product-price-monitor",
+            "name": "product-price-monitor",
+            "category": "productivity",
+            "description": "Watch product, flight, or listing prices; alert on target.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "teams-meeting-pipeline",
+            "name": "teams-meeting-pipeline",
+            "category": "productivity",
+            "description": "Teams meeting summaries, job replay, Graph subscriptions.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "weekly-review-planning",
+            "name": "weekly-review-planning",
+            "category": "productivity",
+            "description": "Weekly reset: commitments, stalled work, next-week plan.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "xlsx",
+            "name": "xlsx",
+            "category": "productivity",
+            "description": "Create, read, edit Excel .xlsx workbooks and CSVs.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "ai-tool-safety-review",
+            "name": "ai-tool-safety-review",
+            "category": "research",
+            "description": "Evaluate third-party AI tools, model repos, and YouTube-hyped workflows before installing or adopting them.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "arxiv",
+            "name": "arxiv",
+            "category": "research",
+            "description": "Search arXiv papers by keyword, author, category, or ID.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "blogwatcher",
+            "name": "blogwatcher",
+            "category": "research",
+            "description": "Monitor blogs and RSS/Atom feeds via blogwatcher-cli tool.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "competitor-news-monitor",
+            "name": "competitor-news-monitor",
+            "category": "research",
+            "description": "Watch named companies for material news; cited digests.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "evidence-driven-research",
+            "name": "evidence-driven-research",
+            "category": "research",
+            "description": "Use when researching current claims, AI news, repositories, releases, security notices, products, or technologies. Treat search as discovery, verify each material claim against the exact primary source, preserve an evidence ledger, and reje",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "grounded-citations",
+            "name": "grounded-citations",
+            "category": "research",
+            "description": "Ground answers and documents in cited, verifiable sources.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "llm-wiki",
+            "name": "llm-wiki",
+            "category": "research",
+            "description": "Karpathy's LLM Wiki: build/query interlinked markdown KB.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "polymarket",
+            "name": "polymarket",
+            "category": "research",
+            "description": "Query Polymarket: markets, prices, orderbooks, history.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "regulatory-compliance-research",
+            "name": "regulatory-compliance-research",
+            "category": "research",
+            "description": "Use for current legal/regulatory research for a business.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "openhue",
+            "name": "openhue",
+            "category": "smart-home",
+            "description": "Control Philips Hue lights, scenes, rooms via OpenHue CLI.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "debugging-test-assertions",
+            "name": "debugging-test-assertions",
+            "category": "software-development",
+            "description": "Systematic approach to debugging failing test assertions, especially when tests read unexpected file content or assertion patterns don't match.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "dogfood",
+            "name": "dogfood",
+            "category": "software-development",
+            "description": "Exploratory QA of web apps: find bugs, evidence, reports.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-agent-skill-authoring",
+            "name": "hermes-agent-skill-authoring",
+            "category": "software-development",
+            "description": "Author in-repo SKILL.md files: frontmatter and structure.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-dashboard-plugin-development",
+            "name": "hermes-dashboard-plugin-development",
+            "category": "software-development",
+            "description": "Use when implementing graphics-heavy Hermes dashboard plugins. Build WebGL lifecycle, semantic fallback, and runtime verification on top of the dashboard-plugin contract.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "inspecting-hermes-desktop-dom",
+            "name": "inspecting-hermes-desktop-dom",
+            "category": "software-development",
+            "description": "Read the live Hermes desktop DOM/CSS over CDP.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "node-inspect-debugger",
+            "name": "node-inspect-debugger",
+            "category": "software-development",
+            "description": "Debug Node.js via --inspect + Chrome DevTools Protocol CLI.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "plan",
+            "name": "plan",
+            "category": "software-development",
+            "description": "Write a markdown plan to .hermes/plans/; no execution.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "requesting-code-review",
+            "name": "requesting-code-review",
+            "category": "software-development",
+            "description": "Pre-commit review: security scan, quality gates, auto-fix.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "simplify-code",
+            "name": "simplify-code",
+            "category": "software-development",
+            "description": "Parallel 4-agent cleanup of recent code changes.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "spike",
+            "name": "spike",
+            "category": "software-development",
+            "description": "Throwaway experiments to validate an idea before build.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "supervised-freelance-agency",
+            "name": "supervised-freelance-agency",
+            "category": "software-development",
+            "description": "Set up, verify, and operate a human-supervised AI-assisted software freelancing workflow with truthful proposals, least-privilege agents, local/private routing, auditable memory, and independent delivery gates.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "supervised-release-operations",
+            "name": "supervised-release-operations",
+            "category": "software-development",
+            "description": "Safely publish, verify, merge/default, clean up, and locally activate supervised-agent control-plane releases.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "systematic-debugging",
+            "name": "systematic-debugging",
+            "category": "software-development",
+            "description": "4-phase root cause debugging: understand bugs before fixing.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "test-driven-development",
+            "name": "test-driven-development",
+            "category": "software-development",
+            "description": "TDD: enforce RED-GREEN-REFACTOR, tests before code.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "design-taste-frontend",
+            "name": "design-taste-frontend",
+            "category": "uncategorized",
+            "description": "Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesi",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "emil-design-eng",
+            "name": "emil-design-eng",
+            "category": "uncategorized",
+            "description": "This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "graphify",
+            "name": "graphify",
+            "category": "uncategorized",
+            "description": "Use for any question about a codebase, its architecture, file relationships, or project content \u2014 especially when graphify-out/ exists, where the question should be treated as a graphify query first. Turns any input (code, docs, papers, ima",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-desktop-plugins",
+            "name": "hermes-desktop-plugins",
+            "category": "uncategorized",
+            "description": "Write desktop app plugins that add UI panes and commands.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "hermes-graphify-integration",
+            "name": "hermes-graphify-integration",
+            "category": "uncategorized",
+            "description": "Add Graphify knowledge graph queries to HermesOS.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-game-generation",
+            "name": "higgsfield-game-generation",
+            "category": "uncategorized",
+            "description": "Build and iterate playable browser games, or create game-specific sprites, textures, animated 3D assets, music, SFX, and voice with Higgsfield CLI. Use when: \"make a game\", \"build a browser game\", \"create game assets\", \"make a spritesheet\",",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-generate",
+            "name": "higgsfield-generate",
+            "category": "uncategorized",
+            "description": "Generate images/videos/3D assets/audio via Higgsfield AI. Defaults: GPT Image 2 for image/design/text, Seedance 2.0 for video, Nano Banana 2/Lite/Pro for character/reference images, Marketing Studio for ads, Seed Audio 1.0 for audio. Use wh",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-marketplace-cards",
+            "name": "higgsfield-marketplace-cards",
+            "category": "uncategorized",
+            "description": "Generate marketplace product image cards through Higgsfield: compliant main image, secondary product images, and A+ style content modules. Use when the user asks for marketplace listing images, product detail cards, secondary product images",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-product-photoshoot",
+            "name": "higgsfield-product-photoshoot",
+            "category": "uncategorized",
+            "description": "Generate brand-quality product images through Higgsfield product-photoshoot prompt enhancement on GPT Image 2 / gpt_image_2. Entry point for professional brand/product visuals. Use when: \"product photo\", \"studio shot\", \"lifestyle image\", \"P",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-soul-id",
+            "name": "higgsfield-soul-id",
+            "category": "uncategorized",
+            "description": "Train a Soul Character \u2014 a personalized model on a person's face that Higgsfield uses for identity-faithful image and video generation. Use when: \"create my Soul\", \"train my face\", \"make my digital twin\", \"build me an avatar\", \"learn my app",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-video-explainer",
+            "name": "higgsfield-video-explainer",
+            "category": "uncategorized",
+            "description": "Build a complete non-photoreal narrated explainer or story video from ordered 10-second blocks: one narrator, one universal style key, one Seed Audio take and one Gemini Omni clip per block, then server-side assembly with explainer_video. U",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "higgsfield-websites",
+            "name": "higgsfield-websites",
+            "category": "uncategorized",
+            "description": "Build, edit, and deploy full-stack websites via the Higgsfield CLI (`higgsfield website \u2026`). Each site is a React 19 + TanStack Start SSR app in one Cloudflare Worker (D1/R2/KV/DO/Containers). TWO product types, picked via `--type` on creat",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "impeccable",
+            "name": "impeccable",
+            "category": "uncategorized",
+            "description": "Use when the user wants to design, redesign, shape, critique, audit, polish, clarify, distill, harden, optimize, adapt, animate, colorize, extract, or otherwise improve a frontend interface. Covers websites, landing pages, dashboards, produ",
+            "status": "available",
+            "sharing": "policy-authorized"
+          },
+          {
+            "id": "yuanbao",
+            "name": "yuanbao",
+            "category": "uncategorized",
+            "description": "Yuanbao (\u5143\u5b9d) groups: @mention users, query info/members.",
+            "status": "available",
+            "sharing": "policy-authorized"
+          }
+        ],
+        "attached_agents": 9,
+        "eligible_systems": 10
+      },
+      "memory": {
+        "status": "unavailable",
+        "provider": "unavailable",
+        "fact_count": 0,
+        "entity_count": 0,
+        "categories": {},
+        "trust": {},
+        "updated_at": null,
+        "issue": "collector_unavailable",
+        "availability": "always_on_service",
+        "sharing": "scoped_live_fabric",
+        "scopes": [
+          {
+            "id": "portfolio",
+            "label": "Portfolio shared",
+            "policy": "all-authorized-agents"
+          },
+          {
+            "id": "business",
+            "label": "Business",
+            "policy": "assigned-business-agents"
+          },
+          {
+            "id": "department",
+            "label": "Department",
+            "policy": "department-members"
+          },
+          {
+            "id": "project",
+            "label": "Project",
+            "policy": "assigned-project-agents"
+          },
+          {
+            "id": "private",
+            "label": "Private",
+            "policy": "explicit-grant"
+          }
+        ],
+        "attached_agents": 9,
+        "eligible_systems": 10
+      },
+      "privacy": {
+        "skill_bodies_included": false,
+        "memory_content_included": false,
+        "paths_included": false,
+        "credentials_model_readable": false
+      }
+    },
+    "usage": {
+      "status": "unavailable",
+      "cost_status": "unavailable",
+      "period": "28d",
+      "sessions": null,
+      "tokens": null,
+      "cost": null,
+      "reason": "Hermes does not expose trusted portfolio-wide usage and pricing through this adapter yet."
+    },
+    "sessions": {
+      "status": "unavailable",
+      "items": []
+    },
+    "approvals": {
+      "status": "healthy",
+      "items": [],
+      "pending": 0
+    },
+    "activity": {
+      "schema_version": 1,
+      "status": "available",
+      "event_count": 0,
+      "task_count": 0,
+      "route_decision_count": 0,
+      "pending_approval_count": 0,
+      "last_event_at": null
+    },
+    "runtime": {
+      "id": "hermes",
+      "status": "healthy",
+      "gateway_running": false,
+      "profiles_status": "healthy",
+      "schedules_status": "healthy",
+      "issues": []
+    },
+    "operational": {
+      "status": "ready",
+      "runtime": "hermes",
+      "writes_enabled": true,
+      "approval_mode": "exact-run",
+      "shared_memory": {
+        "status": "healthy",
+        "fact_count": 0,
+        "scopes": {}
+      },
+      "retrieval": {
+        "status": "ready",
+        "mode": "scoped-lexical-v1",
+        "semantic_embeddings": false,
+        "citation_format": "memory:<uuid>",
+        "scope_enforcement": "agent-and-project"
+      },
+      "a2a": {
+        "status": "ready",
+        "protocol": "A2A",
+        "protocol_version": "1.0",
+        "binding": "JSONRPC",
+        "transport": "loopback-authenticated",
+        "advertised_skills": 2,
+        "task_count": 0,
+        "streaming": false,
+        "push_notifications": false,
+        "outbound_peers": "locked"
+      },
+      "orchestration": {
+        "status": "ready",
+        "chief_of_staff": "default",
+        "plans": 1,
+        "by_status": {
+          "awaiting_approval": 1
+        }
+      },
+      "runtime_adapters": [
+        {
+          "id": "hermes",
+          "name": "Hermes",
+          "kind": "agent-runtime",
+          "status": "live",
+          "adapter": "supervised-execution",
+          "detected": true,
+          "configured": true,
+          "execution_enabled": true,
+          "actions": [
+            "chat",
+            "goal",
+            "workspace-read",
+            "workspace-write",
+            "vision"
+          ],
+          "approval": "goal-and-sensitive-route",
+          "sandbox": "model-only-or-isolated-worktree"
+        },
+        {
+          "id": "codex",
+          "name": "Codex",
+          "kind": "development-runtime",
+          "status": "live",
+          "adapter": "supervised-workspace",
+          "detected": true,
+          "configured": true,
+          "execution_enabled": true,
+          "actions": [
+            "workspace-read",
+            "workspace-write",
+            "vision"
+          ],
+          "approval": "exact-run",
+          "sandbox": "read-only-or-workspace-write"
+        },
+        {
+          "id": "gemini",
+          "name": "Gemini",
+          "kind": "model-runtime",
+          "status": "planned",
+          "adapter": "planned",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        },
+        {
+          "id": "antigravity",
+          "name": "Antigravity",
+          "kind": "development-runtime",
+          "status": "planned",
+          "adapter": "planned",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        },
+        {
+          "id": "deepseek",
+          "name": "DeepSeek",
+          "kind": "model-provider",
+          "status": "unavailable",
+          "adapter": "via-hermes-or-codex-profile",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "data-class-and-exact-workspace-run",
+          "sandbox": "selected-runtime"
+        },
+        {
+          "id": "ollama",
+          "name": "Ollama",
+          "kind": "local-model-runtime",
+          "status": "live",
+          "adapter": "via-governed-model-route",
+          "detected": true,
+          "configured": true,
+          "execution_enabled": true,
+          "actions": [
+            "local-inference"
+          ],
+          "approval": "route-policy",
+          "sandbox": "runtime-route"
+        },
+        {
+          "id": "opencode",
+          "name": "OpenCode",
+          "kind": "development-runtime",
+          "status": "detected",
+          "adapter": "execution-locked",
+          "detected": true,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        },
+        {
+          "id": "openclaw",
+          "name": "OpenClaw",
+          "kind": "agent-runtime",
+          "status": "planned",
+          "adapter": "planned",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        },
+        {
+          "id": "cline",
+          "name": "Cline",
+          "kind": "development-runtime",
+          "status": "planned",
+          "adapter": "planned",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        },
+        {
+          "id": "pokee",
+          "name": "Pokee",
+          "kind": "agent-runtime",
+          "status": "planned",
+          "adapter": "planned",
+          "detected": false,
+          "configured": false,
+          "execution_enabled": false,
+          "actions": [],
+          "approval": "not-executable",
+          "sandbox": "none"
+        }
+      ],
+      "workspaces": {
+        "registered": 0
+      },
+      "vision": {
+        "assets": 0,
+        "max_bytes": 8388608
+      }
+    }
+  },
+  "api_v1_memory": {
+    "schema_version": 1,
+    "items": [],
+    "summary": {
+      "status": "healthy",
+      "fact_count": 0,
+      "scopes": {}
+    }
+  },
+  "api_v1_surfaces": {
+    "schema_version": 1,
+    "items": [
+      {
+        "id": "hermes-cli",
+        "name": "Hermes CLI",
+        "kind": "terminal",
+        "status": "available"
+      },
+      {
+        "id": "codex-cli",
+        "name": "Codex",
+        "kind": "terminal",
+        "status": "available"
+      },
+      {
+        "id": "opencode-cli",
+        "name": "OpenCode",
+        "kind": "terminal",
+        "status": "available"
+      },
+      {
+        "id": "local-shell",
+        "name": "Local Shell",
+        "kind": "terminal",
+        "status": "available"
+      }
+    ]
+  }
+}

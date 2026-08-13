@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0a0d0c" />
+<title>AGIOS Mission Board - staged preview</title>
+<style>
+  :root {
+    --bg: #0a0d0c;
+    --bg-deep: #070908;
+    --panel: #101513;
+    --panel-2: #141a17;
+    --line: rgba(255,255,255,.07);
+    --line-strong: rgba(255,255,255,.12);
+    --ink: #e6ede9;
+    --ink-2: #b7c6be;
+    --dim: #8aa39a;
+    --faint: #5c726a;
+    --accent: #63d9a5;
+    --accent-dim: rgba(99,217,165,.14);
+    --gold: #d9b46a;
+    --amber: #d9a85e;
+    --rose: #d9707c;
+    --mono: "Cascadia Mono", Consolas, "SF Mono", monospace;
+    --sans: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 14px/1.5 var(--sans);
+    overflow: hidden;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  .shell { display: grid; grid-template-columns: 232px 1fr; height: 100vh; }
+
+  /* ---------- rail ---------- */
+  .rail {
+    background: var(--bg-deep); border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; padding: 14px 12px; gap: 6px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 6px 14px; }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 8px; flex: none;
+    background: linear-gradient(135deg, #17241e, #0c1210);
+    border: 1px solid var(--line-strong);
+    display: grid; place-items: center; font: 700 13px var(--mono); color: var(--accent);
+  }
+  .brand small { display: block; font: 500 9px var(--mono); letter-spacing: .18em; color: var(--faint); }
+  .brand strong { font-size: 14px; letter-spacing: .06em; }
+  .rail-group { margin-top: 8px; }
+  .rail-label { font: 500 9px var(--mono); letter-spacing: .2em; color: var(--faint); padding: 0 8px 6px; }
+  .rail-item {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    padding: 8px 10px; border-radius: 8px; color: var(--ink-2);
+    font-size: 13px; text-align: left; transition: background .12s ease, color .12s ease;
+  }
+  .rail-item:hover { background: rgba(255,255,255,.04); color: var(--ink); }
+  .rail-item.is-active { background: var(--accent-dim); color: var(--accent); }
+  .rail-item .glyph { width: 16px; text-align: center; color: var(--faint); }
+  .rail-item.is-active .glyph { color: var(--accent); }
+  .rail-item kbd { margin-left: auto; font: 500 9px var(--mono); color: var(--faint); }
+  .rail-spacer { flex: 1; }
+  .runtime {
+    border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    background: var(--panel);
+  }
+  .runtime .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 7px; }
+  .runtime strong { font-size: 12px; }
+  .runtime p { font: 400 11px/1.45 var(--mono); color: var(--dim); margin-top: 4px; }
+
+  /* ---------- main ---------- */
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar {
+    height: 54px; flex: none; display: flex; align-items: center; gap: 14px;
+    padding: 0 20px; border-bottom: 1px solid var(--line);
+  }
+  .crumb { font-size: 12px; color: var(--dim); }
+  .crumb b { color: var(--faint); font-weight: 400; margin: 0 6px; }
+  .crumb strong { color: var(--ink); font-weight: 600; }
+  .command-bar {
+    margin-left: auto; display: flex; align-items: center; gap: 10px;
+    width: 340px; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line-strong); background: var(--panel);
+    color: var(--faint); font-size: 12px;
+  }
+  .command-bar kbd {
+    margin-left: auto; font: 500 9px var(--mono); color: var(--faint);
+    border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 5px;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a1510; font-weight: 600; font-size: 12.5px;
+    padding: 8px 14px; border-radius: 8px; transition: transform .1s ease, background .12s ease;
+  }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-ghost {
+    border: 1px solid var(--line-strong); color: var(--ink-2); font-size: 12.5px;
+    padding: 8px 12px; border-radius: 8px; transition: border-color .12s ease, color .12s ease;
+  }
+  .btn-ghost:hover { border-color: var(--dim); color: var(--ink); }
+
+  .view { flex: 1; overflow-y: auto; padding: 22px 28px 48px; }
+  .view[hidden] { display: none; }
+
+  .view-head { display: flex; align-items: flex-end; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+  .view-head h1 { font-size: 22px; font-weight: 650; letter-spacing: -.01em; }
+  .view-head .sub { color: var(--dim); font-size: 13px; max-width: 56ch; }
+  .badge-live {
+    margin-left: auto; font: 500 10px var(--mono); letter-spacing: .08em;
+    color: var(--accent); border: 1px solid rgba(99,217,165,.35); border-radius: 20px;
+    padding: 4px 10px; white-space: nowrap;
+  }
+  .badge-sample {
+    font: 600 9px var(--mono); letter-spacing: .14em; color: var(--gold);
+    border: 1px solid rgba(217,180,106,.4); border-radius: 4px; padding: 2px 6px;
+    vertical-align: middle; margin-left: 8px; white-space: nowrap;
+  }
+  .badge-state {
+    font: 600 9px var(--mono); letter-spacing: .1em; border-radius: 4px;
+    padding: 2px 7px; white-space: nowrap;
+  }
+  .badge-state.running { color: var(--accent); background: rgba(99,217,165,.12); }
+  .badge-state.queued { color: var(--amber); background: rgba(217,168,94,.12); }
+  .badge-state.awaiting { color: var(--gold); background: rgba(217,180,106,.12); }
+  .badge-state.done { color: var(--dim); background: rgba(255,255,255,.06); }
+  .badge-state.scheduled { color: #8fb3c9; background: rgba(143,179,201,.1); }
+
+  /* KPI strip */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 22px; }
+  .kpi { background: var(--panel); padding: 12px 14px; }
+  .kpi small { display: block; font: 500 9px var(--mono); letter-spacing: .16em; color: var(--faint); margin-bottom: 5px; }
+  .kpi strong { font: 600 19px var(--mono); letter-spacing: -.02em; }
+  .kpi .hint { display: block; font: 400 10.5px var(--mono); color: var(--dim); margin-top: 2px; }
+
+  /* timeline */
+  .board { display: grid; grid-template-columns: 1fr 300px; gap: 22px; align-items: start; }
+  .tl-group { margin-bottom: 22px; }
+  .tl-title {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    font: 600 10px var(--mono); letter-spacing: .18em; color: var(--dim);
+  }
+  .tl-title .count { color: var(--faint); font-weight: 400; }
+  .tl-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .run-card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px;
+    transition: border-color .15s ease;
+  }
+  .run-card:hover { border-color: var(--line-strong); }
+  .run-card.is-selected { border-color: rgba(99,217,165,.4); }
+  .run-route {
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    font: 400 11px var(--mono); color: var(--dim); margin-bottom: 8px;
+  }
+  .run-route .arrow { color: var(--faint); }
+  .run-route .who { color: var(--ink-2); }
+  .run-route .model { color: var(--accent); }
+  .run-route .spacer { flex: 1; }
+  .run-objective { font-size: 14px; font-weight: 600; margin-bottom: 10px; letter-spacing: -.005em; }
+  .run-steps { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .step {
+    display: flex; align-items: center; gap: 6px; font: 400 10.5px var(--mono);
+    color: var(--dim); border: 1px solid var(--line); border-radius: 20px; padding: 3px 9px;
+  }
+  .step .s { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+  .step.is-done .s { background: var(--accent); }
+  .step.is-active { color: var(--ink-2); border-color: var(--line-strong); }
+  .step.is-active .s { background: var(--amber); animation: stepPulse 1.6s ease-in-out infinite; }
+  .run-evidence { display: flex; align-items: center; gap: 14px; font: 400 10.5px var(--mono); color: var(--faint); }
+  .run-evidence .chip { color: var(--ink-2); }
+  @keyframes stepPulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  @media (prefers-reduced-motion: reduce) { .step.is-active .s { animation: none; } }
+
+  .empty {
+    border: 1px dashed var(--line-strong); border-radius: 12px; padding: 18px;
+    color: var(--dim); font-size: 13px; margin-bottom: 10px; background: rgba(255,255,255,.012);
+  }
+  .empty b { color: var(--ink-2); font-weight: 600; }
+  .empty span { color: var(--faint); }
+
+  /* context rail */
+  .context-rail { position: sticky; top: 0; }
+  .context-panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .context-panel h3 { font: 600 10px var(--mono); letter-spacing: .16em; color: var(--dim); margin-bottom: 10px; }
+  .context-row { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+  .context-row:last-child { border-bottom: 0; }
+  .context-row span { color: var(--dim); }
+  .context-row strong { font: 400 12px var(--mono); color: var(--ink-2); text-align: right; }
+
+  /* ---------- memory view ---------- */
+  .memory-grid { display: grid; grid-template-columns: 1fr 320px; gap: 22px; align-items: start; }
+  .mem-stage { position: relative; background: var(--bg-deep); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  #mem-canvas { display: block; width: 100%; height: 62vh; min-height: 480px; cursor: grab; }
+  #mem-canvas:active { cursor: grabbing; }
+  .mem-legend {
+    position: absolute; left: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 5px;
+    background: rgba(10,13,12,.82); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    font: 400 10.5px var(--mono); color: var(--dim);
+  }
+  .mem-legend .item { display: flex; align-items: center; gap: 8px; }
+  .mem-legend .swatch { width: 8px; height: 8px; border-radius: 50%; }
+  .mem-controls { position: absolute; right: 14px; top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .mem-controls button {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line-strong);
+    background: rgba(10,13,12,.82); color: var(--ink-2); font-size: 14px;
+    transition: border-color .12s ease, color .12s ease;
+  }
+  .mem-controls button:hover { border-color: var(--dim); color: var(--ink); }
+  .mem-honesty { margin: 12px 0 0; font: 400 11px/1.55 var(--mono); color: var(--faint); }
+
+  .dock {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px;
+    position: sticky; top: 0;
+  }
+  .dock h3 { font: 600 10px var(--mono); letter-spacing: .16em; color: var(--dim); margin-bottom: 8px; }
+  .dock .empty-hint { color: var(--faint); font-size: 12.5px; }
+  .dock dl { display: grid; grid-template-columns: 92px 1fr; gap: 7px 10px; font-size: 12.5px; }
+  .dock dt { color: var(--faint); font: 400 10.5px var(--mono); padding-top: 1px; }
+  .dock dd { color: var(--ink-2); word-break: break-word; }
+  .dock .fact-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .dock .fact-note { font-size: 12px; color: var(--dim); margin-bottom: 10px; }
+
+  @media (max-width: 1100px) {
+    .shell { grid-template-columns: 1fr; }
+    .rail { display: none; }
+    .board, .memory-grid { grid-template-columns: 1fr; }
+    .context-rail, .dock { position: static; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand"><div class="brand-mark">A</div><div><small>LOCAL · STUDIO</small><strong>AGIOS</strong></div></div>
+    <div class="rail-group">
+      <p class="rail-label">WORKSPACE</p>
+      <button class="rail-item is-active" data-view="board"><span class="glyph">⌂</span>Mission Board<kbd>1</kbd></button>
+      <button class="rail-item" data-view="memory"><span class="glyph">✦</span>Memory<kbd>2</kbd></button>
+      <button class="rail-item" data-view="systems"><span class="glyph">▣</span>Systems</button>
+      <button class="rail-item" data-view="artifacts"><span class="glyph">▥</span>Artifacts</button>
+    </div>
+    <div class="rail-group">
+      <p class="rail-label">CONTROL</p>
+      <button class="rail-item" data-view="settings"><span class="glyph">⚙</span>Settings</button>
+    </div>
+    <div class="rail-spacer"></div>
+    <div class="runtime">
+      <div><span class="dot"></span><strong id="runtime-state">Hermes runtime</strong></div>
+      <p id="runtime-detail">connecting…</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb"><span>Ruben's Portfolio</span><b>/</b><strong id="crumb-view">Mission Board</strong></div>
+      <div class="command-bar"><span>⌕</span><span>Search or start a directive</span><kbd>Ctrl K</kbd></div>
+      <button class="btn-ghost" data-view="systems">All systems</button>
+      <button class="btn-primary">New directive ＋</button>
+    </header>
+
+    <section class="view" id="view-board">
+      <div class="view-head">
+        <div>
+          <h1>Mission Board</h1>
+          <p class="sub">Every real run of the operating system, in one work feed. Nothing here is decorative: a card appears only when work exists.</p>
+        </div>
+        <span class="badge-live" id="board-badge">LIVE SNAPSHOT</span>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="board">
+        <div id="timeline"></div>
+        <div class="context-rail" id="context-rail"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-memory" hidden>
+      <div class="view-head">
+        <div>
+          <h1>Memory</h1>
+          <p class="sub">The shared memory of every worker, drawn as it really is. Motion happens only when a fact is written or read. Click a node to open its real record.</p>
+        </div>
+        <span class="badge-live" id="memory-badge">LIVE SNAPSHOT</span>
+      </div>
+
+      <div class="memory-grid">
+        <div>
+          <div class="mem-stage">
+            <canvas id="mem-canvas"></canvas>
+            <div class="mem-controls">
+              <button id="zoom-in" title="Zoom in">+</button>
+              <button id="zoom-out" title="Zoom out">−</button>
+              <button id="mem-home" title="Reset view">⌂</button>
+              <button id="mem-pause" title="Pause motion">❚❚</button>
+            </div>
+            <div class="mem-legend" id="mem-legend"></div>
+          </div>
+          <p class="mem-honesty" id="mem-honesty"></p>
+        </div>
+        <div class="dock" id="dock"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-systems" hidden>
+      <div class="view-head"><div><h1>Systems</h1><p class="sub" id="systems-sub">Registered runtimes, models and integrations of the operating system.</p></div><span class="badge-live">LIVE SNAPSHOT</span></div>
+      <div id="systems-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;"></div>
+    </section>
+
+    <section class="view" id="view-artifacts" hidden>
+      <div class="view-head"><div><h1>Artifacts</h1><p class="sub">Reviewed outputs of completed work. Empty until the first run produces a kept artifact.</p></div><span class="badge-live">LIVE SNAPSHOT</span></div>
+      <div class="empty"><b>No artifacts yet.</b> <span>Completed runs with kept outputs will appear here with their evidence chain.</span></div>
+    </section>
+
+    <section class="view" id="view-settings" hidden>
+      <div class="view-head"><div><h1>Settings</h1><p class="sub">Governance, routes and profile health. Unchanged from the current AGIOS design.</p></div><span class="badge-live">LIVE SNAPSHOT</span></div>
+      <div class="empty"><b>Settings view is out of scope for this preview.</b> <span>It stays as it is in AGIOS today.</span></div>
+    </section>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* XSS note: all dynamic strings rendered into innerHTML below pass through esc().
+   Status classes come from a fixed whitelist map, not raw data. Local-only preview. */
+/* ============ data loading ============ */
+let REAL = null;                       // real AGIOS snapshot
+const SAMPLE = {                       // preview-only demo store, never mixed into real data
+  badge: "PREVIEW SAMPLE",
+  runs: [
+    {
+      id: "sample-1", status: "running", started: "12m ago",
+      route: [
+        { who: "Ari Vale", kind: "agent" },
+        { who: "Executive Operations", kind: "dept" },
+        { who: "Mira Stone", kind: "agent" },
+        { who: "gpt-5.6-terra", kind: "model" },
+      ],
+      objective: "Improve the customer dashboard: research the best motion system, build it safely, and have an independent critic review the result.",
+      steps: [
+        { label: "Research sources", state: "done" },
+        { label: "Route approved", state: "done" },
+        { label: "Build in workspace", state: "active" },
+        { label: "Independent review", state: "todo" },
+      ],
+      evidence: { memory: 3, skills: 2, artifacts: 0, approval: "exact-approval bound" },
+    },
+    {
+      id: "sample-2", status: "awaiting", started: "48m ago",
+      route: [
+        { who: "Ari Vale", kind: "agent" },
+        { who: "Research & Intelligence", kind: "dept" },
+        { who: "Nova Reed", kind: "agent" },
+        { who: "nvidia/nemotron-3-super-120b-a12b", kind: "model" },
+      ],
+      objective: "Weekly competitor intelligence digest: three sources, verified citations, no claims without a link.",
+      steps: [
+        { label: "Collect sources", state: "done" },
+        { label: "Verify citations", state: "done" },
+        { label: "Draft digest", state: "done" },
+        { label: "Owner approval", state: "active" },
+      ],
+      evidence: { memory: 5, skills: 1, artifacts: 1, approval: "waiting for owner" },
+    },
+    {
+      id: "sample-3", status: "done", started: "2h ago", ended: "1h ago",
+      route: [
+        { who: "Ari Vale", kind: "agent" },
+        { who: "Engineering", kind: "dept" },
+        { who: "Calder Forge", kind: "agent" },
+        { who: "gpt-5.6-sol", kind: "model" },
+      ],
+      objective: "Repair the finance plugin month-anchor bug and re-run the full test gate.",
+      steps: [
+        { label: "Reproduce bug", state: "done" },
+        { label: "Patch plugin_api.py", state: "done" },
+        { label: "Run 87 tests", state: "done" },
+        { label: "Commit", state: "done" },
+      ],
+      evidence: { memory: 1, skills: 2, artifacts: 1, approval: "completed · reviewed" },
+    },
+  ],
+  memory: {
+    categories: {
+      preferences: { label: "Preferences", color: "#63d9a5", count: 5 },
+      projects:    { label: "Projects",    color: "#8fb3c9", count: 4 },
+      tools:       { label: "Tools",       color: "#d9a85e", count: 3 },
+      general:     { label: "General",     color: "#b98ec9", count: 2 },
+    },
+    facts: [
+      { t: "Prefers direct answers over verbose reports", c: "preferences", scope: "owner", trust: 0.9 },
+      { t: "Wants OS numbers traceable to a real source", c: "preferences", scope: "owner", trust: 0.9 },
+      { t: "English UI, Armenian native", c: "preferences", scope: "owner", trust: 0.8 },
+      { t: "8 hours/day availability window", c: "preferences", scope: "owner", trust: 0.8 },
+      { t: "Voice: natural, cost-conscious, privacy-first", c: "preferences", scope: "owner", trust: 0.7 },
+      { t: "Perfume store: Phase 1 Armenian IE, decanting gate", c: "projects", scope: "perfume-business", trust: 0.8 },
+      { t: "KlarerNorden: concept D approved, section-by-section", c: "projects", scope: "klarer-norden", trust: 0.8 },
+      { t: "AGIOS: mission-board redesign approved", c: "projects", scope: "agios", trust: 0.7 },
+      { t: "Freelance agency: daily opportunity scout active", c: "projects", scope: "freelance-agency", trust: 0.7 },
+      { t: "Fish Audio TTS active via local plugin", c: "tools", scope: "hermes", trust: 0.8 },
+      { t: "Graphify integrated as codebase-intelligence skill", c: "tools", scope: "hermes", trust: 0.8 },
+      { t: "Wake word: hey hermes, channel-aware capture", c: "tools", scope: "hermes", trust: 0.7 },
+      { t: "Works from Yerevan, Asia/Yerevan timezone", c: "general", scope: "owner", trust: 0.9 },
+      { t: "Delegation routes use local Qwen where private", c: "general", scope: "agios", trust: 0.8 },
+    ],
+  },
+};
+
+(async function boot() {
+  try {
+    const live = await fetch("http://127.0.0.1:9120/api/v1/command-center", { mode: "cors" });
+    if (live.ok) {
+      REAL = await live.json();
+      setBadges("LIVE", "connected to 127.0.0.1:9120");
+    }
+  } catch { /* cross-origin from preview host; fall back to snapshot */ }
+  if (!REAL) {
+    try {
+      const snapshot = await fetch("snapshot.json");
+      REAL = (await snapshot.json()).command_center;
+      setBadges("LIVE SNAPSHOT", "real data captured " + new Date().toLocaleString());
+    } catch {
+      REAL = null;
+      setBadges("OFFLINE", "no live API and no snapshot; sample data only");
+    }
+  }
+  renderBoard();
+  renderMemory();
+  renderSystems();
+})();
+
+function setBadges(text, detail) {
+  document.querySelectorAll(".badge-live").forEach((el) => (el.textContent = text));
+  const rt = document.getElementById("runtime-state");
+  const rd = document.getElementById("runtime-detail");
+  if (REAL) {
+    rt.textContent = REAL.runtime.gateway_running ? "Hermes online" : "Hermes standing by";
+    rd.textContent = detail + " · " + REAL.summary.available_agents + " agents registered";
+  } else {
+    rt.textContent = "Hermes runtime";
+    rd.textContent = detail;
+  }
+}
+
+/* ============ board ============ */
+function renderBoard() {
+  const s = REAL ? REAL.summary : { available_agents: 7, agents: 9, scheduled_jobs: 4, pending_approvals: 0, shared_skills: 163 };
+  document.getElementById("kpis").innerHTML = [
+    kpi("WORKERS READY", s.available_agents + " / " + s.agents, "registered agents"),
+    kpi("IN FLIGHT", "0", "no runs right now"),
+    kpi("NEEDS YOU", String(REAL ? REAL.summary.pending_approvals : 0), "approvals waiting"),
+    kpi("SCHEDULED", String(REAL ? REAL.summary.scheduled_jobs : 4), "recurring jobs"),
+    kpi("SHARED SKILLS", String(REAL ? REAL.summary.shared_skills : 163), "available to workers"),
+  ].join("");
+
+  const groups = [];
+  // Real scheduled work (from live snapshot)
+  const schedules = (REAL && REAL.schedules) || [];
+  if (schedules.length) {
+    groups.push({
+      title: "SCHEDULED", note: "real recurring jobs",
+      cards: schedules.map((job) => {
+        const name = job.name || job.id || "Unnamed job";
+        const cron = job.schedule || job.cron || "cron";
+        return `<article class="run-card" data-kind="real">
+          <div class="run-route"><span class="who">${esc(name)}</span><span class="spacer"></span><span class="badge-state scheduled">SCHEDULED</span></div>
+          <div class="run-objective">Runs automatically on its schedule; next result lands on this board.</div>
+          <div class="run-evidence"><span class="chip">${esc(cron)}</span><span>no model work until the job fires</span></div>
+        </article>`;
+      }).join(""),
+    });
+  }
+  // Real run/activity state
+  const activity = REAL && REAL.activity ? REAL.activity : { event_count: 0 };
+  groups.push({
+    title: "TODAY", note: "real runs and events",
+    cards: activity.event_count
+      ? "<div class='empty'><b>Activity exists</b> <span>see live API</span></div>"
+      : `<div class="empty"><b>No runs yet.</b> <span>This board is live and empty because no directive has run through AGIOS today. Send one and it appears here, step by step.</span></div>`,
+  });
+  // Preview samples (badged, separate store)
+  groups.push({
+    title: "DESIGN PREVIEW", note: "sample cards, not real work",
+    cards: SAMPLE.runs.map((run) => runCard(run)).join(""),
+  });
+
+  document.getElementById("timeline").innerHTML = groups.map((g) => `
+    <section class="tl-group">
+      <div class="tl-title">${esc(g.title)}<span class="count">· ${esc(g.note)}</span></div>
+      ${g.cards}
+    </section>`).join("");
+
+  renderContext(null);
+  document.querySelectorAll(".run-card[data-sample]").forEach((card) => {
+    card.addEventListener("click", () => selectRun(card));
+  });
+}
+
+function runCard(run) {
+  const route = run.route.map((r) => `<span class="who">${esc(r.who)}</span>`).join('<span class="arrow">→</span>');
+  const stateLabel = { running: "RUNNING", awaiting: "NEEDS YOU", done: "COMPLETED", queued: "QUEUED" }[run.status];
+  const steps = run.steps.map((st) =>
+    `<span class="step ${st.state === "done" ? "is-done" : st.state === "active" ? "is-active" : ""}"><span class="s"></span>${esc(st.label)}</span>`).join("");
+  const evidence = [
+    run.evidence.memory ? `<span class="chip">memory ${run.evidence.memory} read</span>` : "",
+    run.evidence.skills ? `<span class="chip">${run.evidence.skills} skills</span>` : "",
+    run.evidence.artifacts ? `<span class="chip">${run.evidence.artifacts} artifact</span>` : "",
+  ].join("");
+  return `<article class="run-card" data-sample="${run.id}">
+    <div class="run-route">${route}<span class="spacer"></span><span class="badge-sample">PREVIEW SAMPLE</span><span class="badge-state ${run.status}">${stateLabel}</span><span>${run.started}</span></div>
+    <div class="run-objective">${esc(run.objective)}</div>
+    <div class="run-steps">${steps}</div>
+    <div class="run-evidence">${evidence}<span>${esc(run.evidence.approval)}</span></div>
+  </article>`;
+}
+
+function selectRun(card) {
+  document.querySelectorAll(".run-card").forEach((c) => c.classList.remove("is-selected"));
+  card.classList.add("is-selected");
+  renderContext(card.dataset.sample);
+}
+
+function renderContext(sampleId) {
+  const rail = document.getElementById("context-rail");
+  if (!sampleId) {
+    rail.innerHTML = `<div class="context-panel"><h3>CONTEXT</h3><p class="empty-hint" style="color:var(--faint);font-size:12.5px">Select a run to see what it read from shared memory, which skills it used, and what evidence it produced.</p></div>`;
+    return;
+  }
+  const run = SAMPLE.runs.find((r) => r.id === sampleId);
+  rail.innerHTML = `
+    <div class="context-panel"><h3>ROUTE</h3>${run.route.map((r) => `<div class="context-row"><span>${r.kind}</span><strong>${esc(r.who)}</strong></div>`).join("")}</div>
+    <div class="context-panel"><h3>EVIDENCE</h3>
+      <div class="context-row"><span>Memory facts read</span><strong>${run.evidence.memory}</strong></div>
+      <div class="context-row"><span>Skills used</span><strong>${run.evidence.skills}</strong></div>
+      <div class="context-row"><span>Artifacts kept</span><strong>${run.evidence.artifacts}</strong></div>
+      <div class="context-row"><span>Approval</span><strong>${esc(run.evidence.approval)}</strong></div>
+    </div>
+    <div class="context-panel"><h3>STATUS</h3>
+      <div class="context-row"><span>State</span><strong>${esc(run.status)}</strong></div>
+      <div class="context-row"><span>Started</span><strong>${esc(run.started)}</strong></div>
+    </div>`;
+}
+
+function kpi(label, value, hint) { return `<div class="kpi"><small>${label}</small><strong>${value}</strong><span class="hint">${hint}</span></div>`; }
+
+/* ============ systems ============ */
+function renderSystems() {
+  const grid = document.getElementById("systems-grid");
+  if (!REAL) { grid.innerHTML = "<div class='empty'><b>Snapshot unavailable.</b></div>"; return; }
+  const live = new Set(["hermes", "codex", "opencode", "ollama"]);
+  grid.innerHTML = REAL.systems.map((sys) => {
+    const isLive = live.has(sys.id) || sys.status === "live" || sys.status === "detected";
+    return `<div class="run-card" style="margin:0"><div class="run-route"><span class="who">${esc(sys.name)}</span><span class="spacer"></span><span class="badge-state ${isLive ? "running" : "done"}">${esc(String(sys.status).toUpperCase())}</span></div>
+      <div class="run-objective" style="font-size:13px">${esc(sys.description || "")}</div></div>`;
+  }).join("");
+}
+
+/* ============ memory graph ============ */
+const memState = { nodes: [], links: [], view: { x: 0, y: 0, z: 1 }, paused: false, selected: null, dragging: false, dragStart: null, reduced: matchMedia("(prefers-reduced-motion: reduce)").matches, pulses: [] };
+const CAT = SAMPLE.memory.categories;
+
+function buildMemoryData() {
+  const nodes = [];
+  const links = [];
+  const root = { id: "root", kind: "root", label: "Shared memory", c: null, x: 0, y: 0, r: 13, sample: false };
+  nodes.push(root);
+  const hubPos = { preferences: 0, projects: 1, tools: 2, general: 3 };
+  const hubs = {};
+  Object.entries(CAT).forEach(([key, cat]) => {
+    const ang = (hubPos[key] / 4) * Math.PI * 2 - Math.PI / 2;
+    const hub = { id: "hub-" + key, kind: "hub", label: cat.label, c: key, x: Math.cos(ang) * 190, y: Math.sin(ang) * 190, r: 9, sample: true, realCount: 0 };
+    nodes.push(hub);
+    hubs[key] = hub;
+    links.push({ s: "root", t: hub.id });
+  });
+  SAMPLE.memory.facts.forEach((f, i) => {
+    const hub = hubs[f.c];
+    const ang = (i / (CAT[f.c].count + 1)) * Math.PI * 2 + hubPos[f.c];
+    const dist = 70 + (i % 3) * 26;
+    const node = { id: "fact-" + i, kind: "fact", label: f.t, c: f.c, scope: f.scope, trust: f.trust, x: hub.x + Math.cos(ang) * dist, y: hub.y + Math.sin(ang) * dist, r: 3.6 + f.trust * 2.4, sample: true };
+    nodes.push(node);
+    links.push({ s: hub.id, t: node.id });
+  });
+  return { nodes, links };
+}
+
+function renderMemory() {
+  const data = buildMemoryData();
+  memState.nodes = data.nodes;
+  memState.links = data.links;
+  const canvas = document.getElementById("mem-canvas");
+  const ctx = canvas.getContext("2d");
+  memState.ctx = ctx;
+
+  function resize() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    memState.w = rect.width;
+    memState.h = rect.height;
+    memState.center = { x: rect.width / 2, y: rect.height / 2 };
+    draw();
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  // settle physics once (initial layout only - this is an event, not idle motion)
+  settle(1200);
+
+  canvas.addEventListener("pointerdown", (e) => {
+    memState.dragging = true;
+    memState.dragStart = { x: e.clientX, y: e.clientY, vx: memState.view.x, vy: memState.view.y };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!memState.dragging) { hover(e); return; }
+    memState.view.x = memState.dragStart.vx + (e.clientX - memState.dragStart.x);
+    memState.view.y = memState.dragStart.vy + (e.clientY - memState.dragStart.y);
+    draw();
+  });
+  canvas.addEventListener("pointerup", () => { memState.dragging = false; });
+  canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    memState.view.z = Math.min(3, Math.max(0.5, memState.view.z * (e.deltaY > 0 ? 0.9 : 1.1)));
+    draw();
+  }, { passive: false });
+  canvas.addEventListener("click", (e) => { if (!memState.dragging) clickNode(e); });
+
+  document.getElementById("zoom-in").onclick = () => { memState.view.z = Math.min(3, memState.view.z * 1.25); draw(); };
+  document.getElementById("zoom-out").onclick = () => { memState.view.z = Math.max(0.5, memState.view.z * 0.8); draw(); };
+  document.getElementById("mem-home").onclick = () => { memState.view = { x: 0, y: 0, z: 1 }; memState.selected = null; draw(); renderDock(); };
+  document.getElementById("mem-pause").onclick = (e) => { memState.paused = !memState.paused; e.currentTarget.textContent = memState.paused ? "▶" : "❚❚"; };
+
+  document.getElementById("mem-legend").innerHTML =
+    `<div class="item"><span class="swatch" style="background:#63d9a5"></span>Preferences · 0 real</div>` +
+    `<div class="item"><span class="swatch" style="background:#8fb3c9"></span>Projects · 0 real</div>` +
+    `<div class="item"><span class="swatch" style="background:#d9a85e"></span>Tools · 0 real</div>` +
+    `<div class="item"><span class="swatch" style="background:#b98ec9"></span>General · 0 real</div>` +
+    `<div class="item"><span class="swatch" style="background:#e6ede9;opacity:.5"></span>Shared memory root</div>` +
+    `<div class="item" style="color:var(--gold);margin-top:4px">gold ring = preview sample</div>`;
+
+  const real = REAL ? (REAL.operational && REAL.operational.shared_memory ? REAL.operational.shared_memory : {}) : {};
+  const factCount = real.fact_count || 0;
+  document.getElementById("mem-honesty").textContent =
+    "Real shared memory: " + factCount + " durable scoped facts · provider healthy. " +
+    "The graph draws real structure only; the gold-ringed cluster is clearly badged preview content showing the populated design. " +
+    "Memory contents stay private - nodes show category, scope and trust, never the fact text.";
+
+  renderDock();
+  draw();
+}
+
+function settle(ms) {
+  const t0 = performance.now();
+  const step = () => {
+    const t = (performance.now() - t0) / ms;
+    if (t >= 1) { draw(); return; }
+    // one bounded relaxation pass per frame
+    for (let i = 0; i < 2; i++) {
+      memState.nodes.forEach((a) => {
+        memState.nodes.forEach((b) => {
+          if (a === b) return;
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.max(24, Math.hypot(dx, dy));
+          const f = 1400 / (d * d);
+          a.x += (dx / d) * f; a.y += (dy / d) * f;
+        });
+      });
+      memState.links.forEach((l) => {
+        const a = memState.nodes.find((n) => n.id === l.s);
+        const b = memState.nodes.find((n) => n.id === l.t);
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const target = b.kind === "fact" ? 82 : 190;
+        const f = (d - target) * 0.03;
+        a.x += (dx / d) * f * 0.5; a.y += (dy / d) * f * 0.5;
+        b.x -= (dx / d) * f * 0.5; b.y -= (dy / d) * f * 0.5;
+      });
+    }
+    draw();
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function project(n) {
+  const z = memState.view.z;
+  const cx = memState.center.x + memState.view.x;
+  const cy = memState.center.y + memState.view.y;
+  return { x: cx + n.x * z, y: cy + n.y * z, r: Math.max(1.2, n.r * z) };
+}
+
+function draw() {
+  const { ctx, w, h } = memState;
+  if (!ctx) return;
+  ctx.clearRect(0, 0, w, h);
+  // soft backdrop
+  const g = ctx.createRadialGradient(memState.center.x, memState.center.y, 20, memState.center.x, memState.center.y, Math.max(w, h) * 0.7);
+  g.addColorStop(0, "rgba(99,217,165,.05)");
+  g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+
+  const z = memState.view.z;
+  // links
+  ctx.lineWidth = Math.max(0.6, 0.9 * z);
+  memState.links.forEach((l) => {
+    const a = project(memState.nodes.find((n) => n.id === l.s));
+    const b = project(memState.nodes.find((n) => n.id === l.t));
+    ctx.strokeStyle = "rgba(140,175,160,.16)";
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  });
+
+  // pulses (event-driven only: real write or selection)
+  if (!memState.paused && !memState.reduced) {
+    memState.pulses = memState.pulses.filter((p) => p.t < 1);
+    memState.pulses.forEach((p) => {
+      p.t += 0.02;
+      const a = project(p.a), b = project(p.b);
+      const x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
+      ctx.beginPath();
+      ctx.arc(x, y, 2.6 + (1 - p.t) * 2, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(99,217,165," + (1 - p.t) + ")";
+      ctx.fill();
+    });
+    if (memState.pulses.length) requestAnimationFrame(draw);
+  }
+
+  // nodes
+  memState.nodes.forEach((n) => {
+    const p = project(n);
+    if (p.x < -40 || p.x > w + 40 || p.y < -40 || p.y > h + 40) return;
+    const showLabel = n.kind === "root" || z > 0.95 || n === memState.selected;
+    const selected = n === memState.selected;
+    if (n.kind === "fact") {
+      const color = CAT[n.c].color;
+      if (n.sample) {
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 2.6, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(217,180,106,.5)"; ctx.lineWidth = 1; ctx.stroke();
+      }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = selected ? "#ffffff" : color;
+      ctx.globalAlpha = selected ? 1 : 0.92;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    } else if (n.kind === "hub") {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 8, 0, Math.PI * 2);
+      const halo = ctx.createRadialGradient(p.x, p.y, p.r, p.x, p.y, p.r + 12);
+      halo.addColorStop(0, hexA(CAT[n.c].color, 0.22));
+      halo.addColorStop(1, hexA(CAT[n.c].color, 0));
+      ctx.fillStyle = halo; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#141a17"; ctx.fill();
+      ctx.strokeStyle = CAT[n.c].color; ctx.lineWidth = 1.2; ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 6, 0, Math.PI * 2);
+      const halo = ctx.createRadialGradient(p.x, p.y, p.r, p.x, p.y, p.r + 10);
+      halo.addColorStop(0, "rgba(99,217,165,.18)");
+      halo.addColorStop(1, "rgba(99,217,165,0)");
+      ctx.fillStyle = halo; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#0e1512"; ctx.fill();
+      ctx.strokeStyle = "#63d9a5"; ctx.lineWidth = 1.4; ctx.stroke();
+    }
+    if (showLabel) {
+      ctx.font = (n.kind === "root" ? "600 11px" : "400 10px") + ' "Cascadia Mono", Consolas, monospace';
+      ctx.textAlign = "center";
+      ctx.fillStyle = n === memState.selected ? "#ffffff" : "rgba(214,228,221,.72)";
+      ctx.fillText(shorten(n.label, n.kind === "root" ? 22 : 20), p.x, p.y - p.r - 7);
+    }
+  });
+
+  // semantic zoom badge
+  ctx.font = '500 9px "Cascadia Mono", Consolas, monospace';
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(140,160,150,.6)";
+  const level = z < 0.9 ? "OVERVIEW" : z < 1.6 ? "FOCUS" : "DETAIL";
+  ctx.fillText("zoom " + z.toFixed(2) + " · " + level, 14, h - 14);
+}
+
+function hexA(hex, a) {
+  const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+  return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+function shorten(s, n) { return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+
+function hover(e) {
+  const rect = document.getElementById("mem-canvas").getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const hit = memState.nodes.find((n) => {
+    const p = project(n);
+    return Math.hypot(x - p.x, y - p.y) < Math.max(10, p.r + 6);
+  });
+  document.getElementById("mem-canvas").style.cursor = hit ? "pointer" : "grab";
+}
+
+function clickNode(e) {
+  const rect = document.getElementById("mem-canvas").getBoundingClientRect();
+  const x = e.clientX - rect.left, y = e.clientY - rect.top;
+  const hit = memState.nodes.find((n) => {
+    const p = project(n);
+    return Math.hypot(x - p.x, y - p.y) < Math.max(10, p.r + 6);
+  });
+  memState.selected = hit || null;
+  if (hit) {
+    const root = memState.nodes.find((n) => n.id === "root");
+    memState.pulses.push({ a: root, b: hit, t: 0 });   // one real, bounded pulse: selection event
+    if (!memState.paused && !memState.reduced) requestAnimationFrame(draw);
+  }
+  renderDock();
+  draw();
+}
+
+function renderDock() {
+  const dock = document.getElementById("dock");
+  const n = memState.selected;
+  if (!n) {
+    dock.innerHTML = `<h3>SELECTED FACT</h3><p class="empty-hint">Click a node to inspect it. Real nodes open real records; sample nodes are clearly marked.</p>`;
+    return;
+  }
+  if (n.kind === "root") {
+    const real = REAL ? (REAL.operational && REAL.operational.shared_memory ? REAL.operational.shared_memory : {}) : {};
+    dock.innerHTML = `<h3>SHARED MEMORY</h3><div class="fact-title">Shared memory</div>
+      <dl><dt>Status</dt><dd>${esc(real.status || "healthy")}</dd>
+      <dt>Real facts</dt><dd>${real.fact_count || 0}</dd>
+      <dt>Scopes</dt><dd>${Object.keys(real.scopes || {}).length || 0}</dd></dl>`;
+    return;
+  }
+  if (n.kind === "hub") {
+    dock.innerHTML = `<h3>CATEGORY</h3><div class="fact-title">${esc(n.label)}</div>
+      <dl><dt>Real facts</dt><dd>0</dd><dt>Sample facts</dt><dd>${CAT[n.c].count}</dd>
+      <dt>Contents</dt><dd>never shown here - privacy boundary</dd></dl>`;
+    return;
+  }
+  dock.innerHTML = `<h3>FACT <span class="badge-sample">PREVIEW SAMPLE</span></h3>
+    <div class="fact-title">${esc(n.label)}</div>
+    <p class="fact-note">Real records open the actual fact text with source and history. This sample stands in for that layout.</p>
+    <dl><dt>Category</dt><dd>${esc(CAT[n.c].label)}</dd>
+      <dt>Scope</dt><dd>${esc(n.scope)}</dd>
+      <dt>Trust</dt><dd>${n.trust.toFixed(1)}</dd>
+      <dt>Entity</dt><dd>${esc(n.id)}</dd></dl>`;
+}
+
+/* ============ nav ============ */
+document.querySelectorAll("[data-view]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const view = btn.dataset.view;
+    document.querySelectorAll(".rail-item").forEach((r) => r.classList.toggle("is-active", r.dataset.view === view));
+    document.querySelectorAll(".view").forEach((v) => (v.hidden = v.id !== "view-" + view));
+    document.getElementById("crumb-view").textContent =
+      { board: "Mission Board", memory: "Memory", systems: "Systems", artifacts: "Artifacts", settings: "Settings" }[view];
+  });
+});
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+</script>
+</body>
+</html>
