@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "system": {
+    "id": "agios",
+    "name": "Agentic Intelligence Operating System",
+    "event_schema_version": 1,
+    "default_runtime": "hermes"
+  },
+  "portfolio": {
+    "id": "ruben-portfolio",
+    "name": "Ruben's Portfolio",
+    "owner": "Ruben Martirosyan",
+    "timezone": "Asia/Yerevan",
+    "home_currency": "USD"
+  },
+  "data_classes": {
+    "public": {
+      "rank": 0,
+      "model_access": "allowed",
+      "external_policy": "allowed"
+    },
+    "internal": {
+      "rank": 1,
+      "model_access": "allowed",
+      "external_policy": "trusted-only"
+    },
+    "private_business": {
+      "rank": 2,
+      "model_access": "allowed",
+      "external_policy": "explicit-approval"
+    },
+    "customer_restricted": {
+      "rank": 3,
+      "model_access": "allowed",
+      "external_policy": "explicit-approval"
+    },
+    "credential": {
+      "rank": 4,
+      "model_access": "denied",
+      "external_policy": "denied"
+    }
+  },
+  "capabilities": {
+    "coordinate": { "risk": "low" },
+    "delegate": { "risk": "medium" },
+    "research_web": { "risk": "medium" },
+    "read_workspace": { "risk": "medium" },
+    "write_workspace": { "risk": "medium" },
+    "run_tests": { "risk": "medium" },
+    "review": { "risk": "low" },
+    "read_memory": { "risk": "medium" },
+    "propose_memory": { "risk": "medium" },
+    "request_approval": { "risk": "low" },
+    "external_message": { "risk": "high", "approval": "exact-action" },
+    "deploy": { "risk": "high", "approval": "exact-action" },
+    "financial_action": { "risk": "critical", "approval": "transaction-specific" }
+  },
+  "agents": [
+    {
+      "id": "default",
+      "name": "Ari Vale",
+      "role": "chief-of-staff",
+      "profession": "AI Chief of Staff",
+      "seniority": "Principal",
+      "experience": "12 years equivalent operating brief",
+      "specialties": ["portfolio strategy", "delegation", "governance"],
+      "biography": "Turns the owner's priorities into governed plans, assigns the right department and keeps decisions visible.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "default",
+      "capabilities": ["coordinate", "delegate", "read_memory", "propose_memory", "request_approval"],
+      "workloads": ["architecture", "operations"]
+    },
+    {
+      "id": "manager",
+      "name": "Mira Stone",
+      "role": "project-manager",
+      "profession": "Studio Operations Director",
+      "seniority": "Senior",
+      "experience": "9 years equivalent delivery brief",
+      "specialties": ["program delivery", "resource planning", "client operations"],
+      "biography": "Coordinates multi-studio delivery, translates outcomes into assignments and keeps work moving through review gates.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "manager",
+      "capabilities": ["coordinate", "delegate", "read_workspace", "read_memory", "request_approval"],
+      "workloads": ["operations"]
+    },
+    {
+      "id": "researcher",
+      "name": "Nova Reed",
+      "role": "researcher",
+      "profession": "Research Intelligence Lead",
+      "seniority": "Senior",
+      "experience": "8 years equivalent research brief",
+      "specialties": ["market intelligence", "source verification", "opportunity analysis"],
+      "biography": "Builds evidence-backed intelligence, separates claims from inference and preserves citations for every consequential finding.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "researcher",
+      "capabilities": ["research_web", "read_workspace", "read_memory", "propose_memory"],
+      "workloads": ["research"]
+    },
+    {
+      "id": "builder",
+      "name": "Calder Forge",
+      "role": "builder",
+      "profession": "Principal Software Builder",
+      "seniority": "Principal",
+      "experience": "11 years equivalent engineering brief",
+      "specialties": ["software architecture", "implementation", "test automation"],
+      "biography": "Designs and builds maintainable systems in isolated workspaces, with verification proportionate to risk.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "builder",
+      "capabilities": ["research_web", "read_workspace", "write_workspace", "run_tests"],
+      "workloads": ["coding"]
+    },
+    {
+      "id": "reviewer",
+      "name": "Vera Quinn",
+      "role": "independent-reviewer",
+      "profession": "Quality and Risk Director",
+      "seniority": "Principal",
+      "experience": "10 years equivalent assurance brief",
+      "specialties": ["independent review", "security", "release evidence"],
+      "biography": "Challenges assumptions independently, verifies release evidence and keeps quality judgments separate from implementation pressure.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "reviewer",
+      "capabilities": ["read_workspace", "run_tests", "review"],
+      "workloads": ["review"]
+    },
+    {
+      "id": "codinglocal",
+      "name": "Orin Pike",
+      "role": "private-coding-worker",
+      "profession": "Private Systems Engineer",
+      "seniority": "Senior",
+      "experience": "7 years equivalent local-systems brief",
+      "specialties": ["private code", "local inference", "restricted workspaces"],
+      "biography": "Handles sensitive engineering on local routes when data should remain on the owner's machine.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "codinglocal",
+      "capabilities": ["research_web", "read_workspace", "write_workspace", "run_tests"],
+      "workloads": ["private_coding"]
+    },
+    {
+      "id": "fastworker",
+      "name": "Rowan Swift",
+      "role": "private-general-worker",
+      "profession": "Rapid Operations Specialist",
+      "seniority": "Specialist",
+      "experience": "5 years equivalent operations brief",
+      "specialties": ["fast synthesis", "local operations", "structured handoffs"],
+      "biography": "Completes bounded private operational work quickly and hands uncertain or high-risk decisions back to the owner.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "fastworker",
+      "capabilities": ["read_workspace", "read_memory"],
+      "workloads": ["private_general"]
+    },
+    {
+      "id": "writer",
+      "name": "Sable Quill",
+      "role": "content-writer",
+      "profession": "Growth Copywriter",
+      "seniority": "Senior",
+      "experience": "7 years equivalent writing brief",
+      "specialties": ["positioning", "campaign copy", "channel adaptation"],
+      "biography": "Turns approved briefs into bounded content drafts for social, email, landing, listing and ad channels, and stops for owner review before anything ships.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "writer",
+      "capabilities": ["read_workspace", "read_memory", "request_approval"],
+      "workloads": ["content"]
+    },
+    {
+      "id": "closer",
+      "name": "Elias Meridian",
+      "role": "lead-closer",
+      "profession": "Growth Closer",
+      "seniority": "Senior",
+      "experience": "8 years equivalent sales brief",
+      "specialties": ["lead qualification", "outreach sequencing", "evidence-led closing"],
+      "biography": "Moves captured leads through a staged funnel, attaches completed-run evidence to every close, and never contacts anyone without the owner's exact approval.",
+      "growth_policy": { "mode": "evidence-led", "skill_changes": "proposal-and-owner-approval", "self_review": true },
+      "runtime": "hermes",
+      "profile": "closer",
+      "capabilities": ["read_workspace", "read_memory", "request_approval"],
+      "workloads": ["outreach"]
+    }
+  ],
+  "models": [
+    {
+      "id": "gpt-5.6-sol",
+      "provider": "openai-codex",
+      "location": "external",
+      "trust": "trusted",
+      "cost_status": "included-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    },
+    {
+      "id": "gpt-5.6-terra",
+      "provider": "openai-codex",
+      "location": "external",
+      "trust": "trusted",
+      "cost_status": "included-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "provider": "openai-codex",
+      "location": "external",
+      "trust": "trusted",
+      "cost_status": "included-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "provider": "deepseek",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": ["public", "internal"]
+    },
+    {
+      "id": "nemotron-hosted",
+      "provider": "nvidia",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "unpriced",
+      "allowed_data_classes": ["public"]
+    },
+    {
+      "id": "opencode-free",
+      "provider": "opencode",
+      "location": "external",
+      "trust": "untrusted",
+      "cost_status": "promotional-unpriced",
+      "allowed_data_classes": ["public"]
+    },
+    {
+      "id": "qwen3.5-hermes",
+      "provider": "ollama",
+      "location": "local",
+      "trust": "local",
+      "cost_status": "local-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    },
+    {
+      "id": "ornith-hermes",
+      "provider": "ollama",
+      "location": "local",
+      "trust": "local",
+      "cost_status": "local-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    },
+    {
+      "id": "qwen3-embedding:4b",
+      "provider": "ollama",
+      "location": "local",
+      "trust": "local",
+      "cost_status": "local-unpriced",
+      "allowed_data_classes": ["public", "internal", "private_business", "customer_restricted"]
+    }
+  ],
+  "routes": {
+    "architecture": ["gpt-5.6-sol", "gpt-5.6-terra", "ornith-hermes"],
+    "operations": ["gpt-5.6-terra", "deepseek-v4-flash", "qwen3.5-hermes"],
+    "research": ["nemotron-hosted", "gpt-5.6-terra", "qwen3.5-hermes"],
+    "coding": ["deepseek-v4-flash", "gpt-5.6-sol", "ornith-hermes"],
+    "review": ["gpt-5.6-sol", "gpt-5.6-terra", "ornith-hermes"],
+    "private_coding": ["ornith-hermes"],
+    "private_general": ["qwen3.5-hermes", "ornith-hermes"],
+    "content": ["gpt-5.6-terra", "deepseek-v4-flash", "qwen3.5-hermes"],
+    "outreach": ["gpt-5.6-terra", "deepseek-v4-flash", "qwen3.5-hermes"],
+    "embedding": ["qwen3-embedding:4b"]
+  },
+  "approval_categories": {
+    "external-message": { "binding": "exact-payload-and-destination" },
+    "contract": { "binding": "exact-terms" },
+    "account-change": { "binding": "exact-action" },
+    "deployment": { "binding": "exact-environment-and-artifact" },
+    "payment": { "binding": "exact-transaction" },
+    "trusted-external-data": { "binding": "exact-task-model-and-data-class" }
+  },
+  "runtimes": [
+    { "id": "hermes", "status": "active", "adapter": "supervised-execution" },
+    { "id": "codex", "status": "development-environment", "adapter": "supervised-workspace" },
+    { "id": "openclaw", "status": "planned", "adapter": "planned" },
+    { "id": "cline", "status": "planned", "adapter": "planned" },
+    { "id": "pokee", "status": "planned", "adapter": "planned" }
+  ],
+  "departments": [
+    {
+      "id": "executive-operations",
+      "name": "Executive Operations",
+      "mission": "Priorities, governance, routing, approvals, budgets and portfolio health.",
+      "agent_ids": ["default", "manager"],
+      "skill_bundles": ["supervised-agent-control-plane", "weekly-review-planning"]
+    },
+    {
+      "id": "research-intelligence",
+      "name": "Research & Intelligence",
+      "mission": "Evidence-backed market, opportunity, technology and compliance research.",
+      "agent_ids": ["researcher", "fastworker"],
+      "skill_bundles": ["evidence-driven-research", "regulatory-compliance-research"]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering",
+      "mission": "Plan, build, test and document software in isolated workspaces.",
+      "agent_ids": ["builder", "codinglocal"],
+      "skill_bundles": ["test-driven-development", "systematic-debugging"]
+    },
+    {
+      "id": "quality-security",
+      "name": "Quality & Security",
+      "mission": "Independent verification, risk review and evidence-based release gates.",
+      "agent_ids": ["reviewer"],
+      "skill_bundles": ["requesting-code-review", "ai-tool-safety-review"]
+    },
+    {
+      "id": "design-experience",
+      "name": "Design & Experience",
+      "mission": "Product design, Adobe production, interface systems and visual QA.",
+      "agent_ids": ["manager", "builder", "reviewer"],
+      "skill_bundles": ["figma-mcp-integration", "frontend-design", "design-critique"]
+    },
+    {
+      "id": "growth-marketing",
+      "name": "Growth & Marketing",
+      "mission": "Research, positioning, content, SEO and measured campaign preparation.",
+      "agent_ids": ["manager", "researcher", "fastworker", "reviewer", "writer", "closer"],
+      "skill_bundles": ["design-growth-system", "competitor-news-monitor"]
+    },
+    {
+      "id": "creative-media",
+      "name": "Creative Media",
+      "mission": "Image, video, audio and motion production with provenance and approval gates.",
+      "agent_ids": ["manager", "builder", "reviewer"],
+      "skill_bundles": ["image-generation-orchestration", "motion-animation"]
+    }
+  ],
+  "businesses": [
+    {
+      "id": "main-operations",
+      "name": "Main Operations",
+      "kind": "operations",
+      "status": "active",
+      "mission": "Operate the full portfolio through one governed command system.",
+      "owner_agent_id": "default",
+      "department_ids": ["executive-operations", "quality-security"]
+    },
+    {
+      "id": "software-studio",
+      "name": "Software & Freelance Studio",
+      "kind": "studio",
+      "status": "active",
+      "mission": "Find permitted opportunities and deliver independently reviewed software.",
+      "owner_agent_id": "manager",
+      "department_ids": ["research-intelligence", "engineering", "quality-security"]
+    },
+    {
+      "id": "design-studio",
+      "name": "Design & Adobe Studio",
+      "kind": "studio",
+      "status": "setup",
+      "mission": "Create approved design systems, visual work and production-ready assets.",
+      "owner_agent_id": "manager",
+      "department_ids": ["design-experience", "quality-security"]
+    },
+    {
+      "id": "growth-studio",
+      "name": "Growth & Marketing Studio",
+      "kind": "studio",
+      "status": "planned",
+      "mission": "Turn verified market intelligence into reviewed growth experiments.",
+      "owner_agent_id": "manager",
+      "department_ids": ["research-intelligence", "growth-marketing", "quality-security"]
+    },
+    {
+      "id": "creative-studio",
+      "name": "Creative Media Studio",
+      "kind": "studio",
+      "status": "planned",
+      "mission": "Coordinate image, video, audio and motion production workflows.",
+      "owner_agent_id": "manager",
+      "department_ids": ["creative-media", "design-experience", "quality-security"]
+    },
+    {
+      "id": "armenia-income",
+      "name": "Armenia Income Intelligence",
+      "kind": "research-business",
+      "status": "active",
+      "mission": "Discover legitimate income opportunities available from Armenia.",
+      "owner_agent_id": "researcher",
+      "department_ids": ["research-intelligence", "executive-operations"]
+    },
+    {
+      "id": "perfume-business",
+      "name": "Perfume Business",
+      "kind": "commerce",
+      "status": "discovery",
+      "mission": "Validate a compliant, authentic and low-inventory fragrance sample business.",
+      "owner_agent_id": "researcher",
+      "department_ids": ["research-intelligence", "growth-marketing", "executive-operations"]
+    }
+  ],
+  "integrations": [
+    { "id": "hermes", "name": "Hermes Agent", "kind": "runtime", "status": "connected" },
+    { "id": "ollama", "name": "Ollama", "kind": "model-runtime", "status": "connected" },
+    { "id": "codex", "name": "Codex", "kind": "development-runtime", "status": "connected" },
+    { "id": "figma", "name": "Figma", "kind": "mcp", "status": "connected" },
+    { "id": "stitch", "name": "Stitch", "kind": "mcp", "status": "connected" },
+    { "id": "linear", "name": "Linear", "kind": "mcp", "status": "connected" },
+    { "id": "zapier", "name": "Zapier", "kind": "mcp", "status": "connected" },
+    { "id": "comfy-cloud", "name": "Comfy Cloud", "kind": "mcp", "status": "connected" },
+    { "id": "supabase", "name": "Supabase", "kind": "business-state", "status": "planned" },
+    { "id": "vercel", "name": "Vercel", "kind": "deployment", "status": "planned" },
+    { "id": "openclaw", "name": "OpenClaw", "kind": "runtime", "status": "planned" },
+    { "id": "cline", "name": "Cline", "kind": "runtime", "status": "planned" },
+    { "id": "pokee", "name": "Pokee", "kind": "runtime", "status": "planned" }
+  ],
+  "systems": [
+    {
+      "id": "hermes",
+      "name": "Hermes",
+      "kind": "agent-runtime",
+      "status": "live",
+      "adapter": "supervised-execution",
+      "description": "Primary multi-agent execution runtime with profiles, schedules, skills, memory, MCPs and plugins.",
+      "capabilities": ["chat", "models", "profiles", "goals", "sessions", "skills", "memory", "schedules", "tools", "mcps", "plugins", "repositories", "vision", "control"]
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "kind": "development-runtime",
+      "status": "detected",
+      "adapter": "supervised-workspace",
+      "description": "OpenAI development environment for exact-approved repository work in read-only or workspace-write sandboxes.",
+      "capabilities": ["chat", "models", "agents", "skills", "memory", "repositories", "workspace", "vision", "control"]
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "kind": "model-runtime",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Google model and research runtime prepared for a governed AGIOS adapter.",
+      "capabilities": ["chat", "models", "skills", "memory", "tools", "control"]
+    },
+    {
+      "id": "antigravity",
+      "name": "Antigravity",
+      "kind": "development-runtime",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Future development and project workspace integrated through the common AGIOS contracts.",
+      "capabilities": ["models", "skills", "memory", "repositories", "workspace", "control"]
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "kind": "model-provider",
+      "status": "routed",
+      "adapter": "via-hermes-router",
+      "description": "Metered external coding and operations route with restricted data-class access.",
+      "capabilities": ["chat", "models", "skills", "memory", "control"]
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "kind": "local-model-runtime",
+      "status": "live",
+      "adapter": "via-hermes-profiles",
+      "description": "Private local inference for Ornith, Qwen and embedding routes.",
+      "capabilities": ["models", "local-inference", "skills", "memory", "control"]
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "kind": "development-runtime",
+      "status": "detected",
+      "adapter": "planned",
+      "description": "Detected CLI development worker; provider authentication must be verified before AGIOS enables execution.",
+      "capabilities": ["chat", "models", "skills", "memory", "repositories", "control"]
+    },
+    {
+      "id": "openclaw",
+      "name": "OpenClaw",
+      "kind": "agent-runtime",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Future bounded agent runtime; not installed or connected yet.",
+      "capabilities": ["chat", "models", "agents", "skills", "memory", "tools", "control"]
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "kind": "development-runtime",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Future coding runtime connected through repository and approval boundaries.",
+      "capabilities": ["chat", "models", "skills", "memory", "repositories", "control"]
+    },
+    {
+      "id": "pokee",
+      "name": "Pokee",
+      "kind": "agent-runtime",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Future AI application runtime evaluated behind the AGIOS adapter boundary.",
+      "capabilities": ["chat", "models", "skills", "memory", "tools", "control"]
+    }
+  ]
+}

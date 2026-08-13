@@ -1,0 +1,17 @@
+{
+  "profile": "fastworker",
+  "description": "Fast private extraction, classification, and draft worker",
+  "model": {
+    "provider": "ollama-launch",
+    "default": "qwen3.5-hermes",
+    "base_url": "http://127.0.0.1:11434/v1",
+    "context_length": 65536
+  },
+  "agent": { "reasoning_effort": "low" },
+  "memory": { "provider": "holographic" },
+  "platform_toolsets": {
+    "cli": ["clarify", "code_execution", "context_engine", "file", "kanban", "memory", "session_search", "skills", "terminal", "todo", "vision", "web"],
+    "telegram": ["clarify", "code_execution", "context_engine", "file", "kanban", "memory", "session_search", "skills", "terminal", "todo", "vision", "web"]
+  },
+  "soul": "souls/fastworker.md"
+}

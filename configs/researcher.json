@@ -1,0 +1,15 @@
+{
+  "profile": "researcher",
+  "description": "Permitted-source opportunity research and risk scoring",
+  "model": {
+    "provider": "openai-codex",
+    "default": "gpt-5.6-sol",
+    "base_url": "https://chatgpt.com/backend-api/codex"
+  },
+  "memory": { "provider": "holographic" },
+  "platform_toolsets": {
+    "cli": ["clarify", "code_execution", "context_engine", "file", "kanban", "memory", "session_search", "skills", "terminal", "todo", "vision", "web"],
+    "telegram": ["clarify", "code_execution", "context_engine", "file", "kanban", "memory", "session_search", "skills", "terminal", "todo", "vision", "web"]
+  },
+  "soul": "souls/researcher.md"
+}

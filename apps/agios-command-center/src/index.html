@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0d0e" />
+    <meta name="description" content="AGIOS — Ruben's supervised AI business operating system." />
+    <title>AGIOS — Command Center</title>
+    <link rel="stylesheet" href="/assets/style.css?v=a71a50f" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to command center</a>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="AGIOS navigation">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"><span>A</span></div>
+          <div><small>LOCAL · STUDIO</small><strong>AGIOS</strong></div>
+          <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation">×</button>
+        </div>
+
+        <div class="owner-chip">
+          <div class="avatar">RM</div>
+          <div><strong>Ruben</strong><small>Owner · supervised</small></div>
+          <span class="presence" title="Local control plane online"></span>
+        </div>
+
+        <nav class="nav-groups">
+          <section>
+            <p class="nav-label">Workspace</p>
+            <button class="nav-item is-active" data-view="command"><span>⌂</span>Mission Control<kbd>1</kbd></button>
+            <button class="nav-item" data-view="paperclip"><span>▥</span>Paperclip</button>
+            <button class="nav-item" data-view="network"><span>▱</span>AI Agent Mastermind</button>
+            <button class="nav-item" data-view="portfolio"><span>↗</span>Pipeline<kbd>2</kbd></button>
+            <button class="nav-item" data-view="work"><span>▦</span>Agent Kanban</button>
+            <button class="nav-item" data-view="artifacts"><span>▣</span>Artifacts</button>
+            <button class="nav-item" data-view="memory" aria-label="Shared Memory"><span>✦</span>Memory</button>
+          </section>
+          <section>
+            <p class="nav-label">Organization</p>
+            <button class="nav-item" data-view="departments"><span>▦</span>Departments<kbd>3</kbd></button>
+            <button class="nav-item" data-view="agents"><span>◉</span>Agent Fleet<kbd>4</kbd></button>
+            <button class="nav-item" data-view="mesh"><span>◈</span>Agent Mesh</button>
+            <button class="nav-item" data-view="approvals"><span>✓</span>Approvals <em id="approval-count">0</em></button>
+            <button class="nav-item" data-view="skills"><span>◇</span>Shared Skills</button>
+            <button class="nav-item" data-view="repositories"><span>▱</span>Repositories</button>
+            <button class="nav-item" data-view="automations"><span>↻</span>Automations</button>
+          </section>
+          <section>
+            <p class="nav-label">AI systems</p>
+            <div class="system-nav" id="system-nav"><span class="nav-placeholder">Loading systems…</span></div>
+          </section>
+          <section>
+            <p class="nav-label">Agent workspaces</p>
+            <div class="agent-nav" id="agent-nav"><span class="nav-placeholder">Loading fleet…</span></div>
+          </section>
+          <section>
+            <p class="nav-label">System</p>
+            <button class="nav-item" data-view="integrations"><span>⌘</span>Models & Tools</button>
+            <button class="nav-item" data-view="network"><span>A2A</span>Agent Network</button>
+            <button class="nav-item" data-view="performance"><span>∿</span>Performance</button>
+            <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
+          </section>
+        </nav>
+
+        <div class="sidebar-runtime">
+          <div class="runtime-title"><span class="signal-dot"></span><strong>Hermes runtime</strong></div>
+          <p id="runtime-caption">Connecting to local execution layer…</p>
+          <div class="meter"><span id="runtime-meter"></span></div>
+        </div>
+        <div class="build-tag"><span>AGIOS / F01</span><span>LOCAL</span></div>
+      </aside>
+
+      <main id="main-content" tabindex="-1">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="menu-button" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb"><span>Ruben's Portfolio</span><b>/</b><strong id="view-name">Command Center</strong></div>
+          <button class="search-trigger" id="search-trigger"><span>⌕</span><span>Search AGIOS</span><kbd>Ctrl K</kbd></button>
+          <div class="topbar-actions">
+            <div class="system-clock"><strong id="clock-time">--:--</strong><small>Yerevan</small></div>
+            <button class="systems-button" id="all-systems"><i></i><i></i><i></i><span>All systems</span></button>
+            <button class="directive-button" id="new-directive">New directive <span>＋</span></button>
+          </div>
+        </header>
+
+        <section class="ops-banner" aria-label="AGIOS operating status">
+          <div><span>✦</span><strong>One desk. One memory. Every worker in the same room.</strong><small id="ops-banner-detail">Connecting the operating fabric…</small></div>
+          <button data-view-link="systems">ALL SYSTEMS →</button>
+        </section>
+
+        <div class="page" id="page" aria-live="polite">
+          <div class="loading-state">
+            <div class="loading-mark">A</div>
+            <p>Connecting the command system</p>
+            <span></span>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="directive-modal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="directive-title">
+        <button class="modal-close" data-close-modal aria-label="Close">×</button>
+        <p class="eyebrow">Governed intake</p>
+        <h2 id="directive-title">Create a directive</h2>
+        <p>Tell Ari the outcome. The Chief of Staff chooses the right business, department, specialist and model, then shows you the route before any model work begins.</p>
+        <form id="directive-form">
+          <label>Outcome<textarea name="outcome" required maxlength="600" placeholder="What should AGIOS achieve?"></textarea></label>
+          <div class="form-row">
+            <label>Business<select name="business" id="directive-business"></select></label>
+            <label>Routing<select name="agent" id="directive-agent" disabled><option value="default">Ari Vale · Chief of Staff decides</option></select></label>
+            <label>Data class<select name="dataClass"><option>internal</option><option>public</option><option>private_business</option><option>customer_restricted</option></select></label>
+          </div>
+          <div class="safety-note"><span>⌾</span><div><strong>Approval required</strong><small>Creating this directive does not run it. The exact agent, outcome, data class, memory, skills and model remain bound for your approval.</small></div></div>
+          <button class="primary-action" type="submit">Ask Ari to plan the route</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="command-palette" id="command-palette" hidden>
+      <div class="palette-panel" role="dialog" aria-modal="true" aria-label="Search AGIOS">
+        <label><span>⌕</span><input id="palette-input" autocomplete="off" placeholder="Go to a view or business…" /></label>
+        <div id="palette-results"></div>
+        <footer><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></footer>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/assets/app.js?v=a71a50f"></script>
+  </body>
+</html>
