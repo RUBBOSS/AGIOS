@@ -10548,6 +10548,7 @@ var hermesModes = [
   ["mcps", "MCPs", "\u2318"],
   ["manage", "Manage", "\u25A6"],
   ["webui", "Web UI", "\u25A3"],
+  ["terminal", "Terminal", ">_"],
   ["control", "Control Room", ">_"],
   ["goal", "Goal Mode", "\u25CE"]
 ];
@@ -10617,13 +10618,26 @@ function hermesModeContent(system) {
   if (state.systemMode === "mcps") return `<section class="tool-catalog">${state.data.apps.filter((app) => app.kind === "mcp").map((app) => `<article><header><span>\u2318</span>${status(app.status === "connected" ? "registered" : app.status)}</header><h3>${esc(app.name)}</h3><p>Shared MCP \xB7 ${esc(titleCase(app.status === "connected" ? "registered" : app.status))}</p><small>${app.status === "connected" ? "Cataloged in Hermes; direct AGIOS execution remains locked until an audited action adapter is enabled" : "Configuration or adapter required"}</small></article>`).join("")}</section>`;
   if (state.systemMode === "manage") return modelManager();
   if (state.systemMode === "webui") return hermesWebSurface();
+  if (state.systemMode === "terminal") {
+    const surface = terminalSurfaceForSystem("hermes");
+    return surface ? systemTerminalSurface(surface) : "";
+  }
   if (state.systemMode === "control") return hermesControlRoom(system);
   if (state.systemMode === "goal") return `${specialistIntro("Goal Mode", "Set the target. Walk away.", "Hermes works in the background, preserves the real session and returns the result for review. Exact approval remains bound to the complete context.", chief, [["ACTIVE", String(state.runs.filter((run) => ["queued", "running"].includes(run.status)).length)], ["TOTAL", String(state.runs.filter((run) => run.mode === "goal").length)]])}${operationalWorkspace(chief, "goal")}`;
   return studioDesk();
 }
 function renderHermesSystem(system) {
+  disposeSurfaceSession();
   const modelChips = modelsForSystem(system).map((model) => `<span class="model-chip"><i class="status-dot status-${model.location === "local" ? "ready" : "routed"}"></i>${esc(model.id)}</span>`).join("");
   page.innerHTML = `<div class="system-hero hermes-hero"><div class="system-identity"><p class="eyebrow">IV. \u2014 AGENT \xB7 HERMES</p><h1>Hermes</h1><p>Primary AGIOS worker. Chat, voice, research, goals, sessions, skills, workspaces and tools at one desk.</p><small>${new Intl.DateTimeFormat("en", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Yerevan" }).format(/* @__PURE__ */ new Date())} \xB7 LOCAL \xB7 STUDIO</small></div><div class="system-hero-status">${status(system.status)}<small>${state.data.runtime.gateway_running ? "Hermes online" : "Hermes standing by"}</small></div></div><div class="mode-strip system-modes hermes-modes">${hermesModes.map(([id2, label, icon]) => `<button class="${state.systemMode === id2 ? "is-active" : ""}" data-system-mode="${id2}"><span>${icon}</span>${label}</button>`).join("")}</div><div class="model-strip hermes-model-strip" aria-label="Hermes model routes">${modelChips}</div><div class="agent-mode-content hermes-mode-content">${hermesModeContent(system)}</div>`;
+  if (state.systemMode === "terminal") {
+    const surface = terminalSurfaceForSystem("hermes");
+    const container = page.querySelector("[data-surface-terminal]");
+    if (surface && container) {
+      container.classList.add("is-live");
+      window.setTimeout(() => connectSurfaceTerminal(container, surface.id), 0);
+    }
+  }
   renderSystemNavigation();
 }
 function systemModeContent(system) {
@@ -10632,6 +10646,10 @@ function systemModeContent(system) {
   if (state.systemMode === "chat") return routedSystemLauncher(system, "chat");
   if (state.systemMode === "goals") return routedSystemLauncher(system, "goal");
   if (state.systemMode === "workspace") return routedSystemLauncher(system, "workspace");
+  if (state.systemMode === "terminal") {
+    const surface = terminalSurfaceForSystem(system.id);
+    return surface ? systemTerminalSurface(surface) : "";
+  }
   if (state.systemMode === "sessions") {
     const runs = state.runs.filter((run) => systemRunMatches(run, system));
     return `<section class="session-archive"><header><div><p class="eyebrow">REAL ROUTED ACTIVITY</p><h2>${esc(system.name)} sessions</h2><p>Only AGIOS runs that used this runtime or one of its governed model routes appear here.</p></div><span>${runs.length} verified records</span></header><div class="runtime-session-list">${runs.length ? runs.map((run) => runCard(run, { transcript: run.mode === "chat" })).join("") : `<div class="workspace-empty workspace-card large"><b>\u25F7</b><strong>No ${esc(system.name)} runs yet</strong><span>Open an available action to create the first real session.</span></div>`}</div></section>`;
@@ -10667,8 +10685,18 @@ function renderSystem() {
   if (actions.some((action) => action.startsWith("workspace"))) modes.push(["workspace", "Workspace"]);
   if (runtime.execution_enabled) modes.push(["sessions", "Sessions"]);
   modes.push(["models", "Models"], ["skills", "Skills"], ["memory", "Memory"], ["control", "Control Room"]);
+  if (terminalSurfaceForSystem(system.id)) modes.push(["terminal", "Terminal"]);
   if (!modes.some(([id2]) => id2 === state.systemMode)) state.systemMode = "overview";
-  page.innerHTML = `<div class="system-hero"><div class="system-identity"><p class="eyebrow">AI SYSTEM \xB7 ${esc(titleCase(system.kind))}</p><h1>${esc(system.name)}</h1><p>${esc(system.description)}</p></div><div class="system-hero-status">${status(runtime.status)}<small>${esc(titleCase(runtime.adapter))}</small></div></div><div class="mode-strip system-modes">${modes.map(([id2, label]) => `<button class="${state.systemMode === id2 ? "is-active" : ""}" data-system-mode="${id2}"><span>${id2 === "memory" ? "\u2726" : id2 === "skills" ? "\u25C7" : id2 === "models" ? "\u25CC" : id2 === "control" ? ">_" : id2 === "workspace" ? "\u25B1" : "\u25A1"}</span>${label}</button>`).join("")}</div><div class="agent-mode-content">${systemModeContent(system)}</div>`;
+  disposeSurfaceSession();
+  page.innerHTML = `<div class="system-hero"><div class="system-identity"><p class="eyebrow">AI SYSTEM \xB7 ${esc(titleCase(system.kind))}</p><h1>${esc(system.name)}</h1><p>${esc(system.description)}</p></div><div class="system-hero-status">${status(runtime.status)}<small>${esc(titleCase(runtime.adapter))}</small></div></div><div class="mode-strip system-modes">${modes.map(([id2, label]) => `<button class="${state.systemMode === id2 ? "is-active" : ""}" data-system-mode="${id2}"><span>${id2 === "memory" ? "\u2726" : id2 === "skills" ? "\u25C7" : id2 === "models" ? "\u25CC" : id2 === "terminal" ? ">_" : id2 === "control" ? ">_" : id2 === "workspace" ? "\u25B1" : "\u25A1"}</span>${label}</button>`).join("")}</div><div class="agent-mode-content">${systemModeContent(system)}</div>`;
+  if (state.systemMode === "terminal") {
+    const surface = terminalSurfaceForSystem(system.id);
+    const container = page.querySelector("[data-surface-terminal]");
+    if (surface && container) {
+      container.classList.add("is-live");
+      window.setTimeout(() => connectSurfaceTerminal(container, surface.id), 0);
+    }
+  }
   renderSystemNavigation();
 }
 function skillHygieneSurface() {
@@ -10926,13 +10954,24 @@ function renderSurfaces() {
 function hermesWebSurface() {
   return `<div class="surface-frame-wrap"><iframe class="surface-frame" title="Hermes" src="http://127.0.0.1:9119" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe></div><footer class="surface-footer"><span>Embedded in AGIOS</span><span>Hermes dashboard \xB7 loopback</span></footer>`;
 }
+function terminalSurfaceForSystem(systemId) {
+  const map = { hermes: "hermes-cli", codex: "codex-cli", opencode: "opencode-cli" };
+  const surfaceId = map[systemId];
+  if (!surfaceId) return null;
+  return state.surfaces.find((surface) => surface.id === surfaceId) || null;
+}
+function systemTerminalSurface(surface) {
+  const probe = state.surfaceProbes[surface.id] || {};
+  const statusValue = probe.status || "unknown";
+  return `<section class="surface-stage system-terminal-stage">${renderSurfaceContent(surface)}</section><footer class="surface-footer"><span>${esc(surfaceStatusLabel(statusValue))}</span><span>Real ${esc(surface.name)} process \xB7 local PTY \xB7 loopback only</span></footer>`;
+}
 var renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
 function setView(view) {
   if (!state.data || !viewLabels[view]) return;
   state.view = view;
   viewName.textContent = viewLabels[view];
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
-  if (view !== "surfaces") disposeSurfaceSession();
+  if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
   (renderers[view] || (() => renderFuture(view)))();
   renderAgentNavigation();
   renderSystemNavigation();
