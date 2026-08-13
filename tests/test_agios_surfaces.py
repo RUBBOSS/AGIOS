@@ -94,10 +94,9 @@ class SurfaceValidationTests(unittest.TestCase):
         config = load_config(CONFIG_PATH)
         self.assertGreaterEqual(len(config.surfaces), 3)
         ids = {surface["id"] for surface in config.surfaces}
-        self.assertIn("hermes-dashboard", ids)
-        for surface in config.surfaces:
-            if surface["kind"] == "web":
-                self.assertTrue(surface["url"].startswith("http://127.0.0.1"))
+        self.assertEqual(
+            {"hermes-cli", "codex-cli", "opencode-cli", "local-shell"}, ids
+        )
 
 
 class SurfaceProbeTests(unittest.TestCase):
@@ -221,8 +220,9 @@ class SurfaceServerTests(unittest.TestCase):
                 payload = response.json()
                 self.assertEqual(1, payload["schema_version"])
                 ids = {item["id"] for item in payload["items"]}
-                self.assertIn("hermes-dashboard", ids)
-                self.assertIn("codex-cli", ids)
+                # Expect the four terminal surfaces
+                expected = {"hermes-cli", "codex-cli", "opencode-cli", "local-shell"}
+                self.assertEqual(ids, expected)
 
     def test_launch_endpoint_denies_terminal_surfaces_and_unknown_ids(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -260,7 +260,7 @@ class SurfaceServerTests(unittest.TestCase):
                 client.get("/")
                 self.assertEqual(
                     403,
-                    client.post("/api/v1/surfaces/hermes-dashboard/launch").status_code,
+                    client.post("/api/v1/surfaces/codex-cli/launch").status_code,
                 )
 
     def test_shell_socket_rejects_unknown_surfaces(self):

@@ -862,6 +862,7 @@ const hermesModes = [
   ["workspace", "Workspace", "▱"],
   ["mcps", "MCPs", "⌘"],
   ["manage", "Manage", "▦"],
+  ["webui", "Web UI", "▣"],
   ["control", "Control Room", ">_"],
   ["goal", "Goal Mode", "◎"],
 ];
@@ -942,6 +943,7 @@ function hermesModeContent(system) {
   if (state.systemMode === "workspace") return operationalWorkspace(builder, "workspace");
   if (state.systemMode === "mcps") return `<section class="tool-catalog">${state.data.apps.filter((app) => app.kind === "mcp").map((app) => `<article><header><span>⌘</span>${status(app.status === "connected" ? "registered" : app.status)}</header><h3>${esc(app.name)}</h3><p>Shared MCP · ${esc(titleCase(app.status === "connected" ? "registered" : app.status))}</p><small>${app.status === "connected" ? "Cataloged in Hermes; direct AGIOS execution remains locked until an audited action adapter is enabled" : "Configuration or adapter required"}</small></article>`).join("")}</section>`;
   if (state.systemMode === "manage") return modelManager();
+  if (state.systemMode === "webui") return hermesWebSurface();
   if (state.systemMode === "control") return hermesControlRoom(system);
   if (state.systemMode === "goal") return `${specialistIntro("Goal Mode", "Set the target. Walk away.", "Hermes works in the background, preserves the real session and returns the result for review. Exact approval remains bound to the complete context.", chief, [["ACTIVE", String(state.runs.filter((run) => ["queued", "running"].includes(run.status)).length)], ["TOTAL", String(state.runs.filter((run) => run.mode === "goal").length)]])}${operationalWorkspace(chief, "goal")}`;
   return studioDesk();
@@ -1285,6 +1287,10 @@ function renderSurfaces() {
       window.setTimeout(() => connectSurfaceTerminal(container, activeSurface.id), 0);
     }
   }
+}
+
+function hermesWebSurface() {
+  return `<div class="surface-frame-wrap"><iframe class="surface-frame" title="Hermes" src="http://127.0.0.1:9119" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe></div><footer class="surface-footer"><span>Embedded in AGIOS</span><span>Hermes dashboard · loopback</span></footer>`;
 }
 
 const renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };

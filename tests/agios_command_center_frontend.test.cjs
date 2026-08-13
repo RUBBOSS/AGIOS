@@ -186,8 +186,8 @@ test("final Agent OS research pass adds evidence-backed operating depth", () => 
 });
 
 test("registry surfaces attach the real applications through live tabs", () => {
-  assert.match(html, /data-view="surfaces"/);
-  assert.match(html, /Real Apps/);
+  assert.match(js, /"webui", "Web UI", "\\u25A3"/);
+  assert.match(js, /webui"\) return hermesWebSurface\(\)/);
   assert.match(js, /\/api\/v1\/surfaces/);
   assert.match(js, /\/ws\/shell\//);
   assert.match(js, /new WebSocket/);
