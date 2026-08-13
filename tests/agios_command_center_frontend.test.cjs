@@ -207,3 +207,19 @@ test("registry surfaces attach the real applications through live tabs", () => {
   assert.match(css, /\.surface-terminal/);
   assert.match(css, /\.xterm/);
 });
+
+test("dreaming digest measures eight dimensions and only fires real recommendations", () => {
+  assert.match(js, /\/api\/v1\/dreaming/);
+  assert.match(js, /DREAMING DIGEST/);
+  assert.match(js, /evidence-gated/i);
+  assert.match(js, /dreamingDigestSurface/);
+  assert.match(js, /data-dreaming-accept/);
+  assert.match(js, /data-dreaming-dismiss/);
+  assert.match(js, /acceptDreaming/);
+  assert.match(js, /dismissDreaming/);
+  assert.match(js, /Nothing here is synthetic/);
+  assert.match(js, /dreaming-chip is-\$\{esc\(dim\.status\)\}/);
+  assert.match(css, /\.dreaming-digest/);
+  assert.match(css, /\.dreaming-card/);
+  assert.match(css, /\.dreaming-chip/);
+});

@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from .config import ConfigError, load_config
 from .control_plane import build_command_center
 from .a2a import A2AService, A2A_VERSION
+from .dreaming import DreamingStore, build_dreaming_digest
 from .operational import OperationalError, OperationalService, default_state_dir
 from .adapters.runtimes import collect_runtime_catalog
 from .orchestration import OrchestrationError, build_routing_plan, classify_ari_intent
@@ -174,6 +175,7 @@ def create_app(
         journal_path=journal_path,
     )
     selected_journal = journal_path or service.journal_path
+    dreaming_store = DreamingStore(Path(service.state_dir) / "dreaming.json")
     a2a = A2AService(
         config=config,
         operational=service,
@@ -203,7 +205,7 @@ def create_app(
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -630,6 +632,56 @@ def create_app(
     ) -> dict[str, object]:
         require_local_session(request, agios_session, x_agios_csrf)
         return {"schema_version": 1, **service.funnel.summary()}
+
+    @app.get("/api/v1/dreaming")
+    def dreaming_digest(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        hermes_sessions = 0
+        try:
+            snapshot = build_command_center(config, journal_path=selected_journal)
+            hermes_sessions = int(snapshot.get("sessions", {}).get("total") or 0)
+        except (ConfigError, OSError, RuntimeError, ValueError):
+            hermes_sessions = 0
+        digest = build_dreaming_digest(
+            memory_summary=service.memory.summary(),
+            runs=service.sessions.list(limit=200),
+            proposals=service.growth.list(),
+            plans_summary=service.orchestration.summary(),
+            runtime_catalog=collect_runtime_catalog(config.systems),
+            hermes_session_count=hermes_sessions,
+            store=dreaming_store,
+        )
+        return digest
+
+    @app.post("/api/v1/dreaming/{recommendation_id}/accept")
+    def dreaming_accept(
+        recommendation_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        if not recommendation_id or len(recommendation_id) > 120 or "/" in recommendation_id or ".." in recommendation_id:
+            raise HTTPException(status_code=400, detail="recommendation id is invalid")
+        dreaming_store.accept(recommendation_id)
+        return {"schema_version": 1, "accepted": recommendation_id}
+
+    @app.post("/api/v1/dreaming/{recommendation_id}/dismiss")
+    def dreaming_dismiss(
+        recommendation_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        if not recommendation_id or len(recommendation_id) > 120 or "/" in recommendation_id or ".." in recommendation_id:
+            raise HTTPException(status_code=400, detail="recommendation id is invalid")
+        dreaming_store.dismiss(recommendation_id)
+        return {"schema_version": 1, "dismissed": recommendation_id}
 
     @app.get("/api/v1/runtimes")
     def list_runtimes(

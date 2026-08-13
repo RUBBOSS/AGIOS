@@ -40,6 +40,7 @@ const viewLabels = {
 const state = {
   data: null,
   view: "command",
+  dreaming: null,
   selectedAgent: "default",
   agentMode: "overview",
   selectedSystem: "hermes",
@@ -392,6 +393,29 @@ function improvementIntelligenceSurface() {
   return `<section class="improvement-intelligence"><header><div><p class="eyebrow">SELF-IMPROVEMENT · EVIDENCE BEFORE CHANGE</p><h2>AGIOS can grow without rewriting itself in the dark.</h2><p>Professional agents learn from verified work, propose skills in their specialty and share approved capabilities across the studio. Nothing installs itself.</p></div><button data-view-link="skills">Open Skill Lab →</button></header><div class="improvement-loop">${loop.map(([index, label, count, note], position) => `<article style="--loop-index:${position}"><small>${index}</small><i></i><strong>${count}</strong><h3>${label}</h3><p>${note}</p></article>`).join("")}</div><div class="intelligence-radar"><div><p class="eyebrow">INTELLIGENCE RADAR</p><h3>What is worth your attention?</h3><p>Each dimension is honest about what AGIOS can currently measure.</p></div><div class="radar-grid">${dimensions.map(([name, value, note], index) => `<article class="radar-${index % 4}"><span>${String(index + 1).padStart(2, "0")}</span><div><strong>${esc(name)}</strong><small>${esc(note)}</small></div><em>${esc(value)}</em></article>`).join("")}</div></div></section>`;
 }
 
+function dreamingDigestSurface() {
+  const digest = state.dreaming;
+  if (!digest) return "";
+  const cards = digest.recommendations.map((rec, index) => {
+    const evidence = Object.entries(rec.evidence || {}).map(([key, value]) => `${key} ${value}`).join(" · ");
+    return `<article class="dreaming-card" style="--dreaming-index:${index}">
+      <header><span class="dreaming-dim">${esc(digest.dimensions.find((d) => d.id === rec.dimension)?.label || rec.dimension)}</span><span class="dreaming-evidence">${esc(evidence)}</span></header>
+      <h3>${esc(rec.title)}</h3>
+      <p>${esc(rec.detail)}</p>
+      <footer>
+        <button class="dreaming-accept" data-dreaming-accept="${esc(rec.id)}" data-dreaming-target="${esc(rec.action.target || "")}">${esc(rec.action.label || "Accept")}</button>
+        <button class="dreaming-dismiss" data-dreaming-dismiss="${esc(rec.id)}">Not now</button>
+      </footer>
+    </article>`;
+  }).join("");
+  const dimensionChips = digest.dimensions.map((dim) =>
+    `<span class="dreaming-chip is-${esc(dim.status)}" title="${esc(dim.detail)}">${esc(dim.label)}</span>`).join("");
+  const empty = digest.recommendations.length
+    ? ""
+    : `<div class="dreaming-empty"><b>Nothing needs you right now.</b> <span>Every dimension is measured, and no real signal produced a recommendation. New evidence appears here automatically.</span></div>`;
+  return `<section class="dreaming-digest"><header><div><p class="eyebrow">DREAMING DIGEST · EVERY DAY</p><h2>${digest.recommendations.length} high-leverage recommendation${digest.recommendations.length === 1 ? "" : "s"} for you.</h2><p>Eight dimensions measured against real local stores; only genuine signals become cards. Nothing here is synthetic.</p></div><span class="dreaming-stamp">LOCAL · EVIDENCE-GATED</span></header><div class="dreaming-dims">${dimensionChips}</div><div class="dreaming-cards">${cards || empty}</div></section>`;
+}
+
 function renderCommand() {
   const d = state.data;
   const nextSchedules = d.schedules.slice(0, 4);
@@ -411,6 +435,7 @@ function renderCommand() {
     ${renderChiefOfStaffBoard()}
     ${livingOSMapSurface()}
     ${improvementIntelligenceSurface()}
+    ${dreamingDigestSurface()}
     ${heading("Portfolio now", `Your operating system. <em>Today at a glance.</em>`, "Live work, approvals, memory and the portfolio remain visible below Ari's routing desk.", `<strong>● Supervised mode</strong><span>Updated ${new Date(d.generated_at).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}</span>`)}
     <div class="command-toolbar"><div class="context-line"><span class="status-dot status-online"></span><strong>${d.summary.active_businesses} active businesses</strong><span>·</span><span>${d.summary.live_or_detected_systems} systems live, detected or routed</span><span>·</span><span>${runsForPeriod().length} runs in period</span></div>${periodControl()}</div>
     ${operatingBrief()}
@@ -1750,6 +1775,10 @@ document.addEventListener("click", (event) => {
     const openSurface = state.surfaces.find((surface) => surface.id === surfaceOpen.dataset.surfaceOpen);
     if (openSurface && openSurface.url) window.open(openSurface.url, "_blank", "noopener");
   }
+  const dreamingAccept = event.target.closest("[data-dreaming-accept]");
+  const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");
+  if (dreamingAccept) void acceptDreaming(dreamingAccept);
+  if (dreamingDismiss) void dismissDreaming(dreamingDismiss);
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();
   if (event.target === palette) closePalette();
 });
@@ -2000,8 +2029,46 @@ function tick() {
 }
 tick(); window.setInterval(tick, 30000);
 window.setInterval(() => {
-  if (!document.activeElement?.closest?.("[data-chief-form], [data-run-form], [data-workspace-form], [data-skill-draft-form], [data-memory-form], [data-retrieval-form], [data-a2a-form]") && state.runs.some((run) => ["queued", "running"].includes(run.status))) void loadOperationalSurface();
+  if (!document.activeElement?.closest?.("[data-chief-form], [data-run-form], [data-workspace-form], [data-skill-draft-form], [data-memory-form], [data-retrieval-form], [data-a2a-form]") && state.runs.some((run) => ["queued", "running"].includes(run.status))) { void loadOperationalSurface(); void loadDreaming(); }
 }, 1600);
+
+async function loadDreaming() {
+  try {
+    state.dreaming = await api("/api/v1/dreaming");
+  } catch {
+    state.dreaming = null;
+  }
+  if (state.view === "command") renderCommand();
+}
+
+async function acceptDreaming(button) {
+  const id = button.dataset.dreamingAccept;
+  const target = button.dataset.dreamingTarget;
+  button.disabled = true;
+  try {
+    await api(`/api/v1/dreaming/${encodeURIComponent(id)}/accept`, { method: "POST" });
+    showToast(target ? `Accepted · opening ${viewLabels[target] || target}` : "Recommendation accepted");
+    await loadDreaming();
+    if (state.view === "command") renderCommand();
+    if (target && viewLabels[target]) setView(target);
+  } catch (error) {
+    showToast(error.message);
+    button.disabled = false;
+  }
+}
+
+async function dismissDreaming(button) {
+  const id = button.dataset.dreamingDismiss;
+  button.disabled = true;
+  try {
+    await api(`/api/v1/dreaming/${encodeURIComponent(id)}/dismiss`, { method: "POST" });
+    await loadDreaming();
+    if (state.view === "command") renderCommand();
+  } catch (error) {
+    showToast(error.message);
+    button.disabled = false;
+  }
+}
 
 async function boot() {
   try {
@@ -2017,6 +2084,7 @@ async function boot() {
     }
     await refreshSurfaceProbes();
     try { state.voice = await api("/api/v1/voice/capabilities"); } catch { state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } }; }
+    await loadDreaming();
     document.querySelector("#approval-count").textContent = state.data.summary.pending_approvals;
     const runtime = state.data.runtime;
     document.querySelector("#runtime-caption").textContent = runtime.gateway_running ? `${state.data.summary.available_agents} agents registered · gateway online` : `${state.data.summary.available_agents} agents registered · gateway standing by`;
