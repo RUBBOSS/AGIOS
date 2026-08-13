@@ -219,6 +219,8 @@ def _available_models(
             available.add(model_id)
         elif provider == "deepseek" and runtimes.get("deepseek", {}).get("configured"):
             available.add(model_id)
+        elif provider == "openrouter" and runtimes.get("openrouter", {}).get("configured"):
+            available.add(model_id)
     return available
 
 

@@ -463,25 +463,73 @@
         "private_business",
         "customer_restricted"
       ]
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "provider": "deepseek",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ]
+    },
+    {
+      "id": "glm-5.2",
+      "provider": "openrouter",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ]
+    },
+    {
+      "id": "kimi-k3",
+      "provider": "openrouter",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ]
+    },
+    {
+      "id": "mistral-large",
+      "provider": "openrouter",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ]
     }
   ],
   "routes": {
     "architecture": [
       "gpt-5.6-sol",
       "gpt-5.6-terra",
+      "kimi-k3",
       "ornith-hermes"
     ],
     "operations": [
       "gpt-5.6-terra",
+      "deepseek-v4-pro",
       "deepseek-v4-flash",
       "qwen3.5-hermes"
     ],
     "research": [
       "nemotron-hosted",
       "gpt-5.6-terra",
+      "mistral-large",
       "qwen3.5-hermes"
     ],
     "coding": [
+      "deepseek-v4-pro",
       "deepseek-v4-flash",
       "gpt-5.6-sol",
       "ornith-hermes"
@@ -500,11 +548,13 @@
     ],
     "content": [
       "gpt-5.6-terra",
-      "deepseek-v4-flash",
+      "deepseek-v4-pro",
+      "glm-5.2",
       "qwen3.5-hermes"
     ],
     "outreach": [
       "gpt-5.6-terra",
+      "deepseek-v4-pro",
       "deepseek-v4-flash",
       "qwen3.5-hermes"
     ],
@@ -910,7 +960,7 @@
       "kind": "model-provider",
       "status": "routed",
       "adapter": "via-hermes-router",
-      "description": "Metered external coding and operations route with restricted data-class access.",
+      "description": "DeepSeek V4 Pro (0813) and V4 Flash: Chinese metered models with strong cache-hit economics for agent loops.",
       "capabilities": [
         "chat",
         "models",
@@ -997,6 +1047,77 @@
         "memory",
         "tools",
         "control"
+      ]
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter",
+      "kind": "model-runtime",
+      "status": "routed",
+      "adapter": "via-hermes-openrouter",
+      "description": "Gateway for GLM, Kimi, Mistral and other global models through the Hermes router.",
+      "capabilities": [
+        "chat",
+        "models",
+        "skills",
+        "memory",
+        "control"
+      ]
+    },
+    {
+      "id": "glm",
+      "name": "GLM (Zhipu)",
+      "kind": "model-provider",
+      "status": "routed",
+      "adapter": "via-hermes-openrouter",
+      "description": "Chinese open-weight model family routed through OpenRouter.",
+      "capabilities": [
+        "chat",
+        "models",
+        "skills",
+        "memory",
+        "control"
+      ]
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi (Moonshot)",
+      "kind": "model-provider",
+      "status": "routed",
+      "adapter": "via-hermes-openrouter",
+      "description": "Chinese frontier-adjacent models routed through OpenRouter.",
+      "capabilities": [
+        "chat",
+        "models",
+        "skills",
+        "memory",
+        "control"
+      ]
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral AI",
+      "kind": "model-provider",
+      "status": "routed",
+      "adapter": "via-hermes-openrouter",
+      "description": "European model family routed through OpenRouter.",
+      "capabilities": [
+        "chat",
+        "models",
+        "skills",
+        "memory",
+        "control"
+      ]
+    },
+    {
+      "id": "sakana",
+      "name": "Sakana AI",
+      "kind": "model-provider",
+      "status": "planned",
+      "adapter": "planned",
+      "description": "Japanese research lab. No hosted chat API in our catalog yet; will be routed once a usable endpoint exists.",
+      "capabilities": [
+        "models"
       ]
     }
   ],

@@ -71,6 +71,13 @@ def collect_runtime_catalog(
             actions = ["chat", "workspace-read", "workspace-write"] if configured else []
             approval = "data-class-and-exact-workspace-run"
             sandbox = "selected-runtime"
+        elif system_id in {"glm", "kimi", "mistral", "openrouter"}:
+            configured = bool(os.environ.get("OPENROUTER_API_KEY"))
+            status = "routed" if configured else "unavailable"
+            adapter = "via-hermes-openrouter"
+            actions = ["chat"] if configured else []
+            approval = "data-class-and-exact-run"
+            sandbox = "selected-runtime"
         elif detected:
             status = "detected"
             adapter = "execution-locked"

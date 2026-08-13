@@ -99,7 +99,7 @@ class ChiefOfStaffRoutingTests(unittest.TestCase):
             runtime_catalog=runtime_catalog(deepseek=True),
         )
         self.assertEqual("engineering", coding["department_id"])
-        self.assertEqual("deepseek-v4-flash", coding["model_id"])
+        self.assertEqual("deepseek-v4-pro", coding["model_id"])
 
     def test_plan_store_journals_only_digest_and_binds_one_run(self):
         with tempfile.TemporaryDirectory() as temp_dir:

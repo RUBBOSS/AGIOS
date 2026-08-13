@@ -56,12 +56,12 @@ class HermesAdapterTests(unittest.TestCase):
         self.assertEqual(7, result["summary"]["businesses"])
         self.assertEqual(7, result["summary"]["departments"])
         self.assertEqual(9, result["summary"]["agents"])
-        self.assertEqual(9, result["summary"]["model_routes"])
+        self.assertEqual(13, result["summary"]["model_routes"])
         self.assertEqual("unavailable", result["usage"]["cost_status"])
         self.assertEqual([], result["sessions"]["items"])
         self.assertFalse(result["privacy"]["customer_content_included"])
         self.assertFalse(result["privacy"]["runtime_writes_enabled"])
-        self.assertEqual(10, result["summary"]["systems"])
+        self.assertEqual(15, result["summary"]["systems"])
         self.assertGreater(result["summary"]["shared_skills"], 0)
         self.assertEqual("scoped_live_fabric", result["shared_fabric"]["memory"]["sharing"])
 
@@ -90,8 +90,8 @@ class HermesAdapterTests(unittest.TestCase):
         agents = [node for node in mesh if node["kind"] == "agent"]
         systems = [node for node in mesh if node["kind"] == "system"]
         self.assertEqual(9, len(agents))
-        self.assertEqual(10, len(systems))
-        self.assertEqual(9 + 10, len(mesh))
+        self.assertEqual(15, len(systems))
+        self.assertEqual(9 + 15, len(mesh))
         self.assertIn("writer", {node["id"] for node in agents})
         self.assertIn("closer", {node["id"] for node in agents})
         self.assertIn("openclaw", {node["id"] for node in systems})
