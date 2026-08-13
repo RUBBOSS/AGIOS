@@ -515,5 +515,38 @@
       "description": "Future AI application runtime evaluated behind the AGIOS adapter boundary.",
       "capabilities": ["chat", "models", "skills", "memory", "tools", "control"]
     }
+  ],
+  "surfaces": [
+    {
+      "id": "hermes-dashboard",
+      "name": "Hermes",
+      "kind": "web",
+      "url": "http://127.0.0.1:9119",
+      "launch": ["hermes", "dashboard"]
+    },
+    {
+      "id": "hermes-cli",
+      "name": "Hermes CLI",
+      "kind": "terminal",
+      "command": ["hermes"]
+    },
+    {
+      "id": "codex-cli",
+      "name": "Codex",
+      "kind": "terminal",
+      "command": ["codex"]
+    },
+    {
+      "id": "opencode-cli",
+      "name": "OpenCode",
+      "kind": "terminal",
+      "command": ["opencode"]
+    },
+    {
+      "id": "local-shell",
+      "name": "Local Shell",
+      "kind": "terminal",
+      "command": ["cmd.exe"]
+    }
   ]
 }

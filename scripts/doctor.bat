@@ -7,5 +7,7 @@ if not exist ".venv\Scripts\python.exe" (
   exit /b 1
 )
 
-".venv\Scripts\python.exe" -m agios doctor --config configs\agios.json
+set "AGIOS_JOURNAL=%LOCALAPPDATA%\hermes\agios\events.sqlite3"
+
+".venv\Scripts\python.exe" -m agios --config configs\agios.json doctor --journal "%AGIOS_JOURNAL%"
 exit /b %errorlevel%

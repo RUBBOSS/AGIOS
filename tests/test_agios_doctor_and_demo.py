@@ -12,13 +12,13 @@ CONFIG_PATH = ROOT / "configs" / "agios.json"
 
 
 class DoctorTests(unittest.TestCase):
-    def test_doctor_reports_known_retired_profile_without_failing_privacy(self):
+    def test_doctor_reports_profile_drift_clean_after_retired_profile_removal(self):
         report = run_doctor(config_path=CONFIG_PATH, profiles_dir=ROOT / "configs")
 
-        self.assertEqual("warning", report["status"])
+        self.assertEqual("healthy", report["status"])
         checks = {check["id"]: check for check in report["checks"]}
-        self.assertEqual("warning", checks["profile-drift"]["status"])
-        self.assertIn("localworker", checks["profile-drift"]["detail"])
+        self.assertEqual("healthy", checks["profile-drift"]["status"])
+        self.assertEqual("checked-in profiles match the agent registry", checks["profile-drift"]["detail"])
         self.assertEqual("healthy", checks["privacy-routing"]["status"])
         self.assertEqual("not-configured", checks["event-journal"]["status"])
         self.assertEqual(9, report["inventory"]["agent_count"])

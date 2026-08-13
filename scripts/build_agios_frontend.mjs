@@ -7,7 +7,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = resolve(root, "apps/agios-command-center/src");
 const output = resolve(root, "apps/agios-command-center/dist");
 const checking = process.argv.includes("--check");
-const targets = ["index.html", "assets/app.js", "assets/style.css"];
+const targets = ["index.html", "assets/app.js", "assets/style.css", "assets/app.css"];
 
 async function produce(directory) {
   await mkdir(resolve(directory, "assets"), { recursive: true });

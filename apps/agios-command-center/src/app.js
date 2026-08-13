@@ -1,4 +1,8 @@
 import { drag, forceCenter, forceCollide, forceLink, forceManyBody, forceSimulation, select, zoom } from "d3";
+import { Terminal } from "xterm";
+import "xterm/css/xterm.css";
+import { FitAddon } from "@xterm/addon-fit";
+import { WebLinksAddon } from "@xterm/addon-web-links";
 
 const page = document.querySelector("#page");
 const viewName = document.querySelector("#view-name");
@@ -30,6 +34,7 @@ const viewLabels = {
   performance: "Performance",
   settings: "Settings",
   agent: "Agent Workspace",
+  surfaces: "Live Apps",
 };
 
 const state = {
@@ -66,6 +71,9 @@ const state = {
   osMapSimulation: null,
   osMapLayer: "all",
   operationalLoading: false,
+  surfaces: [],
+  activeSurface: null,
+  surfaceProbes: {},
 };
 
 function esc(value) {
@@ -1109,13 +1117,184 @@ function renderFuture(view) {
   page.innerHTML = `${heading(copy[0], copy[1], copy[2])}<div class="empty-stage"><div class="seal">◇</div><h2>Operational boundary established</h2><p>The supervised Hermes adapter and shared memory are live. This surface remains staged until its controls can preserve the same local authentication, exact approval and audit guarantees.</p><div class="foundation-roadmap"><span>Foundation</span><span>Memory & events</span><span>Business control</span><span>Bounded autonomy</span></div></div>`;
 }
 
-const renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings };
+const surfaceSession = { surfaceId: null, term: null, fit: null, socket: null, resizeObserver: null };
+
+function disposeSurfaceSession() {
+  const session = surfaceSession;
+  if (session.resizeObserver) {
+    session.resizeObserver.disconnect();
+    session.resizeObserver = null;
+  }
+  if (session.socket) {
+    try {
+      session.socket.close();
+    } catch {
+      /* already closed */
+    }
+    session.socket = null;
+  }
+  if (session.term) {
+    try {
+      session.term.dispose();
+    } catch {
+      /* terminal already disposed */
+    }
+    session.term = null;
+    session.fit = null;
+  }
+  session.surfaceId = null;
+}
+
+function ensureSurfaceTerminal() {
+  if (surfaceSession.term) return surfaceSession;
+  const term = new Terminal({
+    cursorBlink: true,
+    convertEol: true,
+    scrollback: 4000,
+    fontFamily: '"Cascadia Mono", Consolas, monospace',
+    fontSize: 13,
+    theme: {
+      background: "#0a0f0d",
+      foreground: "#d8e8e1",
+      cursor: "#65e1ad",
+      selectionBackground: "rgba(101, 225, 173, 0.28)",
+    },
+  });
+  const fit = new FitAddon();
+  term.loadAddon(fit);
+  term.loadAddon(new WebLinksAddon());
+  surfaceSession.term = term;
+  surfaceSession.fit = fit;
+  return surfaceSession;
+}
+
+function connectSurfaceTerminal(container, surfaceId) {
+  const session = ensureSurfaceTerminal();
+  session.term.open(container);
+  session.fit.fit();
+  const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+  const socket = new WebSocket(`${protocol}//${location.host}/ws/shell/${encodeURIComponent(surfaceId)}`);
+  session.socket = socket;
+  session.surfaceId = surfaceId;
+  const sendSize = () => {
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "resize", cols: session.term.cols, rows: session.term.rows }));
+    }
+  };
+  session.term.onData((data) => {
+    if (socket.readyState === WebSocket.OPEN) socket.send(data);
+  });
+  socket.onmessage = (event) => {
+    if (typeof event.data === "string") {
+      session.term.write(event.data);
+    } else {
+      session.term.write(new TextDecoder().decode(event.data));
+    }
+  };
+  socket.onopen = sendSize;
+  socket.onclose = () => {
+    session.term.write("\r\n[session closed — reopen the tab to restart]\r\n");
+  };
+  const observer = new ResizeObserver(() => {
+    try {
+      session.fit.fit();
+      sendSize();
+    } catch {
+      /* container detached */
+    }
+  });
+  observer.observe(container);
+  session.resizeObserver = observer;
+  window.addEventListener("resize", sendSize);
+  session._resizeHandler = sendSize;
+  session.term.focus();
+}
+
+function surfaceStatusLabel(status) {
+  return (
+    {
+      live: "Live",
+      available: "Ready",
+      unreachable: "Offline",
+      missing: "Not installed",
+      unknown: "Checking",
+    }[status] || status
+  );
+}
+
+async function refreshSurfaceProbes() {
+  try {
+    const payload = await api("/api/v1/surfaces");
+    state.surfaceProbes = Object.fromEntries(
+      (payload.items || []).map((item) => [item.id, item]),
+    );
+  } catch {
+    state.surfaceProbes = {};
+  }
+}
+
+async function launchSurface(surfaceId) {
+  try {
+    await api(`/api/v1/surfaces/${encodeURIComponent(surfaceId)}/launch`, { method: "POST" });
+    showToast("Launch requested");
+    await refreshSurfaceProbes();
+  } catch (error) {
+    showToast(`Launch failed: ${error.message}`);
+  }
+  renderSurfaces();
+}
+
+function renderSurfaceContent(surface) {
+  const probe = state.surfaceProbes[surface.id] || {};
+  const statusValue = probe.status || "unknown";
+  if (surface.kind === "web") {
+    return `<div class="surface-frame-wrap"><iframe class="surface-frame" title="${esc(surface.name)}" src="${esc(surface.url)}" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe></div>`;
+  }
+  if (surface.kind === "terminal") {
+    return `<div class="surface-terminal" data-surface-terminal="${esc(surface.id)}"><div class="surface-terminal-note"><strong>${statusValue === "available" ? "Live terminal attached" : "Terminal binary not found"}</strong><span>This is the real ${esc(surface.name)} process through a local PTY — same shell, same session.</span></div></div>`;
+  }
+  return `<div class="surface-native-card"><span class="surface-native-glyph">▸</span><strong>${esc(surface.name)}</strong><p>Native application. AGIOS can launch it; its window opens outside the command center.</p><button class="surface-launch" data-surface-launch="${esc(surface.id)}">Launch ${esc(surface.name)}</button></div>`;
+}
+
+function renderSurfaces() {
+  disposeSurfaceSession();
+  const surfaces = state.surfaces;
+  if (!surfaces.length) {
+    page.innerHTML = `${heading("Live Apps", "Real applications, one window.", "Registered runtime surfaces appear here once the AGIOS registry declares them.")}<div class="empty-stage"><div class="seal">◇</div><h2>No surfaces registered</h2><p>Add web, terminal, or native surfaces to configs/agios.json and restart AGIOS.</p></div>`;
+    return;
+  }
+  const active = state.activeSurface && surfaces.some((surface) => surface.id === state.activeSurface) ? state.activeSurface : surfaces[0].id;
+  state.activeSurface = active;
+  const activeSurface = surfaces.find((surface) => surface.id === active);
+  const tabs = surfaces
+    .map((surface) => {
+      const probe = state.surfaceProbes[surface.id] || {};
+      return `<button class="surface-tab ${surface.id === active ? "is-active" : ""}" data-surface-tab="${esc(surface.id)}"><span class="surface-tab-glyph">${surface.kind === "web" ? "▣" : surface.kind === "terminal" ? ">_" : "▸"}</span>${esc(surface.name)}<i class="surface-tab-status is-${esc(probe.status || "unknown")}"></i></button>`;
+    })
+    .join("");
+  const probe = state.surfaceProbes[active] || {};
+  const actions =
+    activeSurface.kind === "terminal"
+      ? `<button class="surface-launch compact" data-surface-restart="${esc(active)}">Reconnect</button>`
+      : `<button class="surface-launch compact" data-surface-open="${esc(active)}">Open in browser ↗</button>${activeSurface.launch ? `<button class="surface-launch compact" data-surface-launch="${esc(active)}">Start ${esc(activeSurface.name)}</button>` : ""}`;
+  page.innerHTML = `${heading("Live Apps", "The real application inside the OS.", "Web surfaces embed the actual local panel; terminal surfaces attach a live PTY to the real CLI — the same window, same session, same shell as the original tool.", actions)}<nav class="surface-tabs" aria-label="Runtime surfaces">${tabs}</nav><div class="surface-stage">${renderSurfaceContent(activeSurface)}</div><footer class="surface-footer"><span>${esc(surfaceStatusLabel(probe.status || "unknown"))}</span><span>Loopback only · registry-declared · never a sandbox imitation</span></footer>`;
+  if (activeSurface.kind === "terminal") {
+    const container = page.querySelector("[data-surface-terminal]");
+    if (container) {
+      container.classList.add("is-live");
+      window.setTimeout(() => connectSurfaceTerminal(container, activeSurface.id), 0);
+    }
+  }
+}
+
+const renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
 
 function setView(view) {
   if (!state.data || !viewLabels[view]) return;
   state.view = view;
   viewName.textContent = viewLabels[view];
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
+  if (view !== "surfaces") disposeSurfaceSession();
   (renderers[view] || (() => renderFuture(view)))();
   renderAgentNavigation();
   renderSystemNavigation();
@@ -1489,6 +1668,10 @@ document.addEventListener("click", (event) => {
   const speak = event.target.closest("[data-speak-run]");
   const routedAction = event.target.closest("[data-route-system-action]");
   const osMapLayer = event.target.closest("[data-os-map-layer]");
+  const surfaceTab = event.target.closest("[data-surface-tab]");
+  const surfaceLaunch = event.target.closest("[data-surface-launch]");
+  const surfaceRestart = event.target.closest("[data-surface-restart]");
+  const surfaceOpen = event.target.closest("[data-surface-open]");
   if (nav) setView(nav.dataset.view);
   if (link) setView(link.dataset.viewLink);
   if (business) setView("portfolio");
@@ -1513,6 +1696,13 @@ document.addEventListener("click", (event) => {
   if (speak) void speakRun(speak);
   if (routedAction) routeSystemAction(routedAction);
   if (osMapLayer) { state.osMapLayer = osMapLayer.dataset.osMapLayer; renderCommand(); }
+  if (surfaceTab) { state.activeSurface = surfaceTab.dataset.surfaceTab; renderSurfaces(); }
+  if (surfaceLaunch) void launchSurface(surfaceLaunch.dataset.surfaceLaunch);
+  if (surfaceRestart) renderSurfaces();
+  if (surfaceOpen) {
+    const openSurface = state.surfaces.find((surface) => surface.id === surfaceOpen.dataset.surfaceOpen);
+    if (openSurface && openSurface.url) window.open(openSurface.url, "_blank", "noopener");
+  }
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();
   if (event.target === palette) closePalette();
 });
@@ -1772,6 +1962,13 @@ async function boot() {
     if (!response.ok) throw new Error("unavailable");
     state.data = await response.json();
     state.runtimeAdapters = state.data.operational?.runtime_adapters || [];
+    try {
+      const surfacesPayload = await api("/api/v1/surfaces");
+      state.surfaces = surfacesPayload.items || [];
+    } catch {
+      state.surfaces = [];
+    }
+    await refreshSurfaceProbes();
     try { state.voice = await api("/api/v1/voice/capabilities"); } catch { state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } }; }
     document.querySelector("#approval-count").textContent = state.data.summary.pending_approvals;
     const runtime = state.data.runtime;

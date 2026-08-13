@@ -184,3 +184,24 @@ test("final Agent OS research pass adds evidence-backed operating depth", () => 
   assert.match(css, /\.oracle-radar/);
   assert.match(buildScript, /preserveSymlinks:\s*true/);
 });
+
+test("registry surfaces attach the real applications through live tabs", () => {
+  assert.match(html, /data-view="surfaces"/);
+  assert.match(html, /Real Apps/);
+  assert.match(js, /\/api\/v1\/surfaces/);
+  assert.match(js, /\/ws\/shell\//);
+  assert.match(js, /new WebSocket/);
+  assert.match(js, /cursorBlink/);
+  assert.match(js, /scrollback:\s*4e3/);
+  assert.match(js, /session closed/);
+  assert.match(js, /surface-tab/);
+  assert.match(js, /data-surface-launch/);
+  assert.match(js, /data-surface-terminal/);
+  assert.match(js, /Live Apps/);
+  assert.match(js, /never a sandbox imitation/);
+  assert.match(js, /registry-declared/);
+  assert.match(css, /\.surface-tabs/);
+  assert.match(css, /\.surface-frame/);
+  assert.match(css, /\.surface-terminal/);
+  assert.match(css, /\.xterm/);
+});

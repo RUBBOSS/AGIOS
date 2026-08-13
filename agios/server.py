@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hmac
 import hashlib
 import json
@@ -10,7 +11,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import Cookie, FastAPI, Header, HTTPException, Query, Request
+from fastapi import Cookie, FastAPI, Header, HTTPException, Query, Request, WebSocket
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -21,6 +22,12 @@ from .a2a import A2AService, A2A_VERSION
 from .operational import OperationalError, OperationalService, default_state_dir
 from .adapters.runtimes import collect_runtime_catalog
 from .orchestration import OrchestrationError, build_routing_plan, classify_ari_intent
+from .surfaces import (
+    collect_surfaces,
+    launch_surface,
+    pump_pty,
+    spawn_surface_pty,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -196,7 +203,7 @@ def create_app(
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -320,6 +327,93 @@ def create_app(
             return {"schema_version": 1, **service.voice.synthesize(body.text)}
         except OperationalError as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    surfaces_by_id = {surface["id"]: surface for surface in config.surfaces}
+
+    @app.get("/api/v1/surfaces")
+    def list_surfaces(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return {
+            "schema_version": 1,
+            "items": collect_surfaces(list(surfaces_by_id.values())),
+        }
+
+    @app.post("/api/v1/surfaces/{surface_id}/launch")
+    def launch_surface_endpoint(
+        surface_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        surface = surfaces_by_id.get(surface_id)
+        if not surface or surface["kind"] == "terminal":
+            raise HTTPException(status_code=404, detail="surface has no launch action")
+        try:
+            return {"schema_version": 1, **launch_surface(surface)}
+        except (FileNotFoundError, ValueError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    @app.websocket("/ws/shell/{surface_id}")
+    async def shell_socket(websocket: WebSocket, surface_id: str) -> None:
+        # Uvicorn reports real TCP peers; "testclient" only exists under
+        # FastAPI's TestClient, which never leaves the local process.
+        if websocket.client.host not in {"127.0.0.1", "::1", "testclient"}:
+            await websocket.close(code=4403)
+            return
+        if not hmac.compare_digest(websocket.cookies.get("agios_session", ""), session_token):
+            await websocket.close(code=4401)
+            return
+        surface = surfaces_by_id.get(surface_id)
+        if not surface or surface["kind"] != "terminal":
+            await websocket.close(code=4404)
+            return
+        await websocket.accept()
+        try:
+            pty_handle = await asyncio.get_running_loop().run_in_executor(
+                None, spawn_surface_pty, surface
+            )
+        except (FileNotFoundError, ValueError, OSError):
+            await websocket.send_text(chr(13) + chr(10) + "[x] terminal could not start" + chr(13) + chr(10))
+            await websocket.close(code=4404)
+            return
+        stop_event = asyncio.Event()
+
+        async def receive_input() -> None:
+            try:
+                while True:
+                    message = await websocket.receive_text()
+                    if message.startswith('{"type":"resize"'):
+                        import json as _json
+
+                        try:
+                            payload = _json.loads(message)
+                            cols = int(payload.get("cols", 100))
+                            rows = int(payload.get("rows", 30))
+                            pty_handle.resize(cols, rows)
+                        except (ValueError, TypeError, _json.JSONDecodeError):
+                            pass
+                        continue
+                    await asyncio.get_running_loop().run_in_executor(
+                        None, pty_handle.write, message
+                    )
+            except Exception:
+                pass
+            finally:
+                stop_event.set()
+
+        receiver = asyncio.create_task(receive_input())
+        try:
+            await pump_pty(pty_handle, websocket.send_text, stop_event)
+        finally:
+            stop_event.set()
+            pty_handle.terminate()
+            receiver.cancel()
+            await websocket.close()
 
     @app.get("/api/v1/agents/growth/proposals")
     def list_skill_proposals(

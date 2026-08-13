@@ -46,6 +46,7 @@ class AGIOSConfig:
     departments: Mapping[str, Mapping[str, Any]]
     integrations: Mapping[str, Mapping[str, Any]]
     systems: Mapping[str, Mapping[str, Any]]
+    surfaces: tuple[Mapping[str, Any], ...]
 
 
 def validate_config(raw: Any, *, path: Path) -> AGIOSConfig:
@@ -186,6 +187,13 @@ def validate_config(raw: Any, *, path: Path) -> AGIOSConfig:
         if not isinstance(system_capabilities, list) or not system_capabilities:
             raise ConfigError(f"system {system_id} capabilities must be a non-empty array")
 
+    from .surfaces import SurfaceConfigError, validate_surfaces
+
+    try:
+        surfaces = tuple(validate_surfaces(root.get("surfaces")))
+    except SurfaceConfigError as exc:
+        raise ConfigError(str(exc)) from exc
+
     return AGIOSConfig(
         path=path,
         raw=root,
@@ -200,6 +208,7 @@ def validate_config(raw: Any, *, path: Path) -> AGIOSConfig:
         departments=departments,
         integrations=integrations,
         systems=systems,
+        surfaces=surfaces,
     )
 
 
