@@ -722,6 +722,17 @@ body { background: #090a0f; }
 .memory-vault-empty-state p { max-width: 44ch; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .memory-vault-empty-state button { margin-top: 8px; padding: 10px 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; transition: border-color .12s ease, background .12s ease; }
 .memory-vault-empty-state button:hover { border-color: var(--dim); background: rgba(255,255,255,.03); }
+.memory-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.memory-tabs button { padding: 8px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--dim); font-size: 13px; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease; }
+.memory-tabs button:hover { color: var(--text); }
+.memory-tabs button.is-active { border-color: rgba(99,217,165,.4); background: rgba(99,217,165,.08); color: var(--accent, #63d9a5); }
+.memory-galaxy { overflow: hidden; border: 1px solid #2d3938; border-radius: 13px; background: #0e1213; }
+.memory-galaxy > header { min-height: 62px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line-soft); }
+.memory-galaxy > header h2 { margin: 3px 0 0; font-size: 16px; }
+.memory-galaxy > header > span { flex: none; color: var(--dim); font-size: 11px; letter-spacing: .06em; }
+.memory-galaxy-canvas { min-height: 520px; background: radial-gradient(circle at 50% 42%, rgba(41,34,74,.85), #0a0c14 68%); }
+.memory-galaxy-canvas canvas { display: block; }
+.memory-galaxy > footer { padding: 10px 18px; display: flex; justify-content: space-between; gap: 18px; color: var(--dim); font-size: 11px; border-top: 1px solid var(--line-soft); }
 .memory-route { min-height: 180px; margin-bottom: 0; }
 .protocol-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
 .protocol-strip article { min-height: 92px; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }

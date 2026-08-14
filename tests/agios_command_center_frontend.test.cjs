@@ -124,6 +124,11 @@ test("Phase 4 exposes real voice, model routing, professional agents, growth, an
   assert.match(js, /simulation_default/);
   assert.match(css, /\.memory-vault/);
   assert.match(css, /\.memory-vault-tree/);
+  assert.match(js, /MEMORY GALAXY/);
+  assert.match(js, /memory-galaxy-canvas/);
+  assert.match(js, /new WebGLRenderer/);
+  assert.match(js, /OrbitControls/);
+  assert.match(js, /brighter &amp; whiter = more recently touched/);
   assert.doesNotMatch(js, /Profile memory telemetry/);
 });
 

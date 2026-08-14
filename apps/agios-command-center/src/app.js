@@ -3,6 +3,8 @@ import { Terminal } from "xterm";
 import "xterm/css/xterm.css";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 const page = document.querySelector("#page");
 const viewName = document.querySelector("#view-name");
@@ -45,6 +47,8 @@ const state = {
   memoryNote: null,
   memoryComposeOpen: false,
   memorySearchOpen: false,
+  memoryTab: "notes",
+  memoryGalaxy: null,
   learned: null,
   costs: null,
   selectedAgent: "default",
@@ -1052,14 +1056,193 @@ function retrievalWorkbench() {
 
 
 function renderSharedMemory() {
+  const tabs = `<div class="memory-tabs"><button class="${state.memoryTab === "notes" ? "is-active" : ""}" data-memory-tab="notes">Notes</button><button class="${state.memoryTab === "graph" ? "is-active" : ""}" data-memory-tab="graph">Graph</button></div>`;
   if (!state.memories.length) {
     const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
-    page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">＋ Save first memory</button></div></div>${compose}`;
+    page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}${tabs}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">＋ Save first memory</button></div></div>${compose}`;
     return;
   }
   const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
   const search = state.memorySearchOpen ? retrievalWorkbench() : "";
-  page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-toolbar"><button data-memory-toggle="compose">＋ New memory</button><button data-memory-toggle="search">⌕ Search</button></div>${memoryVaultSurface()}${compose}${search}`;
+  const body = state.memoryTab === "graph"
+    ? memoryGalaxySurface()
+    : `<div class="memory-toolbar"><button data-memory-toggle="compose">＋ New memory</button><button data-memory-toggle="search">⌕ Search</button></div>${memoryVaultSurface()}`;
+  page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}${tabs}${body}${compose}${search}`;
+  if (state.memoryTab === "graph") window.requestAnimationFrame(renderMemoryGalaxy);
+}
+
+function memoryGalaxySurface() {
+  const memories = state.memories || [];
+  const linkCount = memories.reduce((total, memory) => total + memories.filter((other) => other.memory_id !== memory.memory_id && other.scope_kind === memory.scope_kind).length, 0) / 2;
+  const newest = memories.reduce((latest, memory) => Math.max(latest, new Date(memory.updated_at || 0).getTime()), 0);
+  const oldest = memories.reduce((oldest, memory) => Math.min(oldest, new Date(memory.updated_at || Date.now()).getTime()), Infinity);
+  return `<section class="memory-galaxy" aria-label="Memory galaxy - real durable facts as stars">
+    <header><div><p class="eyebrow">MEMORY GALAXY</p><h2>${memories.length} stars · ${linkCount} links</h2></div><span>${state.data.agents.length} authorized agents</span></header>
+    <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories"></div>
+    <footer><span>drag to orbit · scroll to zoom · click a star to read it · double-click to pause flight</span><span>✦ brighter &amp; whiter = more recently touched · span ${newest > oldest ? `${Math.ceil((newest - oldest) / 86400000)} days` : "today"}</span></footer>
+  </section>`;
+}
+
+function disposeMemoryGalaxy() {
+  if (!state.memoryGalaxy) return;
+  const galaxy = state.memoryGalaxy;
+  cancelAnimationFrame(galaxy.frame);
+  if (galaxy.resize) window.removeEventListener("resize", galaxy.resize);
+  galaxy.controls?.dispose();
+  galaxy.renderer?.dispose();
+  galaxy.renderer?.domElement?.remove();
+  galaxy.hovered?.material?.dispose?.();
+  galaxy.stars?.geometry?.dispose?.();
+  galaxy.links?.geometry?.dispose?.();
+  galaxy.labels?.forEach((label) => { label.material.map?.dispose?.(); label.material.dispose?.(); });
+  state.memoryGalaxy = null;
+}
+
+function renderMemoryGalaxy() {
+  const host = document.querySelector("#memory-galaxy-canvas");
+  if (!host) return;
+  disposeMemoryGalaxy();
+  const memories = state.memories || [];
+  if (!memories.length) return;
+  const width = Math.max(480, host.clientWidth || 800);
+  const height = Math.max(420, host.clientHeight || 560);
+  const newest = memories.reduce((latest, memory) => Math.max(latest, new Date(memory.updated_at || 0).getTime()), 0);
+  const oldest = memories.reduce((oldest, memory) => Math.min(oldest, new Date(memory.updated_at || Date.now()).getTime()), Infinity);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(width, height);
+  host.appendChild(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 400);
+  camera.position.set(0, 14, 26);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.minDistance = 6;
+  controls.maxDistance = 70;
+  controls.autoRotate = false;
+  controls.autoRotateSpeed = 0.25;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const starGeometry = new THREE.SphereGeometry(0.1, 12, 12);
+  const starGroup = new THREE.Group();
+  const recencyOf = (memory) => {
+    const span = newest - oldest;
+    const position = newest - new Date(memory.updated_at || oldest).getTime();
+    return span > 0 ? 1 - position / span : 1;
+  };
+  memories.forEach((memory, index) => {
+    const arm = index % 4;
+    const angle = (index / memories.length) * Math.PI * 4 + arm * (Math.PI / 2);
+    const radius = 2.6 + (index / memories.length) * 13;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    const y = (Math.sin(angle * 2.1) + Math.cos(index * 1.7)) * 1.4;
+    const recency = recencyOf(memory);
+    const hue = 0.52 + recency * 0.3;
+    const color = new THREE.Color().setHSL(hue, 0.55 + recency * 0.3, 0.5 + recency * 0.45);
+    const mesh = new THREE.Mesh(starGeometry, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.55 + recency * 0.45 }));
+    mesh.scale.setScalar(0.8 + recency * 2.2);
+    mesh.position.set(x, y, z);
+    mesh.userData = { memory };
+    starGroup.add(mesh);
+  });
+  const coreGlow = new THREE.Mesh(new THREE.SphereGeometry(1.7, 20, 20), new THREE.MeshBasicMaterial({ color: 0xcbbdff, transparent: true, opacity: 0.32 }));
+  starGroup.add(coreGlow);
+  scene.add(starGroup);
+  const pairs = [];
+  for (let i = 0; i < memories.length; i += 1) {
+    for (let j = i + 1; j < memories.length; j += 1) {
+      if (memories[i].scope_kind === memories[j].scope_kind) pairs.push([memories[i], memories[j]]);
+    }
+  }
+  if (pairs.length) {
+    const linkPositions = new Float32Array(pairs.length * 6);
+    const nodePositions = new Map();
+    starGroup.children.forEach((child, index) => {
+      if (child.userData?.memory) nodePositions.set(child.userData.memory.memory_id, [child.position.x, child.position.y, child.position.z]);
+      else if (index === starGroup.children.length - 1) coreGlow.userData = { core: true };
+    });
+    pairs.forEach(([a, b], index) => {
+      const pa = nodePositions.get(a.memory_id);
+      const pb = nodePositions.get(b.memory_id);
+      if (!pa || !pb) return;
+      linkPositions[index * 6] = pa[0];
+      linkPositions[index * 6 + 1] = pa[1];
+      linkPositions[index * 6 + 2] = pa[2];
+      linkPositions[index * 6 + 3] = pb[0];
+      linkPositions[index * 6 + 4] = pb[1];
+      linkPositions[index * 6 + 5] = pb[2];
+    });
+    const linkGeometry = new THREE.BufferGeometry();
+    linkGeometry.setAttribute("position", new THREE.BufferAttribute(linkPositions, 3));
+    const links = new THREE.LineSegments(linkGeometry, new THREE.LineBasicMaterial({ color: 0x5d5d8a, transparent: true, opacity: 0.22 }));
+    scene.add(links);
+  }
+  const labelStyle = { fillStyle: "#cfc9e0", font: "10px sans-serif", strokeStyle: "rgba(10,12,18,.85)", lineWidth: 3 };
+  const labelObjects = [];
+  starGroup.children.forEach((child) => {
+    const memory = child.userData?.memory;
+    if (!memory) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = 190; canvas.height = 46;
+    const context = canvas.getContext("2d");
+    context.font = labelStyle.font;
+    context.fillStyle = labelStyle.strokeStyle;
+    context.strokeStyle = labelStyle.fillStyle;
+    context.lineWidth = labelStyle.lineWidth;
+    const text = memory.title.length > 26 ? `${memory.title.slice(0, 25)}…` : memory.title;
+    context.strokeText(text, 8, 22);
+    context.fillText(text, 8, 22);
+    const texture = new THREE.CanvasTexture(canvas);
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+    sprite.scale.set(3.4, 0.82, 1);
+    sprite.position.copy(child.position).add(new THREE.Vector3(0, 1.1, 0));
+    sprite.userData = { memory };
+    scene.add(sprite);
+    labelObjects.push(sprite);
+  });
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  const pick = (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(starGroup.children, false);
+    const hit = hits.find((item) => item.object.userData?.memory);
+    if (hit) {
+      const memory = hit.object.userData.memory;
+      state.memoryNote = memory.memory_id;
+      state.memoryTab = "notes";
+      renderSharedMemory();
+      return true;
+    }
+    return false;
+  };
+  renderer.domElement.addEventListener("click", pick);
+  renderer.domElement.addEventListener("dblclick", () => {
+    if (reducedMotion) return;
+    controls.autoRotate = !controls.autoRotate;
+  });
+  let frame = 0;
+  const animate = () => {
+    frame = requestAnimationFrame(animate);
+    controls.update();
+    if (!reducedMotion) starGroup.rotation.y += controls.autoRotate ? 0.0025 : 0;
+    labelObjects.forEach((sprite) => sprite.material.rotation = 0);
+    renderer.render(scene, camera);
+  };
+  animate();
+  state.memoryGalaxy = { frame, controls, renderer, stars: starGroup, links: scene, labels: labelObjects, hovered: null };
+  const resize = () => {
+    const w = host.clientWidth || width;
+    const h = host.clientHeight || height;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  };
+  window.addEventListener("resize", resize);
+  state.memoryGalaxy.resize = resize;
 }
 
 function repositorySurface() {
@@ -1349,6 +1532,7 @@ function setView(view) {
   viewName.textContent = viewLabels[view];
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
   if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
+  if (view !== "memory") disposeMemoryGalaxy();
   if (view === "performance" && !state.costs) void loadCosts().then(() => state.view === "performance" && renderPerformance());
   (renderers[view] || (() => renderFuture(view)))();
   renderAgentNavigation();
@@ -1774,6 +1958,8 @@ document.addEventListener("click", (event) => {
     if (memoryToggle.dataset.memoryToggle === "search") state.memorySearchOpen = !state.memorySearchOpen;
     renderSharedMemory();
   }
+  const memoryTab = event.target.closest("[data-memory-tab]");
+  if (memoryTab) { state.memoryTab = memoryTab.dataset.memoryTab; renderSharedMemory(); }
   const learnForm = event.target.closest("[data-learn-form]");
   if (learnForm) void submitLearnForm(learnForm);
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();
