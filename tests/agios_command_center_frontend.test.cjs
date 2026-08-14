@@ -244,3 +244,16 @@ test("evidence chips, gauntlet reviews, ROI estimates, cost notes and knowledge 
   assert.match(css, /\.knowledge-intake/);
   assert.match(css, /\.learned-doc/);
 });
+
+test("live provider costs are vendor-reported and never guessed", () => {
+  assert.match(js, /\/api\/v1\/costs/);
+  assert.match(js, /loadCosts/);
+  assert.match(js, /costSurface/);
+  assert.match(js, /Live provider costs/);
+  assert.match(js, /vendor-reported/);
+  assert.match(js, /usage 30d/);
+  assert.match(js, /Keys stay in the environment/);
+  assert.match(css, /\.cost-panel/);
+  assert.match(css, /\.cost-row/);
+  assert.match(css, /\.cost-honesty/);
+});

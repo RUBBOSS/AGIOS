@@ -42,6 +42,7 @@ const state = {
   view: "command",
   dreaming: null,
   learned: null,
+  costs: null,
   selectedAgent: "default",
   agentMode: "overview",
   selectedSystem: "hermes",
@@ -1131,6 +1132,26 @@ function renderRepositories() {
   page.innerHTML = `${heading("Repository fabric", "Every workspace can be operated without losing its boundary.", "AGIOS registers repositories and project workspaces for agents and systems, while customer paths and contents remain hidden from the browser.")}<div class="system-summary"><span><strong>${state.data.summary.repositories}</strong> registered repositories</span><span><strong>${state.workspaces.length}</strong> approved workspaces</span><span><strong>${state.data.summary.shared_skills}</strong> reusable skills</span></div>${workspaceRegistryCard()}${repositorySurface()}`;
 }
 
+async function loadCosts() {
+  try {
+    state.costs = await api("/api/v1/costs");
+  } catch {
+    state.costs = null;
+  }
+}
+
+function costSurface() {
+  const snapshot = state.costs;
+  if (!snapshot) return `<section class="panel cost-panel"><header class="panel-header"><div><h2>Live provider costs</h2><p>Vendor-reported balances and usage, refreshed on request</p></div><span>Unavailable</span></header><div class="workspace-empty"><strong>Cost adapter offline</strong><span>The local costs endpoint did not respond. Restart AGIOS and retry.</span></div></section>`;
+  const rows = snapshot.providers.map((provider) => {
+    const badge = provider.status === "reported" ? status("reported") : provider.status === "reported-empty" ? `<span class="status-dot status-warning"></span>` : status(provider.status);
+    const figures = provider.status === "reported" && provider.usage_30d !== undefined
+      ? `<div class="cost-figures"><strong>$${Number(provider.usage_30d).toFixed(2)}</strong><span>usage 30d</span>${provider.remaining !== undefined && provider.remaining !== null ? `<strong>$${Number(provider.remaining).toFixed(2)}</strong><span>remaining</span>` : ""}</div>` : "";
+    return `<article class="cost-row"><header><div><strong>${esc(provider.label)}</strong><small>${esc(provider.reason || provider.note || provider.detail || "")}</small></div>${badge}</header>${figures}${provider.balances && provider.balances.length ? `<div class="cost-balances">${provider.balances.map((balance) => `<span><b>${esc(String(balance.currency || "?"))}</b> ${esc(String(balance.total_balance ?? "n/a"))} total${balance.granted_balance !== undefined ? ` · ${esc(String(balance.granted_balance))} granted` : ""}</span>`).join("")}</div>` : ""}</article>`;
+  }).join("");
+  return `<section class="panel cost-panel"><header class="panel-header"><div><h2>Live provider costs</h2><p>Read once from each provider API and cached for 5 minutes. Keys stay in the environment and never leave the machine.</p></div><span>${snapshot.total.reported ? `$${snapshot.total.reported_usage_usd.toFixed(2)} reported` : "nothing reported yet"}</span></header><div class="cost-list">${rows}</div><footer class="cost-honesty">${esc(snapshot.total.note)} · Updated ${new Date(snapshot.generated_at).toLocaleTimeString()}</footer></section>`;
+}
+
 function renderPerformance() {
   const runs = runsForPeriod();
   const completed = runs.filter((run) => run.status === "completed");
@@ -1155,7 +1176,8 @@ function renderPerformance() {
   }
   const routeRows = [...byRoute.entries()].sort((a, b) => b[1].total - a[1].total).map(([route, counts]) => `<div class="data-row columns-integrations"><div><strong>${esc(route)}</strong><p>Observed AGIOS runs</p></div><span>${counts.total}</span><span>${counts.completed} completed</span><span>${counts.failed} failed</span></div>`).join("");
   const recent = runs.slice(0, 12).map((run) => `<div class="data-row columns-integrations"><div><strong>${esc(run.objective.slice(0, 72))}</strong><p>${new Date(run.created_at).toLocaleString()}</p></div><span>${esc(titleCase(run.agent_id))}</span><span>${status(run.status)}</span><span>${esc(run.model || run.provider || run.runtime_id)}</span></div>`).join("");
-  page.innerHTML = `${heading("Performance", "Measured work, not agent theatre.", "This view uses real AGIOS run records. Provider spend and token totals remain unavailable until a trusted usage adapter reports them.", periodControl())}
+  page.innerHTML = `${heading("Performance", "Measured work, not agent theatre.", "Run metrics use real AGIOS records; provider costs below are vendor-reported and never guessed.", periodControl())}
+    ${costSurface()}
     <section class="signal-grid" aria-label="Runtime performance signals">
       ${signalCard("Runs", runs.length, `${active.length} active · ${runs.filter((run) => run.status === "awaiting_approval").length} awaiting approval`, "coral", [20, 28, 35, 32, 46, 51, 48, 63, 68, 74, 82, 90])}
       ${signalCard("Verified completion", successRate === null ? "Unavailable" : `${successRate}%`, `${completed.length} completed · ${failed.length} failed`, "mint", [22, 29, 38, 45, 52, 58, 66, 70, 76, 81, 86, 92])}
@@ -1389,6 +1411,7 @@ function setView(view) {
   viewName.textContent = viewLabels[view];
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
   if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
+  if (view === "performance" && !state.costs) void loadCosts().then(() => state.view === "performance" && renderPerformance());
   (renderers[view] || (() => renderFuture(view)))();
   renderAgentNavigation();
   renderSystemNavigation();
@@ -2160,6 +2183,7 @@ async function boot() {
     try { state.voice = await api("/api/v1/voice/capabilities"); } catch { state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } }; }
     await loadDreaming();
     await loadLearning();
+    void loadCosts();
     document.querySelector("#approval-count").textContent = state.data.summary.pending_approvals;
     const runtime = state.data.runtime;
     document.querySelector("#runtime-caption").textContent = runtime.gateway_running ? `${state.data.summary.available_agents} agents registered · gateway online` : `${state.data.summary.available_agents} agents registered · gateway standing by`;

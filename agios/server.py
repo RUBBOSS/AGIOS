@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from .config import ConfigError, load_config
 from .control_plane import build_command_center
 from .a2a import A2AService, A2A_VERSION
+from .costs import build_cost_snapshot
 from .dreaming import DreamingStore, build_dreaming_digest
 from .gauntlet import build_gauntlet_prompt
 from .learning import LearningStore, LearningStoreError, build_brain_file
@@ -214,7 +215,7 @@ def create_app(
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -775,6 +776,15 @@ def create_app(
         except LearningStoreError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
         return {"schema_version": 1, "brain_file": build_brain_file(doc)}
+
+    @app.get("/api/v1/costs")
+    def cost_snapshot(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return build_cost_snapshot()
 
     @app.get("/api/v1/runtimes")
     def list_runtimes(
