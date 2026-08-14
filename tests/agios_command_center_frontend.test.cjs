@@ -22,7 +22,8 @@ test("standalone AGIOS shell exposes core operating surfaces", () => {
 test("AI systems share governed memory and skills without faking connectivity", () => {
   for (const system of ["Hermes", "Codex", "Gemini", "Antigravity", "DeepSeek", "Ollama", "OpenCode"]) assert.match(js, new RegExp(system));
   for (const mode of ["Models", "Agents", "Goals", "Memory", "Tools", "MCPs", "Repositories"]) assert.match(js, new RegExp(mode));
-  assert.match(js, /Facts agents can read/);
+  assert.match(js, /Memory \\u2014 Obsidian/);
+  assert.match(js, /Search \$\{count\} shared memor/);
   assert.match(js, /Install once\. Use everywhere/);
   assert.match(js, /credentials remain unreadable|Never include credentials/i);
   assert.match(js, /Only AGIOS runs that used this runtime/);
@@ -115,7 +116,7 @@ test("frontend exposes scoped RAG evidence and the governed A2A gateway", () => 
 });
 
 test("Phase 4 exposes real voice, model routing, professional agents, growth, and one Memory Studio", () => {
-  for (const label of ["Push to talk", "Model route", "Professional identity", "Governed skill evolution", "Memory Studio", "MEMORY VAULT"]) assert.match(js, new RegExp(label));
+  for (const label of ["Push to talk", "Model route", "Professional identity", "Governed skill evolution", "Memory Studio", "Memory \\\\u2014 Obsidian", "MEMORY GALAXY", "OMI"]) assert.match(js, new RegExp(label));
   assert.match(js, /Chat \+ Voice/);
   assert.match(js, /\/api\/v1\/voice\/transcribe/);
   assert.match(js, /\/api\/v1\/voice\/synthesize/);
@@ -124,6 +125,9 @@ test("Phase 4 exposes real voice, model routing, professional agents, growth, an
   assert.match(js, /simulation_default/);
   assert.match(css, /\.memory-vault/);
   assert.match(css, /\.memory-vault-tree/);
+  assert.match(css, /\.memory-panel-header/);
+  assert.match(css, /\.memory-omi-pill/);
+  assert.match(css, /\.memory-mode-tabs/);
   assert.match(js, /MEMORY GALAXY/);
   assert.match(js, /memory-galaxy-canvas/);
   assert.match(js, /new WebGLRenderer/);

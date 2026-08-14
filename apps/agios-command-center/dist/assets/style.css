@@ -722,14 +722,7 @@ body { background: #090a0f; }
 .memory-vault-empty-state p { max-width: 44ch; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .memory-vault-empty-state button { margin-top: 8px; padding: 10px 20px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; transition: border-color .12s ease, background .12s ease; }
 .memory-vault-empty-state button:hover { border-color: var(--dim); background: rgba(255,255,255,.03); }
-.memory-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.memory-tabs button { padding: 8px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--dim); font-size: 13px; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease; }
-.memory-tabs button:hover { color: var(--text); }
-.memory-tabs button.is-active { border-color: rgba(99,217,165,.4); background: rgba(99,217,165,.08); color: var(--accent, #63d9a5); }
 .memory-galaxy { overflow: hidden; border: 1px solid #2d3938; border-radius: 13px; background: #0e1213; }
-.memory-galaxy > header { min-height: 62px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line-soft); }
-.memory-galaxy > header h2 { margin: 3px 0 0; font-size: 16px; }
-.memory-galaxy > header > span { flex: none; color: var(--dim); font-size: 11px; letter-spacing: .06em; }
 .memory-galaxy-canvas { min-height: 520px; background: radial-gradient(circle at 50% 42%, rgba(41,34,74,.85), #0a0c14 68%); }
 .memory-galaxy-canvas canvas { display: block; }
 .memory-galaxy > footer { padding: 10px 18px; display: flex; justify-content: space-between; gap: 18px; color: var(--dim); font-size: 11px; border-top: 1px solid var(--line-soft); }
@@ -1444,3 +1437,48 @@ body { background: #090a0f; }
 .memory-toolbar { display: flex; gap: 8px; margin-bottom: 14px; }
 .memory-toolbar button { padding: 8px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; transition: border-color .12s ease, background .12s ease; }
 .memory-toolbar button:hover { border-color: var(--dim); background: rgba(255,255,255,.03); }
+
+/* ---- Memory page (video-exact: brain header, OMI pill, 4 tabs, galaxy) ---- */
+.memory-page-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+.memory-page-hero > div:first-child { display: flex; gap: 14px; align-items: center; }
+.memory-page-mark { color: #c9a86a; font-size: 18px; }
+.memory-page-hero small { display: block; color: #8b7ba8; font-size: 10px; letter-spacing: .14em; }
+.memory-page-hero h1 { margin: 4px 0 6px; font-size: 40px; line-height: 1; font-weight: 560; letter-spacing: -.02em; }
+.memory-page-hero p { margin: 0; color: var(--muted); font-size: 13px; }
+.memory-page-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+.memory-page-actions button { padding: 7px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--dim); font-size: 12px; cursor: pointer; }
+.memory-page-actions span { color: #5d5a6e; font-size: 10px; letter-spacing: .12em; }
+.memory-panel { overflow: hidden; margin-bottom: 18px; border: 1px solid #2d3938; border-radius: 13px; background: #0e1213; }
+.memory-panel-header { min-height: 64px; padding: 0 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line-soft); }
+.memory-panel-mark { width: 3px; height: 26px; border-radius: 2px; background: linear-gradient(#d7b26c, #8f6f3a); }
+.memory-brain-icon { flex: none; }
+.memory-panel-header h2 { margin: 0; flex: 1; color: #7fc9b2; font-size: 16px; letter-spacing: .01em; }
+.memory-omi-pill { padding: 4px 11px; border: 1px solid rgba(99,217,165,.35); border-radius: 20px; color: #9ad9c2; font-size: 12px; }
+.memory-mode-tabs { display: flex; gap: 4px; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); background: #0b0f10; }
+.memory-mode-tabs button { padding: 7px 15px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--dim); font-size: 13px; cursor: pointer; transition: border-color .12s ease, color .12s ease, background .12s ease; }
+.memory-mode-tabs button:hover { color: var(--text); }
+.memory-mode-tabs button.is-active { border-color: rgba(147,111,207,.45); background: rgba(120,88,176,.16); color: #cdbdf0; }
+.memory-recent-list { padding: 8px 0; }
+.memory-recent-row { width: 100%; display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 14px; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); text-align: left; transition: background .12s ease; }
+.memory-recent-row:hover { background: rgba(255,255,255,.025); }
+.memory-recent-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.memory-recent-meta { font-size: 11px; color: var(--dim); }
+.memory-recent-row time { font-size: 11px; color: var(--faint, #5c726a); }
+.memory-omi-list { padding: 14px 18px; }
+.memory-omi-note { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+.memory-omi-row { padding: 13px 0; border-bottom: 1px solid var(--line-soft); }
+.memory-omi-row:last-child { border-bottom: 0; }
+.memory-omi-row header { display: flex; justify-content: space-between; color: var(--dim); font-size: 11px; }
+.memory-omi-row header em { font-style: normal; color: #7fc9b2; }
+.memory-omi-row h3 { margin: 7px 0 5px; font-size: 14px; }
+.memory-omi-row p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
+.memory-omi-row footer { margin-top: 8px; display: flex; gap: 16px; color: var(--faint, #5c726a); font-size: 11px; }
+.memory-galaxy { overflow: hidden; }
+.memory-galaxy-canvas { position: relative; min-height: 540px; background: radial-gradient(circle at 50% 44%, rgba(56,42,105,.9), #0a0b16 72%); }
+.memory-galaxy-canvas canvas { display: block; position: absolute; inset: 0; }
+.memory-galaxy-overlay { position: absolute; z-index: 2; top: 18px; left: 20px; pointer-events: none; }
+.memory-galaxy-overlay strong { display: block; color: #f2effa; font-size: 15px; letter-spacing: .1em; }
+.memory-galaxy-overlay span { display: block; margin-top: 5px; color: #b9aed6; font-size: 13px; }
+.memory-galaxy-overlay p { margin: 10px 0 0; color: #8f86ad; font-size: 11px; }
+.memory-galaxy-overlay .memory-galaxy-hint { margin-top: 4px; color: #a99bc9; }
+.memory-galaxy > footer { padding: 10px 18px; display: flex; justify-content: space-between; gap: 18px; color: var(--dim); font-size: 11px; border-top: 1px solid var(--line-soft); background: #0e1213; }

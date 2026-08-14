@@ -31554,29 +31554,59 @@ function retrievalWorkbench() {
   const agents = state.data.agents.map((agent) => `<option value="${esc(agent.id)}">${esc(titleCase(agent.id))}</option>`).join("");
   return `<section class="retrieval-workbench"><form class="workspace-card retrieval-compose" data-retrieval-form><div><p class="eyebrow">RAG evidence console</p><h3>Search what an agent is allowed to know</h3><p>Mode: ${esc(mode)}. Results include provenance and citation IDs; no-match queries return no evidence.</p></div><div class="retrieval-fields"><label>Agent<select name="agentId">${agents}</select></label><label>Project scope<input name="projectId" maxlength="128" placeholder="Optional project ID"/></label><label>Evidence query<input name="query" required maxlength="8000" placeholder="What verified knowledge do we have about..."/></label><button type="submit">Retrieve evidence</button></div></form><div class="evidence-feed">${hits || `<div class="workspace-empty workspace-card"><b>RAG</b><strong>Evidence appears here</strong><span>Searches are local and restricted to the selected agent's authorized scopes.</span></div>`}</div></section>`;
 }
-function renderSharedMemory() {
-  const tabs = `<div class="memory-tabs"><button class="${state.memoryTab === "notes" ? "is-active" : ""}" data-memory-tab="notes">Notes</button><button class="${state.memoryTab === "graph" ? "is-active" : ""}" data-memory-tab="graph">Graph</button></div>`;
-  if (!state.memories.length) {
-    const compose2 = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
-    page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}${tabs}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">\uFF0B Save first memory</button></div></div>${compose2}`;
-    return;
-  }
-  const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
-  const search = state.memorySearchOpen ? retrievalWorkbench() : "";
-  const body = state.memoryTab === "graph" ? memoryGalaxySurface() : `<div class="memory-toolbar"><button data-memory-toggle="compose">\uFF0B New memory</button><button data-memory-toggle="search">\u2315 Search</button></div>${memoryVaultSurface()}`;
-  page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}${tabs}${body}${compose}${search}`;
-  if (state.memoryTab === "graph") window.requestAnimationFrame(renderMemoryGalaxy);
+function brainIcon() {
+  return `<svg class="memory-brain-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#63d9a5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 4.5A3.2 3.2 0 0 0 5.2 6.4c-.3 2.2 1.1 3.4-.2 5.2-1.2 1.7-.2 3.9 1.9 4.3 1.9.4 3.3-1 5.1-1.2"/><path d="M14.5 4.5A3.2 3.2 0 0 1 18.8 6.4c.3 2.2-1.1 3.4.2 5.2 1.2 1.7.2 3.9-1.9 4.3-1.9.4-3.3-1-5.1-1.2"/><path d="M12 4v15.5"/><path d="M9 19.5c.8-.6 1.6-.6 2.4 0M12 19.5c.8-.6 1.6-.6 2.4 0"/></svg>`;
+}
+function memoryPageHero() {
+  const count = state.memories.length;
+  return `<div class="memory-page-hero"><div><span class="memory-page-mark">\u25C6</span><div><small>SELF \xB7 MEMORY</small><h1>Memory</h1><p>Search ${count} shared memor${count === 1 ? "y" : "ies"} + your vault.</p></div></div><div class="memory-page-actions"><button type="button" data-focus-search title="Focus the search field">Ctrl K \xB7 Command palette</button><span>LOCAL \xB7 STUDIO</span></div></div>`;
+}
+function memoryPanelTabs() {
+  const recentCount = Math.min(12, state.memories.length);
+  const tabs = [
+    ["recent", `\u25F7 Recent ${recentCount}`],
+    ["notes", "\u25A4 Notes"],
+    ["omi", "\u2726 Omi"],
+    ["graph", "\u25C9 Graph"]
+  ];
+  return `<div class="memory-mode-tabs">${tabs.map(([id2, label]) => `<button class="${state.memoryTab === id2 ? "is-active" : ""}" data-memory-tab="${id2}">${label}</button>`).join("")}</div>`;
+}
+function memoryRecentSurface() {
+  const recent = [...state.memories].sort((a2, b) => new Date(b.updated_at || 0) - new Date(a2.updated_at || 0)).slice(0, 12);
+  const rows = recent.map((memory) => `<button class="memory-recent-row" data-memory-note="${esc(memory.memory_id)}"><span class="memory-recent-title">${esc(memory.title)}</span><span class="memory-recent-meta">${esc(titleCase(memory.scope_kind))} \xB7 ${esc(titleCase(memory.trust))} trust</span><time>${relativeTime(memory.updated_at)}</time></button>`).join("");
+  return `<div class="memory-recent-list">${rows || `<div class="memory-vault-empty"><strong>No memories yet</strong><span>Save the first durable fact and it appears here.</span></div>`}</div>`;
+}
+function memoryOmiSurface() {
+  const rows = state.memories.map((memory) => `<article class="memory-omi-row"><header><span>${esc(titleCase(memory.scope_kind))} / ${esc(memory.scope_id)}</span><em>${esc(titleCase(memory.trust))} trust</em></header><h3>${esc(memory.title)}</h3><p>${esc(memory.body)}</p><footer><span>by ${esc(titleCase(memory.created_by))}</span><time>${relativeTime(memory.updated_at)}</time></footer></article>`).join("");
+  return `<div class="memory-omi-list"><p class="memory-omi-note">Open memory items readable by every authorized agent. ${state.memories.length} stored.</p>${rows}</div>`;
 }
 function memoryGalaxySurface() {
   const memories = state.memories || [];
   const linkCount = memories.reduce((total, memory) => total + memories.filter((other) => other.memory_id !== memory.memory_id && other.scope_kind === memory.scope_kind).length, 0) / 2;
   const newest = memories.reduce((latest, memory) => Math.max(latest, new Date(memory.updated_at || 0).getTime()), 0);
   const oldest = memories.reduce((oldest2, memory) => Math.min(oldest2, new Date(memory.updated_at || Date.now()).getTime()), Infinity);
-  return `<section class="memory-galaxy" aria-label="Memory galaxy - real durable facts as stars">
-    <header><div><p class="eyebrow">MEMORY GALAXY</p><h2>${memories.length} stars \xB7 ${linkCount} links</h2></div><span>${state.data.agents.length} authorized agents</span></header>
-    <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories"></div>
-    <footer><span>drag to orbit \xB7 scroll to zoom \xB7 click a star to read it \xB7 double-click to pause flight</span><span>\u2726 brighter &amp; whiter = more recently touched \xB7 span ${newest > oldest ? `${Math.ceil((newest - oldest) / 864e5)} days` : "today"}</span></footer>
-  </section>`;
+  return `<div class="memory-galaxy" aria-label="Memory galaxy - real durable facts as stars">
+    <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories">
+      <div class="memory-galaxy-overlay"><strong>MEMORY GALAXY</strong><span>${memories.length} stars \xB7 ${linkCount} links</span><p>drag to orbit \xB7 scroll to zoom \xB7 click a star \xB7 double-click to pause flight</p><p class="memory-galaxy-hint">\u2726 brighter &amp; whiter = more recently touched</p></div>
+    </div>
+    <footer><span>${memories.length} real facts \xB7 links = shared scope</span><span>span ${newest > oldest ? `${Math.ceil((newest - oldest) / 864e5)} days` : "today"}</span></footer>
+  </div>`;
+}
+function renderSharedMemory() {
+  const count = state.memories.length;
+  const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
+  const search = state.memorySearchOpen ? retrievalWorkbench() : "";
+  if (!count) {
+    page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count} OMI</span></header>${memoryPanelTabs()}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">\uFF0B Save first memory</button></div></div></section>${compose}${search}`;
+    return;
+  }
+  let body = "";
+  if (state.memoryTab === "recent") body = memoryRecentSurface();
+  else if (state.memoryTab === "omi") body = memoryOmiSurface();
+  else if (state.memoryTab === "graph") body = memoryGalaxySurface();
+  else body = `<div class="memory-toolbar"><button data-memory-toggle="compose">\uFF0B New memory</button><button data-memory-toggle="search">\u2315 Search</button></div>${memoryVaultSurface()}`;
+  page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count} OMI</span></header>${memoryPanelTabs()}${body}</section>${compose}${search}`;
+  if (state.memoryTab === "graph") window.requestAnimationFrame(renderMemoryGalaxy);
 }
 function disposeMemoryGalaxy() {
   if (!state.memoryGalaxy) return;
@@ -31586,7 +31616,6 @@ function disposeMemoryGalaxy() {
   galaxy.controls?.dispose();
   galaxy.renderer?.dispose();
   galaxy.renderer?.domElement?.remove();
-  galaxy.hovered?.material?.dispose?.();
   galaxy.stars?.geometry?.dispose?.();
   galaxy.links?.geometry?.dispose?.();
   galaxy.labels?.forEach((label) => {
@@ -31611,16 +31640,17 @@ function renderMemoryGalaxy() {
   host.appendChild(renderer.domElement);
   const scene = new Scene();
   const camera = new PerspectiveCamera(55, width / height, 0.1, 400);
-  camera.position.set(0, 14, 26);
+  camera.position.set(0, 13, 27);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.06;
   controls.minDistance = 6;
-  controls.maxDistance = 70;
+  controls.maxDistance = 80;
   controls.autoRotate = false;
-  controls.autoRotateSpeed = 0.25;
+  controls.autoRotateSpeed = 0.3;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const starGeometry = new SphereGeometry(0.1, 12, 12);
+  const scopeHue = { portfolio: 0.48, business: 0.11, department: 0.75, project: 0.55, private: 0.93 };
+  const starGeometry = new SphereGeometry(0.11, 14, 14);
   const starGroup = new Group();
   const recencyOf = (memory) => {
     const span = newest - oldest;
@@ -31629,21 +31659,21 @@ function renderMemoryGalaxy() {
   };
   memories.forEach((memory, index2) => {
     const arm = index2 % 4;
-    const angle = index2 / memories.length * Math.PI * 4 + arm * (Math.PI / 2);
-    const radius = 2.6 + index2 / memories.length * 13;
+    const angle = index2 / memories.length * Math.PI * 4.4 + arm * (Math.PI / 2);
+    const radius = 2.4 + Math.pow(index2 / memories.length, 0.72) * 14;
     const x3 = Math.cos(angle) * radius;
     const z = Math.sin(angle) * radius;
-    const y3 = (Math.sin(angle * 2.1) + Math.cos(index2 * 1.7)) * 1.4;
+    const y3 = (Math.sin(angle * 2.1) + Math.cos(index2 * 1.7)) * 1.35;
     const recency = recencyOf(memory);
-    const hue = 0.52 + recency * 0.3;
-    const color2 = new Color2().setHSL(hue, 0.55 + recency * 0.3, 0.5 + recency * 0.45);
-    const mesh = new Mesh(starGeometry, new MeshBasicMaterial({ color: color2, transparent: true, opacity: 0.55 + recency * 0.45 }));
-    mesh.scale.setScalar(0.8 + recency * 2.2);
+    const hue = scopeHue[memory.scope_kind] ?? 0.6;
+    const color2 = new Color2().setHSL(hue, 0.5 + recency * 0.35, 0.48 + recency * 0.48);
+    const mesh = new Mesh(starGeometry, new MeshBasicMaterial({ color: color2, transparent: true, opacity: 0.6 + recency * 0.4 }));
+    mesh.scale.setScalar(0.8 + recency * 2.4);
     mesh.position.set(x3, y3, z);
     mesh.userData = { memory };
     starGroup.add(mesh);
   });
-  const coreGlow = new Mesh(new SphereGeometry(1.7, 20, 20), new MeshBasicMaterial({ color: 13352447, transparent: true, opacity: 0.32 }));
+  const coreGlow = new Mesh(new SphereGeometry(1.9, 22, 22), new MeshBasicMaterial({ color: 12363775, transparent: true, opacity: 0.34 }));
   starGroup.add(coreGlow);
   scene.add(starGroup);
   const pairs = [];
@@ -31655,9 +31685,8 @@ function renderMemoryGalaxy() {
   if (pairs.length) {
     const linkPositions = new Float32Array(pairs.length * 6);
     const nodePositions = /* @__PURE__ */ new Map();
-    starGroup.children.forEach((child, index2) => {
+    starGroup.children.forEach((child) => {
       if (child.userData?.memory) nodePositions.set(child.userData.memory.memory_id, [child.position.x, child.position.y, child.position.z]);
-      else if (index2 === starGroup.children.length - 1) coreGlow.userData = { core: true };
     });
     pairs.forEach(([a2, b], index2) => {
       const pa = nodePositions.get(a2.memory_id);
@@ -31672,29 +31701,45 @@ function renderMemoryGalaxy() {
     });
     const linkGeometry = new BufferGeometry();
     linkGeometry.setAttribute("position", new BufferAttribute(linkPositions, 3));
-    const links = new LineSegments(linkGeometry, new LineBasicMaterial({ color: 6118794, transparent: true, opacity: 0.22 }));
+    const links = new LineSegments(linkGeometry, new LineBasicMaterial({ color: 6971296, transparent: true, opacity: 0.3 }));
     scene.add(links);
   }
-  const labelStyle = { fillStyle: "#cfc9e0", font: "10px sans-serif", strokeStyle: "rgba(10,12,18,.85)", lineWidth: 3 };
   const labelObjects = [];
   starGroup.children.forEach((child) => {
     const memory = child.userData?.memory;
     if (!memory) return;
+    const text = memory.title.length > 24 ? `${memory.title.slice(0, 23)}\u2026` : memory.title;
     const canvas = document.createElement("canvas");
-    canvas.width = 190;
-    canvas.height = 46;
     const context = canvas.getContext("2d");
-    context.font = labelStyle.font;
-    context.fillStyle = labelStyle.strokeStyle;
-    context.strokeStyle = labelStyle.fillStyle;
-    context.lineWidth = labelStyle.lineWidth;
-    const text = memory.title.length > 26 ? `${memory.title.slice(0, 25)}\u2026` : memory.title;
-    context.strokeText(text, 8, 22);
-    context.fillText(text, 8, 22);
+    const font = "11px sans-serif";
+    context.font = font;
+    const textWidth = Math.ceil(context.measureText(text).width);
+    canvas.width = textWidth + 22;
+    canvas.height = 30;
+    const context2 = canvas.getContext("2d");
+    context2.font = font;
+    const radius = 9;
+    const w2 = canvas.width;
+    const h2 = canvas.height;
+    context2.fillStyle = "rgba(13,15,24,.86)";
+    context2.beginPath();
+    context2.moveTo(radius, 0);
+    context2.lineTo(w2 - radius, 0);
+    context2.quadraticCurveTo(w2, 0, w2, radius);
+    context2.lineTo(w2, h2 - radius);
+    context2.quadraticCurveTo(w2, h2, w2 - radius, h2);
+    context2.lineTo(radius, h2);
+    context2.quadraticCurveTo(0, h2, 0, h2 - radius);
+    context2.lineTo(0, radius);
+    context2.quadraticCurveTo(0, 0, radius, 0);
+    context2.closePath();
+    context2.fill();
+    context2.fillStyle = "#d8d3ea";
+    context2.fillText(text, 11, 20);
     const texture = new CanvasTexture(canvas);
     const sprite = new Sprite(new SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
-    sprite.scale.set(3.4, 0.82, 1);
-    sprite.position.copy(child.position).add(new Vector3(0, 1.1, 0));
+    sprite.scale.set(w2 / 52, h2 / 52, 1);
+    sprite.position.copy(child.position).add(new Vector3(0, 1.15, 0));
     sprite.userData = { memory };
     scene.add(sprite);
     labelObjects.push(sprite);
@@ -31726,8 +31771,10 @@ function renderMemoryGalaxy() {
   const animate = () => {
     frame2 = requestAnimationFrame(animate);
     controls.update();
-    if (!reducedMotion) starGroup.rotation.y += controls.autoRotate ? 25e-4 : 0;
-    labelObjects.forEach((sprite) => sprite.material.rotation = 0);
+    if (!reducedMotion) starGroup.rotation.y += controls.autoRotate ? 28e-4 : 0;
+    labelObjects.forEach((sprite) => {
+      sprite.material.rotation = 0;
+    });
     renderer.render(scene, camera);
   };
   animate();
