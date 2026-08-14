@@ -20,6 +20,8 @@ from .config import ConfigError, load_config
 from .control_plane import build_command_center
 from .a2a import A2AService, A2A_VERSION
 from .dreaming import DreamingStore, build_dreaming_digest
+from .gauntlet import build_gauntlet_prompt
+from .learning import LearningStore, LearningStoreError, build_brain_file
 from .operational import OperationalError, OperationalService, default_state_dir
 from .adapters.runtimes import collect_runtime_catalog
 from .orchestration import OrchestrationError, build_routing_plan, classify_ari_intent
@@ -139,6 +141,12 @@ class ApprovalBody(BaseModel):
     approval_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
+class LearnRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=160)
+    source_name: str = Field(default="pasted", min_length=1, max_length=160)
+    text: str = Field(min_length=1, max_length=200_000)
+
+
 class MemoryRequest(BaseModel):
     scope_kind: Literal["portfolio", "business", "department", "project", "private"]
     scope_id: str = Field(min_length=1, max_length=128)
@@ -176,6 +184,7 @@ def create_app(
     )
     selected_journal = journal_path or service.journal_path
     dreaming_store = DreamingStore(Path(service.state_dir) / "dreaming.json")
+    learning_store = LearningStore(service.state_dir)
     a2a = A2AService(
         config=config,
         operational=service,
@@ -205,7 +214,7 @@ def create_app(
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -682,6 +691,90 @@ def create_app(
             raise HTTPException(status_code=400, detail="recommendation id is invalid")
         dreaming_store.dismiss(recommendation_id)
         return {"schema_version": 1, "dismissed": recommendation_id}
+
+    @app.post("/api/v1/gauntlet/{run_id}", status_code=202)
+    def gauntlet_review(
+        run_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        if not run_id or len(run_id) > 128 or "/" in run_id or ".." in run_id:
+            raise HTTPException(status_code=400, detail="run id is invalid")
+        try:
+            source = service.sessions.get(run_id)
+        except (OperationalError, ValueError, KeyError):
+            raise HTTPException(status_code=404, detail="run was not found") from None
+        if source.get("status") != "completed":
+            raise HTTPException(status_code=422, detail="only completed runs can enter the gauntlet")
+        if not str(source.get("response") or "").strip():
+            raise HTTPException(status_code=422, detail="the run has no response to review")
+        objective = build_gauntlet_prompt(
+            objective=str(source.get("objective") or ""),
+            data_class=str(source.get("data_class") or "internal"),
+            response=str(source.get("response") or ""),
+            mode=str(source.get("mode") or "goal"),
+            agent_id=str(source.get("agent_id") or "unknown"),
+        )
+        try:
+            created = service.create_run(
+                mode="goal",
+                agent_id="reviewer",
+                objective=objective,
+                data_class=str(source.get("data_class") or "internal"),
+                runtime_id="hermes",
+            )
+        except OperationalError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return {
+            "schema_version": 1,
+            "source_run_id": run_id,
+            "review_run_id": str(created["run_id"]),
+            "critics": ["brief", "system", "craft"],
+            "state": "awaiting exact approval before the reviewer runtime wakes",
+        }
+
+    @app.get("/api/v1/learn")
+    def learn_list(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return {"schema_version": 1, "summary": learning_store.summary(), "documents": learning_store.list()}
+
+    @app.post("/api/v1/learn", status_code=201)
+    def learn_add(
+        body: LearnRequest,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        try:
+            doc = learning_store.add(
+                title=body.title, source_name=body.source_name, text=body.text
+            )
+        except LearningStoreError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return {"schema_version": 1, "doc": build_brain_file(doc)}
+
+    @app.get("/api/v1/learn/{doc_id}")
+    def learn_get(
+        doc_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        if not doc_id or len(doc_id) > 128 or "/" in doc_id or ".." in doc_id:
+            raise HTTPException(status_code=400, detail="document id is invalid")
+        try:
+            doc = learning_store.get(doc_id)
+        except LearningStoreError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return {"schema_version": 1, "brain_file": build_brain_file(doc)}
 
     @app.get("/api/v1/runtimes")
     def list_runtimes(

@@ -9785,6 +9785,7 @@ var state = {
   data: null,
   view: "command",
   dreaming: null,
+  learned: null,
   selectedAgent: "default",
   agentMode: "overview",
   selectedSystem: "hermes",
@@ -10245,11 +10246,19 @@ function runError(run) {
   const code = run.error_code || "runtime_failed";
   return `<div class="run-error"><strong>${esc(titleCase(code))}</strong><span>${esc(runErrorMessages[code] || runErrorMessages.runtime_failed)}</span></div>`;
 }
+function evidenceChips(run) {
+  const chips = [
+    { label: "memory", count: (run.memory_ids || []).length, tone: "violet" },
+    { label: "skills", count: (run.skill_ids || []).length, tone: "mint" },
+    { label: "images", count: (run.vision_asset_ids || []).length, tone: "coral" }
+  ];
+  return `<div class="evidence-chips">${chips.map((chip) => `<span class="evidence-chip tone-${chip.tone}${chip.count ? "" : " is-empty"}" title="${chip.count ? `${chip.count} ${chip.label} attached to this run` : `No ${chip.label} attached`}"><i></i>${chip.label} ${chip.count}</span>`).join("")}</div>`;
+}
 function runCard(run, { transcript = false } = {}) {
   const active = ["queued", "running"].includes(run.status);
   const approval = run.status === "awaiting_approval" ? `<div class="approval-gate"><div><strong>Exact run approval required</strong><small>${esc(titleCase(run.data_class))} \xB7 ${esc(run.provider || "local runtime")} \xB7 ${esc(run.model || "profile model")}</small></div><div class="approval-actions"><button data-cancel-run="${esc(run.run_id)}">Cancel</button><button data-approve-run="${esc(run.run_id)}" data-approval-digest="${esc(run.approval_digest)}">Approve & run</button></div></div>` : "";
-  const response = run.response ? `<div class="run-response"><div class="response-heading"><span>${esc(titleCase(run.agent_id))}</span><button type="button" data-speak-run="${esc(run.run_id)}" title="Speak this reply">Listen</button></div><pre>${esc(run.response)}</pre></div>` : run.status === "failed" ? runError(run) : active ? `<div class="run-progress"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "The worker is thinking; this view refreshes automatically"}</span></div>` : "";
-  return `<article class="run-card ${transcript ? "is-transcript" : ""}"><header><div><span>${esc(titleCase(run.mode))} \xB7 ${new Date(run.created_at).toLocaleString()}</span><strong>${esc(titleCase(run.agent_id))}</strong></div>${status(run.status)}</header><div class="run-request"><span>OWNER</span><p>${esc(run.objective)}</p></div>${approval}${response}<footer><span>${run.skill_ids.length} skills \xB7 ${run.memory_ids.length} memories \xB7 ${(run.vision_asset_ids || []).length} images</span><span>${esc(titleCase(run.runtime_id || "hermes"))}${run.workspace_id ? ` \xB7 ${esc(titleCase(run.workspace_access))} workspace` : ""} \xB7 ${active ? "working" : esc(run.hermes_session_id || "audited locally")}</span></footer></article>`;
+  const response = run.response ? `<div class="run-response"><div class="response-heading"><span>${esc(titleCase(run.agent_id))}</span><button type="button" data-speak-run="${esc(run.run_id)}" title="Speak this reply">Listen</button>${run.status === "completed" ? `<button type="button" class="gauntlet-launch" data-gauntlet-run="${esc(run.run_id)}" title="Independent critics: brief, system, craft">Run gauntlet review</button>` : ""}</div><pre>${esc(run.response)}</pre></div>` : run.status === "failed" ? runError(run) : active ? `<div class="run-progress"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "The worker is thinking; this view refreshes automatically"}</span></div>` : "";
+  return `<article class="run-card ${transcript ? "is-transcript" : ""}"><header><div><span>${esc(titleCase(run.mode))} \xB7 ${new Date(run.created_at).toLocaleString()}</span><strong>${esc(titleCase(run.agent_id))}</strong></div>${status(run.status)}</header><div class="run-request"><span>OWNER</span><p>${esc(run.objective)}</p></div>${approval}${response}<footer>${evidenceChips(run)}<span>${esc(titleCase(run.runtime_id || "hermes"))}${run.workspace_id ? ` \xB7 ${esc(titleCase(run.workspace_access))} workspace` : ""} \xB7 ${active ? "working" : esc(run.hermes_session_id || "audited locally")}</span></footer></article>`;
 }
 function skillPicker() {
   const items = state.data.shared_fabric.skills.items.slice(0, 18);
@@ -10291,8 +10300,13 @@ function operationalWorkspace(agent, mode) {
   if (mode === "sessions") return `<div class="runtime-session-list">${runs.length ? runs.map((run) => runCard(run)).join("") : `<div class="workspace-empty workspace-card large"><b>\u25F7</b><strong>No AGIOS sessions yet</strong><span>Chats and approved goals will appear here with their real status and response.</span></div>`}</div>`;
   return `${mode === "workspace" ? workspaceRegistryCard() : ""}<div class="operational-grid">${runComposer(agent, mode)}<section class="run-feed"><div class="run-feed-heading"><div><p class="eyebrow">${mode === "goal" ? "Goal watch" : mode === "workspace" ? "Workspace watch" : "Conversation"}</p><h3>${runs.length} real ${runs.length === 1 ? "run" : "runs"}</h3></div><span>${runs.some((run) => ["queued", "running"].includes(run.status)) ? "LIVE" : "LOCAL"}</span></div>${runs.length ? runs.map((run) => runCard(run, { transcript: mode === "chat" })).join("") : `<div class="workspace-empty workspace-card"><b>${mode === "chat" ? "\u25A1" : mode === "workspace" ? "\u25B1" : "\u25CE"}</b><strong>${mode === "chat" ? "Start the first conversation" : mode === "workspace" ? "No workspace work dispatched" : "No goals have been dispatched"}</strong><span>Only verified runtime activity is displayed.</span></div>`}</section></div>`;
 }
+function roiBadge(proposal) {
+  const roi = proposal.roi_estimate;
+  if (!roi || roi.status === "needs-evidence") return `<span class="roi-badge is-estimate">ROI \xB7 needs evidence runs</span>`;
+  return `<span class="roi-badge is-estimate" title="${esc(roi.basis)}">ROI est. ${roi.minutes_saved_per_future_run} min saved per future run \xB7 ${roi.evidence_runs} evidence run${roi.evidence_runs === 1 ? "" : "s"}</span>`;
+}
 function skillDraftCard(proposal) {
-  if (!["draft_ready", "validated", "installed"].includes(proposal.status)) return `<div class="growth-proposal"><div><strong>${esc(proposal.skill_name)}</strong><small>${esc(titleCase(proposal.change_kind))} \xB7 ${esc(titleCase(proposal.status))}</small></div>${status(proposal.status)}</div>`;
+  if (!["draft_ready", "validated", "installed"].includes(proposal.status)) return `<div class="growth-proposal"><div><strong>${esc(proposal.skill_name)}</strong><small>${esc(titleCase(proposal.change_kind))} \xB7 ${esc(titleCase(proposal.status))}</small></div>${roiBadge(proposal)}${status(proposal.status)}</div>`;
   const validation = proposal.validation;
   const checks = validation ? `<div class="skill-validation ${validation.passed ? "is-valid" : "is-invalid"}"><strong>${validation.passed ? "Validation passed" : "Needs revision"}</strong>${(validation.errors || []).map((item) => `<small>${esc(item)}</small>`).join("")}</div>` : "";
   return `<article class="skill-draft"><header><div><strong>${esc(proposal.skill_name)}</strong><small>${esc(titleCase(proposal.change_kind))} \xB7 ${esc(titleCase(proposal.status))}</small></div>${status(proposal.status)}</header>${proposal.status === "installed" ? `<p>Installed in the live AGIOS shared skill registry. Authorized agents can now load it.</p>` : `<form data-skill-draft-form data-proposal-id="${esc(proposal.proposal_id)}"><textarea name="body" required maxlength="20000">${esc(proposal.draft_body || "")}</textarea><div class="skill-draft-actions"><button type="submit">Save draft</button><button type="button" data-validate-skill="${esc(proposal.proposal_id)}">Validate</button>${validation?.passed ? `<button type="button" data-install-skill="${esc(proposal.proposal_id)}" data-draft-digest="${esc(proposal.draft_digest)}">Install shared skill</button>` : ""}</div></form>${checks}`}</article>`;
@@ -10319,7 +10333,7 @@ function renderAgent() {
   const agent = state.data.agents.find((item) => item.id === state.selectedAgent) || state.data.agents[0];
   state.selectedAgent = agent.id;
   const modes = [["overview", "Overview"], ["chat", agent.id === "default" ? "Ask Ari + Voice" : "Chat + Voice"], ["goal", "Goal Mode"], ["workspace", "Workspace"], ["skills", "Skills"], ["growth", "Growth"], ["sessions", "Sessions"], ["control", "Control Room"]];
-  const modelChips = modelsForAgent(agent).map((model) => `<span class="model-chip ${model.id === agent.model ? "is-selected" : ""}"><i class="status-dot status-${model.location === "local" ? "ready" : "planned"}"></i>${esc(model.id)}</span>`).join("");
+  const modelChips = modelsForAgent(agent).map((model) => `<span class="model-chip ${model.id === agent.model ? "is-selected" : ""}" title="${esc(model.cost_note || "cost not reported")}"><i class="status-dot status-${model.location === "local" ? "ready" : "planned"}"></i>${esc(model.id)}</span>`).join("");
   page.innerHTML = `<div class="agent-hero"><div><p class="eyebrow">AGENT \xB7 ${esc(agent.runtime.toUpperCase())} \xB7 ${esc(agent.id)}</p><h1>${esc(agent.name || titleCase(agent.id))}</h1><p>${esc(agent.profession || titleCase(agent.role))} \xB7 ${esc(agent.seniority || "Specialist")} \xB7 ${esc(agent.provider || "Provider unavailable")}</p></div><div class="agent-hero-status">${status(agent.state)}<small>${agent.gateway_running ? "Gateway online" : "Registered \xB7 standing by"}</small></div></div>
     <div class="mode-strip">${modes.map(([id2, label]) => `<button class="${state.agentMode === id2 ? "is-active" : ""}" data-agent-mode="${id2}"><span>${id2 === "goal" ? "\u25CE" : id2 === "control" ? ">_" : id2 === "workspace" ? "\u25B1" : id2 === "sessions" ? "\u25F7" : id2 === "skills" ? "\u25C7" : id2 === "chat" ? "\u25A1" : "\u25C9"}</span>${label}</button>`).join("")}</div>
     <div class="model-strip" aria-label="Governed model routes">${modelChips}</div>
@@ -10613,7 +10627,7 @@ function modelManager() {
   const agentRows = state.data.agents.map((agent) => {
     const models = modelsForAgent(agent);
     const selected = state.modelPreferences[agent.id] || "";
-    return `<form class="model-assignment" data-model-preference-form data-agent-id="${esc(agent.id)}"><div class="agent-orb">${initials(agent.name || agent.id)}</div><div><strong>${esc(agent.name || titleCase(agent.id))}</strong><small>${esc(agent.profession || titleCase(agent.role))}</small></div><label>Default model<select name="modelId"><option value="">Hermes profile default</option>${models.map((model) => `<option value="${esc(model.id)}" ${selected === model.id ? "selected" : ""}>${esc(model.id)} \xB7 ${esc(model.provider)}</option>`).join("")}</select></label><button type="submit">Save</button></form>`;
+    return `<form class="model-assignment" data-model-preference-form data-agent-id="${esc(agent.id)}"><div class="agent-orb">${initials(agent.name || agent.id)}</div><div><strong>${esc(agent.name || titleCase(agent.id))}</strong><small>${esc(agent.profession || titleCase(agent.role))}</small></div><label>Default model<select name="modelId"><option value="">Hermes profile default</option>${models.map((model) => `<option value="${esc(model.id)}" ${selected === model.id ? "selected" : ""} title="${esc(model.cost_note || "cost not reported")}">${esc(model.id)} \xB7 ${esc(model.provider)} \xB7 ${esc(model.cost_note || "cost not reported")}</option>`).join("")}</select></label><button type="submit">Save</button></form>`;
   }).join("");
   const moduleRows = studioModules.map((module) => `<button class="module-toggle ${state.hiddenStudios[module.id] ? "is-off" : ""}" data-toggle-studio="${esc(module.id)}"><span>${esc(module.name)}</span><em>${state.hiddenStudios[module.id] ? "Hidden" : "Visible"}</em></button>`).join("");
   return `${osReadinessSurface(true)}<div class="manage-grid"><section class="workspace-card model-manager"><p class="eyebrow">Two-click model manager</p><h2>Set each worker's normal brain.</h2><p>This is the persistent default. Use Model Once in Chat, Goal Mode, or Workspace when a single task needs a different approved model.</p><div class="model-assignment-list">${agentRows}</div></section><section class="workspace-card module-manager"><p class="eyebrow">Desk visibility</p><h2>Choose what appears in Studio.</h2><p>Hidden modules remain registered and can be restored at any time.</p><div>${moduleRows}</div></section><section class="workspace-card vault-guide"><p class="eyebrow">Vault Mode</p><h2>Private work is a route policy.</h2><p>Select Private business or Customer restricted in any composer. AGIOS will prefer an eligible local route and will never weaken the data class to reach a model.</p><div class="policy-row"><span>Local eligible model</span><em>Preferred</em></div><div class="policy-row"><span>Trusted external route</span><em>Exact approval</em></div><div class="policy-row"><span>Free or untrusted fallback</span><em>Blocked</em></div></section></div>`;
@@ -10725,11 +10739,16 @@ function skillHygieneSurface() {
   const installed = state.skillProposals.filter((item) => item.status === "installed");
   return `<section class="skill-hygiene"><header><div><p class="eyebrow">SKILL LAB</p><h2>Learn, test, approve, then share.</h2></div><button data-view-link="agents">Open professional growth \u2192</button></header><div><article><small>CANDIDATE INTAKE</small><strong>${pending.length}</strong><p>URLs, repeated corrections, and completed work enter as proposals\u2014not trusted instructions.</p></article><article><small>VALIDATION</small><strong>Required</strong><p>Source, license, malicious content, alternatives, duplicates, and a test result are checked before install.</p></article><article><small>LIVE EVOLUTION</small><strong>${installed.length}</strong><p>Installed AGIOS-authored skills remain versioned, reviewable, and owner governed.</p></article><article><small>HYGIENE</small><strong>Ongoing</strong><p>Stale, unused, verbose, or superseded skills should be pruned instead of accumulating forever.</p></article></div></section>`;
 }
+function knowledgeIntakeSurface() {
+  const summary = state.learned?.summary || { documents: 0, indexed_chunks: 0 };
+  const docs = (state.learned?.documents || []).map((doc) => `<article class="learned-doc"><header><strong>${esc(doc.title)}</strong><em>${doc.chunk_count} chunks \xB7 ${(doc.glossary || []).length} terms</em></header><p>${esc(doc.cheat_sheet || "Deterministic index only \u2014 no model summary exists.")}</p><footer><span>${esc(doc.source_name)} \xB7 ${new Date(doc.created_at).toLocaleString()}</span><span class="learned-terms">${(doc.glossary || []).slice(0, 5).map((term) => `<i>${esc(term)}</i>`).join("")}</span></footer></article>`).join("");
+  return `<section class="knowledge-intake"><header><div><p class="eyebrow">KNOWLEDGE INTAKE \xB7 /LEARN STYLE</p><h2>Give AGIOS a document once. It builds a brain file.</h2><p>One deterministic index per document: real chunks, a term glossary, and a cheat sheet of opening statements. No model-generated summary, so nothing can be hallucinated.</p></div><span>${summary.documents} learned \xB7 ${summary.indexed_chunks} indexed chunks</span></header><div class="learn-grid"><form class="workspace-card learn-form" data-learn-form><label>Title<input name="title" required maxlength="160" placeholder="Perfume import compliance guide"/></label><label>Source<input name="sourceName" maxlength="160" value="pasted" placeholder="book, PDF notes, article"/></label><label>Document text<textarea name="text" required maxlength="200000" placeholder="Paste the document text. AGIOS splits it into bounded chunks, extracts frequent terms, and keeps the index \u2014 never a rewrite."></textarea></label><button type="submit">Build brain file</button></form><div class="learned-list">${docs || `<div class="workspace-empty workspace-card"><b>\u25A4</b><strong>No brain files yet</strong><span>Learned documents appear here with their real index, ready for retrieval.</span></div>`}</div></div></section>`;
+}
 function renderSharedSkills() {
   const registry = state.data.shared_fabric.skills;
   const categories = Object.keys(registry.categories);
   const filtered = registry.items.filter((skill) => (state.skillCategory === "all" || skill.category === state.skillCategory) && (!state.skillQuery || `${skill.name} ${skill.description}`.toLowerCase().includes(state.skillQuery.toLowerCase())));
-  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere\u2014with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>\u2315<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} \xB7 ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
+  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere\u2014with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>\u2315<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} \xB7 ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
 }
 function operationalMemorySurface() {
   const summary = state.data.operational?.shared_memory || { fact_count: 0, scopes: {} };
@@ -11432,6 +11451,8 @@ document.addEventListener("click", (event) => {
   if (voiceRecord) void toggleVoiceCapture(voiceRecord);
   if (wakeToggle) void toggleWakeWord();
   if (speak) void speakRun(speak);
+  const gauntletLaunch = event.target.closest("[data-gauntlet-run]");
+  if (gauntletLaunch) void launchGauntlet(gauntletLaunch);
   if (routedAction) routeSystemAction(routedAction);
   if (osMapLayer) {
     state.osMapLayer = osMapLayer.dataset.osMapLayer;
@@ -11451,6 +11472,8 @@ document.addEventListener("click", (event) => {
   const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");
   if (dreamingAccept) void acceptDreaming(dreamingAccept);
   if (dreamingDismiss) void dismissDreaming(dreamingDismiss);
+  const learnForm = event.target.closest("[data-learn-form]");
+  if (learnForm) void submitLearnForm(learnForm);
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();
   if (event.target === palette) closePalette();
 });
@@ -11723,6 +11746,50 @@ window.setInterval(() => {
     void loadDreaming();
   }
 }, 1600);
+async function loadLearning() {
+  try {
+    state.learned = await api("/api/v1/learn");
+  } catch {
+    state.learned = { summary: { documents: 0, indexed_chunks: 0 }, documents: [] };
+  }
+}
+async function submitLearnForm(form) {
+  const values = new FormData(form);
+  const payload = {
+    title: values.get("title"),
+    source_name: values.get("sourceName") || "pasted",
+    text: values.get("text")
+  };
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  try {
+    const result = await api("/api/v1/learn", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    showToast(`Brain file built \xB7 ${result.doc.index.chunk_count} chunks indexed`);
+    await loadLearning();
+    if (state.view === "skills") renderSharedSkills();
+  } catch (error) {
+    showToast(error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+async function launchGauntlet(button) {
+  const runId = button.dataset.gauntletRun;
+  button.disabled = true;
+  try {
+    const result = await api(`/api/v1/gauntlet/${encodeURIComponent(runId)}`, { method: "POST" });
+    showToast(`Gauntlet created \xB7 three critics (brief, system, craft) await your approval`);
+    await loadOperationalSurface();
+    button.disabled = false;
+  } catch (error) {
+    showToast(error.message);
+    button.disabled = false;
+  }
+}
 async function loadDreaming() {
   try {
     state.dreaming = await api("/api/v1/dreaming");
@@ -11777,6 +11844,7 @@ async function boot() {
       state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } };
     }
     await loadDreaming();
+    await loadLearning();
     document.querySelector("#approval-count").textContent = state.data.summary.pending_approvals;
     const runtime = state.data.runtime;
     document.querySelector("#runtime-caption").textContent = runtime.gateway_running ? `${state.data.summary.available_agents} agents registered \xB7 gateway online` : `${state.data.summary.available_agents} agents registered \xB7 gateway standing by`;

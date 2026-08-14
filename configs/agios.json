@@ -366,7 +366,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "provider does not report usage to AGIOS"
     },
     {
       "id": "gpt-5.6-terra",
@@ -379,7 +380,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "provider does not report usage to AGIOS"
     },
     {
       "id": "gpt-5.6-luna",
@@ -392,7 +394,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "provider does not report usage to AGIOS"
     },
     {
       "id": "deepseek-v4-flash",
@@ -403,7 +406,8 @@
       "allowed_data_classes": [
         "public",
         "internal"
-      ]
+      ],
+      "cost_note": "vendor-reported: cheapest DeepSeek tier, built for high-volume agent loops (unverified)"
     },
     {
       "id": "nemotron-hosted",
@@ -413,7 +417,8 @@
       "cost_status": "unpriced",
       "allowed_data_classes": [
         "public"
-      ]
+      ],
+      "cost_note": "provider does not report usage to AGIOS"
     },
     {
       "id": "opencode-free",
@@ -423,7 +428,8 @@
       "cost_status": "promotional-unpriced",
       "allowed_data_classes": [
         "public"
-      ]
+      ],
+      "cost_note": "free tier; rate limited by provider"
     },
     {
       "id": "qwen3.5-hermes",
@@ -436,7 +442,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "local; compute only, no per-token cost"
     },
     {
       "id": "ornith-hermes",
@@ -449,7 +456,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "local; compute only, no per-token cost"
     },
     {
       "id": "qwen3-embedding:4b",
@@ -462,7 +470,8 @@
         "internal",
         "private_business",
         "customer_restricted"
-      ]
+      ],
+      "cost_note": "local; compute only, no per-token cost"
     },
     {
       "id": "deepseek-v4-pro",
@@ -473,7 +482,8 @@
       "allowed_data_classes": [
         "public",
         "internal"
-      ]
+      ],
+      "cost_note": "vendor-reported: ~57x cheaper output vs frontier, cache reads ~276x cheaper (unverified)"
     },
     {
       "id": "glm-5.2",
@@ -484,7 +494,8 @@
       "allowed_data_classes": [
         "public",
         "internal"
-      ]
+      ],
+      "cost_note": "vendor pricing varies by gateway; not yet captured (unverified)"
     },
     {
       "id": "kimi-k3",
@@ -495,7 +506,8 @@
       "allowed_data_classes": [
         "public",
         "internal"
-      ]
+      ],
+      "cost_note": "vendor pricing varies by gateway; not yet captured (unverified)"
     },
     {
       "id": "mistral-large",
@@ -506,7 +518,8 @@
       "allowed_data_classes": [
         "public",
         "internal"
-      ]
+      ],
+      "cost_note": "vendor pricing varies by gateway; not yet captured (unverified)"
     }
   ],
   "routes": {

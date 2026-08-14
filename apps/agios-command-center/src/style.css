@@ -1398,3 +1398,63 @@ body { background: #090a0f; }
 }
 .dreaming-empty b { color: var(--ink-2, #b7c6be); }
 .dreaming-empty span { color: var(--faint, #5c726a); }
+
+/* ---- Evidence chips on run cards ---- */
+.evidence-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.evidence-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font: 500 9.5px var(--mono, Consolas); letter-spacing: .04em;
+  padding: 2px 8px; border-radius: 20px; border: 1px solid var(--line, rgba(255,255,255,.07));
+  color: var(--ink-2, #b7c6be); background: var(--panel, #101513);
+}
+.evidence-chip i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .9; }
+.evidence-chip.tone-violet { color: #b9a7f0; border-color: rgba(185,167,240,.28); }
+.evidence-chip.tone-mint { color: var(--accent, #63d9a5); border-color: rgba(99,217,165,.28); }
+.evidence-chip.tone-coral { color: #f0a7a7; border-color: rgba(240,167,167,.28); }
+.evidence-chip.is-empty { color: var(--faint, #5c726a); border-color: var(--line, rgba(255,255,255,.05)); }
+.evidence-chip.is-empty i { opacity: .35; }
+
+/* ---- Gauntlet review ---- */
+.gauntlet-launch {
+  margin-left: auto; font: 600 9.5px var(--mono, Consolas); letter-spacing: .08em;
+  color: var(--gold, #d9b46a); border: 1px solid rgba(217,180,106,.35);
+  background: transparent; padding: 3px 9px; border-radius: 6px;
+  transition: color .12s ease, border-color .12s ease;
+}
+.gauntlet-launch:hover { color: #ecd9a6; border-color: rgba(217,180,106,.6); }
+.gauntlet-launch:disabled { opacity: .5; cursor: default; }
+
+/* ---- ROI badge on skill proposals ---- */
+.roi-badge {
+  font: 500 9.5px var(--mono, Consolas); letter-spacing: .04em;
+  color: var(--gold, #d9b46a); border: 1px solid rgba(217,180,106,.3);
+  border-radius: 20px; padding: 2px 8px; white-space: nowrap;
+}
+.roi-badge.is-estimate { opacity: .92; }
+.growth-proposal { gap: 8px; }
+
+/* ---- Knowledge intake (/learn-style brain files) ---- */
+.knowledge-intake {
+  background: linear-gradient(160deg, #0e1412, #0a0f0d 55%);
+  border: 1px solid var(--line, rgba(255,255,255,.07));
+  border-radius: 16px; padding: 22px 24px; margin-bottom: 22px;
+}
+.knowledge-intake > header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 14px; }
+.knowledge-intake > header h2 { font-size: 19px; font-weight: 650; letter-spacing: -.01em; margin-bottom: 4px; }
+.knowledge-intake > header p { color: var(--dim, #8aa39a); font-size: 13px; max-width: 62ch; }
+.knowledge-intake > header > span { margin-left: auto; flex: none; font: 600 10px var(--mono, Consolas); color: var(--accent, #63d9a5); }
+.learn-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 14px; align-items: start; }
+.learn-form { display: flex; flex-direction: column; gap: 10px; }
+.learn-form textarea { min-height: 180px; resize: vertical; }
+.learned-list { display: flex; flex-direction: column; gap: 8px; }
+.learned-doc {
+  background: var(--panel, #101513); border: 1px solid var(--line, rgba(255,255,255,.07));
+  border-radius: 12px; padding: 12px 14px;
+}
+.learned-doc header { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.learned-doc header strong { font-size: 13.5px; font-weight: 650; }
+.learned-doc header em { font: 400 9.5px var(--mono, Consolas); color: var(--faint, #5c726a); font-style: normal; }
+.learned-doc p { font-size: 12px; color: var(--dim, #8aa39a); margin: 6px 0; line-height: 1.5; }
+.learned-doc footer { display: flex; justify-content: space-between; gap: 10px; font: 400 10px var(--mono, Consolas); color: var(--faint, #5c726a); }
+.learned-terms i { font-style: normal; color: var(--gold, #d9b46a); margin-left: 6px; }
+@media (max-width: 900px) { .learn-grid { grid-template-columns: 1fr; } }

@@ -79,6 +79,13 @@ class AgentGrowthStore:
         item["evidence_run_ids"] = json.loads(item.pop("evidence_run_ids_json"))
         validation = item.pop("validation_json", None)
         item["validation"] = json.loads(validation) if validation else None
+        evidence_count = len(item["evidence_run_ids"])
+        item["roi_estimate"] = {
+            "evidence_runs": evidence_count,
+            "minutes_saved_per_future_run": evidence_count * 20,
+            "basis": "honest estimate: 20 minutes per future run, scaled by the number of completed evidence runs",
+            "status": "estimate" if evidence_count else "needs-evidence",
+        }
         return item
 
     def create(

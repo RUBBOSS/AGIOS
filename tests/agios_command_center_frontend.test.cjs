@@ -223,3 +223,24 @@ test("dreaming digest measures eight dimensions and only fires real recommendati
   assert.match(css, /\.dreaming-card/);
   assert.match(css, /\.dreaming-chip/);
 });
+
+test("evidence chips, gauntlet reviews, ROI estimates, cost notes and knowledge intake", () => {
+  assert.match(js, /evidenceChips/);
+  assert.match(js, /evidence-chip tone-/);
+  assert.match(js, /data-gauntlet-run/);
+  assert.match(js, /launchGauntlet/);
+  assert.match(js, /\/api\/v1\/gauntlet\//);
+  assert.match(js, /roiBadge/);
+  assert.match(js, /minutes_saved_per_future_run/);
+  assert.match(js, /cost_note/);
+  assert.match(js, /\/api\/v1\/learn/);
+  assert.match(js, /data-learn-form/);
+  assert.match(js, /submitLearnForm/);
+  assert.match(js, /KNOWLEDGE INTAKE/);
+  assert.match(js, /No model-generated summary, so nothing can be hallucinated/);
+  assert.match(css, /\.evidence-chip/);
+  assert.match(css, /\.gauntlet-launch/);
+  assert.match(css, /\.roi-badge/);
+  assert.match(css, /\.knowledge-intake/);
+  assert.match(css, /\.learned-doc/);
+});
