@@ -1,7 +1,7 @@
 # Creator workflows, NotebookLM, Paperclip, and Buzz review
 
 **Evidence cut:** 2026-08-14 23:14 +04:00  
-**AGIOS decision:** use a personal NotebookLM source-pack bridge; keep Paperclip and Buzz uninstalled; adopt only verified operating patterns inside AGIOS.
+**AGIOS decision:** use a personal NotebookLM source-pack bridge; keep Buzz uninstalled; adopt verified operating patterns inside AGIOS. **Update 2026-08-15:** the owner requested Paperclip in AGIOS, so Paperclip is installed with the official installer in private loopback mode and attached as a supervised AGIOS web surface (127.0.0.1:3100). Boundaries are unchanged: Paperclip receives no AGIOS credentials, and approvals/task state stay in AGIOS.
 
 ## Evidence standard
 
@@ -132,7 +132,9 @@ Sources:
 
 ### Decision
 
-**Do not install Paperclip now.** AGIOS already has the required owner workflow. Keep one authority source and adopt only independently verified patterns. The previous AGIOS page called “Paperclip” was renamed **Orchestration**, and it now states that external Paperclip is not installed.
+**Initial (2026-08-14): do not install.** AGIOS already had the required owner workflow; the page was renamed **Orchestration**.
+
+**Update (2026-08-15, owner-directed):** Paperclip is now installed with the official installer in **private loopback mode** and attached as a supervised AGIOS web surface (127.0.0.1:3100). The earlier risk list remains binding: Paperclip receives no AGIOS credentials, its default `requireBoardApprovalForNewAgents=false` is not adopted, and AGIOS keeps approvals, task state and evidence. The Orchestration page states both facts honestly.
 
 ## Buzz source review
 

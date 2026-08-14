@@ -29611,7 +29611,8 @@ var state = {
   activeSurface: null,
   surfaceProbes: {},
   notebooklm: null,
-  notebooklmPack: null
+  notebooklmPack: null,
+  imageStudio: null
 };
 function esc(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
@@ -30031,7 +30032,7 @@ function renderPaperclip() {
   </button>`).join("");
   const activity = liveRuns.length ? liveRuns.slice(0, 5).map((run) => `<button class="paperclip-dispatch" data-agent="${esc(run.agent_id)}"><span>\u2197</span><div><strong>${esc(run.objective)}</strong><small>${esc(titleCase(run.agent_id))} \xB7 ${esc(titleCase(run.mode))}</small></div>${status(run.status)}</button>`).join("") : `<div class="paperclip-empty"><span>\u2713</span><div><strong>No workers are consuming tokens</strong><small>Registered agents remain ready until a ticket, schedule or event wakes them.</small></div></div>`;
   page.innerHTML = `${heading("Orchestration desk", "Build the team. Hand off the outcome.", "AGIOS turns a business outcome into a governed ticket, assigns the right professional workers and follows the handoff into the live board.", `<button class="launch-goal compact" data-open-directive>New ticket \uFF0B</button>`)}
-    <div class="boundary-note orchestration-boundary"><strong>External Paperclip is not installed.</strong><span>AGIOS keeps one source of truth and adopts only verified patterns: explicit ownership, conflict-safe handoffs, approval gates, bounded runtimes and evidence-backed completion.</span></div>
+    <div class="boundary-note orchestration-boundary"><strong>Paperclip runs as a supervised loopback surface (127.0.0.1:3100).</strong><span>AGIOS remains the approval source of truth: Paperclip never receives AGIOS credentials, and every dispatch keeps ownership, approval gates and evidence in AGIOS.</span></div>
     <section class="paperclip-command">
       <div class="paperclip-pulse"><p class="eyebrow">ORCHESTRATION STATUS</p><h2>${liveRuns.length ? `${liveRuns.length} handoff${liveRuns.length === 1 ? "" : "s"} in motion` : "The studio is ready"}</h2><p>Every dispatch keeps the selected business, data class, model route, memory scope and approval boundary attached.</p><div class="paperclip-statline"><span><strong>${readyAgents.length}</strong> workers ready</span><span><strong>${state.data.departments.length}</strong> departments</span><span><strong>${state.data.schedules.length}</strong> scheduled wakes</span><span><strong>${state.directiveDrafts.length}</strong> local drafts</span></div></div>
       <div class="paperclip-route"><span>OUTCOME</span><i>\u2192</i><span>TEAM</span><i>\u2192</i><span>APPROVAL</span><i>\u2192</i><span>DELIVERY</span></div>
@@ -30182,13 +30183,34 @@ function renderAutomations() {
 function notebookLMBridge() {
   const connector = state.notebooklm;
   if (!connector) {
-    return `<section class="notebooklm-bridge is-loading"><p class="eyebrow">PERSONAL NOTEBOOKLM</p><h2>Loading approved vault sources\u2026</h2><p>No account token or note content is exposed to the browser while AGIOS reads the local catalog.</p></section>`;
+    return `<section class="notebooklm-bridge is-loading" id="notebooklm-bridge"><p class="eyebrow">PERSONAL NOTEBOOKLM</p><h2>Loading approved vault sources\u2026</h2><p>No account token or note content is exposed to the browser while AGIOS reads the local catalog.</p></section>`;
   }
   const sources = connector.sources || [];
   const selectable = sources.filter((source) => !source.blocked);
   const sourceRows = sources.map((source) => `<label class="notebooklm-source ${source.blocked ? "is-blocked" : ""}"><input type="checkbox" name="sourcePath" value="${esc(source.path)}" ${source.blocked ? "disabled" : ""}/><span><strong>${esc(source.title)}</strong><small>${esc(source.path)} \xB7 ${Math.max(1, Math.round(source.bytes / 1024))} KB</small></span><em>${source.blocked ? "Blocked: credential-like content" : "Local Markdown"}</em></label>`).join("");
   const prepared = state.notebooklmPack ? `<div class="notebooklm-prepared"><small>LOCAL PACK READY \xB7 NOT UPLOADED</small><strong>${esc(state.notebooklmPack.title)}</strong><p>${state.notebooklmPack.sources.length} selected source${state.notebooklmPack.sources.length === 1 ? "" : "s"}; manifest and SHA-256 provenance included.</p><div><a class="primary-action" href="${esc(state.notebooklmPack.download_url)}" download>Download source pack</a><button type="button" data-notebooklm-open>Open NotebookLM \u2192</button></div></div>` : `<div class="notebooklm-empty"><strong>No source pack prepared</strong><p>Preparing a pack is local. AGIOS never signs in to Google, reads browser cookies, or uploads automatically.</p></div>`;
-  return `<section class="notebooklm-bridge"><header><div><p class="eyebrow">PERSONAL NOTEBOOKLM \xB7 OWNER-MEDIATED</p><h2>Turn approved Obsidian notes into a cited notebook source pack.</h2><p>The video\u2019s useful pattern is the five-file context pack. AGIOS implements the real boundary: select local notes, inspect them, prepare a verifiable ZIP, then you decide what to upload.</p></div>${status("ready")}</header><div class="notebooklm-boundary"><span><small>ACCOUNT</small><strong>Owner browser only</strong></span><span><small>TRANSFER</small><strong>No automatic upload</strong></span><span><small>PROVENANCE</small><strong>Path + SHA-256 manifest</strong></span><span><small>AUTHORITY</small><strong>Owner uploads manually</strong></span></div><div class="notebooklm-grid"><form data-notebooklm-form><label>PACK TITLE<input name="title" required maxlength="160" value="AGIOS core context"/></label><fieldset><legend>APPROVED OBSIDIAN SOURCES \xB7 ${selectable.length} AVAILABLE</legend><div class="notebooklm-sources">${sourceRows || `<p>No Markdown notes were found in the approved vault.</p>`}</div></fieldset><label class="notebooklm-ack"><input type="checkbox" name="externalUploadAcknowledged" required/><span>I understand selected notes leave this PC only after I upload them to Google NotebookLM.</span></label><button class="primary-action" type="submit" ${selectable.length ? "" : "disabled"}>Prepare local source pack</button></form><aside><ol>${(connector.workflow || []).map((step) => `<li>${esc(step)}</li>`).join("")}</ol>${prepared}</aside></div></section>`;
+  return `<section class="notebooklm-bridge" id="notebooklm-bridge"><header><div><p class="eyebrow">PERSONAL NOTEBOOKLM \xB7 OWNER-MEDIATED</p><h2>Turn approved Obsidian notes into a cited notebook source pack.</h2><p>The video\u2019s useful pattern is the five-file context pack. AGIOS implements the real boundary: select local notes, inspect them, prepare a verifiable ZIP, then you decide what to upload.</p></div>${status("ready")}</header><div class="notebooklm-boundary"><span><small>ACCOUNT</small><strong>Owner browser only</strong></span><span><small>TRANSFER</small><strong>No automatic upload</strong></span><span><small>PROVENANCE</small><strong>Path + SHA-256 manifest</strong></span><span><small>AUTHORITY</small><strong>Owner uploads manually</strong></span></div><div class="notebooklm-grid"><form data-notebooklm-form><label>PACK TITLE<input name="title" required maxlength="160" value="AGIOS core context"/></label><fieldset><legend>APPROVED OBSIDIAN SOURCES \xB7 ${selectable.length} AVAILABLE</legend><div class="notebooklm-sources">${sourceRows || `<p>No Markdown notes were found in the approved vault.</p>`}</div></fieldset><label class="notebooklm-ack"><input type="checkbox" name="externalUploadAcknowledged" required/><span>I understand selected notes leave this PC only after I upload them to Google NotebookLM.</span></label><button class="primary-action" type="submit" ${selectable.length ? "" : "disabled"}>Prepare local source pack</button></form><aside><ol>${(connector.workflow || []).map((step) => `<li>${esc(step)}</li>`).join("")}</ol>${prepared}</aside></div></section>`;
+}
+function imageStudioSection() {
+  const studio = state.imageStudio;
+  if (!studio) {
+    return `<section class="image-studio is-loading" id="image-studio"><p class="eyebrow">IMAGE STUDIO</p><h2>Loading generator status\u2026</h2><p>Provider state is read locally; no key values are exposed.</p></section>`;
+  }
+  const keyConfigured = studio.key_state === "configured";
+  const providerTrouble = studio.provider_last_status === "exhausted" ? `OpenRouter reports this key as <strong>credits exhausted (HTTP ${studio.provider_last_error_code ?? 402})</strong> \u2014 top up at openrouter.ai/settings/credits to generate.` : studio.provider_last_status && studio.provider_last_status !== "available" ? `OpenRouter reports this key as <strong>${esc(String(studio.provider_last_status))}</strong>.` : "";
+  const aspectOptions = (studio.aspect_ratios || ["16:9"]).map((ratio) => `<option value="${esc(ratio)}">${esc(ratio)}</option>`).join("");
+  const recent = studio.recent || [];
+  const gallery = recent.length ? `<div class="image-studio-gallery">${recent.map((item) => `<figure><img src="${esc(item.image_url)}" alt="Generated ${esc(item.aspect_ratio || "")}" loading="lazy"/><figcaption><strong>${esc(item.aspect_ratio || "")}</strong><small>${esc(item.prompt || "")}</small><time>${item.created_at ? new Date(item.created_at * 1e3).toLocaleString() : ""}</time></figcaption></figure>`).join("")}</div>` : `<div class="notebooklm-empty"><strong>No images generated yet</strong><p>Generated images stay on this machine with SHA-256 provenance.</p></div>`;
+  return `<section class="image-studio" id="image-studio"><header><div><p class="eyebrow">IMAGE STUDIO \xB7 MICROSOFT MAI-IMAGE-2.5</p><h2>Generate governed design images through OpenRouter.</h2><p>You type the prompt, so every external call is your explicit action. Outputs are saved locally with provenance; costs are vendor-reported and never guessed.</p></div>${status(keyConfigured ? "ready" : "blocked")}</header>
+    <div class="image-studio-boundary"><span><small>MODEL</small><strong>${esc(studio.model || "microsoft/mai-image-2.5")}</strong></span><span><small>ACCOUNT</small><strong>${keyConfigured ? "OpenRouter key loaded locally" : "Key not configured"}</strong></span><span><small>PRICING</small><strong>${esc(studio.vendor_listed_price || "$5.00/M image tokens listed")}</strong></span><span><small>PRIVACY</small><strong>Local artifacts only</strong></span></div>
+    ${providerTrouble ? `<div class="boundary-note"><strong>Provider note.</strong><span>${providerTrouble}</span></div>` : ""}
+    <form class="image-studio-form" data-image-studio-form>
+      <label>Prompt<textarea name="prompt" maxlength="4000" required placeholder="Describe the image you want. This exact text is sent to OpenRouter when you click Generate."></textarea></label>
+      <div class="image-studio-controls"><label>Aspect ratio<select name="aspectRatio">${aspectOptions}</select></label><div class="compose-submit"><span>${esc(studio.cost_note || "")}</span><button type="submit" ${keyConfigured ? "" : "disabled"}>Generate image</button></div></div>
+      <p class="image-studio-error" data-image-studio-error hidden></p>
+    </form>
+    <div class="image-studio-recent"><p class="eyebrow">RECENT GENERATIONS</p>${gallery}</div>
+  </section>`;
 }
 function renderIntegrations() {
   const rows = state.data.integrations.map((integration) => `<div class="data-row columns-integrations"><div><strong>${esc(integration.name)}</strong><p>${esc(integration.id)}</p></div><span>${esc(titleCase(integration.kind))}</span><span>${status(integration.status === "connected" ? "registered" : integration.status)}</span><span>${integration.status === "connected" ? "Cataloged \xB7 direct AGIOS action locked" : "Adapter required"}</span></div>`).join("");
@@ -30215,15 +30237,17 @@ function renderIntegrations() {
     ["Pokee", "hold", "Enterprise/API setup", "External sandbox service; no approved account or measurable advantage over current routes."],
     ["OpenClaw", "hold", "Broad device/chat authority", "Large overlap with Hermes; not granted access to this workstation."],
     ["Antigravity", "planned", "Callable interface unverified", "Remains registry-only until a local auditable adapter exists."],
-    ["Paperclip", "hold", "Second control plane not needed", "AGIOS adopts verified ownership, bounded-runtime and handoff patterns natively; external Paperclip stays uninstalled to avoid split approvals and task state."],
+    ["Paperclip", "ready", "Local loopback dashboard \xB7 127.0.0.1:3100", "Installed with the official installer in private loopback mode. AGIOS attaches it as a supervised surface; approvals, task state and credentials stay in AGIOS."],
     ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."]
   ];
   const decisionRows = connectionDecisions.map(([name, stateName, gate, reason]) => `<div class="connection-decision"><div><strong>${esc(name)}</strong><small>${esc(gate)}</small></div>${status(stateName)}<p>${esc(reason)}</p></div>`).join("");
   page.innerHTML = `${heading("Apps & models", "Callable means executable, auth state detected and bounded.", "AGIOS exposes only executable adapters with explicit policy boundaries. Registry entries remain visibly blocked until their role, local authentication state and least-privilege boundary are proven.")}
+    <nav class="integrations-quick-nav" aria-label="Systems sections"><a href="#notebooklm-bridge">Personal NotebookLM</a><a href="#image-studio">Image Studio</a><a href="#connection-decisions">Connection decisions</a><a href="#tool-router">Capability router</a></nav>
     <div class="protocol-strip"><article><small>KNOWLEDGE</small><strong>${esc(retrieval.mode || "Unavailable")}</strong><span>Citation-ready scoped retrieval</span></article><article><small>AGENT INTEROP</small><strong>${esc(a2a.protocol || "A2A")} ${esc(a2a.protocol_version || "")}</strong><span>Authenticated local ${esc(a2a.binding || "gateway")}</span></article><article><small>OUTBOUND PEERS</small><strong>${esc(titleCase(a2a.outbound_peers || "locked"))}</strong><span>Explicit trust and credentials required</span></article></div>
     ${notebookLMBridge()}
-    <section class="connection-decisions"><header><div><p class="eyebrow">CONNECTION DECISIONS</p><h2>One governed runtime; explicit integration gates.</h2></div><span>No decorative \u201Cconnected\u201D states</span></header>${decisionRows}</section>
-    <section class="tool-router"><header><div><p class="eyebrow">CAPABILITY ROUTER</p><h2>Preferred route, health, fallback, and permission.</h2></div><span>${routes.length} REGISTERED ROUTES</span></header><div class="route-card-grid">${routeCards}</div></section>
+    ${imageStudioSection()}
+    <section class="connection-decisions" id="connection-decisions"><header><div><p class="eyebrow">CONNECTION DECISIONS</p><h2>One governed runtime; explicit integration gates.</h2></div><span>No decorative \u201Cconnected\u201D states</span></header>${decisionRows}</section>
+    <section class="tool-router" id="tool-router"><header><div><p class="eyebrow">CAPABILITY ROUTER</p><h2>Preferred route, health, fallback, and permission.</h2></div><span>${routes.length} REGISTERED ROUTES</span></header><div class="route-card-grid">${routeCards}</div></section>
     <div class="data-panel"><div class="data-head columns-integrations"><span>Integration</span><span>Kind</span><span>Registry</span><span>Execution boundary</span></div>${rows}</div>`;
 }
 function a2aTaskCard(task) {
@@ -31265,6 +31289,7 @@ async function loadOperationalSurface() {
     }
     if (needsNotebookLM) {
       state.notebooklm = await api("/api/v1/notebooklm/sources");
+      state.imageStudio = await api("/api/v1/image-studio");
     }
     const bannerDetail = document.querySelector("#ops-banner-detail");
     if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers \xB7 ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories \xB7 ${state.data.summary.systems} AI systems`;
@@ -31654,7 +31679,8 @@ document.addEventListener("submit", async (event) => {
   const skillDraftForm = event.target.closest("[data-skill-draft-form]");
   const modelPreferenceForm = event.target.closest("[data-model-preference-form]");
   const notebookForm = event.target.closest("[data-notebooklm-form]");
-  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm && !notebookForm) return;
+  const imageStudioForm = event.target.closest("[data-image-studio-form]");
+  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm && !notebookForm && !imageStudioForm) return;
   event.preventDefault();
   const submit = event.target.querySelector("button[type=submit]");
   if (submit) submit.disabled = true;
@@ -31676,6 +31702,18 @@ document.addEventListener("submit", async (event) => {
       state.notebooklmPack = payload.pack;
       renderIntegrations();
       showToast("Local NotebookLM source pack prepared \xB7 nothing uploaded");
+    } else if (imageStudioForm) {
+      const payload = await api("/api/v1/image-studio/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          prompt: values.get("prompt"),
+          aspect_ratio: values.get("aspectRatio") || "16:9"
+        })
+      });
+      state.imageStudio = { ...state.imageStudio || {}, recent: [payload.record, ...(state.imageStudio || {}).recent || []].slice(0, 12) };
+      event.target.reset();
+      renderIntegrations();
+      showToast("Image generated \xB7 saved locally with SHA-256 provenance");
     } else if (chiefForm) {
       const payload = await api("/api/v1/orchestrator/plans", {
         method: "POST",
@@ -31820,6 +31858,11 @@ document.addEventListener("submit", async (event) => {
     await loadOperationalSurface();
   } catch (error) {
     showToast(error.message);
+    const studioError = document.querySelector("[data-image-studio-error]");
+    if (studioError) {
+      studioError.hidden = false;
+      studioError.textContent = error.message;
+    }
   } finally {
     if (submit) submit.disabled = false;
   }

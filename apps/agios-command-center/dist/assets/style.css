@@ -1633,6 +1633,39 @@ body { background: #090a0f; }
 .notebooklm-prepared > div { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 8px; }
 .notebooklm-prepared a.primary-action { display: inline-flex; align-items: center; text-decoration: none; }
 .notebooklm-prepared button { padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--signal); font-size: 9px; cursor: pointer; }
+.integrations-quick-nav { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.integrations-quick-nav a { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--signal); font-size: 9px; text-decoration: none; }
+.integrations-quick-nav a:hover { border-color: var(--signal); }
+.image-studio { margin: 18px 0; border: 1px solid #3a4a52; border-radius: 11px; background: var(--surface); overflow: hidden; }
+.image-studio > header { padding: 17px 18px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; border-bottom: 1px solid var(--line-soft); }
+.image-studio > header h2, .image-studio.is-loading h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.image-studio > header p:not(.eyebrow), .image-studio.is-loading > p:not(.eyebrow) { max-width: 760px; margin: 7px 0 0; color: var(--muted); font-size: 10px; line-height: 1.55; }
+.image-studio.is-loading { padding: 20px; }
+.image-studio-boundary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--line-soft); }
+.image-studio-boundary span { min-height: 62px; padding: 13px 16px; border-right: 1px solid var(--line-soft); }
+.image-studio-boundary span:last-child { border-right: 0; }
+.image-studio-boundary small, .image-studio-boundary strong { display: block; }
+.image-studio-boundary small { color: var(--dim); font-size: 8px; letter-spacing: .09em; }
+.image-studio-boundary strong { margin-top: 6px; font-size: 10px; font-weight: 600; }
+.image-studio-form { padding: 18px; border-bottom: 1px solid var(--line-soft); }
+.image-studio-form > label { display: grid; gap: 6px; color: var(--dim); font-size: 8px; letter-spacing: .08em; }
+.image-studio-form textarea { min-height: 96px; padding: 10px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--text); font-family: inherit; font-size: 11px; }
+.image-studio-controls { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px; }
+.image-studio-controls label { display: grid; gap: 6px; color: var(--dim); font-size: 8px; letter-spacing: .08em; }
+.image-studio-controls select { min-height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); color: var(--text); }
+.image-studio-controls .compose-submit { display: grid; justify-items: end; gap: 6px; }
+.image-studio-controls .compose-submit span { max-width: 380px; color: var(--dim); font-size: 8px; line-height: 1.4; text-align: right; }
+.image-studio-controls .compose-submit button { padding: 9px 16px; border: 0; border-radius: 7px; background: var(--signal); color: #0d0a14; font-weight: 600; font-size: 10px; cursor: pointer; }
+.image-studio-controls .compose-submit button:disabled { opacity: .45; cursor: not-allowed; }
+.image-studio-error { margin: 12px 0 0; padding: 10px 12px; border: 1px solid #6b3a2e; border-radius: 8px; background: rgba(180, 80, 40, .08); color: #e8a07c; font-size: 10px; }
+.image-studio-recent { padding: 16px 18px 18px; }
+.image-studio-recent > .eyebrow { margin: 0 0 12px; }
+.image-studio-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.image-studio-gallery figure { margin: 0; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--surface-2); }
+.image-studio-gallery img { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+.image-studio-gallery figcaption { padding: 9px 10px; display: grid; gap: 3px; }
+.image-studio-gallery figcaption strong { font-size: 9px; }
+.image-studio-gallery figcaption small, .image-studio-gallery figcaption time { color: var(--dim); font-size: 8px; line-height: 1.4; }
 .connection-decisions { margin: 18px 0; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); overflow: hidden; }
 .connection-decisions > header { min-height: 66px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid var(--line-soft); }
 .connection-decisions h2 { margin: 0; font-size: 15px; font-weight: 600; }

@@ -1166,6 +1166,20 @@
       "command": [
         "cmd.exe"
       ]
+    },
+    {
+      "id": "paperclip",
+      "name": "Paperclip",
+      "kind": "web",
+      "url": "http://127.0.0.1:3100",
+      "launch": [
+        "npx",
+        "--yes",
+        "--registry",
+        "https://registry.npmjs.org",
+        "paperclipai",
+        "run"
+      ]
     }
   ]
 }

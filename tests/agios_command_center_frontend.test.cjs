@@ -184,7 +184,7 @@ test("advanced tools remain available without crowding the owner workflow", () =
   assert.match(js, /model_id: values\.get\("modelId"\) \|\| state\.modelPreferences/);
   assert.match(js, /preferredModel === model\.id \? "selected"/);
   assert.match(js, /function renderPaperclip/);
-  assert.match(js, /External Paperclip is not installed/);
+  assert.match(js, /Paperclip runs as a supervised loopback surface/);
   assert.match(css, /\.orchestration-boundary/);
   assert.match(js, /"Agent Kanban", "File a ticket/);
   assert.match(css, /\.paperclip-command/);
@@ -297,8 +297,23 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /Owner browser only/i);
   assert.match(js, /https:\/\/notebooklm\.google\.com\//);
   assert.match(js, /selected notes leave this PC only after I upload them/i);
-  assert.match(js, /Second control plane not needed/);
+  assert.match(js, /Local loopback dashboard/);
   assert.match(js, /Developer preview \+ broad local tooling/);
   assert.match(css, /\.notebooklm-bridge/);
   assert.match(css, /prefers-reduced-motion/);
+});
+
+test("systems view guides the owner to NotebookLM and the governed Image Studio", () => {
+  assert.match(js, /integrations-quick-nav/);
+  assert.match(js, /href="#notebooklm-bridge"/);
+  assert.match(js, /id="notebooklm-bridge"/);
+  assert.match(js, /id="image-studio"/);
+  assert.match(js, /data-image-studio-form/);
+  assert.match(js, /\/api\/v1\/image-studio\/generate/);
+  assert.match(js, /microsoft\/mai-image-2\.5/);
+  assert.match(js, /key_state === "configured"/);
+  assert.match(js, /credits exhausted/i);
+  assert.match(js, /Generate image/);
+  assert.match(js, /Local artifacts only/);
+  assert.match(css, /\.image-studio-gallery/);
 });

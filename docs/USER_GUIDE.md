@@ -144,6 +144,16 @@ AGIOS supports the personal NotebookLM product without an unofficial API or brow
 
 AGIOS never signs in to Google, reads NotebookLM cookies, or uploads automatically. Credential-like notes and symlinks are excluded. A source is limited to 2 MB; a pack is limited to 50 sources and 20 MB.
 
+## Image Studio (Microsoft MAI-Image-2.5)
+
+**Apps & models → Image Studio** generates design images through the OpenRouter Images API:
+
+1. Type the prompt and pick an aspect ratio (1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3).
+2. Click **Generate image**. Because the owner types the prompt, every external call is an explicit owner action.
+3. The PNG is saved locally under the AGIOS state directory with a metadata file: prompt, aspect ratio, model, timestamp, SHA-256, and any usage the provider returns.
+
+Honesty rules: the model, endpoint, and listed price are vendor-reported constants. OpenRouter returns no per-image cost in the Images response, so AGIOS shows the vendor-listed pricing as a reference and never guesses a spent amount. Provider failures are classified (invalid key, credits exhausted, rate limit) and shown without raw response bodies. The provider key is loaded from the owner's local Hermes credential pool; its value is never shown, logged, or committed.
+
 ## Planned tools
 
 A tool is marked connected only when its executable, authentication, permission boundary, and measurable role are verified.
@@ -154,7 +164,7 @@ A tool is marked connected only when its executable, authentication, permission 
 - Pokee requires an approved enterprise/API setup and is not a local runtime.
 - OpenClaw overlaps heavily with Hermes and requests broad device/chat authority; it is not connected without a separate security decision.
 - Antigravity remains planned until a callable, auditable local interface is verified.
-- External Paperclip is not installed. AGIOS adopts selected ownership, handoff, bounded-runtime, and evidence patterns natively so approvals and task state retain one source of truth.
+- Paperclip is installed with the official installer in private loopback mode and attached as a supervised web surface (http://127.0.0.1:3100). AGIOS remains the approval source of truth: Paperclip never receives AGIOS credentials, and its board is opened from AGIOS surfaces, not granted dispatch authority.
 - Buzz remains on hold. Its developer-preview collaboration model overlaps with AGIOS, while its development MCP and shell runner would add broad local authority.
 
 ## If something fails

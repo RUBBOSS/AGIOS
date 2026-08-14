@@ -23,10 +23,12 @@ from .a2a import A2AService, A2A_VERSION
 from .costs import build_cost_snapshot
 from .dreaming import DreamingStore, build_dreaming_digest
 from .gauntlet import build_gauntlet_prompt
+from .image_studio import ImageStudioError, ImageStudioService
 from .learning import LearningStore, LearningStoreError, build_brain_file
 from .live_work import collect_live_work
 from .notebooklm import NotebookLMSourcePackService
 from .operational import OperationalError, OperationalService, default_state_dir
+from .provider_keys import load_provider_keys
 from .training import TrainingCollector
 from .adapters.runtimes import collect_runtime_catalog
 from .orchestration import OrchestrationError, build_routing_plan, classify_ari_intent
@@ -174,6 +176,11 @@ class NotebookLMPackRequest(BaseModel):
     external_upload_acknowledged: bool = False
 
 
+class ImageGenerateRequest(BaseModel):
+    prompt: str = Field(min_length=1, max_length=4000)
+    aspect_ratio: str = Field(default="16:9", pattern=r"^(1:1|4:3|3:4|16:9|9:16|3:2|2:3)$")
+
+
 def create_app(
     *,
     config_path: str | Path = DEFAULT_CONFIG,
@@ -182,8 +189,10 @@ def create_app(
     state_dir: str | Path | None = None,
     operational_service: OperationalService | None = None,
     notebooklm_service: NotebookLMSourcePackService | None = None,
+    image_studio_service: ImageStudioService | None = None,
 ) -> FastAPI:
     config = load_config(config_path)
+    provider_meta = load_provider_keys()
     frontend = Path(frontend_path).expanduser().resolve()
     if not frontend.joinpath("index.html").is_file():
         raise RuntimeError("AGIOS frontend is not built")
@@ -204,6 +213,9 @@ def create_app(
             str(Path.home() / "Documents" / "Freelance-Agency-Vault"),
         ),
         artifact_root=Path(service.state_dir) / "artifacts",
+    )
+    image_studio = image_studio_service or ImageStudioService(
+        artifact_root=Path(service.state_dir) / "artifacts"
     )
     a2a = A2AService(
         config=config,
@@ -231,11 +243,13 @@ def create_app(
     app.state.operational_service = service
     app.state.a2a_service = a2a
     app.state.notebooklm_service = notebooklm
+    app.state.image_studio_service = image_studio
+    app.state.provider_meta = provider_meta
 
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/api/v1/live-work", "/api/v1/notebooklm", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/api/v1/live-work", "/api/v1/notebooklm", "/api/v1/image-studio", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -329,6 +343,43 @@ def create_app(
             media_type="application/zip",
             filename=f"agios-notebooklm-{pack_id}.zip",
         )
+
+    @app.get("/api/v1/image-studio")
+    def image_studio_status(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return image_studio.status(pool_meta=provider_meta)
+
+    @app.post("/api/v1/image-studio/generate")
+    def image_studio_generate(
+        payload: ImageGenerateRequest,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        try:
+            record = image_studio.generate(prompt=payload.prompt, aspect_ratio=payload.aspect_ratio)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except ImageStudioError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        return {"schema_version": 1, "status": "generated", "record": record}
+
+    @app.get("/api/v1/image-studio/artifacts/{artifact_id}.png")
+    def image_studio_artifact(
+        artifact_id: str,
+        request: Request,
+    ) -> FileResponse:
+        require_loopback(request)
+        try:
+            path = image_studio.artifact_file(artifact_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail="Image artifact not found") from exc
+        return FileResponse(path, media_type="image/png")
 
     @app.get("/api/v1/command-center")
     def command_center() -> dict[str, object]:
