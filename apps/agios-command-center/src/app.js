@@ -16,14 +16,14 @@ const sidebar = document.querySelector("#sidebar");
 const toast = document.querySelector("#toast");
 
 const viewLabels = {
-  command: "Command Center",
+  command: "Home",
   portfolio: "Portfolio",
   departments: "Departments",
   agents: "Agent Fleet",
   mesh: "Agent Mesh",
   work: "Goals & Work",
   artifacts: "Artifact Library",
-  paperclip: "Paperclip",
+  paperclip: "Orchestration",
   approvals: "Approvals",
   systems: "All Systems",
   system: "AI System",
@@ -37,18 +37,23 @@ const viewLabels = {
   settings: "Settings",
   agent: "Agent Workspace",
   surfaces: "Live Apps",
+  guide: "How to use AGIOS",
 };
 
 const state = {
   data: null,
   view: "command",
   dreaming: null,
+  liveWork: null,
+  liveMetrics: null,
+  changedLiveMetrics: [],
   memoryFolder: "all",
   memoryNote: null,
   memoryComposeOpen: false,
   memorySearchOpen: false,
   memoryTab: "notes",
   memoryGalaxy: null,
+  executionSpineCleanup: null,
   memoryGalaxyFilter: "all",
   learned: null,
   costs: null,
@@ -74,6 +79,9 @@ const state = {
   visionAssets: [],
   runtimeAdapters: [],
   orchestrationPlans: [],
+  selectedWorkRunId: null,
+  workRunAutoOpened: false,
+  runTraces: {},
   voice: null,
   recorder: null,
   voiceTimer: null,
@@ -85,6 +93,8 @@ const state = {
   surfaces: [],
   activeSurface: null,
   surfaceProbes: {},
+  notebooklm: null,
+  notebooklmPack: null,
 };
 
 function esc(value) {
@@ -409,58 +419,180 @@ function dreamingDigestSurface() {
   return `<section class="dreaming-digest"><header><div><p class="eyebrow">DREAMING DIGEST · EVERY DAY</p><h2>${digest.recommendations.length} high-leverage recommendation${digest.recommendations.length === 1 ? "" : "s"} for you.</h2><p>Eight dimensions measured against real local stores; only genuine signals become cards. Nothing here is synthetic.</p></div><span class="dreaming-stamp">LOCAL · EVIDENCE-GATED</span></header><div class="dreaming-dims">${dimensionChips}</div><div class="dreaming-cards">${cards || empty}</div></section>`;
 }
 
+function liveCount(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function liveMetricSnapshot(snapshot = state.liveWork) {
+  const sources = snapshot?.sources || {};
+  return {
+    "source-agios": liveCount(sources.agios?.runs) + liveCount(sources.agios?.memory_facts) + liveCount(sources.agios?.artifacts),
+    "source-hermes": liveCount(sources.hermes?.sessions) + liveCount(sources.hermes?.messages) + liveCount(sources.hermes?.skills),
+    "source-codex": liveCount(sources.codex?.sessions) + liveCount(sources.codex?.rollout_files),
+    "source-opencode": liveCount(sources.opencode?.sessions) + liveCount(sources.opencode?.messages) + liveCount(sources.opencode?.tokens),
+    improvements: (snapshot?.improvements || []).length,
+  };
+}
+
+function liveSourceCard(id, title, primary, label, metrics, source) {
+  const statusValue = source?.status || "unavailable";
+  return `<article class="live-source-card" data-live-key="source-${esc(id)}">
+    <header><div class="source-mark source-${esc(id)}">${esc(title.slice(0, 1))}</div><div><strong>${esc(title)}</strong><small>${esc(statusValue)}</small></div><span class="source-status is-${esc(statusValue)}">${statusValue === "live" ? "LIVE" : "OFF"}</span></header>
+    <div class="source-primary"><strong>${esc(primary)}</strong><span>${esc(label)}</span></div>
+    <dl>${metrics.map(([term, value]) => `<div><dt>${esc(term)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
+    <footer>${esc(source?.provenance || "AGIOS local control plane")}</footer>
+  </article>`;
+}
+
+function recentLocalWork(sources) {
+  const rows = [
+    ...(sources.hermes?.recent || []).map((item) => ({ ...item, runtime: "Hermes" })),
+    ...(sources.codex?.recent || []).map((item) => ({ ...item, runtime: "Codex" })),
+  ].sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0)).slice(0, 6);
+  if (!rows.length) return `<div class="simple-empty">No session metadata has been indexed yet.</div>`;
+  return rows.map((item) => `<div class="recent-work-row"><span class="runtime-tag">${esc(item.runtime)}</span><div><strong>${esc(item.title || `${item.runtime} session`)}</strong><small>${esc(item.source || "local")} · ${esc(relativeTime(item.updated_at))}</small></div></div>`).join("");
+}
+
+function improvementRows(items) {
+  if (!items.length) return `<div class="simple-empty">No verified repository improvements found.</div>`;
+  return items.slice(0, 6).map((item) => `<div class="improvement-row"><span>${esc(item.repository)}</span><div><strong>${esc(item.subject)}</strong><small>${esc(item.short_hash)} · ${esc(relativeTime(item.committed_at))}</small></div></div>`).join("");
+}
+
+function executionSpineStages() {
+  const routes = state.orchestrationPlans || [];
+  const pendingPlans = routes.filter((plan) => plan.status === "planned").length;
+  const pendingRuns = state.runs.filter((run) => run.status === "awaiting_approval").length;
+  const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status)).length;
+  const evidenceRuns = state.runs.filter((run) => run.response || ["completed", "failed", "interrupted"].includes(run.status)).length;
+  const learnedSkills = state.skillProposals.filter((proposal) => proposal.status === "installed").length;
+  const current = pendingPlans || pendingRuns ? "approve" : activeRuns ? "run" : evidenceRuns ? "evidence" : "intent";
+  const stages = [
+    { id: "intent", label: "Intent", count: state.directiveDrafts.length + routes.length + state.runs.length, note: "owner outcomes" },
+    { id: "route", label: "Route", count: routes.length + state.runs.length, note: "bound plans" },
+    { id: "approve", label: "Approve", count: pendingPlans + pendingRuns, note: "waiting now" },
+    { id: "run", label: "Runtime", count: activeRuns, note: "active now" },
+    { id: "evidence", label: "Evidence", count: evidenceRuns, note: "reviewable runs" },
+    { id: "learn", label: "Learn", count: state.memories.length + learnedSkills, note: "durable items" },
+  ];
+  return stages.map((stage) => ({ ...stage, current: stage.id === current, populated: stage.count > 0 }));
+}
+
+function executionSpineSurface() {
+  const stages = executionSpineStages();
+  return `<section class="execution-spine-card">
+    <header><div><span>Execution spine</span><h2>Every outcome leaves a trace.</h2></div><p>Live counts from intent, routing, owner approval, runtime, evidence, and retained knowledge.</p></header>
+    <div id="execution-spine-chart" class="execution-spine-chart" aria-label="Live AGIOS execution stages"></div>
+    <div class="execution-spine-fallback">${stages.map((stage) => `<div class="${stage.current ? "is-current" : ""}"><strong>${esc(stage.count)}</strong><span>${esc(stage.label)}</span><small>${esc(stage.note)}</small></div>`).join("")}</div>
+  </section>`;
+}
+
+function renderExecutionSpine() {
+  const host = document.querySelector("#execution-spine-chart");
+  if (!host) return;
+  state.executionSpineCleanup?.();
+  const stages = executionSpineStages();
+  const draw = () => {
+    host.replaceChildren();
+    const width = Math.max(700, host.clientWidth || 700);
+    const height = 190;
+    const pad = 54;
+    const step = (width - pad * 2) / (stages.length - 1);
+    const points = stages.map((stage, index) => ({ ...stage, x: pad + index * step, y: index % 2 ? 116 : 72 }));
+    const svg = select(host).append("svg").attr("viewBox", `0 0 ${width} ${height}`).attr("role", "img");
+    const links = points.slice(0, -1).map((point, index) => ({ source: point, target: points[index + 1], on: point.populated && points[index + 1].populated }));
+    svg.selectAll("path.spine-link").data(links).join("path")
+      .attr("class", (link) => `spine-link${link.on ? " is-on" : ""}`)
+      .attr("d", (link) => `M${link.source.x},${link.source.y} C${link.source.x + step * .48},${link.source.y} ${link.target.x - step * .48},${link.target.y} ${link.target.x},${link.target.y}`);
+    const node = svg.selectAll("g.spine-node").data(points).join("g")
+      .attr("class", (point) => `spine-node${point.current ? " is-current" : ""}${point.populated ? " is-populated" : ""}`)
+      .attr("transform", (point) => `translate(${point.x},${point.y})`);
+    node.append("circle").attr("r", (point) => point.current ? 14 : 10);
+    node.append("text").attr("class", "spine-count").attr("text-anchor", "middle").attr("y", 4).text((point) => point.count);
+    node.append("text").attr("class", "spine-label").attr("text-anchor", "middle").attr("y", (point) => point.y < 100 ? -28 : 35).text((point) => point.label);
+    node.append("text").attr("class", "spine-note").attr("text-anchor", "middle").attr("y", (point) => point.y < 100 ? -14 : 50).text((point) => point.note);
+  };
+  draw();
+  const observer = new ResizeObserver(draw);
+  observer.observe(host);
+  state.executionSpineCleanup = () => observer.disconnect();
+}
+
 function renderCommand() {
-  const d = state.data;
-  const nextSchedules = d.schedules.slice(0, 4);
+  const sources = state.liveWork?.sources || {};
+  const agios = sources.agios || {};
+  const hermes = sources.hermes || {};
+  const codex = sources.codex || {};
+  const opencode = sources.opencode || {};
+  const plannedRoutes = state.orchestrationPlans.filter((plan) => plan.status === "planned");
   const pendingRuns = state.runs.filter((run) => run.status === "awaiting_approval");
-  const businessNodes = d.businesses.map((business) => `
-    <button class="business-node" data-business="${esc(business.id)}">
-      <b>${esc(business.name.replace(/&.*|Business|Studio/g, "").trim() || business.name)}</b>
-      <small class="status-line"><i class="status-dot status-${esc(business.status)}"></i>${esc(business.status)}</small>
-    </button>`).join("");
-  const agentChips = d.agents.map((agent, index) => `
-    <button class="agent-chip" data-agent="${esc(agent.id)}"><div class="agent-glyph agent-${index % 5}">${initials(agent.id)}</div><div><strong>${esc(agent.id)}</strong><small>${esc(agent.model || "Runtime unavailable")}</small></div><i class="status-dot status-${esc(agent.state)}" title="${esc(agent.state)}"></i></button>`).join("");
-  const scheduleRows = nextSchedules.length ? nextSchedules.map((job) => `
-    <div class="schedule-row"><div class="schedule-icon">↻</div><div><strong>${esc(job.name)}</strong><small>${esc(job.schedule || "Scheduled automation")}</small></div><time>${esc(relativeTime(job.next_run_at))}<small>${esc(job.state)}</small></time></div>`).join("") : `<div class="decision-empty"><strong>Schedule feed unavailable</strong><p>AGIOS could not read local Hermes schedules.</p></div>`;
+  const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status));
+  const pendingDecisions = plannedRoutes.length + pendingRuns.length;
+  const nextAction = pendingDecisions
+    ? { label: `Review ${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"}`, attr: `data-view-link="approvals"` }
+    : activeRuns.length
+      ? { label: `Watch ${activeRuns.length} active run${activeRuns.length === 1 ? "" : "s"}`, attr: `data-view-link="work"` }
+      : { label: "Ask Ari for work", attr: "data-open-directive" };
+  const opencodeCost = Number(opencode.cost || 0);
+  const lastUpdated = state.liveWork?.generated_at ? new Date(state.liveWork.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "loading";
+  const headline = pendingDecisions
+    ? `${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"} need your judgment.`
+    : activeRuns.length
+      ? `${activeRuns.length} worker${activeRuns.length === 1 ? " is" : "s are"} moving.`
+      : "The system is ready for your next move.";
+  const heroDetail = pendingDecisions
+    ? esc(plannedRoutes[0]?.objective || pendingRuns[0]?.objective || "Review the exact route before model work starts.")
+    : activeRuns.length
+      ? "Follow the live runtime state. Completion still requires evidence and review."
+      : "Give Ari one outcome. AGIOS will route it, bind the context, and stop for your approval.";
 
   page.innerHTML = `
-    <div class="operator-line"><span><i></i> AGIOS / LOCAL OPERATOR</span><span>${d.runtime.gateway_running ? "HERMES GATEWAY ONLINE" : "HERMES STANDING BY"}</span></div>
-    ${renderChiefOfStaffBoard()}
-    ${livingOSMapSurface()}
-    ${improvementIntelligenceSurface()}
-    ${dreamingDigestSurface()}
-    ${heading("Portfolio now", `Your operating system. <em>Today at a glance.</em>`, "Live work, approvals, memory and the portfolio remain visible below Ari's routing desk.", `<strong>● Supervised mode</strong><span>Updated ${new Date(d.generated_at).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}</span>`)}
-    <div class="command-toolbar"><div class="context-line"><span class="status-dot status-online"></span><strong>${d.summary.active_businesses} active businesses</strong><span>·</span><span>${d.summary.live_or_detected_systems} systems live, detected or routed</span><span>·</span><span>${runsForPeriod().length} runs in period</span></div>${periodControl()}</div>
-    ${operatingBrief()}
-    <section class="signal-grid" aria-label="Operating signals">
-      ${signalCard("Fleet readiness", `${d.summary.available_agents}<small> / ${d.summary.agents}</small>`, "registered workers ready to wake", "coral", [18, 28, 22, 45, 38, 57, 48, 72, 62, 88, 78, 94])}
-      ${signalCard("Shared skills live", d.summary.shared_skills, `available to ${d.shared_fabric.skills.attached_agents} agents by policy`, "mint", [22, 35, 30, 42, 47, 44, 58, 61, 57, 70, 81, 90])}
-      ${signalCard("AGIOS shared memory", d.operational?.shared_memory?.fact_count ?? 0, `live scoped facts · ${d.shared_fabric.memory.fact_count} profile facts indexed`, "violet", [72, 64, 58, 52, 46, 38, 31, 26, 20, 16, 10, 8])}
+    <div class="signal-home">
+    <section class="signal-hero">
+      <div class="signal-hero-copy"><span class="signal-kicker">PRIVATE CONTROL PLANE / ${esc(lastUpdated)}</span><h1>${headline}</h1><p>${heroDetail}</p><div class="signal-hero-actions"><button class="primary-action" ${nextAction.attr}>${esc(nextAction.label)}</button><button class="quiet-action" data-view-link="guide">Open operator guide</button></div></div>
+      <aside class="judgment-console" data-live-key="judgment">
+        <header><span>Owner control</span>${status(pendingDecisions ? "awaiting_approval" : activeRuns.length ? "running" : "ready")}</header>
+        <strong>${pendingDecisions || activeRuns.length || 0}</strong>
+        <p>${pendingDecisions ? "bound decisions waiting" : activeRuns.length ? "workers active now" : "consequential actions waiting"}</p>
+        <div><span><b>${liveCount(agios.memory_facts)}</b> memories</span><span><b>${liveCount(hermes.skills)}</b> skills</span><span><b>${liveCount(agios.artifacts)}</b> artifacts</span></div>
+      </aside>
     </section>
-    <section class="panel usage-panel">
-      <header class="panel-header"><div><h2>AI usage & operating limits</h2><p>Subscriptions, tokens and cost remain honest when providers do not report them</p></div><button data-view-link="performance">Usage details ↗</button></header>
-      <div class="usage-summary"><div><small>AI SYSTEMS</small><strong>${d.summary.systems}</strong><span>${d.summary.live_or_detected_systems} usable or detected</span></div><div><small>OPERATIONAL LANE</small><strong>${esc(d.operational?.status || "unavailable")}</strong><span>Hermes chat, goals and shared memory</span></div><div><small>MODEL ROUTES</small><strong>${d.summary.model_routes}</strong><span>${d.models.filter((model) => model.location === "local").length} local routes</span></div><div><small>INTEGRATIONS</small><strong>${d.summary.connected_integrations}</strong><span>registered in the governed catalog</span></div></div>
+
+    ${executionSpineSurface()}
+
+    <div class="section-heading signal-section-heading"><div><p class="eyebrow">SOURCE MATRIX</p><h2>Four runtimes. One truthful view.</h2></div><span>Safe local metadata only</span></div>
+    <section class="live-source-grid">
+      ${liveSourceCard("agios", "AGIOS", liveCount(agios.runs), "runs & evidence", [["Active", liveCount(agios.active_runs)], ["Memory", liveCount(agios.memory_facts)], ["Artifacts", liveCount(agios.artifacts)], ["Training routes", liveCount(agios.training_examples)]], agios)}
+      ${liveSourceCard("hermes", "Hermes", liveCount(hermes.sessions), "local sessions", [["Messages", liveCount(hermes.messages)], ["Skills", liveCount(hermes.skills)], ["Memory facts", liveCount(hermes.memory_facts)]], hermes)}
+      ${liveSourceCard("codex", "Codex", liveCount(codex.sessions), "indexed sessions", [["Rollouts", liveCount(codex.rollout_files)], ["Source", "local metadata"], ["Transcript bodies", "not exposed"]], codex)}
+      ${liveSourceCard("opencode", "OpenCode", liveCount(opencode.sessions), "local sessions", [["Messages", liveCount(opencode.messages)], ["Tokens", liveCount(opencode.tokens).toLocaleString()], ["Recorded cost", opencodeCost ? `$${opencodeCost.toFixed(4)}` : "$0.0000"]], opencode)}
     </section>
-    <div class="command-grid">
-      <div>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Operating portfolio</h2><p>Every studio and venture under the AGIOS control plane</p></div><button data-view-link="portfolio">Open portfolio ↗</button></header>
-          <div class="organization-map"><div class="org-core"><small>OWNER CONTROL</small><strong>AGIOS</strong><span>${d.summary.departments} departments · ${d.summary.agents} agents</span></div><div class="business-rail">${businessNodes}</div></div>
-        </section>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Next scheduled work</h2><p>Hermes wakes workers only when work is due</p></div><button data-view-link="automations">All automations ↗</button></header>
-          <div>${scheduleRows}</div>
-        </section>
-      </div>
-      <div>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Agent workspaces</h2><p>Open an operator cockpit for any registered worker</p></div><button data-view-link="agents">Fleet table ↗</button></header>
-          <div class="agent-compact">${agentChips}</div>
-        </section>
-        <section class="panel decision-panel"><header class="panel-header"><div><h2>Judgment queue</h2><p>Consequential actions stop here</p></div><button data-view-link="approvals">Review ↗</button></header>${pendingRuns.length ? `<div class="decision-pending"><strong>${pendingRuns.length} exact run approval${pendingRuns.length === 1 ? "" : "s"} waiting</strong><p>${esc(pendingRuns[0].objective)}</p><button data-view-link="approvals">Open approval queue →</button></div>` : `<div class="decision-empty"><div class="seal">✓</div><strong>Your queue is clear</strong><p>Nothing is waiting for runtime or external-action approval.</p></div>`}</section>
-      </div>
+
+    <div class="home-two-column">
+      <section class="plain-panel"><header><div><p class="eyebrow">RECENT ACTIVITY</p><h2>Hermes and Codex sessions</h2></div><button data-view-link="work">Open work →</button></header><div>${recentLocalWork(sources)}</div></section>
+      <section class="plain-panel" data-live-key="improvements"><header><div><p class="eyebrow">REPOSITORY IMPROVEMENTS</p><h2>Verified code changes</h2></div><button data-view-link="skills">Skills →</button></header><div>${improvementRows(state.liveWork?.improvements || [])}</div></section>
+    </div>
+
+    <section class="plain-panel next-judgment"><header><div><p class="eyebrow">OWNER CONTROL</p><h2>${pendingDecisions ? `${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"} need you` : "No consequential action is waiting"}</h2><p>${pendingDecisions ? esc(plannedRoutes[0]?.objective || pendingRuns[0]?.objective) : "Agents may research, draft and verify locally. Sending, publishing, payments and production remain stopped."}</p></div><button ${pendingDecisions ? `data-view-link="approvals"` : "data-open-directive"}>${pendingDecisions ? "Review decisions" : "Start new work"} →</button></header></section>
+    </div>
+  `;
+  window.requestAnimationFrame(renderExecutionSpine);
+}
+
+function renderGuide() {
+  page.innerHTML = `${heading("How to use AGIOS", "One outcome in. Evidence out.", "Use this page as the operating manual. Advanced screens are optional; the five-step loop is enough for daily work.")}
+    <section class="guide-steps">
+      <article id="guide-ask"><b>1</b><div><p class="eyebrow">ASK</p><h2>Tell Ari the outcome</h2><p>Use plain language: what should be true when the work is done? Add the data class and project only when relevant. Do not choose agents or models unless you have a reason.</p><div class="guide-example"><strong>Example</strong><span>“Inspect the AGIOS dashboard tests and propose a simpler home page. Do not edit yet.”</span></div><button data-open-directive>Ask Ari →</button></div></article>
+      <article><b>2</b><div><p class="eyebrow">APPROVE</p><h2>Read the route before it runs</h2><p>Check the exact objective, specialist, runtime, model, data class, workspace access, memories and skills. Approve only that bound route. If anything is wrong, cancel and ask again.</p><button data-view-link="approvals">Open approvals →</button></div></article>
+      <article><b>3</b><div><p class="eyebrow">WATCH</p><h2>Follow the real status</h2><p><strong>Queued</strong> means accepted, <strong>running</strong> means the runtime is working, <strong>completed</strong> means a response exists, and <strong>failed</strong> includes a bounded reason. A completed answer is not proof by itself.</p><button data-view-link="work">Open work →</button></div></article>
+      <article><b>4</b><div><p class="eyebrow">VERIFY</p><h2>Review evidence, not claims</h2><p>Check attached memories and skills, generated files, repository changes, tests, screenshots and reviewer findings. External delivery still requires your exact approval.</p><button data-view-link="artifacts">Open evidence →</button></div></article>
+      <article><b>5</b><div><p class="eyebrow">LEARN</p><h2>Keep only durable knowledge</h2><p>Save decisions, constraints and facts that agents should reuse. Do not save passwords, temporary task progress or whole transcripts. Propose skill improvements only from completed-run evidence.</p><button data-view-link="memory">Open memory →</button></div></article>
+    </section>
+    <div class="guide-grid">
+      <section class="plain-panel"><p class="eyebrow">WHICH RUNTIME?</p><h2>Let routing choose by default</h2><dl class="guide-definitions"><div><dt>Hermes</dt><dd>Main orchestration, research, memory, tools and private/local routes.</dd></div><div><dt>Codex</dt><dd>Difficult approved coding in a registered workspace with its sandbox.</dd></div><div><dt>OpenCode</dt><dd>Second workspace coding runtime; deny-by-default tools, no auto mode.</dd></div><div><dt>Local workers</dt><dd>Private extraction, coding and first drafts with no hosted fallback.</dd></div></dl></section>
+      <section class="plain-panel"><p class="eyebrow">ALWAYS STOPS FOR YOU</p><h2>Consequential actions</h2><ul class="guide-boundaries"><li>Sending messages, bids, applications or forms</li><li>Publishing, production deployment or final delivery</li><li>Payments, subscriptions, pricing or contracts</li><li>Account changes, credentials or broader data access</li><li>Scope, deadline or legal commitments</li></ul></section>
+      <section class="plain-panel"><p class="eyebrow">WHERE THINGS LIVE</p><h2>The six useful screens</h2><dl class="guide-definitions"><div><dt>Home</dt><dd>Live status and your next action.</dd></div><div><dt>Work</dt><dd>Requests, routes, status and responses.</dd></div><div><dt>Approvals</dt><dd>Exact decisions waiting for you.</dd></div><div><dt>Evidence</dt><dd>Artifacts and grounded run context.</dd></div><div><dt>Memory</dt><dd>Durable owner-controlled knowledge.</dd></div><div><dt>Apps & models</dt><dd>Connected runtimes and truthful blockers.</dd></div></dl></section>
     </div>`;
-  window.requestAnimationFrame(renderLivingOSMap);
 }
 
 function renderPortfolio() {
@@ -559,7 +691,7 @@ function runComposer(agent, mode) {
   const preferredRuntime = state.runtimePreferences[agent.id] || "hermes";
   let models = modelsForAgent(agent);
   if (isWorkspace) models = models.filter((model) => ["openai-codex", "deepseek"].includes(model.provider));
-  const runtimes = state.runtimeAdapters.filter((runtime) => ["hermes", "codex"].includes(runtime.id) && runtime.execution_enabled && runtime.actions?.some((action) => action.startsWith("workspace")));
+  const runtimes = state.runtimeAdapters.filter((runtime) => ["hermes", "codex", "opencode"].includes(runtime.id) && runtime.execution_enabled && runtime.actions?.some((action) => action.startsWith("workspace")));
   const workspaceOptions = state.workspaces.map((workspace) => `<option value="${esc(workspace.workspace_id)}">${esc(workspace.label)} · ${esc(titleCase(workspace.data_class))}${workspace.write_allowed ? " · read/write" : " · read-only"}</option>`).join("");
   const description = isWorkspace ? "A supervised agent can inspect or change only an owner-registered Git workspace. Every run requires exact approval; external actions remain locked." : isGoal ? "Goals can research public information and maintain a plan after exact approval. Workspace tools remain available only in the dedicated Workspace lane." : isAriRouter ? "Ari is the front door, not a model-only chat box. Simple questions stay conversational; research, links, files, builds and multi-step requests become a visible supervised route." : "Chat is model-only: shared memory, selected skills, voice and image understanding are available, but no workspace tools can run.";
   const ariContract = isAriRouter ? `<div class="ari-route-contract"><span><b>QUESTION</b> Direct answer</span><i>or</i><span><b>WORK</b> Research / workspace plan</span><i>then</i><span><b>YOU</b> Review & approve</span></div>` : "";
@@ -660,7 +792,8 @@ function renderPaperclip() {
   const activity = liveRuns.length
     ? liveRuns.slice(0, 5).map((run) => `<button class="paperclip-dispatch" data-agent="${esc(run.agent_id)}"><span>↗</span><div><strong>${esc(run.objective)}</strong><small>${esc(titleCase(run.agent_id))} · ${esc(titleCase(run.mode))}</small></div>${status(run.status)}</button>`).join("")
     : `<div class="paperclip-empty"><span>✓</span><div><strong>No workers are consuming tokens</strong><small>Registered agents remain ready until a ticket, schedule or event wakes them.</small></div></div>`;
-  page.innerHTML = `${heading("Paperclip", "Build the team. Hand off the outcome.", "Paperclip is the supervised orchestration desk: it turns a business outcome into a governed AGIOS ticket, assigns the right professional workers and follows the handoff into the live board.", `<button class="launch-goal compact" data-open-directive>New ticket ＋</button>`)}
+  page.innerHTML = `${heading("Orchestration desk", "Build the team. Hand off the outcome.", "AGIOS turns a business outcome into a governed ticket, assigns the right professional workers and follows the handoff into the live board.", `<button class="launch-goal compact" data-open-directive>New ticket ＋</button>`)}
+    <div class="boundary-note orchestration-boundary"><strong>External Paperclip is not installed.</strong><span>AGIOS keeps one source of truth and adopts only verified patterns: explicit ownership, conflict-safe handoffs, approval gates, bounded runtimes and evidence-backed completion.</span></div>
     <section class="paperclip-command">
       <div class="paperclip-pulse"><p class="eyebrow">ORCHESTRATION STATUS</p><h2>${liveRuns.length ? `${liveRuns.length} handoff${liveRuns.length === 1 ? "" : "s"} in motion` : "The studio is ready"}</h2><p>Every dispatch keeps the selected business, data class, model route, memory scope and approval boundary attached.</p><div class="paperclip-statline"><span><strong>${readyAgents.length}</strong> workers ready</span><span><strong>${state.data.departments.length}</strong> departments</span><span><strong>${state.data.schedules.length}</strong> scheduled wakes</span><span><strong>${state.directiveDrafts.length}</strong> local drafts</span></div></div>
       <div class="paperclip-route"><span>OUTCOME</span><i>→</i><span>TEAM</span><i>→</i><span>APPROVAL</span><i>→</i><span>DELIVERY</span></div>
@@ -672,15 +805,107 @@ function renderPaperclip() {
     </div>`;
 }
 
+function runDuration(run) {
+  const start = new Date(run.started_at || run.created_at).valueOf();
+  const end = run.completed_at ? new Date(run.completed_at).valueOf() : Date.now();
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) return "Unavailable";
+  const seconds = Math.round((end - start) / 1000);
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}m ${remainder}s`;
+}
+
+function workRunInspector(run) {
+  if (!run) return "";
+  const workspace = state.workspaces.find((item) => item.workspace_id === run.workspace_id);
+  const active = ["queued", "running"].includes(run.status);
+  const progressOutput = String(run.progress_output || "").trim();
+  const finalOutput = String(run.response || "").trim();
+  const showRuntimeOutput = active || (progressOutput && progressOutput !== finalOutput);
+  const runtimeOutput = showRuntimeOutput
+    ? `<article class="work-message runtime-message" aria-live="polite"><header><span>Live runtime output</span><time>${run.progress_updated_at ? new Date(run.progress_updated_at).toLocaleString() : "Waiting"}</time></header>${progressOutput ? `<pre>${esc(progressOutput)}</pre>` : `<div class="work-run-waiting"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "Runtime started · waiting for the first stdout line"}</span></div>`}</article>`
+    : "";
+  const trace = state.runTraces[run.run_id];
+  const traceEvents = trace?.events || [];
+  const traceMarkup = trace === undefined
+    ? `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>Loading safe Hermes events</small></div><p>Checking the runtime session for persisted tool and progress events.</p></section>`
+    : !trace.available
+      ? `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>Not available</small></div><p>${esc(trace.reason || "This runtime did not expose a safe event trace.")}</p></section>`
+      : `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>${traceEvents.length} persisted event${traceEvents.length === 1 ? "" : "s"} · ${trace.binding === "run_source" ? "run-bound" : "legacy session-bound"}</small></div><ol>${traceEvents.map((event) => event.kind === "tool"
+        ? `<li class="trace-tool"><header><strong>${esc(titleCase(event.tool || "tool"))}</strong><span>${esc(titleCase(event.effect || "recorded"))}</span></header>${event.input ? `<div><small>INPUT</small><pre>${esc(event.input)}</pre></div>` : ""}${event.output ? `<div><small>OUTPUT</small><pre>${esc(event.output)}</pre></div>` : ""}</li>`
+        : `<li class="trace-commentary"><header><strong>Runtime update</strong></header><p>${esc(event.text || "")}</p></li>`).join("") || `<li class="trace-empty">No tool or commentary events were persisted for this session.</li>`}</ol></section>`;
+  const result = run.response
+    ? `<pre>${esc(run.response)}</pre>`
+    : run.status === "failed"
+      ? runError(run)
+      : active
+        ? `<div class="work-run-waiting"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "Worker is running · this record refreshes automatically"}</span></div>`
+        : `<p class="work-run-empty-result">No final response was produced for this run.</p>`;
+  const steps = [
+    ["Prepared", run.created_at, "Exact context recorded"],
+    ["Worker started", run.started_at, run.started_at ? `${titleCase(run.runtime_id || "hermes")} accepted the run` : "Waiting for approval or dispatch"],
+    [run.status === "completed" ? "Completed" : titleCase(run.status), run.completed_at, run.completed_at ? "Final state persisted" : "Not finished"],
+  ];
+  const timeline = steps.map(([label, time, note], index) => `<li class="${time ? "is-recorded" : "is-pending"}"><i>${index + 1}</i><div><strong>${esc(label)}</strong><span>${esc(note)}</span></div><time>${time ? new Date(time).toLocaleString() : "—"}</time></li>`).join("");
+  const provenance = [
+    ["Agent", titleCase(run.agent_id)],
+    ["Runtime", titleCase(run.runtime_id || "hermes")],
+    ["Provider", titleCase(run.provider || "profile route")],
+    ["Model", run.model || "Profile default"],
+    ["Workspace", run.workspace_id ? `${workspace?.label || "Registered workspace"} · ${titleCase(run.workspace_access)} access` : "No workspace access"],
+    ["Data class", titleCase(run.data_class)],
+    ["Duration", run.started_at ? runDuration(run) : "Not started"],
+    ["Output capture", progressOutput ? "Bounded runtime stdout" : "Final result only"],
+    ["Session", run.hermes_session_id || "No runtime session ID"],
+  ].map(([label, value]) => `<div><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join("");
+  return `<section class="work-run-inspector" id="work-run-inspector" tabindex="-1" aria-label="Selected run details">
+    <header><div><p class="eyebrow">RUN RECORD · ${esc(run.run_id.slice(0, 8))}</p><h2>${esc(run.objective)}</h2></div><div class="work-run-header-actions">${status(run.status)}<button type="button" data-work-run-close aria-label="Close run details">Close</button></div></header>
+    <div class="work-run-layout">
+      <div class="work-run-main">
+        <section class="work-run-timeline"><div class="work-run-section-heading"><span>Run timeline</span><small>Persisted lifecycle</small></div><ol>${timeline}</ol></section>
+        <section class="work-run-transcript" aria-label="Run conversation">
+          <article class="work-message owner-message"><header><span>Owner request</span><time>${new Date(run.created_at).toLocaleString()}</time></header><p>${esc(run.objective)}</p></article>
+          ${runtimeOutput}
+          ${traceMarkup}
+          <article class="work-message agent-message"><header><span>Final result · ${esc(titleCase(run.agent_id))}</span>${run.response ? `<button type="button" data-speak-run="${esc(run.run_id)}">Listen</button>` : ""}</header>${result}</article>
+        </section>
+      </div>
+      <aside class="work-run-provenance"><div class="work-run-section-heading"><span>Execution provenance</span><small>Exact approved route</small></div>${provenance}${evidenceChips(run)}<p class="work-run-capture-note">${progressOutput ? "Runtime stdout was captured during execution, bounded locally, and stored separately from the final result. Stderr is never streamed." : "Detailed runtime stream was not captured for this run. This record shows the complete final output and the lifecycle AGIOS actually persisted—no invented steps."}</p></aside>
+    </div>
+  </section>`;
+}
+
+async function loadWorkRunTrace(runId) {
+  if (!runId) return;
+  try {
+    const payload = await api(`/api/v1/hermes/runs/${encodeURIComponent(runId)}/events`);
+    state.runTraces[runId] = payload.trace || { available: false, events: [], reason: "No safe runtime trace was returned." };
+  } catch (error) {
+    state.runTraces[runId] = { available: false, events: [], reason: error.message || "The safe runtime trace is unavailable." };
+  }
+  if (state.view === "work" && state.selectedWorkRunId === runId) renderWork();
+}
+
 function renderWork() {
   const boardDrafts = state.directiveDrafts;
   const approvalRuns = state.runs.filter((run) => run.status === "awaiting_approval");
   const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status));
   const reviewRuns = state.runs.filter((run) => ["completed", "failed", "interrupted", "canceled"].includes(run.status));
-  const runTask = (run) => `<article class="kanban-task"><header><span>${esc(titleCase(run.mode))}</span>${status(run.status)}</header><h3>${esc(run.objective)}</h3><footer><button data-agent="${esc(run.agent_id)}">${esc(titleCase(run.agent_id))}</button><time>${new Date(run.created_at).toLocaleString()}</time></footer></article>`;
+  if (!state.workRunAutoOpened && state.runs.length) {
+    state.selectedWorkRunId = (activeRuns[0] || reviewRuns[0] || approvalRuns[0] || state.runs[0]).run_id;
+    state.workRunAutoOpened = true;
+  }
+  const selectedRun = state.runs.find((run) => run.run_id === state.selectedWorkRunId) || null;
+  const runTask = (run) => `<article class="kanban-task ${selectedRun?.run_id === run.run_id ? "is-selected" : ""}"><header><span>${esc(titleCase(run.mode))}</span>${status(run.status)}</header><h3>${esc(run.objective)}</h3><div class="kanban-task-meta"><span>${esc(titleCase(run.agent_id))}</span><time>${new Date(run.created_at).toLocaleString()}</time></div><button class="kanban-task-open" type="button" data-work-run="${esc(run.run_id)}">${run.response ? "Open result" : "Open run"} →</button></article>`;
   const draftTask = (draft) => `<article class="kanban-task is-draft"><header><span>LOCAL DRAFT</span>${status("planned")}</header><h3>${esc(draft.outcome)}</h3><footer><span>${esc(titleCase(draft.business))}</span><time>${new Date(draft.createdAt).toLocaleString()}</time></footer></article>`;
   const lane = (id, title, items, empty) => `<section class="kanban-lane lane-${id}"><header><div><span></span><h2>${esc(title)}</h2></div><strong>${items.length}</strong></header><div>${items.join("") || `<p class="kanban-empty">${esc(empty)}</p>`}</div></section>`;
-  page.innerHTML = `${heading("Agent Kanban", "File a ticket. Watch the workers move it forward.", "Every card is a real AGIOS draft or runtime session. Goals continue in the local worker while this board updates their verified state.", `<button class="launch-goal compact" data-open-directive>New ticket ＋</button>`)}<div class="kanban-summary"><span><strong>${boardDrafts.length}</strong> inbox</span><span><strong>${approvalRuns.length}</strong> awaiting approval</span><span><strong>${activeRuns.length}</strong> active</span><span><strong>${reviewRuns.length}</strong> review & done</span></div><div class="agent-kanban">${lane("inbox", "Inbox", boardDrafts.map(draftTask), "Create a governed ticket.")}${lane("approval", "Approval", approvalRuns.map(runTask), "No decisions waiting.")}${lane("active", "Building", activeRuns.map(runTask), "No workers running.")}${lane("review", "Review & done", reviewRuns.map(runTask), "Completed work appears here.")}</div>`;
+  const summaryMarkup = `<div class="kanban-summary"><span><strong>${boardDrafts.length}</strong> inbox</span><span><strong>${approvalRuns.length}</strong> awaiting approval</span><span><strong>${activeRuns.length}</strong> active</span><span><strong>${reviewRuns.length}</strong> review & done</span></div>`;
+  const boardMarkup = `<div class="agent-kanban">${lane("inbox", "Inbox", boardDrafts.map(draftTask), "Create a governed ticket.")}${lane("approval", "Approval", approvalRuns.map(runTask), "No decisions waiting.")}${lane("active", "Building", activeRuns.map(runTask), "No workers running.")}${lane("review", "Review & done", reviewRuns.map(runTask), "No completed work yet.")}</div>`;
+  const introMarkup = heading("Agent Kanban", "File a ticket. Watch the workers move it forward.", "Every card is a real AGIOS draft or runtime session. Open a run to inspect its request, final output, approved route and persisted evidence.", `<button class="launch-goal compact" data-open-directive>New ticket ＋</button>`);
+  page.innerHTML = selectedRun
+    ? `${workRunInspector(selectedRun)}${summaryMarkup}${boardMarkup}`
+    : `${introMarkup}${summaryMarkup}${boardMarkup}`;
   return;
   const drafts = state.directiveDrafts.map((draft) => `<article class="entity-card"><div class="entity-top"><span class="entity-index">LOCAL DRAFT</span>${status("planned")}</div><h2>${esc(draft.outcome)}</h2><p>${esc(titleCase(draft.business))} · ${esc(draft.dataClass)}</p><footer class="entity-footer"><span>Not dispatched</span><span>${new Date(draft.createdAt).toLocaleString()}</span></footer></article>`).join("");
   const runs = state.runs.filter((run) => run.mode === "goal");
@@ -695,17 +920,64 @@ function renderArtifacts() {
   page.innerHTML = `${heading("Artifact Library", "Every result has a place, a source, and a status.", "Browse real AGIOS run outputs and private vision metadata without exposing workspace paths, credentials, or raw customer files.")}<div class="artifact-summary"><span><small>VERIFIED RESULTS</small><strong>${completed.length}</strong></span><span><small>REVIEWABLE RUNS</small><strong>${resultRuns.length}</strong></span><span><small>PRIVATE IMAGE INPUTS</small><strong>${state.visionAssets.length}</strong></span><span><small>ACTIVE WORK</small><strong>${state.runs.filter((run) => ["queued", "running"].includes(run.status)).length}</strong></span></div><section class="artifact-section"><header><div><p class="eyebrow">RUN OUTPUTS</p><h2>Evidence returned by the workforce</h2></div><button data-system="hermes">Open Hermes Sessions →</button></header><div class="artifact-grid">${evidenceCards || `<div class="workspace-empty workspace-card large"><b>▣</b><strong>No result artifacts yet</strong><span>Completed and stopped runs will appear here from the private AGIOS session store.</span></div>`}</div></section><section class="artifact-section"><header><div><p class="eyebrow">PRIVATE INPUTS</p><h2>Vision assets under retention policy</h2></div><span>METADATA ONLY</span></header><div class="artifact-grid">${imageCards || `<div class="workspace-empty workspace-card"><b>◉</b><strong>No retained image inputs</strong><span>Images are listed only when their real private metadata exists.</span></div>`}</div></section>`;
 }
 
+function routePlanCard(plan) {
+  const department = state.data.departments.find((item) => item.id === plan.department_id);
+  const lead = state.data.agents.find((item) => item.id === plan.lead_agent_id);
+  const model = state.data.models.find((item) => item.id === plan.model_id);
+  const workspaceRoute = plan.execution_mode === "workspace";
+  const dataRanks = { public: 0, internal: 1, private_business: 2, customer_restricted: 3 };
+  const eligibleWorkspaces = state.workspaces.filter((workspace) => {
+    const classAllowed = (dataRanks[workspace.data_class] ?? 99) <= (dataRanks[plan.data_class] ?? -1);
+    const accessAllowed = plan.workspace_access !== "write" || workspace.write_allowed;
+    return classAllowed && accessAllowed;
+  });
+  const workspaceOptions = eligibleWorkspaces.map((workspace) => `<option value="${esc(workspace.workspace_id)}">${esc(workspace.label)} · ${esc(titleCase(workspace.data_class))}</option>`).join("");
+  const capabilities = plan.required_capabilities || [];
+  const runtimes = state.runtimeAdapters.filter((runtime) => {
+    if (!["hermes", "codex", "opencode"].includes(runtime.id) || !runtime.execution_enabled) return false;
+    if (!runtime.actions?.some((action) => action.startsWith("workspace"))) return false;
+    if (capabilities.includes("research_web") && runtime.id !== "hermes") return false;
+    if (capabilities.includes("vision") && runtime.id === "opencode") return false;
+    return true;
+  });
+  const runtimeOptions = runtimes.map((runtime) => `<option value="${esc(runtime.id)}">${esc(runtime.name)} · ${esc(titleCase(runtime.status))}</option>`).join("");
+  return `<article class="route-plan-card"><header><div><small>ARI ROUTE · ${esc(new Date(plan.created_at).toLocaleString())}</small><h3>${esc(plan.objective)}</h3></div>${status(plan.status)}</header>
+    <div class="route-plan-path"><span><small>DEPARTMENT</small><strong>${esc(department?.name || titleCase(plan.department_id))}</strong></span><b>→</b><span><small>LEAD</small><strong>${esc(lead?.name || titleCase(plan.lead_agent_id))}</strong></span><b>→</b><span><small>MODEL</small><strong>${esc(plan.model_id)}</strong></span></div>
+    <div class="route-plan-evidence"><span>${esc(titleCase(plan.data_class))} data</span><span>${esc(titleCase(plan.execution_mode))} lane</span><span>${esc(titleCase(plan.workspace_access))} workspace</span>${capabilities.map((item) => `<span>${esc(titleCase(item))}</span>`).join("")}</div>
+    <p class="route-cost-note"><strong>Cost:</strong> ${esc(model?.cost_note || "vendor cost not reported")}</p>
+    <form class="route-plan-action" data-dispatch-form data-plan-id="${esc(plan.plan_id)}" data-plan-digest="${esc(plan.plan_digest)}">
+      ${workspaceRoute ? `<label>Workspace<select name="workspaceId" required><option value="">Choose registered workspace</option>${workspaceOptions}</select></label><label>Runtime<select name="runtimeId" required>${runtimeOptions}</select></label>` : ""}
+      <button type="submit" ${workspaceRoute && (!eligibleWorkspaces.length || !runtimes.length) ? "disabled" : ""}>Prepare exact run approval →</button>
+      ${workspaceRoute && !eligibleWorkspaces.length ? `<small>No compatible workspace is registered. <button class="route-plan-workspace-link" type="button" data-view-link="repositories">Manage workspaces →</button></small>` : ""}
+    </form></article>`;
+}
+
 function renderApprovals() {
+  const plans = state.orchestrationPlans.filter((plan) => plan.status === "planned");
   const pending = state.runs.filter((run) => run.status === "awaiting_approval");
   const proposals = state.skillProposals.filter((item) => item.status === "awaiting_owner_review");
   const proposalCards = proposals.map((item) => `<article class="skill-approval-card"><header><div><small>${esc(item.agent_id)} · ${esc(titleCase(item.change_kind))}</small><h3>${esc(item.skill_name)}</h3></div>${status(item.status)}</header><p>${esc(item.rationale)}</p><footer><span>${item.evidence_run_ids.length} verified run${item.evidence_run_ids.length === 1 ? "" : "s"}</span><button data-approve-skill="${esc(item.proposal_id)}">Approve authoring</button></footer></article>`).join("");
-  page.innerHTML = `${heading("Approval center", "Your judgment is a system boundary.", "Goals, sensitive model routes and agent-authored skill improvements stop here until their exact evidence and scope are approved.")}${pending.length || proposals.length ? `<div class="approval-sections">${pending.length ? `<section><p class="eyebrow">Runtime decisions</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">Skill evolution</p><div class="runtime-session-list">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-stage"><div class="seal">✓</div><h2>No decisions waiting</h2><p>The queue is clear. External messages, publishing, deployment, purchases, customer delivery and account changes remain prohibited even after a goal starts.</p><div class="foundation-roadmap"><span>Exact scope</span><span>Context bound</span><span>CSRF protected</span><span>Journaled</span></div></div>`}`;
+  page.innerHTML = `${heading("Approval center", "Your judgment is a system boundary.", "First review Ari's route. Preparing it creates a digest-bound runtime decision; only your second exact approval starts model work.")}${plans.length || pending.length || proposals.length ? `<div class="approval-sections">${plans.length ? `<section><p class="eyebrow">ROUTES TO REVIEW</p><div class="route-plan-list">${plans.map(routePlanCard).join("")}</div></section>` : ""}${pending.length ? `<section><p class="eyebrow">EXACT RUN APPROVALS</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">PROFESSIONAL GROWTH</p><div class="skill-approval-grid">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-state large"><b>✓</b><strong>Nothing needs approval</strong><span>Planned routes, consequential runs and shared skill changes stop here.</span></div>`}`;
 }
 
 function renderAutomations() {
   page.innerHTML = `${heading("Automations", "Work wakes when it is needed.", "Schedules and events activate specialized agents, collect evidence and return them to ready state. This is persistent operation without continuous token use.")}
     <section class="automation-contract"><article><small>NOTIFY</small><strong>Change only</strong><p>Prefer a meaningful delta over a repeated “nothing changed” message.</p></article><article><small>FAILURES</small><strong>Visible and reviewable</strong><p>Failed jobs belong in Sessions and Artifacts; they never count as completed work.</p></article><article><small>AUTHORITY</small><strong>Never inherited</strong><p>A schedule can wake a worker, but publishing, messaging, deployment, and spending stay approval-gated.</p></article></section>
     <div class="data-panel"><div class="data-head columns-integrations"><span>Automation</span><span>State</span><span>Cadence</span><span>Next wake</span></div>${scheduleTable()}</div>`;
+}
+
+function notebookLMBridge() {
+  const connector = state.notebooklm;
+  if (!connector) {
+    return `<section class="notebooklm-bridge is-loading"><p class="eyebrow">PERSONAL NOTEBOOKLM</p><h2>Loading approved vault sources…</h2><p>No account token or note content is exposed to the browser while AGIOS reads the local catalog.</p></section>`;
+  }
+  const sources = connector.sources || [];
+  const selectable = sources.filter((source) => !source.blocked);
+  const sourceRows = sources.map((source) => `<label class="notebooklm-source ${source.blocked ? "is-blocked" : ""}"><input type="checkbox" name="sourcePath" value="${esc(source.path)}" ${source.blocked ? "disabled" : ""}/><span><strong>${esc(source.title)}</strong><small>${esc(source.path)} · ${Math.max(1, Math.round(source.bytes / 1024))} KB</small></span><em>${source.blocked ? "Blocked: credential-like content" : "Local Markdown"}</em></label>`).join("");
+  const prepared = state.notebooklmPack
+    ? `<div class="notebooklm-prepared"><small>LOCAL PACK READY · NOT UPLOADED</small><strong>${esc(state.notebooklmPack.title)}</strong><p>${state.notebooklmPack.sources.length} selected source${state.notebooklmPack.sources.length === 1 ? "" : "s"}; manifest and SHA-256 provenance included.</p><div><a class="primary-action" href="${esc(state.notebooklmPack.download_url)}" download>Download source pack</a><button type="button" data-notebooklm-open>Open NotebookLM →</button></div></div>`
+    : `<div class="notebooklm-empty"><strong>No source pack prepared</strong><p>Preparing a pack is local. AGIOS never signs in to Google, reads browser cookies, or uploads automatically.</p></div>`;
+  return `<section class="notebooklm-bridge"><header><div><p class="eyebrow">PERSONAL NOTEBOOKLM · OWNER-MEDIATED</p><h2>Turn approved Obsidian notes into a cited notebook source pack.</h2><p>The video’s useful pattern is the five-file context pack. AGIOS implements the real boundary: select local notes, inspect them, prepare a verifiable ZIP, then you decide what to upload.</p></div>${status("ready")}</header><div class="notebooklm-boundary"><span><small>ACCOUNT</small><strong>Owner browser only</strong></span><span><small>TRANSFER</small><strong>No automatic upload</strong></span><span><small>PROVENANCE</small><strong>Path + SHA-256 manifest</strong></span><span><small>AUTHORITY</small><strong>Owner uploads manually</strong></span></div><div class="notebooklm-grid"><form data-notebooklm-form><label>PACK TITLE<input name="title" required maxlength="160" value="AGIOS core context"/></label><fieldset><legend>APPROVED OBSIDIAN SOURCES · ${selectable.length} AVAILABLE</legend><div class="notebooklm-sources">${sourceRows || `<p>No Markdown notes were found in the approved vault.</p>`}</div></fieldset><label class="notebooklm-ack"><input type="checkbox" name="externalUploadAcknowledged" required/><span>I understand selected notes leave this PC only after I upload them to Google NotebookLM.</span></label><button class="primary-action" type="submit" ${selectable.length ? "" : "disabled"}>Prepare local source pack</button></form><aside><ol>${(connector.workflow || []).map((step) => `<li>${esc(step)}</li>`).join("")}</ol>${prepared}</aside></div></section>`;
 }
 
 function renderIntegrations() {
@@ -725,8 +997,23 @@ function renderIntegrations() {
   }).join("");
   const retrieval = state.data.operational?.retrieval || {};
   const a2a = state.data.operational?.a2a || {};
-  page.innerHTML = `${heading("Models & tools", "One control plane, many replaceable capabilities.", "Registry entries describe intended connections; only runtime-verified adapters receive executable controls. Hermes remains the primary supervised execution runtime.")}
+  const opencodeRuntime = runtimeForSystem("opencode");
+  const connectionDecisions = [
+    ["OpenCode", opencodeRuntime.execution_enabled ? "ready" : "blocked", opencodeRuntime.execution_enabled ? "Executable + local auth state detected" : "Local auth state not detected", opencodeRuntime.execution_enabled ? "Supervised workspace adapter; deny-by-default tools, no auto mode." : "Install and authenticate the audited CLI."],
+    ["Gemini / NotebookLM", state.notebooklm ? "ready" : "approval", state.notebooklm ? "Local source-pack bridge ready" : "Owner source approval required", state.notebooklm ? "AGIOS does not inspect account auth; local preparation only, with no cookies, unofficial API, or automatic Google upload." : "Load the approved vault catalog before preparing a source pack."],
+    ["Cline", "hold", "Overlap + authority risk", "Standalone CLI defaults need a separate least-privilege policy before installation."],
+    ["Pokee", "hold", "Enterprise/API setup", "External sandbox service; no approved account or measurable advantage over current routes."],
+    ["OpenClaw", "hold", "Broad device/chat authority", "Large overlap with Hermes; not granted access to this workstation."],
+    ["Antigravity", "planned", "Callable interface unverified", "Remains registry-only until a local auditable adapter exists."],
+    ["Paperclip", "hold", "Second control plane not needed", "AGIOS adopts verified ownership, bounded-runtime and handoff patterns natively; external Paperclip stays uninstalled to avoid split approvals and task state."],
+    ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."],
+  ];
+  const decisionRows = connectionDecisions.map(([name, stateName, gate, reason]) => `<div class="connection-decision"><div><strong>${esc(name)}</strong><small>${esc(gate)}</small></div>${status(stateName)}<p>${esc(reason)}</p></div>`).join("");
+  // Every runtime- or registry-derived value interpolated below is escaped before assignment.
+  page.innerHTML = `${heading("Apps & models", "Callable means executable, auth state detected and bounded.", "AGIOS exposes only executable adapters with explicit policy boundaries. Registry entries remain visibly blocked until their role, local authentication state and least-privilege boundary are proven.")}
     <div class="protocol-strip"><article><small>KNOWLEDGE</small><strong>${esc(retrieval.mode || "Unavailable")}</strong><span>Citation-ready scoped retrieval</span></article><article><small>AGENT INTEROP</small><strong>${esc(a2a.protocol || "A2A")} ${esc(a2a.protocol_version || "")}</strong><span>Authenticated local ${esc(a2a.binding || "gateway")}</span></article><article><small>OUTBOUND PEERS</small><strong>${esc(titleCase(a2a.outbound_peers || "locked"))}</strong><span>Explicit trust and credentials required</span></article></div>
+    ${notebookLMBridge()}
+    <section class="connection-decisions"><header><div><p class="eyebrow">CONNECTION DECISIONS</p><h2>One governed runtime; explicit integration gates.</h2></div><span>No decorative “connected” states</span></header>${decisionRows}</section>
     <section class="tool-router"><header><div><p class="eyebrow">CAPABILITY ROUTER</p><h2>Preferred route, health, fallback, and permission.</h2></div><span>${routes.length} REGISTERED ROUTES</span></header><div class="route-card-grid">${routeCards}</div></section>
     <div class="data-panel"><div class="data-head columns-integrations"><span>Integration</span><span>Kind</span><span>Registry</span><span>Execution boundary</span></div>${rows}</div>`;
 }
@@ -753,7 +1040,7 @@ function modelsForSystem(system) {
   if (system.id === "codex") return state.data.models.filter((model) => model.provider === "openai-codex");
   if (system.id === "deepseek") return state.data.models.filter((model) => model.provider === "deepseek");
   if (system.id === "ollama") return state.data.models.filter((model) => model.location === "local");
-  if (system.id === "opencode") return state.data.models.filter((model) => model.provider === "opencode");
+  if (system.id === "opencode") return state.data.models.filter((model) => ["gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "deepseek-v4-flash", "deepseek-v4-pro"].includes(model.id));
   return state.data.models.filter((model) => model.provider === system.id);
 }
 
@@ -773,7 +1060,7 @@ function routedModelForSystem(system) {
   const models = modelsForSystem(system).filter((model) => !model.id.includes("embedding"));
   if (system.id === "deepseek") return models.find((model) => model.provider === "deepseek") || null;
   if (system.id === "ollama") return models.find((model) => model.id === "qwen3.5-hermes") || models[0] || null;
-  if (system.id === "opencode") return models.find((model) => model.provider === "opencode") || null;
+  if (system.id === "opencode") return models.find((model) => model.id === "gpt-5.6-sol") || models[0] || null;
   if (system.id === "codex") return models.find((model) => model.id === "gpt-5.6-sol") || models[0] || null;
   return models[0] || null;
 }
@@ -781,6 +1068,7 @@ function routedModelForSystem(system) {
 function systemRunMatches(run, system) {
   const modelIds = new Set(modelsForSystem(system).map((model) => model.id));
   if (system.id === "codex" && run.runtime_id === "codex") return true;
+  if (system.id === "opencode" && run.runtime_id === "opencode") return true;
   if (system.id === "hermes" && run.runtime_id === "hermes") return true;
   return modelIds.has(run.model) || run.provider === system.id;
 }
@@ -789,7 +1077,7 @@ function routedSystemLauncher(system, action) {
   const runtime = runtimeForSystem(system.id);
   const model = routedModelForSystem(system);
   const executable = runtime.execution_enabled && (runtime.actions || []).some((item) => action === "workspace" ? item.startsWith("workspace") : item === action || (action === "chat" && item === "local-inference"));
-  const destination = action === "workspace" ? "the Codex workspace lane" : action === "goal" ? "Hermes Goal Mode" : "Hermes Chat";
+  const destination = action === "workspace" ? `the ${system.name} workspace lane` : action === "goal" ? "Hermes Goal Mode" : "Hermes Chat";
   return `<section class="workspace-card routed-launcher"><p class="eyebrow">GOVERNED ROUTE</p><h2>${esc(system.name)} → ${destination}</h2><p>${executable ? `AGIOS will open the live supervised composer with ${model ? esc(model.id) : "the approved profile route"} selected. Memory, skills, data classification and approval policy remain attached.` : `${esc(system.name)} is visible in the registry, but no executable ${action} adapter is installed and authenticated on this machine.`}</p><div class="control-readout"><span><small>READINESS</small><strong>${runtime.configured ? "Configured" : runtime.detected ? "Installed · auth unverified" : "Not found"}</strong></span><span><small>ADAPTER</small><strong>${esc(titleCase(runtime.adapter))}</strong></span><span><small>MODEL</small><strong>${esc(model?.id || "Unavailable")}</strong></span><span><small>AUTHORITY</small><strong>${esc(titleCase(runtime.approval))}</strong></span></div>${executable ? `<button class="primary-action routed-action" data-route-system-action="${esc(action)}" data-route-system-id="${esc(system.id)}">Open live ${esc(action)} →</button>` : `<div class="boundary-note">Install and authenticate an audited adapter before this action can appear. AGIOS blocks silent provider fallback.</div>`}</section>`;
 }
 
@@ -1035,11 +1323,24 @@ function knowledgeIntakeSurface() {
   return `<section class="knowledge-intake"><header><div><p class="eyebrow">KNOWLEDGE INTAKE · /LEARN STYLE</p><h2>Give AGIOS a document once. It builds a brain file.</h2><p>One deterministic index per document: real chunks, a term glossary, and a cheat sheet of opening statements. No model-generated summary, so nothing can be hallucinated.</p></div><span>${summary.documents} learned · ${summary.indexed_chunks} indexed chunks</span></header><div class="learn-grid"><form class="workspace-card learn-form" data-learn-form><label>Title<input name="title" required maxlength="160" placeholder="Perfume import compliance guide"/></label><label>Source<input name="sourceName" maxlength="160" value="pasted" placeholder="book, PDF notes, article"/></label><label>Document text<textarea name="text" required maxlength="200000" placeholder="Paste the document text. AGIOS splits it into bounded chunks, extracts frequent terms, and keeps the index — never a rewrite."></textarea></label><button type="submit">Build brain file</button></form><div class="learned-list">${docs || `<div class="workspace-empty workspace-card"><b>▤</b><strong>No brain files yet</strong><span>Learned documents appear here with their real index, ready for retrieval.</span></div>`}</div></div></section>`;
 }
 
+function improvementRecommendationsSurface() {
+  const digest = state.dreaming;
+  if (!digest) return "";
+  const recommendations = digest.recommendations || [];
+  const evidenceDimensions = (digest.dimensions || []).filter((item) => item.status === "evidence").length;
+  const cards = recommendations.map((item) => {
+    const evidence = Object.entries(item.evidence || {}).map(([key, value]) => `<span><small>${esc(titleCase(key))}</small><strong>${esc(value)}</strong></span>`).join("");
+    const target = item.action?.target || "skills";
+    return `<article><header><span>${esc(titleCase(item.dimension))}</span>${status("evidence")}</header><h3>${esc(item.title)}</h3><p>${esc(item.detail)}</p><div class="improvement-evidence">${evidence}</div><footer><button data-dreaming-dismiss="${esc(item.id)}">Dismiss</button><button data-dreaming-accept="${esc(item.id)}" data-dreaming-target="${esc(target)}">Accept and open →</button></footer></article>`;
+  }).join("");
+  return `<section class="improvement-proposals"><header><div><p class="eyebrow">VERIFIED IMPROVEMENTS</p><h2>${recommendations.length} evidence-backed proposal${recommendations.length === 1 ? "" : "s"}</h2><p>Eight local dimensions are measured. A proposal appears only when a stored count or status supports it; nothing installs itself.</p></div><span>${evidenceDimensions}/8 dimensions have evidence</span></header><div>${cards || `<div class="simple-empty">No improvement proposal currently has enough evidence.</div>`}</div></section>`;
+}
+
 function renderSharedSkills() {
   const registry = state.data.shared_fabric.skills;
   const categories = Object.keys(registry.categories);
   const filtered = registry.items.filter((skill) => (state.skillCategory === "all" || skill.category === state.skillCategory) && (!state.skillQuery || `${skill.name} ${skill.description}`.toLowerCase().includes(state.skillQuery.toLowerCase())));
-  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere—with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>⌕<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} · ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
+  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere—with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${improvementRecommendationsSurface()}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>⌕<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} · ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
 }
 
 function operationalMemorySurface(feedless = false) {
@@ -1057,7 +1358,7 @@ function retrievalWorkbench() {
 
 
 function brainIcon() {
-  return `<svg class="memory-brain-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#63d9a5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 4.5A3.2 3.2 0 0 0 5.2 6.4c-.3 2.2 1.1 3.4-.2 5.2-1.2 1.7-.2 3.9 1.9 4.3 1.9.4 3.3-1 5.1-1.2"/><path d="M14.5 4.5A3.2 3.2 0 0 1 18.8 6.4c.3 2.2-1.1 3.4.2 5.2 1.2 1.7.2 3.9-1.9 4.3-1.9.4-3.3-1-5.1-1.2"/><path d="M12 4v15.5"/><path d="M9 19.5c.8-.6 1.6-.6 2.4 0M12 19.5c.8-.6 1.6-.6 2.4 0"/></svg>`;
+  return `<svg class="memory-brain-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 4.5A3.2 3.2 0 0 0 5.2 6.4c-.3 2.2 1.1 3.4-.2 5.2-1.2 1.7-.2 3.9 1.9 4.3 1.9.4 3.3-1 5.1-1.2"/><path d="M14.5 4.5A3.2 3.2 0 0 1 18.8 6.4c.3 2.2-1.1 3.4.2 5.2 1.2 1.7.2 3.9-1.9 4.3-1.9.4-3.3-1-5.1-1.2"/><path d="M12 4v15.5"/><path d="M9 19.5c.8-.6 1.6-.6 2.4 0M12 19.5c.8-.6 1.6-.6 2.4 0"/></svg>`;
 }
 
 function memoryPageHero() {
@@ -1071,9 +1372,8 @@ function memoryPanelTabs() {
     ["recent", `◷ Recent ${recentCount}`],
     ["notes", "▤ Notes"],
     ["omi", "✦ Omi"],
-    ["graph", "◉ Graph"],
   ];
-  return `<div class="memory-mode-tabs">${tabs.map(([id, label]) => `<button class="${state.memoryTab === id ? "is-active" : ""}" data-memory-tab="${id}">${label}</button>`).join("")}<button class="memory-galaxy-button ${state.memoryTab === "graph" ? "is-active" : ""}" data-memory-tab="graph">Galaxy ✦</button></div>`;
+  return `<div class="memory-mode-tabs">${tabs.map(([id, label]) => `<button class="${state.memoryTab === id ? "is-active" : ""}" data-memory-tab="${id}">${label}</button>`).join("")}</div>`;
 }
 
 function memoryRecentSurface() {
@@ -1370,6 +1670,26 @@ function renderRepositories() {
   page.innerHTML = `${heading("Repository fabric", "Every workspace can be operated without losing its boundary.", "AGIOS registers repositories and project workspaces for agents and systems, while customer paths and contents remain hidden from the browser.")}<div class="system-summary"><span><strong>${state.data.summary.repositories}</strong> registered repositories</span><span><strong>${state.workspaces.length}</strong> approved workspaces</span><span><strong>${state.data.summary.shared_skills}</strong> reusable skills</span></div>${workspaceRegistryCard()}${repositorySurface()}`;
 }
 
+async function loadLiveWork({ render = false } = {}) {
+  try {
+    const snapshot = await api("/api/v1/live-work");
+    const current = liveMetricSnapshot(snapshot);
+    const previous = state.liveMetrics;
+    state.liveWork = snapshot;
+    state.liveMetrics = current;
+    state.changedLiveMetrics = previous
+      ? Object.keys(current).filter((key) => current[key] !== previous[key])
+      : [];
+    if (render && state.view === "command") {
+      renderCommand();
+      window.requestAnimationFrame(animateLiveMetricChanges);
+    }
+  } catch {
+    state.changedLiveMetrics = [];
+    if (!state.liveWork) state.liveWork = { schema_version: 1, synthetic: false, sources: {}, improvements: [] };
+  }
+}
+
 async function loadCosts() {
   try {
     state.costs = await api("/api/v1/costs");
@@ -1641,7 +1961,34 @@ function systemTerminalSurface(surface) {
   return `<section class="surface-stage system-terminal-stage">${renderSurfaceContent(surface)}</section><footer class="surface-footer"><span>${esc(surfaceStatusLabel(statusValue))}</span><span>Real ${esc(surface.name)} process · local PTY · loopback only</span></footer>`;
 }
 
-const renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
+const renderers = { command: renderCommand, guide: renderGuide, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
+
+function motionAllowed() {
+  return typeof Element.prototype.animate === "function" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function animateViewEntry() {
+  if (!motionAllowed() || !page.firstElementChild) return;
+  page.firstElementChild.animate(
+    [{ opacity: .72, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }],
+    { duration: 120, easing: "cubic-bezier(.2,.8,.2,1)" },
+  );
+}
+
+function animateLiveMetricChanges() {
+  if (!motionAllowed()) return;
+  for (const key of state.changedLiveMetrics) {
+    const target = page.querySelector(`[data-live-key="${CSS.escape(key)}"]`);
+    if (!target) continue;
+    target.animate(
+      [
+        { opacity: .72, transform: "translateY(3px)", boxShadow: "0 0 0 1px rgba(224,162,83,.42)" },
+        { opacity: 1, transform: "translateY(0)", boxShadow: "0 0 0 1px rgba(224,162,83,0)" },
+      ],
+      { duration: 160, easing: "cubic-bezier(.2,.8,.2,1)" },
+    );
+  }
+}
 
 function setView(view) {
   if (!state.data || !viewLabels[view]) return;
@@ -1650,13 +1997,20 @@ function setView(view) {
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
   if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
   if (view !== "memory") disposeMemoryGalaxy();
+  if (view !== "command") {
+    state.executionSpineCleanup?.();
+    state.executionSpineCleanup = null;
+  }
   if (view === "performance" && !state.costs) void loadCosts().then(() => state.view === "performance" && renderPerformance());
   (renderers[view] || (() => renderFuture(view)))();
+  const advanced = document.querySelector(".advanced-nav");
+  if (advanced && ["portfolio", "departments", "agents", "skills", "repositories", "automations", "paperclip", "network", "performance", "settings"].includes(view)) advanced.open = true;
   renderAgentNavigation();
   renderSystemNavigation();
   history.replaceState(null, "", view === "command" ? "/" : `/${view}`);
   sidebar.classList.remove("is-open");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
+  window.requestAnimationFrame(animateViewEntry);
   window.setTimeout(() => void loadOperationalSurface(), 0);
 }
 
@@ -1725,7 +2079,7 @@ function operationalAgentId() {
 }
 
 function rerenderOperationalView() {
-  document.querySelector("#approval-count").textContent = state.runs.filter((run) => run.status === "awaiting_approval").length + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
+  document.querySelector("#approval-count").textContent = state.orchestrationPlans.filter((plan) => plan.status === "planned").length + state.runs.filter((run) => run.status === "awaiting_approval").length + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
   if (state.view === "agent") renderAgent();
   else if (state.view === "system") renderSystem();
   else if (state.view === "memory") renderSharedMemory();
@@ -1736,6 +2090,7 @@ function rerenderOperationalView() {
   else if (state.view === "repositories") renderRepositories();
   else if (state.view === "command") renderCommand();
   else if (state.view === "network") renderAgentNetwork();
+  else if (state.view === "integrations") renderIntegrations();
 }
 
 async function loadOperationalSurface() {
@@ -1745,10 +2100,11 @@ async function loadOperationalSurface() {
   const needsVision = ["artifacts", "memory"].includes(state.view);
   const needsA2A = state.view === "network";
   const needsGrowth = ["command", "approvals", "skills"].includes(state.view) || (state.view === "agent" && state.agentMode === "growth");
-  const needsWorkspaces = ["command", "repositories"].includes(state.view) || (state.view === "agent" && state.agentMode === "workspace");
-  const needsRuntimes = ["command", "systems", "system"].includes(state.view) || (state.view === "agent" && state.agentMode === "workspace");
-  const needsPlans = state.view === "command";
-  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans) return;
+  const needsWorkspaces = ["command", "approvals", "work", "repositories"].includes(state.view) || (state.view === "agent" && state.agentMode === "workspace");
+  const needsRuntimes = ["command", "approvals", "systems", "system"].includes(state.view) || (state.view === "agent" && state.agentMode === "workspace");
+  const needsPlans = ["command", "approvals"].includes(state.view);
+  const needsNotebookLM = state.view === "integrations";
+  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans && !needsNotebookLM) return;
   state.operationalLoading = true;
   try {
     if (needsRuns) {
@@ -1786,9 +2142,16 @@ async function loadOperationalSurface() {
       const payload = await api("/api/v1/runtimes");
       state.runtimeAdapters = payload.items || [];
     }
+    if (needsNotebookLM) {
+      state.notebooklm = await api("/api/v1/notebooklm/sources");
+    }
     const bannerDetail = document.querySelector("#ops-banner-detail");
     if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers · ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories · ${state.data.summary.systems} AI systems`;
     rerenderOperationalView();
+    if (state.view === "work" && state.selectedWorkRunId) {
+      const selected = state.runs.find((run) => run.run_id === state.selectedWorkRunId);
+      if (selected && (["queued", "running"].includes(selected.status) || !Object.hasOwn(state.runTraces, selected.run_id))) void loadWorkRunTrace(selected.run_id);
+    }
   } catch (error) {
     showToast(error.message);
   } finally {
@@ -2028,6 +2391,9 @@ document.addEventListener("click", (event) => {
   const surfaceLaunch = event.target.closest("[data-surface-launch]");
   const surfaceRestart = event.target.closest("[data-surface-restart]");
   const surfaceOpen = event.target.closest("[data-surface-open]");
+  const workRun = event.target.closest("[data-work-run]");
+  const workRunClose = event.target.closest("[data-work-run-close]");
+  const notebookOpen = event.target.closest("[data-notebooklm-open]");
   if (nav) setView(nav.dataset.view);
   if (link) setView(link.dataset.viewLink);
   if (business) setView("portfolio");
@@ -2035,6 +2401,14 @@ document.addEventListener("click", (event) => {
   if (agent) { state.selectedAgent = agent.dataset.agent; state.agentMode = "overview"; setView("agent"); }
   if (agentMode) { state.agentMode = agentMode.dataset.agentMode; renderAgent(); window.setTimeout(() => void loadOperationalSurface(), 0); }
   if (period) { state.period = period.dataset.period; state.view === "performance" ? renderPerformance() : renderCommand(); }
+  if (workRun) {
+    state.selectedWorkRunId = workRun.dataset.workRun;
+    renderWork();
+    void loadWorkRunTrace(state.selectedWorkRunId);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+  if (workRunClose) { state.selectedWorkRunId = null; renderWork(); }
+  if (notebookOpen) window.open("https://notebooklm.google.com/", "_blank", "noopener");
   if (directive) openModal();
   if (system) { state.selectedSystem = system.dataset.system; const sid = system.dataset.system; state.systemMode = terminalSurfaceForSystem(sid) ? "terminal" : "overview"; setView("system"); }
   if (systemMode) { state.systemMode = systemMode.dataset.systemMode; renderSystem(); window.setTimeout(() => void loadOperationalSurface(), 0); }
@@ -2096,7 +2470,8 @@ document.addEventListener("submit", async (event) => {
   const workspaceForm = event.target.closest("[data-workspace-form]");
   const skillDraftForm = event.target.closest("[data-skill-draft-form]");
   const modelPreferenceForm = event.target.closest("[data-model-preference-form]");
-  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm) return;
+  const notebookForm = event.target.closest("[data-notebooklm-form]");
+  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm && !notebookForm) return;
   event.preventDefault();
   const submit = event.target.querySelector("button[type=submit]");
   if (submit) submit.disabled = true;
@@ -2104,6 +2479,20 @@ document.addEventListener("submit", async (event) => {
     const values = new FormData(event.target);
     if (dispatchForm) {
       await dispatchOrchestrationPlan(dispatchForm);
+    } else if (notebookForm) {
+      const selected = values.getAll("sourcePath");
+      if (!selected.length) throw new Error("Choose at least one approved source note");
+      const payload = await api("/api/v1/notebooklm/packs", {
+        method: "POST",
+        body: JSON.stringify({
+          title: values.get("title"),
+          source_paths: selected,
+          external_upload_acknowledged: values.get("externalUploadAcknowledged") === "on",
+        }),
+      });
+      state.notebooklmPack = payload.pack;
+      renderIntegrations();
+      showToast("Local NotebookLM source pack prepared · nothing uploaded");
     } else if (chiefForm) {
       const payload = await api("/api/v1/orchestrator/plans", {
         method: "POST",
@@ -2115,7 +2504,7 @@ document.addEventListener("submit", async (event) => {
       });
       state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
       event.target.reset();
-      renderCommand();
+      setView("approvals");
       showToast("Ari mapped the route · review it before dispatch");
     } else if (runForm?.hasAttribute("data-ari-router")) {
       const objective = values.get("objective");
@@ -2131,7 +2520,7 @@ document.addEventListener("submit", async (event) => {
       if (payload.decision.kind === "work") {
         state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
         event.target.reset();
-        setView("command");
+        setView("approvals");
         showToast(`Ari routed this to ${titleCase(payload.decision.execution_mode)} · review the plan`);
       } else {
         const skills = values.getAll("skill");
@@ -2310,7 +2699,7 @@ document.querySelector("#directive-form").addEventListener("submit", async (even
     form.reset();
     closeModal();
     state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
-    setView("command");
+    setView("approvals");
     showToast("Ari mapped the route · review it before dispatch");
     await loadOperationalSurface();
   } catch (error) {
@@ -2333,6 +2722,9 @@ tick(); window.setInterval(tick, 30000);
 window.setInterval(() => {
   if (!document.activeElement?.closest?.("[data-chief-form], [data-run-form], [data-workspace-form], [data-skill-draft-form], [data-memory-form], [data-retrieval-form], [data-a2a-form]") && state.runs.some((run) => ["queued", "running"].includes(run.status))) { void loadOperationalSurface(); void loadDreaming(); }
 }, 1600);
+window.setInterval(() => {
+  if (!document.hidden) void loadLiveWork({ render: state.view === "command" });
+}, 10000);
 
 async function loadLearning() {
   try {
@@ -2389,6 +2781,7 @@ async function loadDreaming() {
     state.dreaming = null;
   }
   if (state.view === "command") renderCommand();
+  if (state.view === "skills") renderSharedSkills();
 }
 
 async function acceptDreaming(button) {
@@ -2400,6 +2793,7 @@ async function acceptDreaming(button) {
     showToast(target ? `Accepted · opening ${viewLabels[target] || target}` : "Recommendation accepted");
     await loadDreaming();
     if (state.view === "command") renderCommand();
+    if (state.view === "skills") renderSharedSkills();
     if (target && viewLabels[target]) setView(target);
   } catch (error) {
     showToast(error.message);
@@ -2414,6 +2808,7 @@ async function dismissDreaming(button) {
     await api(`/api/v1/dreaming/${encodeURIComponent(id)}/dismiss`, { method: "POST" });
     await loadDreaming();
     if (state.view === "command") renderCommand();
+    if (state.view === "skills") renderSharedSkills();
   } catch (error) {
     showToast(error.message);
     button.disabled = false;
@@ -2434,6 +2829,7 @@ async function boot() {
     }
     await refreshSurfaceProbes();
     try { state.voice = await api("/api/v1/voice/capabilities"); } catch { state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } }; }
+    await loadLiveWork();
     await loadDreaming();
     await loadLearning();
     void loadCosts();

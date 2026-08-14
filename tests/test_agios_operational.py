@@ -1,6 +1,10 @@
+import json
+import sqlite3
+import sys
 import tempfile
 import time
 import unittest
+from contextlib import closing
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -14,6 +18,7 @@ from agios.operational import (
     OperationalError,
     OperationalService,
     SharedMemoryStore,
+    _run_runtime_process,
     _runtime_error_code,
     run_hermes_cli,
 )
@@ -135,6 +140,135 @@ class OperationalServiceTests(unittest.TestCase):
         self.assertNotIn("Keep customer work isolated", serialized)
         self.assertNotIn("Verified result", serialized)
 
+    def test_runtime_stdout_progress_is_persisted_with_workspace_and_secret_redaction(self):
+        def streaming_runner(run, memory_context, skill_context, workspace):
+            for index in range(6):
+                run["_progress"](f"chunk-{index}:" + ("x" * 9990) + "\n")
+            run["_progress"](f"Inspecting {workspace}\n")
+            run["_progress"]("api_key=abcdefghijklmnop\nTests passed\n")
+            return HermesExecutionResult("completed", "Verified result", None, "session-stream")
+
+        self.service.runner = streaming_runner
+        run = self.service.create_run(
+            mode="chat",
+            agent_id="default",
+            objective="Report bounded runtime progress",
+            data_class="internal",
+        )
+
+        completed = self.wait_for_run(run["run_id"])
+
+        self.assertEqual("completed", completed["status"])
+        self.assertIn("Inspecting [WORKSPACE]", completed["progress_output"])
+        self.assertIn("[REDACTED]", completed["progress_output"])
+        self.assertLessEqual(len(completed["progress_output"]), 50000)
+        self.assertTrue(completed["progress_output"].startswith("[Earlier runtime output truncated]"))
+        self.assertNotIn(str(ROOT), completed["progress_output"])
+        self.assertNotIn("abcdefghijklmnop", completed["progress_output"])
+
+    def test_hermes_run_trace_exposes_real_tool_events_without_reasoning_or_secrets(self):
+        run = self.service.create_run(
+            mode="chat",
+            agent_id="default",
+            objective="Inspect stored execution evidence",
+            data_class="internal",
+        )
+        completed = self.wait_for_run(run["run_id"])
+        workspace = self.state / "runs" / completed["run_id"]
+        private_home_path = Path.home() / "Downloads" / "private-client.txt"
+        profile = self.state / "profiles" / "default"
+        profile.mkdir(parents=True)
+        with closing(sqlite3.connect(profile / "state.db")) as connection:
+            connection.executescript(
+                """
+                CREATE TABLE sessions(id TEXT PRIMARY KEY, source TEXT, started_at REAL);
+                CREATE TABLE messages(
+                    id INTEGER PRIMARY KEY,
+                    session_id TEXT NOT NULL,
+                    role TEXT NOT NULL,
+                    content TEXT,
+                    tool_call_id TEXT,
+                    tool_calls TEXT,
+                    tool_name TEXT,
+                    effect_disposition TEXT,
+                    timestamp REAL,
+                    active INTEGER DEFAULT 1,
+                    reasoning TEXT
+                );
+                """
+            )
+            connection.execute(
+                "INSERT INTO sessions(id, source, started_at) VALUES (?, ?, ?)",
+                (completed["hermes_session_id"], f"agios:{completed['run_id']}", 1.0),
+            )
+            connection.executemany(
+                "INSERT INTO messages(session_id, role, content, timestamp) VALUES (?, 'user', 'old context', ?)",
+                [
+                    (completed["hermes_session_id"], index / 1000)
+                    for index in range(250)
+                ],
+            )
+            tool_calls = json.dumps([
+                {
+                    "id": "call-1",
+                    "type": "function",
+                    "function": {
+                        "name": "terminal",
+                        "arguments": json.dumps({
+                            "command": f"inspect {workspace} api_key=abcdefghijklmnop"
+                        }),
+                    },
+                }
+            ])
+            connection.execute(
+                "INSERT INTO messages(session_id, role, content, tool_calls, timestamp, reasoning) VALUES (?, 'assistant', '', ?, 2.0, ?)",
+                (completed["hermes_session_id"], tool_calls, "private hidden reasoning"),
+            )
+            connection.execute(
+                "INSERT INTO messages(session_id, role, content, tool_call_id, tool_name, effect_disposition, timestamp) VALUES (?, 'tool', ?, 'call-1', 'terminal', 'confirmed', 3.0)",
+                (
+                    completed["hermes_session_id"],
+                    f"finished in {workspace}; read {private_home_path}; token=qrstuvwxyzabcdef",
+                ),
+            )
+            connection.execute(
+                "INSERT INTO messages(session_id, role, content, timestamp) VALUES (?, 'assistant', 'Checking the result for the owner.', 4.0)",
+                (completed["hermes_session_id"],),
+            )
+            connection.execute(
+                "INSERT INTO messages(session_id, role, content, timestamp) VALUES (?, 'assistant', 'Verified result', 5.0)",
+                (completed["hermes_session_id"],),
+            )
+            connection.commit()
+
+        self.service.profile_dir_resolver = lambda _name: profile
+        trace = self.service.run_trace(completed["run_id"])
+        serialized = json.dumps(trace)
+
+        self.assertTrue(trace["available"], trace)
+        self.assertEqual(2, len(trace["events"]))
+        self.assertEqual("terminal", trace["events"][0]["tool"])
+        self.assertIn("[WORKSPACE]", trace["events"][0]["input"])
+        self.assertNotIn("abcdefghijklmnop", serialized)
+        self.assertNotIn("qrstuvwxyzabcdef", serialized)
+        self.assertNotIn(str(workspace), serialized)
+        self.assertNotIn(str(private_home_path), serialized)
+        self.assertNotIn(str(workspace), trace["events"][0]["output"])
+        self.assertNotIn(str(private_home_path), trace["events"][0]["output"])
+        self.assertNotIn("private hidden reasoning", serialized)
+        self.assertNotIn("Verified result", serialized)
+
+        app = create_app(
+            config_path=ROOT / "configs" / "agios.json",
+            frontend_path=ROOT / "apps" / "agios-command-center" / "dist",
+            operational_service=self.service,
+        )
+        with TestClient(app, base_url="http://127.0.0.1:9120") as client:
+            client.get("/")
+            response = client.get(f"/api/v1/hermes/runs/{completed['run_id']}/events")
+            self.assertEqual(200, response.status_code)
+            self.assertEqual("terminal", response.json()["trace"]["events"][0]["tool"])
+
     def test_goal_requires_exact_approval_before_dispatch(self):
         run = self.service.create_run(
             mode="goal",
@@ -151,6 +285,70 @@ class OperationalServiceTests(unittest.TestCase):
         completed = self.wait_for_run(run["run_id"])
         self.assertEqual("completed", completed["status"])
         self.assertEqual(1, len(self.calls))
+
+    def test_auto_retrieved_memory_context_remains_approvable(self):
+        self.service.add_memory(
+            scope_kind="portfolio",
+            scope_id="portfolio",
+            title="Alpha Beta Gamma",
+            body="Use all three signals when reviewing the route.",
+            created_by="owner",
+            trust="high",
+        )
+        self.service.add_memory(
+            scope_kind="portfolio",
+            scope_id="portfolio",
+            title="Alpha",
+            body="Keep the first signal visible.",
+            created_by="owner",
+            trust="high",
+        )
+        run = self.service.create_run(
+            mode="goal",
+            agent_id="builder",
+            objective="Review alpha beta gamma",
+            data_class="internal",
+        )
+
+        self.assertEqual(2, len(run["memory_ids"]))
+        self.service.approve_run(run["run_id"], run["approval_digest"])
+
+        completed = self.wait_for_run(run["run_id"])
+        self.assertEqual("completed", completed["status"])
+        self.assertEqual(1, len(self.calls))
+
+    def test_memory_content_drift_is_blocked_with_a_precise_reason(self):
+        memory = self.service.add_memory(
+            scope_kind="portfolio",
+            scope_id="portfolio",
+            title="Approval boundary",
+            body="Use the reviewed memory content.",
+            created_by="owner",
+            trust="high",
+        )
+        run = self.service.create_run(
+            mode="goal",
+            agent_id="builder",
+            objective="Review the approval boundary",
+            data_class="internal",
+            memory_ids=[memory["memory_id"]],
+        )
+        connection = sqlite3.connect(self.service.memory.path)
+        try:
+            connection.execute(
+                "UPDATE memories SET body=? WHERE memory_id=?",
+                ("This content changed after the approval request.", memory["memory_id"]),
+            )
+            connection.commit()
+        finally:
+            connection.close()
+
+        with self.assertRaisesRegex(OperationalError, "memory content"):
+            self.service.approve_run(run["run_id"], run["approval_digest"])
+
+        waiting = self.service.sessions.get(run["run_id"])
+        self.assertEqual("awaiting_approval", waiting["status"])
+        self.assertEqual([], self.calls)
 
     def test_context_drift_keeps_goal_waiting_for_approval(self):
         run = self.service.create_run(
@@ -289,6 +487,30 @@ class OperationalServiceTests(unittest.TestCase):
 
 
 class HermesRuntimePolicyTests(unittest.TestCase):
+    def test_streaming_process_publishes_stdout_but_never_stderr(self):
+        chunks = []
+        completed = _run_runtime_process(
+            [
+                sys.executable,
+                "-u",
+                "-c",
+                "import sys; print('visible line'); print('private diagnostic', file=sys.stderr)",
+            ],
+            progress=chunks.append,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=30,
+            shell=False,
+            check=False,
+        )
+
+        self.assertEqual(0, completed.returncode)
+        self.assertIn("visible line", "".join(chunks))
+        self.assertNotIn("private diagnostic", "".join(chunks))
+        self.assertIn("private diagnostic", completed.stderr)
+
     def invoke(self, *, mode, data_class, required_capabilities=()):
         captured = {}
 
@@ -302,6 +524,7 @@ class HermesRuntimePolicyTests(unittest.TestCase):
             )
 
         run = {
+            "run_id": "run-123",
             "mode": mode,
             "data_class": data_class,
             "agent_id": "default",
@@ -331,6 +554,7 @@ class HermesRuntimePolicyTests(unittest.TestCase):
         self.assertEqual("none", command[command.index("-t") + 1])
         self.assertNotIn("--yolo", command)
         self.assertNotIn("--checkpoints", command)
+        self.assertEqual("agios:run-123", command[command.index("--source") + 1])
         self.assertFalse(captured["kwargs"]["shell"])
 
     def test_customer_goal_has_planning_only_and_no_workspace_tools(self):

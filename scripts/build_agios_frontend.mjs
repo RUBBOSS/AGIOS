@@ -7,7 +7,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = resolve(root, "apps/agios-command-center/src");
 const output = resolve(root, "apps/agios-command-center/dist");
 const checking = process.argv.includes("--check");
-const targets = ["index.html", "assets/app.js", "assets/style.css", "assets/app.css"];
+const targets = ["index.html", "assets/app.js", "assets/style.css", "assets/signal-room.css", "assets/app.css"];
 
 async function produce(directory) {
   await mkdir(resolve(directory, "assets"), { recursive: true });
@@ -23,6 +23,7 @@ async function produce(directory) {
     legalComments: "none",
   });
   await writeFile(resolve(directory, "assets/style.css"), await readFile(resolve(source, "style.css")));
+  await writeFile(resolve(directory, "assets/signal-room.css"), await readFile(resolve(source, "signal-room.css")));
   await writeFile(resolve(directory, "index.html"), await readFile(resolve(source, "index.html")));
 }
 

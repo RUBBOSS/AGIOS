@@ -7,6 +7,7 @@ import json
 import secrets
 import base64
 import binascii
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Literal
@@ -23,6 +24,8 @@ from .costs import build_cost_snapshot
 from .dreaming import DreamingStore, build_dreaming_digest
 from .gauntlet import build_gauntlet_prompt
 from .learning import LearningStore, LearningStoreError, build_brain_file
+from .live_work import collect_live_work
+from .notebooklm import NotebookLMSourcePackService
 from .operational import OperationalError, OperationalService, default_state_dir
 from .training import TrainingCollector
 from .adapters.runtimes import collect_runtime_catalog
@@ -165,6 +168,12 @@ class RetrievalRequest(BaseModel):
     limit: int = Field(default=8, ge=1, le=12)
 
 
+class NotebookLMPackRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=160)
+    source_paths: list[str] = Field(min_length=1, max_length=50)
+    external_upload_acknowledged: bool = False
+
+
 def create_app(
     *,
     config_path: str | Path = DEFAULT_CONFIG,
@@ -172,6 +181,7 @@ def create_app(
     journal_path: str | Path | None = None,
     state_dir: str | Path | None = None,
     operational_service: OperationalService | None = None,
+    notebooklm_service: NotebookLMSourcePackService | None = None,
 ) -> FastAPI:
     config = load_config(config_path)
     frontend = Path(frontend_path).expanduser().resolve()
@@ -188,6 +198,13 @@ def create_app(
     dreaming_store = DreamingStore(Path(service.state_dir) / "dreaming.json")
     training_collector = TrainingCollector(Path(service.state_dir) / "training" / "routes.jsonl")
     learning_store = LearningStore(service.state_dir)
+    notebooklm = notebooklm_service or NotebookLMSourcePackService(
+        vault_root=os.environ.get(
+            "AGIOS_OBSIDIAN_VAULT",
+            str(Path.home() / "Documents" / "Freelance-Agency-Vault"),
+        ),
+        artifact_root=Path(service.state_dir) / "artifacts",
+    )
     a2a = A2AService(
         config=config,
         operational=service,
@@ -213,11 +230,12 @@ def create_app(
     )
     app.state.operational_service = service
     app.state.a2a_service = a2a
+    app.state.notebooklm_service = notebooklm
 
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/api/v1/live-work", "/api/v1/notebooklm", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -250,6 +268,67 @@ def create_app(
     @app.get("/api/v1/health")
     def health() -> dict[str, object]:
         return {"schema_version": 1, "status": "healthy", "product": "agios"}
+
+    @app.get("/api/v1/notebooklm/sources")
+    def notebooklm_sources(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return {
+            "schema_version": 1,
+            "status": "ready",
+            "account_mode": "personal",
+            "automatic_upload": False,
+            "destination": "https://notebooklm.google.com/",
+            "sources": notebooklm.list_sources(),
+            "workflow": [
+                "Select approved local notes",
+                "Acknowledge that a later upload sends them to Google",
+                "Prepare and download the local source pack",
+                "Open NotebookLM and upload the files manually",
+            ],
+        }
+
+    @app.post("/api/v1/notebooklm/packs")
+    def prepare_notebooklm_pack(
+        payload: NotebookLMPackRequest,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        try:
+            prepared = notebooklm.prepare_pack(
+                title=payload.title,
+                source_paths=payload.source_paths,
+                external_upload_acknowledged=payload.external_upload_acknowledged,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        pack_id = str(prepared["pack_id"])
+        public_pack = {key: value for key, value in prepared.items() if key != "archive_path"}
+        public_pack["download_url"] = f"/api/v1/notebooklm/packs/{pack_id}/download"
+        return {"schema_version": 1, "pack": public_pack}
+
+    @app.get("/api/v1/notebooklm/packs/{pack_id}/download")
+    def download_notebooklm_pack(
+        pack_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> FileResponse:
+        require_local_session(request, agios_session, x_agios_csrf)
+        try:
+            archive = notebooklm.archive_for(pack_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail="NotebookLM pack not found") from exc
+        return FileResponse(
+            archive,
+            media_type="application/zip",
+            filename=f"agios-notebooklm-{pack_id}.zip",
+        )
 
     @app.get("/api/v1/command-center")
     def command_center() -> dict[str, object]:
@@ -295,6 +374,41 @@ def create_app(
             return result
         except (ConfigError, OSError, RuntimeError, ValueError) as exc:
             raise HTTPException(status_code=503, detail="command center unavailable") from exc
+
+    @app.get("/api/v1/live-work")
+    def live_work(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        local_appdata = Path(
+            os.environ.get("LOCALAPPDATA") or Path.home() / "AppData" / "Local"
+        )
+        xdg_data = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share")
+        repositories = [("AGIOS", ROOT)]
+        hermes_os = ROOT.parent / "HermesOS"
+        if hermes_os.joinpath(".git").exists():
+            repositories.append(("HermesOS", hermes_os))
+        snapshot = collect_live_work(
+            hermes_home=Path(os.environ.get("HERMES_HOME") or local_appdata / "hermes"),
+            codex_home=Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex"),
+            opencode_home=Path(os.environ.get("OPENCODE_DATA_HOME") or xdg_data / "opencode"),
+            repositories=repositories,
+        )
+        runs = service.sessions.list(limit=100)
+        snapshot["sources"]["agios"] = {
+            "status": "live",
+            "runs": len(runs),
+            "completed_runs": sum(item["status"] == "completed" for item in runs),
+            "active_runs": sum(item["status"] in {"queued", "running"} for item in runs),
+            "approvals": sum(item["status"] == "awaiting_approval" for item in runs),
+            "memory_facts": int(service.memory.summary().get("fact_count") or 0),
+            "artifacts": len(service.vision.list()),
+            "skill_improvements": len(service.growth.list()),
+            "training_examples": training_collector.count(),
+        }
+        return snapshot
 
     @app.get("/api/v1/voice/capabilities")
     def voice_capabilities(
@@ -993,6 +1107,19 @@ def create_app(
         require_local_session(request, agios_session, x_agios_csrf)
         try:
             return {"schema_version": 1, "run": service.sessions.get(run_id)}
+        except OperationalError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    @app.get("/api/v1/hermes/runs/{run_id}/events")
+    def get_run_events(
+        run_id: str,
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, object]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        try:
+            return {"schema_version": 1, "trace": service.run_trace(run_id)}
         except OperationalError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
 

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import os
 import shutil
+from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
 
 ExecutableFinder = Callable[[str], str | None]
+OpenCodeAuthChecker = Callable[[], bool]
 
 
 COMMAND_CANDIDATES: Mapping[str, tuple[str, ...]] = {
@@ -25,10 +27,24 @@ def _find(candidates: Iterable[str], finder: ExecutableFinder) -> bool:
     return any(bool(finder(candidate)) for candidate in candidates)
 
 
+def _opencode_auth_present() -> bool:
+    """Check credential-container presence without reading or exposing its values."""
+
+    data_root = Path(
+        os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share"
+    )
+    candidate = data_root / "opencode" / "auth.json"
+    try:
+        return candidate.is_file() and not candidate.is_symlink() and candidate.stat().st_size > 2
+    except OSError:
+        return False
+
+
 def collect_runtime_catalog(
     systems: Mapping[str, Mapping[str, Any]],
     *,
     executable_finder: ExecutableFinder = shutil.which,
+    opencode_auth_checker: OpenCodeAuthChecker = _opencode_auth_present,
 ) -> list[dict[str, Any]]:
     """Return truthful, path-free runtime availability and adapter policy."""
 
@@ -57,6 +73,13 @@ def collect_runtime_catalog(
             actions = ["workspace-read", "workspace-write", "vision"]
             approval = "exact-run"
             sandbox = "read-only-or-workspace-write"
+        elif system_id == "opencode" and detected and opencode_auth_checker():
+            configured = True
+            status = "live"
+            adapter = "supervised-workspace"
+            actions = ["workspace-read", "workspace-write"]
+            approval = "exact-run"
+            sandbox = "deny-by-default-workspace-policy"
         elif system_id == "ollama" and detected:
             configured = True
             status = "live"

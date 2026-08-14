@@ -40,7 +40,7 @@ var require_xterm = __commonJS({
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -48,13 +48,13 @@ var require_xterm = __commonJS({
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.AccessibilityManager = void 0;
-        const n = i2(9042), o2 = i2(6114), a2 = i2(9924), h2 = i2(844), c2 = i2(5596), l2 = i2(4725), d = i2(3656);
+        const n = i2(9042), o2 = i2(6114), a = i2(9924), h2 = i2(844), c = i2(5596), l2 = i2(4725), d = i2(3656);
         let _3 = t2.AccessibilityManager = class extends h2.Disposable {
           constructor(e3, t3) {
             super(), this._terminal = e3, this._renderService = t3, this._liveRegionLineCount = 0, this._charsToConsume = [], this._charsToAnnounce = "", this._accessibilityContainer = document.createElement("div"), this._accessibilityContainer.classList.add("xterm-accessibility"), this._rowContainer = document.createElement("div"), this._rowContainer.setAttribute("role", "list"), this._rowContainer.classList.add("xterm-accessibility-tree"), this._rowElements = [];
             for (let e4 = 0; e4 < this._terminal.rows; e4++) this._rowElements[e4] = this._createAccessibilityTreeNode(), this._rowContainer.appendChild(this._rowElements[e4]);
-            if (this._topBoundaryFocusListener = (e4) => this._handleBoundaryFocus(e4, 0), this._bottomBoundaryFocusListener = (e4) => this._handleBoundaryFocus(e4, 1), this._rowElements[0].addEventListener("focus", this._topBoundaryFocusListener), this._rowElements[this._rowElements.length - 1].addEventListener("focus", this._bottomBoundaryFocusListener), this._refreshRowsDimensions(), this._accessibilityContainer.appendChild(this._rowContainer), this._liveRegion = document.createElement("div"), this._liveRegion.classList.add("live-region"), this._liveRegion.setAttribute("aria-live", "assertive"), this._accessibilityContainer.appendChild(this._liveRegion), this._liveRegionDebouncer = this.register(new a2.TimeBasedDebouncer(this._renderRows.bind(this))), !this._terminal.element) throw new Error("Cannot enable accessibility before Terminal.open");
-            this._terminal.element.insertAdjacentElement("afterbegin", this._accessibilityContainer), this.register(this._terminal.onResize((e4) => this._handleResize(e4.rows))), this.register(this._terminal.onRender((e4) => this._refreshRows(e4.start, e4.end))), this.register(this._terminal.onScroll(() => this._refreshRows())), this.register(this._terminal.onA11yChar((e4) => this._handleChar(e4))), this.register(this._terminal.onLineFeed(() => this._handleChar("\n"))), this.register(this._terminal.onA11yTab((e4) => this._handleTab(e4))), this.register(this._terminal.onKey((e4) => this._handleKey(e4.key))), this.register(this._terminal.onBlur(() => this._clearLiveRegion())), this.register(this._renderService.onDimensionsChange(() => this._refreshRowsDimensions())), this._screenDprMonitor = new c2.ScreenDprMonitor(window), this.register(this._screenDprMonitor), this._screenDprMonitor.setListener(() => this._refreshRowsDimensions()), this.register((0, d.addDisposableDomListener)(window, "resize", () => this._refreshRowsDimensions())), this._refreshRows(), this.register((0, h2.toDisposable)(() => {
+            if (this._topBoundaryFocusListener = (e4) => this._handleBoundaryFocus(e4, 0), this._bottomBoundaryFocusListener = (e4) => this._handleBoundaryFocus(e4, 1), this._rowElements[0].addEventListener("focus", this._topBoundaryFocusListener), this._rowElements[this._rowElements.length - 1].addEventListener("focus", this._bottomBoundaryFocusListener), this._refreshRowsDimensions(), this._accessibilityContainer.appendChild(this._rowContainer), this._liveRegion = document.createElement("div"), this._liveRegion.classList.add("live-region"), this._liveRegion.setAttribute("aria-live", "assertive"), this._accessibilityContainer.appendChild(this._liveRegion), this._liveRegionDebouncer = this.register(new a.TimeBasedDebouncer(this._renderRows.bind(this))), !this._terminal.element) throw new Error("Cannot enable accessibility before Terminal.open");
+            this._terminal.element.insertAdjacentElement("afterbegin", this._accessibilityContainer), this.register(this._terminal.onResize((e4) => this._handleResize(e4.rows))), this.register(this._terminal.onRender((e4) => this._refreshRows(e4.start, e4.end))), this.register(this._terminal.onScroll(() => this._refreshRows())), this.register(this._terminal.onA11yChar((e4) => this._handleChar(e4))), this.register(this._terminal.onLineFeed(() => this._handleChar("\n"))), this.register(this._terminal.onA11yTab((e4) => this._handleTab(e4))), this.register(this._terminal.onKey((e4) => this._handleKey(e4.key))), this.register(this._terminal.onBlur(() => this._clearLiveRegion())), this.register(this._renderService.onDimensionsChange(() => this._refreshRowsDimensions())), this._screenDprMonitor = new c.ScreenDprMonitor(window), this.register(this._screenDprMonitor), this._screenDprMonitor.setListener(() => this._refreshRowsDimensions()), this.register((0, d.addDisposableDomListener)(window, "resize", () => this._refreshRowsDimensions())), this._refreshRows(), this.register((0, h2.toDisposable)(() => {
               this._accessibilityContainer.remove(), this._rowElements.length = 0;
             }));
           }
@@ -177,7 +177,7 @@ var require_xterm = __commonJS({
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -185,13 +185,13 @@ var require_xterm = __commonJS({
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.Linkifier2 = void 0;
-        const n = i2(3656), o2 = i2(8460), a2 = i2(844), h2 = i2(2585);
-        let c2 = t2.Linkifier2 = class extends a2.Disposable {
+        const n = i2(3656), o2 = i2(8460), a = i2(844), h2 = i2(2585);
+        let c = t2.Linkifier2 = class extends a.Disposable {
           get currentLink() {
             return this._currentLink;
           }
           constructor(e3) {
-            super(), this._bufferService = e3, this._linkProviders = [], this._linkCacheDisposables = [], this._isMouseOut = true, this._wasResized = false, this._activeLine = -1, this._onShowLinkUnderline = this.register(new o2.EventEmitter()), this.onShowLinkUnderline = this._onShowLinkUnderline.event, this._onHideLinkUnderline = this.register(new o2.EventEmitter()), this.onHideLinkUnderline = this._onHideLinkUnderline.event, this.register((0, a2.getDisposeArrayDisposable)(this._linkCacheDisposables)), this.register((0, a2.toDisposable)(() => {
+            super(), this._bufferService = e3, this._linkProviders = [], this._linkCacheDisposables = [], this._isMouseOut = true, this._wasResized = false, this._activeLine = -1, this._onShowLinkUnderline = this.register(new o2.EventEmitter()), this.onShowLinkUnderline = this._onShowLinkUnderline.event, this._onHideLinkUnderline = this.register(new o2.EventEmitter()), this.onHideLinkUnderline = this._onHideLinkUnderline.event, this.register((0, a.getDisposeArrayDisposable)(this._linkCacheDisposables)), this.register((0, a.toDisposable)(() => {
               this._lastMouseEvent = void 0;
             })), this.register(this._bufferService.onResize(() => {
               this._clearCurrentLink(), this._wasResized = true;
@@ -284,7 +284,7 @@ var require_xterm = __commonJS({
             t3 && this._mouseDownLink === this._currentLink && this._linkAtPosition(this._currentLink.link, t3) && this._currentLink.link.activate(e3, this._currentLink.link.text);
           }
           _clearCurrentLink(e3, t3) {
-            this._element && this._currentLink && this._lastMouseEvent && (!e3 || !t3 || this._currentLink.link.range.start.y >= e3 && this._currentLink.link.range.end.y <= t3) && (this._linkLeave(this._element, this._currentLink.link, this._lastMouseEvent), this._currentLink = void 0, (0, a2.disposeArray)(this._linkCacheDisposables));
+            this._element && this._currentLink && this._lastMouseEvent && (!e3 || !t3 || this._currentLink.link.range.start.y >= e3 && this._currentLink.link.range.end.y <= t3) && (this._linkLeave(this._element, this._currentLink.link, this._lastMouseEvent), this._currentLink = void 0, (0, a.disposeArray)(this._linkCacheDisposables));
           }
           _handleNewLink(e3) {
             if (!this._element || !this._lastMouseEvent || !this._mouseService) return;
@@ -334,14 +334,14 @@ var require_xterm = __commonJS({
             return { x1: e3, y1: t3, x2: i3, y2: s3, cols: this._bufferService.cols, fg: r2 };
           }
         };
-        t2.Linkifier2 = c2 = s2([r(0, h2.IBufferService)], c2);
+        t2.Linkifier2 = c = s2([r(0, h2.IBufferService)], c);
       }, 9042: (e2, t2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.tooMuchOutput = t2.promptLabel = void 0, t2.promptLabel = "Terminal input", t2.tooMuchOutput = "Too much output to announce, navigate to rows manually to read";
       }, 3730: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -350,7 +350,7 @@ var require_xterm = __commonJS({
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.OscLinkProvider = void 0;
         const n = i2(511), o2 = i2(2585);
-        let a2 = t2.OscLinkProvider = class {
+        let a = t2.OscLinkProvider = class {
           constructor(e3, t3, i3) {
             this._bufferService = e3, this._optionsService = t3, this._oscLinkService = i3;
           }
@@ -358,20 +358,20 @@ var require_xterm = __commonJS({
             var i3;
             const s3 = this._bufferService.buffer.lines.get(e3 - 1);
             if (!s3) return void t3(void 0);
-            const r2 = [], o3 = this._optionsService.rawOptions.linkHandler, a3 = new n.CellData(), c2 = s3.getTrimmedLength();
+            const r2 = [], o3 = this._optionsService.rawOptions.linkHandler, a2 = new n.CellData(), c = s3.getTrimmedLength();
             let l2 = -1, d = -1, _3 = false;
-            for (let t4 = 0; t4 < c2; t4++) if (-1 !== d || s3.hasContent(t4)) {
-              if (s3.loadCell(t4, a3), a3.hasExtendedAttrs() && a3.extended.urlId) {
+            for (let t4 = 0; t4 < c; t4++) if (-1 !== d || s3.hasContent(t4)) {
+              if (s3.loadCell(t4, a2), a2.hasExtendedAttrs() && a2.extended.urlId) {
                 if (-1 === d) {
-                  d = t4, l2 = a3.extended.urlId;
+                  d = t4, l2 = a2.extended.urlId;
                   continue;
                 }
-                _3 = a3.extended.urlId !== l2;
+                _3 = a2.extended.urlId !== l2;
               } else -1 !== d && (_3 = true);
-              if (_3 || -1 !== d && t4 === c2 - 1) {
+              if (_3 || -1 !== d && t4 === c - 1) {
                 const s4 = null === (i3 = this._oscLinkService.getLinkData(l2)) || void 0 === i3 ? void 0 : i3.uri;
                 if (s4) {
-                  const i4 = { start: { x: d + 1, y: e3 }, end: { x: t4 + (_3 || t4 !== c2 - 1 ? 0 : 1), y: e3 } };
+                  const i4 = { start: { x: d + 1, y: e3 }, end: { x: t4 + (_3 || t4 !== c - 1 ? 0 : 1), y: e3 } };
                   let n2 = false;
                   if (!(null == o3 ? void 0 : o3.allowNonHttpProtocols)) try {
                     const e4 = new URL(s4);
@@ -387,7 +387,7 @@ var require_xterm = __commonJS({
                     return null === (s5 = null == o3 ? void 0 : o3.leave) || void 0 === s5 ? void 0 : s5.call(o3, e4, t5, i4);
                   } });
                 }
-                _3 = false, a3.hasExtendedAttrs() && a3.extended.urlId ? (d = t4, l2 = a3.extended.urlId) : (d = -1, l2 = -1);
+                _3 = false, a2.hasExtendedAttrs() && a2.extended.urlId ? (d = t4, l2 = a2.extended.urlId) : (d = -1, l2 = -1);
               }
             }
             t3(r2);
@@ -407,7 +407,7 @@ WARNING: This link could potentially be dangerous`)) {
             } else console.warn("Opening link blocked as opener could not be cleared");
           }
         }
-        t2.OscLinkProvider = a2 = s2([r(0, o2.IBufferService), r(1, o2.IOptionsService), r(2, o2.IOscLinkService)], a2);
+        t2.OscLinkProvider = a = s2([r(0, o2.IBufferService), r(1, o2.IOptionsService), r(2, o2.IOscLinkService)], a);
       }, 6193: (e2, t2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.RenderDebouncer = void 0, t2.RenderDebouncer = class {
           constructor(e3, t3) {
@@ -457,8 +457,8 @@ WARNING: This link could potentially be dangerous`)) {
         t2.ScreenDprMonitor = r;
       }, 3236: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.Terminal = void 0;
-        const s2 = i2(3614), r = i2(3656), n = i2(6465), o2 = i2(9042), a2 = i2(3730), h2 = i2(1680), c2 = i2(3107), l2 = i2(5744), d = i2(2950), _3 = i2(1296), u = i2(428), f = i2(4269), v2 = i2(5114), p = i2(8934), g2 = i2(3230), m2 = i2(9312), S = i2(4725), C = i2(6731), b = i2(8055), y3 = i2(8969), w2 = i2(8460), E = i2(844), k2 = i2(6114), L2 = i2(8437), D = i2(2584), R = i2(7399), x3 = i2(5941), A = i2(9074), B = i2(2585), T = i2(5435), M = i2(4567), O = "undefined" != typeof window ? window.document : null;
-        class P extends y3.CoreTerminal {
+        const s2 = i2(3614), r = i2(3656), n = i2(6465), o2 = i2(9042), a = i2(3730), h2 = i2(1680), c = i2(3107), l2 = i2(5744), d = i2(2950), _3 = i2(1296), u = i2(428), f = i2(4269), v2 = i2(5114), p = i2(8934), g2 = i2(3230), m = i2(9312), S = i2(4725), C = i2(6731), b = i2(8055), y = i2(8969), w2 = i2(8460), E = i2(844), k2 = i2(6114), L2 = i2(8437), D = i2(2584), R = i2(7399), x = i2(5941), A = i2(9074), B = i2(2585), T = i2(5435), M = i2(4567), O = "undefined" != typeof window ? window.document : null;
+        class P extends y.CoreTerminal {
           get onFocus() {
             return this._onFocus.event;
           }
@@ -475,7 +475,7 @@ WARNING: This link could potentially be dangerous`)) {
             return this._onWillOpen.event;
           }
           constructor(e3 = {}) {
-            super(e3), this.browser = k2, this._keyDownHandled = false, this._keyDownSeen = false, this._keyPressHandled = false, this._unprocessedDeadKey = false, this._accessibilityManager = this.register(new E.MutableDisposable()), this._onCursorMove = this.register(new w2.EventEmitter()), this.onCursorMove = this._onCursorMove.event, this._onKey = this.register(new w2.EventEmitter()), this.onKey = this._onKey.event, this._onRender = this.register(new w2.EventEmitter()), this.onRender = this._onRender.event, this._onSelectionChange = this.register(new w2.EventEmitter()), this.onSelectionChange = this._onSelectionChange.event, this._onTitleChange = this.register(new w2.EventEmitter()), this.onTitleChange = this._onTitleChange.event, this._onBell = this.register(new w2.EventEmitter()), this.onBell = this._onBell.event, this._onFocus = this.register(new w2.EventEmitter()), this._onBlur = this.register(new w2.EventEmitter()), this._onA11yCharEmitter = this.register(new w2.EventEmitter()), this._onA11yTabEmitter = this.register(new w2.EventEmitter()), this._onWillOpen = this.register(new w2.EventEmitter()), this._setup(), this.linkifier2 = this.register(this._instantiationService.createInstance(n.Linkifier2)), this.linkifier2.registerLinkProvider(this._instantiationService.createInstance(a2.OscLinkProvider)), this._decorationService = this._instantiationService.createInstance(A.DecorationService), this._instantiationService.setService(B.IDecorationService, this._decorationService), this.register(this._inputHandler.onRequestBell(() => this._onBell.fire())), this.register(this._inputHandler.onRequestRefreshRows((e4, t3) => this.refresh(e4, t3))), this.register(this._inputHandler.onRequestSendFocus(() => this._reportFocus())), this.register(this._inputHandler.onRequestReset(() => this.reset())), this.register(this._inputHandler.onRequestWindowsOptionsReport((e4) => this._reportWindowsOptions(e4))), this.register(this._inputHandler.onColor((e4) => this._handleColorEvent(e4))), this.register((0, w2.forwardEvent)(this._inputHandler.onCursorMove, this._onCursorMove)), this.register((0, w2.forwardEvent)(this._inputHandler.onTitleChange, this._onTitleChange)), this.register((0, w2.forwardEvent)(this._inputHandler.onA11yChar, this._onA11yCharEmitter)), this.register((0, w2.forwardEvent)(this._inputHandler.onA11yTab, this._onA11yTabEmitter)), this.register(this._bufferService.onResize((e4) => this._afterResize(e4.cols, e4.rows))), this.register((0, E.toDisposable)(() => {
+            super(e3), this.browser = k2, this._keyDownHandled = false, this._keyDownSeen = false, this._keyPressHandled = false, this._unprocessedDeadKey = false, this._accessibilityManager = this.register(new E.MutableDisposable()), this._onCursorMove = this.register(new w2.EventEmitter()), this.onCursorMove = this._onCursorMove.event, this._onKey = this.register(new w2.EventEmitter()), this.onKey = this._onKey.event, this._onRender = this.register(new w2.EventEmitter()), this.onRender = this._onRender.event, this._onSelectionChange = this.register(new w2.EventEmitter()), this.onSelectionChange = this._onSelectionChange.event, this._onTitleChange = this.register(new w2.EventEmitter()), this.onTitleChange = this._onTitleChange.event, this._onBell = this.register(new w2.EventEmitter()), this.onBell = this._onBell.event, this._onFocus = this.register(new w2.EventEmitter()), this._onBlur = this.register(new w2.EventEmitter()), this._onA11yCharEmitter = this.register(new w2.EventEmitter()), this._onA11yTabEmitter = this.register(new w2.EventEmitter()), this._onWillOpen = this.register(new w2.EventEmitter()), this._setup(), this.linkifier2 = this.register(this._instantiationService.createInstance(n.Linkifier2)), this.linkifier2.registerLinkProvider(this._instantiationService.createInstance(a.OscLinkProvider)), this._decorationService = this._instantiationService.createInstance(A.DecorationService), this._instantiationService.setService(B.IDecorationService, this._decorationService), this.register(this._inputHandler.onRequestBell(() => this._onBell.fire())), this.register(this._inputHandler.onRequestRefreshRows((e4, t3) => this.refresh(e4, t3))), this.register(this._inputHandler.onRequestSendFocus(() => this._reportFocus())), this.register(this._inputHandler.onRequestReset(() => this.reset())), this.register(this._inputHandler.onRequestWindowsOptionsReport((e4) => this._reportWindowsOptions(e4))), this.register(this._inputHandler.onColor((e4) => this._handleColorEvent(e4))), this.register((0, w2.forwardEvent)(this._inputHandler.onCursorMove, this._onCursorMove)), this.register((0, w2.forwardEvent)(this._inputHandler.onTitleChange, this._onTitleChange)), this.register((0, w2.forwardEvent)(this._inputHandler.onA11yChar, this._onA11yCharEmitter)), this.register((0, w2.forwardEvent)(this._inputHandler.onA11yTab, this._onA11yTabEmitter)), this.register(this._bufferService.onResize((e4) => this._afterResize(e4.cols, e4.rows))), this.register((0, E.toDisposable)(() => {
               var e4, t3;
               this._customKeyEventHandler = void 0, null === (t3 = null === (e4 = this.element) || void 0 === e4 ? void 0 : e4.parentNode) || void 0 === t3 || t3.removeChild(this.element);
             }));
@@ -499,7 +499,7 @@ WARNING: This link could potentially be dangerous`)) {
               switch (t3.type) {
                 case 0:
                   const s3 = b.color.toColorRGB("ansi" === e4 ? this._themeService.colors.ansi[t3.index] : this._themeService.colors[e4]);
-                  this.coreService.triggerDataEvent(`${D.C0.ESC}]${i3};${(0, x3.toRgbString)(s3)}${D.C1_ESCAPED.ST}`);
+                  this.coreService.triggerDataEvent(`${D.C0.ESC}]${i3};${(0, x.toRgbString)(s3)}${D.C1_ESCAPED.ST}`);
                   break;
                 case 1:
                   if ("ansi" === e4) this._themeService.modifyColors((e5) => e5.ansi[t3.index] = b.rgba.toColor(...t3.color));
@@ -539,8 +539,8 @@ WARNING: This link could potentially be dangerous`)) {
             if (!this.textarea || !this.buffer.isCursorInViewport || this._compositionHelper.isComposing || !this._renderService) return;
             const e3 = this.buffer.ybase + this.buffer.y, t3 = this.buffer.lines.get(e3);
             if (!t3) return;
-            const i3 = Math.min(this.buffer.x, this.cols - 1), s3 = this._renderService.dimensions.css.cell.height, r2 = t3.getWidth(i3), n2 = this._renderService.dimensions.css.cell.width * r2, o3 = this.buffer.y * this._renderService.dimensions.css.cell.height, a3 = i3 * this._renderService.dimensions.css.cell.width;
-            this.textarea.style.left = a3 + "px", this.textarea.style.top = o3 + "px", this.textarea.style.width = n2 + "px", this.textarea.style.height = s3 + "px", this.textarea.style.lineHeight = s3 + "px", this.textarea.style.zIndex = "-5";
+            const i3 = Math.min(this.buffer.x, this.cols - 1), s3 = this._renderService.dimensions.css.cell.height, r2 = t3.getWidth(i3), n2 = this._renderService.dimensions.css.cell.width * r2, o3 = this.buffer.y * this._renderService.dimensions.css.cell.height, a2 = i3 * this._renderService.dimensions.css.cell.width;
+            this.textarea.style.left = a2 + "px", this.textarea.style.top = o3 + "px", this.textarea.style.width = n2 + "px", this.textarea.style.height = s3 + "px", this.textarea.style.lineHeight = s3 + "px", this.textarea.style.zIndex = "-5";
           }
           _initGlobal() {
             this._bindKeys(), this.register((0, r.addDisposableDomListener)(this.element, "copy", (e4) => {
@@ -570,11 +570,11 @@ WARNING: This link could potentially be dangerous`)) {
             }
             this._renderService.hasRenderer() || this._renderService.setRenderer(this._createRenderer()), this._mouseService = this._instantiationService.createInstance(p.MouseService), this._instantiationService.setService(S.IMouseService, this._mouseService), this.viewport = this._instantiationService.createInstance(h2.Viewport, this._viewportElement, this._viewportScrollArea), this.viewport.onRequestScrollLines((e4) => this.scrollLines(e4.amount, e4.suppressScrollEvent, 1)), this.register(this._inputHandler.onRequestSyncScrollBar(() => this.viewport.syncScrollArea())), this.register(this.viewport), this.register(this.onCursorMove(() => {
               this._renderService.handleCursorMove(), this._syncTextArea();
-            })), this.register(this.onResize(() => this._renderService.handleResize(this.cols, this.rows))), this.register(this.onBlur(() => this._renderService.handleBlur())), this.register(this.onFocus(() => this._renderService.handleFocus())), this.register(this._renderService.onDimensionsChange(() => this.viewport.syncScrollArea())), this._selectionService = this.register(this._instantiationService.createInstance(m2.SelectionService, this.element, this.screenElement, this.linkifier2)), this._instantiationService.setService(S.ISelectionService, this._selectionService), this.register(this._selectionService.onRequestScrollLines((e4) => this.scrollLines(e4.amount, e4.suppressScrollEvent))), this.register(this._selectionService.onSelectionChange(() => this._onSelectionChange.fire())), this.register(this._selectionService.onRequestRedraw((e4) => this._renderService.handleSelectionChanged(e4.start, e4.end, e4.columnSelectMode))), this.register(this._selectionService.onLinuxMouseSelection((e4) => {
+            })), this.register(this.onResize(() => this._renderService.handleResize(this.cols, this.rows))), this.register(this.onBlur(() => this._renderService.handleBlur())), this.register(this.onFocus(() => this._renderService.handleFocus())), this.register(this._renderService.onDimensionsChange(() => this.viewport.syncScrollArea())), this._selectionService = this.register(this._instantiationService.createInstance(m.SelectionService, this.element, this.screenElement, this.linkifier2)), this._instantiationService.setService(S.ISelectionService, this._selectionService), this.register(this._selectionService.onRequestScrollLines((e4) => this.scrollLines(e4.amount, e4.suppressScrollEvent))), this.register(this._selectionService.onSelectionChange(() => this._onSelectionChange.fire())), this.register(this._selectionService.onRequestRedraw((e4) => this._renderService.handleSelectionChanged(e4.start, e4.end, e4.columnSelectMode))), this.register(this._selectionService.onLinuxMouseSelection((e4) => {
               this.textarea.value = e4, this.textarea.focus(), this.textarea.select();
             })), this.register(this._onScroll.event((e4) => {
               this.viewport.syncScrollArea(), this._selectionService.refresh();
-            })), this.register((0, r.addDisposableDomListener)(this._viewportElement, "scroll", () => this._selectionService.refresh())), this.linkifier2.attachToDom(this.screenElement, this._mouseService, this._renderService), this.register(this._instantiationService.createInstance(c2.BufferDecorationRenderer, this.screenElement)), this.register((0, r.addDisposableDomListener)(this.element, "mousedown", (e4) => this._selectionService.handleMouseDown(e4))), this.coreMouseService.areMouseEventsActive ? (this._selectionService.disable(), this.element.classList.add("enable-mouse-events")) : this._selectionService.enable(), this.options.screenReaderMode && (this._accessibilityManager.value = this._instantiationService.createInstance(M.AccessibilityManager, this)), this.register(this.optionsService.onSpecificOptionChange("screenReaderMode", (e4) => this._handleScreenReaderModeOptionChange(e4))), this.options.overviewRulerWidth && (this._overviewRulerRenderer = this.register(this._instantiationService.createInstance(l2.OverviewRulerRenderer, this._viewportElement, this.screenElement))), this.optionsService.onSpecificOptionChange("overviewRulerWidth", (e4) => {
+            })), this.register((0, r.addDisposableDomListener)(this._viewportElement, "scroll", () => this._selectionService.refresh())), this.linkifier2.attachToDom(this.screenElement, this._mouseService, this._renderService), this.register(this._instantiationService.createInstance(c.BufferDecorationRenderer, this.screenElement)), this.register((0, r.addDisposableDomListener)(this.element, "mousedown", (e4) => this._selectionService.handleMouseDown(e4))), this.coreMouseService.areMouseEventsActive ? (this._selectionService.disable(), this.element.classList.add("enable-mouse-events")) : this._selectionService.enable(), this.options.screenReaderMode && (this._accessibilityManager.value = this._instantiationService.createInstance(M.AccessibilityManager, this)), this.register(this.optionsService.onSpecificOptionChange("screenReaderMode", (e4) => this._handleScreenReaderModeOptionChange(e4))), this.options.overviewRulerWidth && (this._overviewRulerRenderer = this.register(this._instantiationService.createInstance(l2.OverviewRulerRenderer, this._viewportElement, this.screenElement))), this.optionsService.onSpecificOptionChange("overviewRulerWidth", (e4) => {
               !this._overviewRulerRenderer && e4 && this._viewportElement && this.screenElement && (this._overviewRulerRenderer = this.register(this._instantiationService.createInstance(l2.OverviewRulerRenderer, this._viewportElement, this.screenElement)));
             }), this._charSizeService.measure(), this.refresh(0, this.rows - 1), this._initGlobal(), this.bindMouse();
           }
@@ -815,7 +815,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -823,10 +823,10 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.Viewport = void 0;
-        const n = i2(3656), o2 = i2(4725), a2 = i2(8460), h2 = i2(844), c2 = i2(2585);
+        const n = i2(3656), o2 = i2(4725), a = i2(8460), h2 = i2(844), c = i2(2585);
         let l2 = t2.Viewport = class extends h2.Disposable {
-          constructor(e3, t3, i3, s3, r2, o3, h3, c3) {
-            super(), this._viewportElement = e3, this._scrollArea = t3, this._bufferService = i3, this._optionsService = s3, this._charSizeService = r2, this._renderService = o3, this._coreBrowserService = h3, this.scrollBarWidth = 0, this._currentRowHeight = 0, this._currentDeviceCellHeight = 0, this._lastRecordedBufferLength = 0, this._lastRecordedViewportHeight = 0, this._lastRecordedBufferHeight = 0, this._lastTouchY = 0, this._lastScrollTop = 0, this._wheelPartialScroll = 0, this._refreshAnimationFrame = null, this._ignoreNextScrollEvent = false, this._smoothScrollState = { startTime: 0, origin: -1, target: -1 }, this._onRequestScrollLines = this.register(new a2.EventEmitter()), this.onRequestScrollLines = this._onRequestScrollLines.event, this.scrollBarWidth = this._viewportElement.offsetWidth - this._scrollArea.offsetWidth || 15, this.register((0, n.addDisposableDomListener)(this._viewportElement, "scroll", this._handleScroll.bind(this))), this._activeBuffer = this._bufferService.buffer, this.register(this._bufferService.buffers.onBufferActivate((e4) => this._activeBuffer = e4.activeBuffer)), this._renderDimensions = this._renderService.dimensions, this.register(this._renderService.onDimensionsChange((e4) => this._renderDimensions = e4)), this._handleThemeChange(c3.colors), this.register(c3.onChangeColors((e4) => this._handleThemeChange(e4))), this.register(this._optionsService.onSpecificOptionChange("scrollback", () => this.syncScrollArea())), setTimeout(() => this.syncScrollArea());
+          constructor(e3, t3, i3, s3, r2, o3, h3, c2) {
+            super(), this._viewportElement = e3, this._scrollArea = t3, this._bufferService = i3, this._optionsService = s3, this._charSizeService = r2, this._renderService = o3, this._coreBrowserService = h3, this.scrollBarWidth = 0, this._currentRowHeight = 0, this._currentDeviceCellHeight = 0, this._lastRecordedBufferLength = 0, this._lastRecordedViewportHeight = 0, this._lastRecordedBufferHeight = 0, this._lastTouchY = 0, this._lastScrollTop = 0, this._wheelPartialScroll = 0, this._refreshAnimationFrame = null, this._ignoreNextScrollEvent = false, this._smoothScrollState = { startTime: 0, origin: -1, target: -1 }, this._onRequestScrollLines = this.register(new a.EventEmitter()), this.onRequestScrollLines = this._onRequestScrollLines.event, this.scrollBarWidth = this._viewportElement.offsetWidth - this._scrollArea.offsetWidth || 15, this.register((0, n.addDisposableDomListener)(this._viewportElement, "scroll", this._handleScroll.bind(this))), this._activeBuffer = this._bufferService.buffer, this.register(this._bufferService.buffers.onBufferActivate((e4) => this._activeBuffer = e4.activeBuffer)), this._renderDimensions = this._renderService.dimensions, this.register(this._renderService.onDimensionsChange((e4) => this._renderDimensions = e4)), this._handleThemeChange(c2.colors), this.register(c2.onChangeColors((e4) => this._handleThemeChange(e4))), this.register(this._optionsService.onSpecificOptionChange("scrollback", () => this.syncScrollArea())), setTimeout(() => this.syncScrollArea());
           }
           _handleThemeChange(e3) {
             this._viewportElement.style.backgroundColor = e3.background.css;
@@ -890,12 +890,12 @@ WARNING: This link could potentially be dangerous`)) {
           getBufferElements(e3, t3) {
             var i3;
             let s3, r2 = "";
-            const n2 = [], o3 = null != t3 ? t3 : this._bufferService.buffer.lines.length, a3 = this._bufferService.buffer.lines;
+            const n2 = [], o3 = null != t3 ? t3 : this._bufferService.buffer.lines.length, a2 = this._bufferService.buffer.lines;
             for (let t4 = e3; t4 < o3; t4++) {
-              const e4 = a3.get(t4);
+              const e4 = a2.get(t4);
               if (!e4) continue;
-              const o4 = null === (i3 = a3.get(t4 + 1)) || void 0 === i3 ? void 0 : i3.isWrapped;
-              if (r2 += e4.translateToString(!o4), !o4 || t4 === a3.length - 1) {
+              const o4 = null === (i3 = a2.get(t4 + 1)) || void 0 === i3 ? void 0 : i3.isWrapped;
+              if (r2 += e4.translateToString(!o4), !o4 || t4 === a2.length - 1) {
                 const e5 = document.createElement("div");
                 e5.textContent = r2, n2.push(e5), r2.length > 0 && (s3 = e5), r2 = "";
               }
@@ -919,12 +919,12 @@ WARNING: This link could potentially be dangerous`)) {
             return this._lastTouchY = e3.touches[0].pageY, 0 !== t3 && (this._viewportElement.scrollTop += t3, this._bubbleScroll(e3, t3));
           }
         };
-        t2.Viewport = l2 = s2([r(2, c2.IBufferService), r(3, c2.IOptionsService), r(4, o2.ICharSizeService), r(5, o2.IRenderService), r(6, o2.ICoreBrowserService), r(7, o2.IThemeService)], l2);
+        t2.Viewport = l2 = s2([r(2, c.IBufferService), r(3, c.IOptionsService), r(4, o2.ICharSizeService), r(5, o2.IRenderService), r(6, o2.ICoreBrowserService), r(7, o2.IThemeService)], l2);
       }, 3107: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -932,14 +932,14 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.BufferDecorationRenderer = void 0;
-        const n = i2(3656), o2 = i2(4725), a2 = i2(844), h2 = i2(2585);
-        let c2 = t2.BufferDecorationRenderer = class extends a2.Disposable {
+        const n = i2(3656), o2 = i2(4725), a = i2(844), h2 = i2(2585);
+        let c = t2.BufferDecorationRenderer = class extends a.Disposable {
           constructor(e3, t3, i3, s3) {
             super(), this._screenElement = e3, this._bufferService = t3, this._decorationService = i3, this._renderService = s3, this._decorationElements = /* @__PURE__ */ new Map(), this._altBufferIsActive = false, this._dimensionsChanged = false, this._container = document.createElement("div"), this._container.classList.add("xterm-decoration-container"), this._screenElement.appendChild(this._container), this.register(this._renderService.onRenderedViewportChange(() => this._doRefreshDecorations())), this.register(this._renderService.onDimensionsChange(() => {
               this._dimensionsChanged = true, this._queueRefresh();
             })), this.register((0, n.addDisposableDomListener)(window, "resize", () => this._queueRefresh())), this.register(this._bufferService.buffers.onBufferActivate(() => {
               this._altBufferIsActive = this._bufferService.buffer === this._bufferService.buffers.alt;
-            })), this.register(this._decorationService.onDecorationRegistered(() => this._queueRefresh())), this.register(this._decorationService.onDecorationRemoved((e4) => this._removeDecoration(e4))), this.register((0, a2.toDisposable)(() => {
+            })), this.register(this._decorationService.onDecorationRegistered(() => this._queueRefresh())), this.register(this._decorationService.onDecorationRemoved((e4) => this._removeDecoration(e4))), this.register((0, a.toDisposable)(() => {
               this._container.remove(), this._decorationElements.clear();
             }));
           }
@@ -983,7 +983,7 @@ WARNING: This link could potentially be dangerous`)) {
             null === (t3 = this._decorationElements.get(e3)) || void 0 === t3 || t3.remove(), this._decorationElements.delete(e3), e3.dispose();
           }
         };
-        t2.BufferDecorationRenderer = c2 = s2([r(1, h2.IBufferService), r(2, h2.IDecorationService), r(3, o2.IRenderService)], c2);
+        t2.BufferDecorationRenderer = c = s2([r(1, h2.IBufferService), r(2, h2.IDecorationService), r(3, o2.IRenderService)], c);
       }, 5871: (e2, t2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.ColorZoneStore = void 0, t2.ColorZoneStore = class {
           constructor() {
@@ -1022,7 +1022,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1030,14 +1030,14 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.OverviewRulerRenderer = void 0;
-        const n = i2(5871), o2 = i2(3656), a2 = i2(4725), h2 = i2(844), c2 = i2(2585), l2 = { full: 0, left: 0, center: 0, right: 0 }, d = { full: 0, left: 0, center: 0, right: 0 }, _3 = { full: 0, left: 0, center: 0, right: 0 };
+        const n = i2(5871), o2 = i2(3656), a = i2(4725), h2 = i2(844), c = i2(2585), l2 = { full: 0, left: 0, center: 0, right: 0 }, d = { full: 0, left: 0, center: 0, right: 0 }, _3 = { full: 0, left: 0, center: 0, right: 0 };
         let u = t2.OverviewRulerRenderer = class extends h2.Disposable {
           get _width() {
             return this._optionsService.options.overviewRulerWidth || 0;
           }
-          constructor(e3, t3, i3, s3, r2, o3, a3) {
-            var c3;
-            super(), this._viewportElement = e3, this._screenElement = t3, this._bufferService = i3, this._decorationService = s3, this._renderService = r2, this._optionsService = o3, this._coreBrowseService = a3, this._colorZoneStore = new n.ColorZoneStore(), this._shouldUpdateDimensions = true, this._shouldUpdateAnchor = true, this._lastKnownBufferLength = 0, this._canvas = document.createElement("canvas"), this._canvas.classList.add("xterm-decoration-overview-ruler"), this._refreshCanvasDimensions(), null === (c3 = this._viewportElement.parentElement) || void 0 === c3 || c3.insertBefore(this._canvas, this._viewportElement);
+          constructor(e3, t3, i3, s3, r2, o3, a2) {
+            var c2;
+            super(), this._viewportElement = e3, this._screenElement = t3, this._bufferService = i3, this._decorationService = s3, this._renderService = r2, this._optionsService = o3, this._coreBrowseService = a2, this._colorZoneStore = new n.ColorZoneStore(), this._shouldUpdateDimensions = true, this._shouldUpdateAnchor = true, this._lastKnownBufferLength = 0, this._canvas = document.createElement("canvas"), this._canvas.classList.add("xterm-decoration-overview-ruler"), this._refreshCanvasDimensions(), null === (c2 = this._viewportElement.parentElement) || void 0 === c2 || c2.insertBefore(this._canvas, this._viewportElement);
             const l3 = this._canvas.getContext("2d");
             if (!l3) throw new Error("Ctx cannot be null");
             this._ctx = l3, this._registerDecorationListeners(), this._registerBufferChangeListeners(), this._registerDimensionChangeListeners(), this.register((0, h2.toDisposable)(() => {
@@ -1093,12 +1093,12 @@ WARNING: This link could potentially be dangerous`)) {
             }));
           }
         };
-        t2.OverviewRulerRenderer = u = s2([r(2, c2.IBufferService), r(3, c2.IDecorationService), r(4, a2.IRenderService), r(5, c2.IOptionsService), r(6, a2.ICoreBrowserService)], u);
+        t2.OverviewRulerRenderer = u = s2([r(2, c.IBufferService), r(3, c.IDecorationService), r(4, a.IRenderService), r(5, c.IOptionsService), r(6, a.ICoreBrowserService)], u);
       }, 2950: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1106,7 +1106,7 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CompositionHelper = void 0;
-        const n = i2(4725), o2 = i2(2585), a2 = i2(2584);
+        const n = i2(4725), o2 = i2(2585), a = i2(2584);
         let h2 = t2.CompositionHelper = class {
           get isComposing() {
             return this._isComposing;
@@ -1153,7 +1153,7 @@ WARNING: This link could potentially be dangerous`)) {
             setTimeout(() => {
               if (!this._isComposing) {
                 const t3 = this._textarea.value, i3 = t3.replace(e3, "");
-                this._dataAlreadySent = i3, t3.length > e3.length ? this._coreService.triggerDataEvent(i3, true) : t3.length < e3.length ? this._coreService.triggerDataEvent(`${a2.C0.DEL}`, true) : t3.length === e3.length && t3 !== e3 && this._coreService.triggerDataEvent(t3, true);
+                this._dataAlreadySent = i3, t3.length > e3.length ? this._coreService.triggerDataEvent(i3, true) : t3.length < e3.length ? this._coreService.triggerDataEvent(`${a.C0.DEL}`, true) : t3.length === e3.length && t3 !== e3 && this._coreService.triggerDataEvent(t3, true);
               }
             }, 0);
           }
@@ -1175,25 +1175,25 @@ WARNING: This link could potentially be dangerous`)) {
           const s2 = i3.getBoundingClientRect(), r = e3.getComputedStyle(i3), n = parseInt(r.getPropertyValue("padding-left")), o2 = parseInt(r.getPropertyValue("padding-top"));
           return [t3.clientX - s2.left - n, t3.clientY - s2.top - o2];
         }
-        Object.defineProperty(t2, "__esModule", { value: true }), t2.getCoords = t2.getCoordsRelativeToElement = void 0, t2.getCoordsRelativeToElement = i2, t2.getCoords = function(e3, t3, s2, r, n, o2, a2, h2, c2) {
+        Object.defineProperty(t2, "__esModule", { value: true }), t2.getCoords = t2.getCoordsRelativeToElement = void 0, t2.getCoordsRelativeToElement = i2, t2.getCoords = function(e3, t3, s2, r, n, o2, a, h2, c) {
           if (!o2) return;
           const l2 = i2(e3, t3, s2);
-          return l2 ? (l2[0] = Math.ceil((l2[0] + (c2 ? a2 / 2 : 0)) / a2), l2[1] = Math.ceil(l2[1] / h2), l2[0] = Math.min(Math.max(l2[0], 1), r + (c2 ? 1 : 0)), l2[1] = Math.min(Math.max(l2[1], 1), n), l2) : void 0;
+          return l2 ? (l2[0] = Math.ceil((l2[0] + (c ? a / 2 : 0)) / a), l2[1] = Math.ceil(l2[1] / h2), l2[0] = Math.min(Math.max(l2[0], 1), r + (c ? 1 : 0)), l2[1] = Math.min(Math.max(l2[1], 1), n), l2) : void 0;
         };
       }, 9504: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.moveToCellSequence = void 0;
         const s2 = i2(2584);
         function r(e3, t3, i3, s3) {
-          const r2 = e3 - n(e3, i3), a3 = t3 - n(t3, i3), l2 = Math.abs(r2 - a3) - function(e4, t4, i4) {
+          const r2 = e3 - n(e3, i3), a2 = t3 - n(t3, i3), l2 = Math.abs(r2 - a2) - function(e4, t4, i4) {
             let s4 = 0;
-            const r3 = e4 - n(e4, i4), a4 = t4 - n(t4, i4);
-            for (let n2 = 0; n2 < Math.abs(r3 - a4); n2++) {
-              const a5 = "A" === o2(e4, t4) ? -1 : 1, h3 = i4.buffer.lines.get(r3 + a5 * n2);
+            const r3 = e4 - n(e4, i4), a3 = t4 - n(t4, i4);
+            for (let n2 = 0; n2 < Math.abs(r3 - a3); n2++) {
+              const a4 = "A" === o2(e4, t4) ? -1 : 1, h3 = i4.buffer.lines.get(r3 + a4 * n2);
               (null == h3 ? void 0 : h3.isWrapped) && s4++;
             }
             return s4;
           }(e3, t3, i3);
-          return c2(l2, h2(o2(e3, t3), s3));
+          return c(l2, h2(o2(e3, t3), s3));
         }
         function n(e3, t3) {
           let i3 = 0, s3 = t3.buffer.lines.get(e3), r2 = null == s3 ? void 0 : s3.isWrapped;
@@ -1203,16 +1203,16 @@ WARNING: This link could potentially be dangerous`)) {
         function o2(e3, t3) {
           return e3 > t3 ? "A" : "B";
         }
-        function a2(e3, t3, i3, s3, r2, n2) {
-          let o3 = e3, a3 = t3, h3 = "";
-          for (; o3 !== i3 || a3 !== s3; ) o3 += r2 ? 1 : -1, r2 && o3 > n2.cols - 1 ? (h3 += n2.buffer.translateBufferLineToString(a3, false, e3, o3), o3 = 0, e3 = 0, a3++) : !r2 && o3 < 0 && (h3 += n2.buffer.translateBufferLineToString(a3, false, 0, e3 + 1), o3 = n2.cols - 1, e3 = o3, a3--);
-          return h3 + n2.buffer.translateBufferLineToString(a3, false, e3, o3);
+        function a(e3, t3, i3, s3, r2, n2) {
+          let o3 = e3, a2 = t3, h3 = "";
+          for (; o3 !== i3 || a2 !== s3; ) o3 += r2 ? 1 : -1, r2 && o3 > n2.cols - 1 ? (h3 += n2.buffer.translateBufferLineToString(a2, false, e3, o3), o3 = 0, e3 = 0, a2++) : !r2 && o3 < 0 && (h3 += n2.buffer.translateBufferLineToString(a2, false, 0, e3 + 1), o3 = n2.cols - 1, e3 = o3, a2--);
+          return h3 + n2.buffer.translateBufferLineToString(a2, false, e3, o3);
         }
         function h2(e3, t3) {
           const i3 = t3 ? "O" : "[";
           return s2.C0.ESC + i3 + e3;
         }
-        function c2(e3, t3) {
+        function c(e3, t3) {
           e3 = Math.floor(e3);
           let i3 = "";
           for (let s3 = 0; s3 < e3; s3++) i3 += t3;
@@ -1221,21 +1221,21 @@ WARNING: This link could potentially be dangerous`)) {
         t2.moveToCellSequence = function(e3, t3, i3, s3) {
           const o3 = i3.buffer.x, l2 = i3.buffer.y;
           if (!i3.buffer.hasScrollback) return function(e4, t4, i4, s4, o4, l3) {
-            return 0 === r(t4, s4, o4, l3).length ? "" : c2(a2(e4, t4, e4, t4 - n(t4, o4), false, o4).length, h2("D", l3));
+            return 0 === r(t4, s4, o4, l3).length ? "" : c(a(e4, t4, e4, t4 - n(t4, o4), false, o4).length, h2("D", l3));
           }(o3, l2, 0, t3, i3, s3) + r(l2, t3, i3, s3) + function(e4, t4, i4, s4, o4, l3) {
             let d2;
             d2 = r(t4, s4, o4, l3).length > 0 ? s4 - n(s4, o4) : t4;
-            const _4 = s4, u = function(e5, t5, i5, s5, o5, a3) {
+            const _4 = s4, u = function(e5, t5, i5, s5, o5, a2) {
               let h3;
-              return h3 = r(i5, s5, o5, a3).length > 0 ? s5 - n(s5, o5) : t5, e5 < i5 && h3 <= s5 || e5 >= i5 && h3 < s5 ? "C" : "D";
+              return h3 = r(i5, s5, o5, a2).length > 0 ? s5 - n(s5, o5) : t5, e5 < i5 && h3 <= s5 || e5 >= i5 && h3 < s5 ? "C" : "D";
             }(e4, t4, i4, s4, o4, l3);
-            return c2(a2(e4, d2, i4, _4, "C" === u, o4).length, h2(u, l3));
+            return c(a(e4, d2, i4, _4, "C" === u, o4).length, h2(u, l3));
           }(o3, l2, e3, t3, i3, s3);
           let d;
-          if (l2 === t3) return d = o3 > e3 ? "D" : "C", c2(Math.abs(o3 - e3), h2(d, s3));
+          if (l2 === t3) return d = o3 > e3 ? "D" : "C", c(Math.abs(o3 - e3), h2(d, s3));
           d = l2 > t3 ? "D" : "C";
           const _3 = Math.abs(l2 - t3);
-          return c2(function(e4, t4) {
+          return c(function(e4, t4) {
             return t4.cols - e4;
           }(l2 > t3 ? e3 : o3, i3) + (_3 - 1) * i3.cols + 1 + ((l2 > t3 ? o3 : e3) - 1), h2(d, s3));
         };
@@ -1243,7 +1243,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1251,10 +1251,10 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.DomRenderer = void 0;
-        const n = i2(3787), o2 = i2(2550), a2 = i2(2223), h2 = i2(6171), c2 = i2(4725), l2 = i2(8055), d = i2(8460), _3 = i2(844), u = i2(2585), f = "xterm-dom-renderer-owner-", v2 = "xterm-rows", p = "xterm-fg-", g2 = "xterm-bg-", m2 = "xterm-focus", S = "xterm-selection";
+        const n = i2(3787), o2 = i2(2550), a = i2(2223), h2 = i2(6171), c = i2(4725), l2 = i2(8055), d = i2(8460), _3 = i2(844), u = i2(2585), f = "xterm-dom-renderer-owner-", v2 = "xterm-rows", p = "xterm-fg-", g2 = "xterm-bg-", m = "xterm-focus", S = "xterm-selection";
         let C = 1, b = t2.DomRenderer = class extends _3.Disposable {
-          constructor(e3, t3, i3, s3, r2, a3, c3, l3, u2, p2) {
-            super(), this._element = e3, this._screenElement = t3, this._viewportElement = i3, this._linkifier2 = s3, this._charSizeService = a3, this._optionsService = c3, this._bufferService = l3, this._coreBrowserService = u2, this._themeService = p2, this._terminalClass = C++, this._rowElements = [], this.onRequestRedraw = this.register(new d.EventEmitter()).event, this._rowContainer = document.createElement("div"), this._rowContainer.classList.add(v2), this._rowContainer.style.lineHeight = "normal", this._rowContainer.setAttribute("aria-hidden", "true"), this._refreshRowElements(this._bufferService.cols, this._bufferService.rows), this._selectionContainer = document.createElement("div"), this._selectionContainer.classList.add(S), this._selectionContainer.setAttribute("aria-hidden", "true"), this.dimensions = (0, h2.createRenderDimensions)(), this._updateDimensions(), this.register(this._optionsService.onOptionChange(() => this._handleOptionsChanged())), this.register(this._themeService.onChangeColors((e4) => this._injectCss(e4))), this._injectCss(this._themeService.colors), this._rowFactory = r2.createInstance(n.DomRendererRowFactory, document), this._element.classList.add(f + this._terminalClass), this._screenElement.appendChild(this._rowContainer), this._screenElement.appendChild(this._selectionContainer), this.register(this._linkifier2.onShowLinkUnderline((e4) => this._handleLinkHover(e4))), this.register(this._linkifier2.onHideLinkUnderline((e4) => this._handleLinkLeave(e4))), this.register((0, _3.toDisposable)(() => {
+          constructor(e3, t3, i3, s3, r2, a2, c2, l3, u2, p2) {
+            super(), this._element = e3, this._screenElement = t3, this._viewportElement = i3, this._linkifier2 = s3, this._charSizeService = a2, this._optionsService = c2, this._bufferService = l3, this._coreBrowserService = u2, this._themeService = p2, this._terminalClass = C++, this._rowElements = [], this.onRequestRedraw = this.register(new d.EventEmitter()).event, this._rowContainer = document.createElement("div"), this._rowContainer.classList.add(v2), this._rowContainer.style.lineHeight = "normal", this._rowContainer.setAttribute("aria-hidden", "true"), this._refreshRowElements(this._bufferService.cols, this._bufferService.rows), this._selectionContainer = document.createElement("div"), this._selectionContainer.classList.add(S), this._selectionContainer.setAttribute("aria-hidden", "true"), this.dimensions = (0, h2.createRenderDimensions)(), this._updateDimensions(), this.register(this._optionsService.onOptionChange(() => this._handleOptionsChanged())), this.register(this._themeService.onChangeColors((e4) => this._injectCss(e4))), this._injectCss(this._themeService.colors), this._rowFactory = r2.createInstance(n.DomRendererRowFactory, document), this._element.classList.add(f + this._terminalClass), this._screenElement.appendChild(this._rowContainer), this._screenElement.appendChild(this._selectionContainer), this.register(this._linkifier2.onShowLinkUnderline((e4) => this._handleLinkHover(e4))), this.register(this._linkifier2.onHideLinkUnderline((e4) => this._handleLinkLeave(e4))), this.register((0, _3.toDisposable)(() => {
               this._element.classList.remove(f + this._terminalClass), this._rowContainer.remove(), this._selectionContainer.remove(), this._widthCache.dispose(), this._themeStyleElement.remove(), this._dimensionsStyleElement.remove();
             })), this._widthCache = new o2.WidthCache(document), this._widthCache.setFont(this._optionsService.rawOptions.fontFamily, this._optionsService.rawOptions.fontSize, this._optionsService.rawOptions.fontWeight, this._optionsService.rawOptions.fontWeightBold), this._setDefaultSpacing();
           }
@@ -1269,9 +1269,9 @@ WARNING: This link could potentially be dangerous`)) {
           _injectCss(e3) {
             this._themeStyleElement || (this._themeStyleElement = document.createElement("style"), this._screenElement.appendChild(this._themeStyleElement));
             let t3 = `${this._terminalSelector} .${v2} { color: ${e3.foreground.css}; font-family: ${this._optionsService.rawOptions.fontFamily}; font-size: ${this._optionsService.rawOptions.fontSize}px; font-kerning: none; white-space: pre}`;
-            t3 += `${this._terminalSelector} .${v2} .xterm-dim { color: ${l2.color.multiplyOpacity(e3.foreground, 0.5).css};}`, t3 += `${this._terminalSelector} span:not(.xterm-bold) { font-weight: ${this._optionsService.rawOptions.fontWeight};}${this._terminalSelector} span.xterm-bold { font-weight: ${this._optionsService.rawOptions.fontWeightBold};}${this._terminalSelector} span.xterm-italic { font-style: italic;}`, t3 += "@keyframes blink_box_shadow_" + this._terminalClass + " { 50% {  border-bottom-style: hidden; }}", t3 += "@keyframes blink_block_" + this._terminalClass + ` { 0% {  background-color: ${e3.cursor.css};  color: ${e3.cursorAccent.css}; } 50% {  background-color: inherit;  color: ${e3.cursor.css}; }}`, t3 += `${this._terminalSelector} .${v2}.${m2} .xterm-cursor.xterm-cursor-blink:not(.xterm-cursor-block) { animation: blink_box_shadow_` + this._terminalClass + ` 1s step-end infinite;}${this._terminalSelector} .${v2}.${m2} .xterm-cursor.xterm-cursor-blink.xterm-cursor-block { animation: blink_block_` + this._terminalClass + ` 1s step-end infinite;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-block { background-color: ${e3.cursor.css}; color: ${e3.cursorAccent.css};}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-outline { outline: 1px solid ${e3.cursor.css}; outline-offset: -1px;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-bar { box-shadow: ${this._optionsService.rawOptions.cursorWidth}px 0 0 ${e3.cursor.css} inset;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-underline { border-bottom: 1px ${e3.cursor.css}; border-bottom-style: solid; height: calc(100% - 1px);}`, t3 += `${this._terminalSelector} .${S} { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;}${this._terminalSelector}.focus .${S} div { position: absolute; background-color: ${e3.selectionBackgroundOpaque.css};}${this._terminalSelector} .${S} div { position: absolute; background-color: ${e3.selectionInactiveBackgroundOpaque.css};}`;
+            t3 += `${this._terminalSelector} .${v2} .xterm-dim { color: ${l2.color.multiplyOpacity(e3.foreground, 0.5).css};}`, t3 += `${this._terminalSelector} span:not(.xterm-bold) { font-weight: ${this._optionsService.rawOptions.fontWeight};}${this._terminalSelector} span.xterm-bold { font-weight: ${this._optionsService.rawOptions.fontWeightBold};}${this._terminalSelector} span.xterm-italic { font-style: italic;}`, t3 += "@keyframes blink_box_shadow_" + this._terminalClass + " { 50% {  border-bottom-style: hidden; }}", t3 += "@keyframes blink_block_" + this._terminalClass + ` { 0% {  background-color: ${e3.cursor.css};  color: ${e3.cursorAccent.css}; } 50% {  background-color: inherit;  color: ${e3.cursor.css}; }}`, t3 += `${this._terminalSelector} .${v2}.${m} .xterm-cursor.xterm-cursor-blink:not(.xterm-cursor-block) { animation: blink_box_shadow_` + this._terminalClass + ` 1s step-end infinite;}${this._terminalSelector} .${v2}.${m} .xterm-cursor.xterm-cursor-blink.xterm-cursor-block { animation: blink_block_` + this._terminalClass + ` 1s step-end infinite;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-block { background-color: ${e3.cursor.css}; color: ${e3.cursorAccent.css};}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-outline { outline: 1px solid ${e3.cursor.css}; outline-offset: -1px;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-bar { box-shadow: ${this._optionsService.rawOptions.cursorWidth}px 0 0 ${e3.cursor.css} inset;}${this._terminalSelector} .${v2} .xterm-cursor.xterm-cursor-underline { border-bottom: 1px ${e3.cursor.css}; border-bottom-style: solid; height: calc(100% - 1px);}`, t3 += `${this._terminalSelector} .${S} { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none;}${this._terminalSelector}.focus .${S} div { position: absolute; background-color: ${e3.selectionBackgroundOpaque.css};}${this._terminalSelector} .${S} div { position: absolute; background-color: ${e3.selectionInactiveBackgroundOpaque.css};}`;
             for (const [i3, s3] of e3.ansi.entries()) t3 += `${this._terminalSelector} .${p}${i3} { color: ${s3.css}; }${this._terminalSelector} .${p}${i3}.xterm-dim { color: ${l2.color.multiplyOpacity(s3, 0.5).css}; }${this._terminalSelector} .${g2}${i3} { background-color: ${s3.css}; }`;
-            t3 += `${this._terminalSelector} .${p}${a2.INVERTED_DEFAULT_COLOR} { color: ${l2.color.opaque(e3.background).css}; }${this._terminalSelector} .${p}${a2.INVERTED_DEFAULT_COLOR}.xterm-dim { color: ${l2.color.multiplyOpacity(l2.color.opaque(e3.background), 0.5).css}; }${this._terminalSelector} .${g2}${a2.INVERTED_DEFAULT_COLOR} { background-color: ${e3.foreground.css}; }`, this._themeStyleElement.textContent = t3;
+            t3 += `${this._terminalSelector} .${p}${a.INVERTED_DEFAULT_COLOR} { color: ${l2.color.opaque(e3.background).css}; }${this._terminalSelector} .${p}${a.INVERTED_DEFAULT_COLOR}.xterm-dim { color: ${l2.color.multiplyOpacity(l2.color.opaque(e3.background), 0.5).css}; }${this._terminalSelector} .${g2}${a.INVERTED_DEFAULT_COLOR} { background-color: ${e3.foreground.css}; }`, this._themeStyleElement.textContent = t3;
           }
           _setDefaultSpacing() {
             const e3 = this.dimensions.css.cell.width - this._widthCache.get("W", false, false);
@@ -1294,29 +1294,29 @@ WARNING: This link could potentially be dangerous`)) {
             this._updateDimensions(), this._widthCache.clear(), this._setDefaultSpacing();
           }
           handleBlur() {
-            this._rowContainer.classList.remove(m2);
+            this._rowContainer.classList.remove(m);
           }
           handleFocus() {
-            this._rowContainer.classList.add(m2), this.renderRows(this._bufferService.buffer.y, this._bufferService.buffer.y);
+            this._rowContainer.classList.add(m), this.renderRows(this._bufferService.buffer.y, this._bufferService.buffer.y);
           }
           handleSelectionChanged(e3, t3, i3) {
             if (this._selectionContainer.replaceChildren(), this._rowFactory.handleSelectionChanged(e3, t3, i3), this.renderRows(0, this._bufferService.rows - 1), !e3 || !t3) return;
             const s3 = e3[1] - this._bufferService.buffer.ydisp, r2 = t3[1] - this._bufferService.buffer.ydisp, n2 = Math.max(s3, 0), o3 = Math.min(r2, this._bufferService.rows - 1);
             if (n2 >= this._bufferService.rows || o3 < 0) return;
-            const a3 = document.createDocumentFragment();
+            const a2 = document.createDocumentFragment();
             if (i3) {
               const i4 = e3[0] > t3[0];
-              a3.appendChild(this._createSelectionElement(n2, i4 ? t3[0] : e3[0], i4 ? e3[0] : t3[0], o3 - n2 + 1));
+              a2.appendChild(this._createSelectionElement(n2, i4 ? t3[0] : e3[0], i4 ? e3[0] : t3[0], o3 - n2 + 1));
             } else {
               const i4 = s3 === n2 ? e3[0] : 0, h3 = n2 === r2 ? t3[0] : this._bufferService.cols;
-              a3.appendChild(this._createSelectionElement(n2, i4, h3));
-              const c3 = o3 - n2 - 1;
-              if (a3.appendChild(this._createSelectionElement(n2 + 1, 0, this._bufferService.cols, c3)), n2 !== o3) {
+              a2.appendChild(this._createSelectionElement(n2, i4, h3));
+              const c2 = o3 - n2 - 1;
+              if (a2.appendChild(this._createSelectionElement(n2 + 1, 0, this._bufferService.cols, c2)), n2 !== o3) {
                 const e4 = r2 === o3 ? t3[0] : this._bufferService.cols;
-                a3.appendChild(this._createSelectionElement(o3, 0, e4));
+                a2.appendChild(this._createSelectionElement(o3, 0, e4));
               }
             }
-            this._selectionContainer.appendChild(a3);
+            this._selectionContainer.appendChild(a2);
           }
           _createSelectionElement(e3, t3, i3, s3 = 1) {
             const r2 = document.createElement("div");
@@ -1331,11 +1331,11 @@ WARNING: This link could potentially be dangerous`)) {
             for (const e3 of this._rowElements) e3.replaceChildren();
           }
           renderRows(e3, t3) {
-            const i3 = this._bufferService.buffer, s3 = i3.ybase + i3.y, r2 = Math.min(i3.x, this._bufferService.cols - 1), n2 = this._optionsService.rawOptions.cursorBlink, o3 = this._optionsService.rawOptions.cursorStyle, a3 = this._optionsService.rawOptions.cursorInactiveStyle;
+            const i3 = this._bufferService.buffer, s3 = i3.ybase + i3.y, r2 = Math.min(i3.x, this._bufferService.cols - 1), n2 = this._optionsService.rawOptions.cursorBlink, o3 = this._optionsService.rawOptions.cursorStyle, a2 = this._optionsService.rawOptions.cursorInactiveStyle;
             for (let h3 = e3; h3 <= t3; h3++) {
-              const e4 = h3 + i3.ydisp, t4 = this._rowElements[h3], c3 = i3.lines.get(e4);
-              if (!t4 || !c3) break;
-              t4.replaceChildren(...this._rowFactory.createRow(c3, e4, e4 === s3, o3, a3, r2, n2, this.dimensions.css.cell.width, this._widthCache, -1, -1));
+              const e4 = h3 + i3.ydisp, t4 = this._rowElements[h3], c2 = i3.lines.get(e4);
+              if (!t4 || !c2) break;
+              t4.replaceChildren(...this._rowFactory.createRow(c2, e4, e4 === s3, o3, a2, r2, n2, this.dimensions.css.cell.width, this._widthCache, -1, -1));
             }
           }
           get _terminalSelector() {
@@ -1351,20 +1351,20 @@ WARNING: This link could potentially be dangerous`)) {
             i3 < 0 && (e3 = 0), s3 < 0 && (t3 = 0);
             const o3 = this._bufferService.rows - 1;
             i3 = Math.max(Math.min(i3, o3), 0), s3 = Math.max(Math.min(s3, o3), 0), r2 = Math.min(r2, this._bufferService.cols);
-            const a3 = this._bufferService.buffer, h3 = a3.ybase + a3.y, c3 = Math.min(a3.x, r2 - 1), l3 = this._optionsService.rawOptions.cursorBlink, d2 = this._optionsService.rawOptions.cursorStyle, _4 = this._optionsService.rawOptions.cursorInactiveStyle;
+            const a2 = this._bufferService.buffer, h3 = a2.ybase + a2.y, c2 = Math.min(a2.x, r2 - 1), l3 = this._optionsService.rawOptions.cursorBlink, d2 = this._optionsService.rawOptions.cursorStyle, _4 = this._optionsService.rawOptions.cursorInactiveStyle;
             for (let o4 = i3; o4 <= s3; ++o4) {
-              const u2 = o4 + a3.ydisp, f2 = this._rowElements[o4], v3 = a3.lines.get(u2);
+              const u2 = o4 + a2.ydisp, f2 = this._rowElements[o4], v3 = a2.lines.get(u2);
               if (!f2 || !v3) break;
-              f2.replaceChildren(...this._rowFactory.createRow(v3, u2, u2 === h3, d2, _4, c3, l3, this.dimensions.css.cell.width, this._widthCache, n2 ? o4 === i3 ? e3 : 0 : -1, n2 ? (o4 === s3 ? t3 : r2) - 1 : -1));
+              f2.replaceChildren(...this._rowFactory.createRow(v3, u2, u2 === h3, d2, _4, c2, l3, this.dimensions.css.cell.width, this._widthCache, n2 ? o4 === i3 ? e3 : 0 : -1, n2 ? (o4 === s3 ? t3 : r2) - 1 : -1));
             }
           }
         };
-        t2.DomRenderer = b = s2([r(4, u.IInstantiationService), r(5, c2.ICharSizeService), r(6, u.IOptionsService), r(7, u.IBufferService), r(8, c2.ICoreBrowserService), r(9, c2.IThemeService)], b);
+        t2.DomRenderer = b = s2([r(4, u.IInstantiationService), r(5, c.ICharSizeService), r(6, u.IOptionsService), r(7, u.IBufferService), r(8, c.ICoreBrowserService), r(9, c.IThemeService)], b);
       }, 3787: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1372,44 +1372,44 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.DomRendererRowFactory = void 0;
-        const n = i2(2223), o2 = i2(643), a2 = i2(511), h2 = i2(2585), c2 = i2(8055), l2 = i2(4725), d = i2(4269), _3 = i2(6171), u = i2(3734);
+        const n = i2(2223), o2 = i2(643), a = i2(511), h2 = i2(2585), c = i2(8055), l2 = i2(4725), d = i2(4269), _3 = i2(6171), u = i2(3734);
         let f = t2.DomRendererRowFactory = class {
           constructor(e3, t3, i3, s3, r2, n2, o3) {
-            this._document = e3, this._characterJoinerService = t3, this._optionsService = i3, this._coreBrowserService = s3, this._coreService = r2, this._decorationService = n2, this._themeService = o3, this._workCell = new a2.CellData(), this._columnSelectMode = false, this.defaultSpacing = 0;
+            this._document = e3, this._characterJoinerService = t3, this._optionsService = i3, this._coreBrowserService = s3, this._coreService = r2, this._decorationService = n2, this._themeService = o3, this._workCell = new a.CellData(), this._columnSelectMode = false, this.defaultSpacing = 0;
           }
           handleSelectionChanged(e3, t3, i3) {
             this._selectionStart = e3, this._selectionEnd = t3, this._columnSelectMode = i3;
           }
-          createRow(e3, t3, i3, s3, r2, a3, h3, l3, _4, f2, p) {
-            const g2 = [], m2 = this._characterJoinerService.getJoinedCharacters(t3), S = this._themeService.colors;
+          createRow(e3, t3, i3, s3, r2, a2, h3, l3, _4, f2, p) {
+            const g2 = [], m = this._characterJoinerService.getJoinedCharacters(t3), S = this._themeService.colors;
             let C, b = e3.getNoBgTrimmedLength();
-            i3 && b < a3 + 1 && (b = a3 + 1);
-            let y3 = 0, w2 = "", E = 0, k2 = 0, L2 = 0, D = false, R = 0, x3 = false, A = 0;
+            i3 && b < a2 + 1 && (b = a2 + 1);
+            let y = 0, w2 = "", E = 0, k2 = 0, L2 = 0, D = false, R = 0, x = false, A = 0;
             const B = [], T = -1 !== f2 && -1 !== p;
             for (let M = 0; M < b; M++) {
               e3.loadCell(M, this._workCell);
               let b2 = this._workCell.getWidth();
               if (0 === b2) continue;
               let O = false, P = M, I = this._workCell;
-              if (m2.length > 0 && M === m2[0][0]) {
+              if (m.length > 0 && M === m[0][0]) {
                 O = true;
-                const t4 = m2.shift();
+                const t4 = m.shift();
                 I = new d.JoinedCellData(this._workCell, e3.translateToString(true, t4[0], t4[1]), t4[1] - t4[0]), P = t4[1] - 1, b2 = I.getWidth();
               }
-              const H = this._isCellInSelection(M, t3), F = i3 && M === a3, W = T && M >= f2 && M <= p;
+              const H = this._isCellInSelection(M, t3), F = i3 && M === a2, W = T && M >= f2 && M <= p;
               let U = false;
               this._decorationService.forEachDecorationAtCell(M, t3, void 0, (e4) => {
                 U = true;
               });
               let N = I.getChars() || o2.WHITESPACE_CELL_CHAR;
               if (" " === N && (I.isUnderline() || I.isOverline()) && (N = "\xA0"), A = b2 * l3 - _4.get(N, I.isBold(), I.isItalic()), C) {
-                if (y3 && (H && x3 || !H && !x3 && I.bg === E) && (H && x3 && S.selectionForeground || I.fg === k2) && I.extended.ext === L2 && W === D && A === R && !F && !O && !U) {
-                  w2 += N, y3++;
+                if (y && (H && x || !H && !x && I.bg === E) && (H && x && S.selectionForeground || I.fg === k2) && I.extended.ext === L2 && W === D && A === R && !F && !O && !U) {
+                  w2 += N, y++;
                   continue;
                 }
-                y3 && (C.textContent = w2), C = this._document.createElement("span"), y3 = 0, w2 = "";
+                y && (C.textContent = w2), C = this._document.createElement("span"), y = 0, w2 = "";
               } else C = this._document.createElement("span");
-              if (E = I.bg, k2 = I.fg, L2 = I.extended.ext, D = W, R = A, x3 = H, O && a3 >= M && a3 <= P && (a3 = M), !this._coreService.isCursorHidden && F) {
+              if (E = I.bg, k2 = I.fg, L2 = I.extended.ext, D = W, R = A, x = H, O && a2 >= M && a2 <= P && (a2 = M), !this._coreService.isCursorHidden && F) {
                 if (B.push("xterm-cursor"), this._coreBrowserService.isFocused) h3 && B.push("xterm-cursor-blink"), B.push("bar" === s3 ? "xterm-cursor-bar" : "underline" === s3 ? "xterm-cursor-underline" : "xterm-cursor-block");
                 else if (r2) switch (r2) {
                   case "outline":
@@ -1448,36 +1448,36 @@ WARNING: This link could potentially be dangerous`)) {
                   X2 = S.ansi[z], B.push(`xterm-bg-${z}`);
                   break;
                 case 50331648:
-                  X2 = c2.rgba.toColor(z >> 16, z >> 8 & 255, 255 & z), this._addStyle(C, `background-color:#${v2((z >>> 0).toString(16), "0", 6)}`);
+                  X2 = c.rgba.toColor(z >> 16, z >> 8 & 255, 255 & z), this._addStyle(C, `background-color:#${v2((z >>> 0).toString(16), "0", 6)}`);
                   break;
                 default:
                   q ? (X2 = S.foreground, B.push(`xterm-bg-${n.INVERTED_DEFAULT_COLOR}`)) : X2 = S.background;
               }
-              switch (V || I.isDim() && (V = c2.color.multiplyOpacity(X2, 0.5)), j) {
+              switch (V || I.isDim() && (V = c.color.multiplyOpacity(X2, 0.5)), j) {
                 case 16777216:
                 case 33554432:
                   I.isBold() && $ < 8 && this._optionsService.rawOptions.drawBoldTextInBrightColors && ($ += 8), this._applyMinimumContrast(C, X2, S.ansi[$], I, V, void 0) || B.push(`xterm-fg-${$}`);
                   break;
                 case 50331648:
-                  const e4 = c2.rgba.toColor($ >> 16 & 255, $ >> 8 & 255, 255 & $);
+                  const e4 = c.rgba.toColor($ >> 16 & 255, $ >> 8 & 255, 255 & $);
                   this._applyMinimumContrast(C, X2, e4, I, V, G) || this._addStyle(C, `color:#${v2($.toString(16), "0", 6)}`);
                   break;
                 default:
                   this._applyMinimumContrast(C, X2, S.foreground, I, V, void 0) || q && B.push(`xterm-fg-${n.INVERTED_DEFAULT_COLOR}`);
               }
-              B.length && (C.className = B.join(" "), B.length = 0), F || O || U ? C.textContent = w2 : y3++, A !== this.defaultSpacing && (C.style.letterSpacing = `${A}px`), g2.push(C), M = P;
+              B.length && (C.className = B.join(" "), B.length = 0), F || O || U ? C.textContent = w2 : y++, A !== this.defaultSpacing && (C.style.letterSpacing = `${A}px`), g2.push(C), M = P;
             }
-            return C && y3 && (C.textContent = w2), g2;
+            return C && y && (C.textContent = w2), g2;
           }
           _applyMinimumContrast(e3, t3, i3, s3, r2, n2) {
             if (1 === this._optionsService.rawOptions.minimumContrastRatio || (0, _3.excludeFromContrastRatioDemands)(s3.getCode())) return false;
             const o3 = this._getContrastCache(s3);
-            let a3;
-            if (r2 || n2 || (a3 = o3.getColor(t3.rgba, i3.rgba)), void 0 === a3) {
+            let a2;
+            if (r2 || n2 || (a2 = o3.getColor(t3.rgba, i3.rgba)), void 0 === a2) {
               const e4 = this._optionsService.rawOptions.minimumContrastRatio / (s3.isDim() ? 2 : 1);
-              a3 = c2.color.ensureContrastRatio(r2 || t3, n2 || i3, e4), o3.setColor((r2 || t3).rgba, (n2 || i3).rgba, null != a3 ? a3 : null);
+              a2 = c.color.ensureContrastRatio(r2 || t3, n2 || i3, e4), o3.setColor((r2 || t3).rgba, (n2 || i3).rgba, null != a2 ? a2 : null);
             }
-            return !!a3 && (this._addStyle(e3, `color:${a3.css}`), true);
+            return !!a2 && (this._addStyle(e3, `color:${a2.css}`), true);
           }
           _getContrastCache(e3) {
             return e3.isDim() ? this._themeService.colors.halfContrastCache : this._themeService.colors.contrastCache;
@@ -1589,7 +1589,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1597,13 +1597,13 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CharSizeService = void 0;
-        const n = i2(2585), o2 = i2(8460), a2 = i2(844);
-        let h2 = t2.CharSizeService = class extends a2.Disposable {
+        const n = i2(2585), o2 = i2(8460), a = i2(844);
+        let h2 = t2.CharSizeService = class extends a.Disposable {
           get hasValidSize() {
             return this.width > 0 && this.height > 0;
           }
           constructor(e3, t3, i3) {
-            super(), this._optionsService = i3, this.width = 0, this.height = 0, this._onCharSizeChange = this.register(new o2.EventEmitter()), this.onCharSizeChange = this._onCharSizeChange.event, this._measureStrategy = new c2(e3, t3, this._optionsService), this.register(this._optionsService.onMultipleOptionChange(["fontFamily", "fontSize"], () => this.measure()));
+            super(), this._optionsService = i3, this.width = 0, this.height = 0, this._onCharSizeChange = this.register(new o2.EventEmitter()), this.onCharSizeChange = this._onCharSizeChange.event, this._measureStrategy = new c(e3, t3, this._optionsService), this.register(this._optionsService.onMultipleOptionChange(["fontFamily", "fontSize"], () => this.measure()));
           }
           measure() {
             const e3 = this._measureStrategy.measure();
@@ -1611,7 +1611,7 @@ WARNING: This link could potentially be dangerous`)) {
           }
         };
         t2.CharSizeService = h2 = s2([r(2, n.IOptionsService)], h2);
-        class c2 {
+        class c {
           constructor(e3, t3, i3) {
             this._document = e3, this._parentElement = t3, this._optionsService = i3, this._result = { width: 0, height: 0 }, this._measureElement = this._document.createElement("span"), this._measureElement.classList.add("xterm-char-measure-element"), this._measureElement.textContent = "W".repeat(32), this._measureElement.setAttribute("aria-hidden", "true"), this._measureElement.style.whiteSpace = "pre", this._measureElement.style.fontKerning = "none", this._parentElement.appendChild(this._measureElement);
           }
@@ -1625,7 +1625,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1633,8 +1633,8 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CharacterJoinerService = t2.JoinedCellData = void 0;
-        const n = i2(3734), o2 = i2(643), a2 = i2(511), h2 = i2(2585);
-        class c2 extends n.AttributeData {
+        const n = i2(3734), o2 = i2(643), a = i2(511), h2 = i2(2585);
+        class c extends n.AttributeData {
           constructor(e3, t3, i3) {
             super(), this.content = 0, this.combinedData = "", this.fg = e3.fg, this.bg = e3.bg, this.combinedData = t3, this._width = i3;
           }
@@ -1657,10 +1657,10 @@ WARNING: This link could potentially be dangerous`)) {
             return [this.fg, this.getChars(), this.getWidth(), this.getCode()];
           }
         }
-        t2.JoinedCellData = c2;
+        t2.JoinedCellData = c;
         let l2 = t2.CharacterJoinerService = class e3 {
           constructor(e4) {
-            this._bufferService = e4, this._characterJoiners = [], this._nextCharacterJoinerId = 0, this._workCell = new a2.CellData();
+            this._bufferService = e4, this._characterJoiners = [], this._nextCharacterJoinerId = 0, this._workCell = new a.CellData();
           }
           register(e4) {
             const t3 = { id: this._nextCharacterJoinerId++, handler: e4 };
@@ -1675,53 +1675,53 @@ WARNING: This link could potentially be dangerous`)) {
             const t3 = this._bufferService.buffer.lines.get(e4);
             if (!t3 || 0 === t3.length) return [];
             const i3 = [], s3 = t3.translateToString(true);
-            let r2 = 0, n2 = 0, a3 = 0, h3 = t3.getFg(0), c3 = t3.getBg(0);
+            let r2 = 0, n2 = 0, a2 = 0, h3 = t3.getFg(0), c2 = t3.getBg(0);
             for (let e5 = 0; e5 < t3.getTrimmedLength(); e5++) if (t3.loadCell(e5, this._workCell), 0 !== this._workCell.getWidth()) {
-              if (this._workCell.fg !== h3 || this._workCell.bg !== c3) {
+              if (this._workCell.fg !== h3 || this._workCell.bg !== c2) {
                 if (e5 - r2 > 1) {
-                  const e6 = this._getJoinedRanges(s3, a3, n2, t3, r2);
+                  const e6 = this._getJoinedRanges(s3, a2, n2, t3, r2);
                   for (let t4 = 0; t4 < e6.length; t4++) i3.push(e6[t4]);
                 }
-                r2 = e5, a3 = n2, h3 = this._workCell.fg, c3 = this._workCell.bg;
+                r2 = e5, a2 = n2, h3 = this._workCell.fg, c2 = this._workCell.bg;
               }
               n2 += this._workCell.getChars().length || o2.WHITESPACE_CELL_CHAR.length;
             }
             if (this._bufferService.cols - r2 > 1) {
-              const e5 = this._getJoinedRanges(s3, a3, n2, t3, r2);
+              const e5 = this._getJoinedRanges(s3, a2, n2, t3, r2);
               for (let t4 = 0; t4 < e5.length; t4++) i3.push(e5[t4]);
             }
             return i3;
           }
           _getJoinedRanges(t3, i3, s3, r2, n2) {
             const o3 = t3.substring(i3, s3);
-            let a3 = [];
+            let a2 = [];
             try {
-              a3 = this._characterJoiners[0].handler(o3);
+              a2 = this._characterJoiners[0].handler(o3);
             } catch (e4) {
               console.error(e4);
             }
             for (let t4 = 1; t4 < this._characterJoiners.length; t4++) try {
               const i4 = this._characterJoiners[t4].handler(o3);
-              for (let t5 = 0; t5 < i4.length; t5++) e3._mergeRanges(a3, i4[t5]);
+              for (let t5 = 0; t5 < i4.length; t5++) e3._mergeRanges(a2, i4[t5]);
             } catch (e4) {
               console.error(e4);
             }
-            return this._stringRangesToCellRanges(a3, r2, n2), a3;
+            return this._stringRangesToCellRanges(a2, r2, n2), a2;
           }
           _stringRangesToCellRanges(e4, t3, i3) {
-            let s3 = 0, r2 = false, n2 = 0, a3 = e4[s3];
-            if (a3) {
+            let s3 = 0, r2 = false, n2 = 0, a2 = e4[s3];
+            if (a2) {
               for (let h3 = i3; h3 < this._bufferService.cols; h3++) {
-                const i4 = t3.getWidth(h3), c3 = t3.getString(h3).length || o2.WHITESPACE_CELL_CHAR.length;
+                const i4 = t3.getWidth(h3), c2 = t3.getString(h3).length || o2.WHITESPACE_CELL_CHAR.length;
                 if (0 !== i4) {
-                  if (!r2 && a3[0] <= n2 && (a3[0] = h3, r2 = true), a3[1] <= n2) {
-                    if (a3[1] = h3, a3 = e4[++s3], !a3) break;
-                    a3[0] <= n2 ? (a3[0] = h3, r2 = true) : r2 = false;
+                  if (!r2 && a2[0] <= n2 && (a2[0] = h3, r2 = true), a2[1] <= n2) {
+                    if (a2[1] = h3, a2 = e4[++s3], !a2) break;
+                    a2[0] <= n2 ? (a2[0] = h3, r2 = true) : r2 = false;
                   }
-                  n2 += c3;
+                  n2 += c2;
                 }
               }
-              a3 && (a3[1] = this._bufferService.cols);
+              a2 && (a2[1] = this._bufferService.cols);
             }
           }
           static _mergeRanges(e4, t3) {
@@ -1758,7 +1758,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1767,7 +1767,7 @@ WARNING: This link could potentially be dangerous`)) {
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.MouseService = void 0;
         const n = i2(4725), o2 = i2(9806);
-        let a2 = t2.MouseService = class {
+        let a = t2.MouseService = class {
           constructor(e3, t3) {
             this._renderService = e3, this._charSizeService = t3;
           }
@@ -1779,12 +1779,12 @@ WARNING: This link could potentially be dangerous`)) {
             if (this._charSizeService.hasValidSize) return i3[0] = Math.min(Math.max(i3[0], 0), this._renderService.dimensions.css.canvas.width - 1), i3[1] = Math.min(Math.max(i3[1], 0), this._renderService.dimensions.css.canvas.height - 1), { col: Math.floor(i3[0] / this._renderService.dimensions.css.cell.width), row: Math.floor(i3[1] / this._renderService.dimensions.css.cell.height), x: Math.floor(i3[0]), y: Math.floor(i3[1]) };
           }
         };
-        t2.MouseService = a2 = s2([r(0, n.IRenderService), r(1, n.ICharSizeService)], a2);
+        t2.MouseService = a = s2([r(0, n.IRenderService), r(1, n.ICharSizeService)], a);
       }, 3230: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1792,13 +1792,13 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.RenderService = void 0;
-        const n = i2(3656), o2 = i2(6193), a2 = i2(5596), h2 = i2(4725), c2 = i2(8460), l2 = i2(844), d = i2(7226), _3 = i2(2585);
+        const n = i2(3656), o2 = i2(6193), a = i2(5596), h2 = i2(4725), c = i2(8460), l2 = i2(844), d = i2(7226), _3 = i2(2585);
         let u = t2.RenderService = class extends l2.Disposable {
           get dimensions() {
             return this._renderer.value.dimensions;
           }
           constructor(e3, t3, i3, s3, r2, h3, _4, u2) {
-            if (super(), this._rowCount = e3, this._charSizeService = s3, this._renderer = this.register(new l2.MutableDisposable()), this._pausedResizeTask = new d.DebouncedIdleTask(), this._isPaused = false, this._needsFullRefresh = false, this._isNextRenderRedrawOnly = true, this._needsSelectionRefresh = false, this._canvasWidth = 0, this._canvasHeight = 0, this._selectionState = { start: void 0, end: void 0, columnSelectMode: false }, this._onDimensionsChange = this.register(new c2.EventEmitter()), this.onDimensionsChange = this._onDimensionsChange.event, this._onRenderedViewportChange = this.register(new c2.EventEmitter()), this.onRenderedViewportChange = this._onRenderedViewportChange.event, this._onRender = this.register(new c2.EventEmitter()), this.onRender = this._onRender.event, this._onRefreshRequest = this.register(new c2.EventEmitter()), this.onRefreshRequest = this._onRefreshRequest.event, this._renderDebouncer = new o2.RenderDebouncer(_4.window, (e4, t4) => this._renderRows(e4, t4)), this.register(this._renderDebouncer), this._screenDprMonitor = new a2.ScreenDprMonitor(_4.window), this._screenDprMonitor.setListener(() => this.handleDevicePixelRatioChange()), this.register(this._screenDprMonitor), this.register(h3.onResize(() => this._fullRefresh())), this.register(h3.buffers.onBufferActivate(() => {
+            if (super(), this._rowCount = e3, this._charSizeService = s3, this._renderer = this.register(new l2.MutableDisposable()), this._pausedResizeTask = new d.DebouncedIdleTask(), this._isPaused = false, this._needsFullRefresh = false, this._isNextRenderRedrawOnly = true, this._needsSelectionRefresh = false, this._canvasWidth = 0, this._canvasHeight = 0, this._selectionState = { start: void 0, end: void 0, columnSelectMode: false }, this._onDimensionsChange = this.register(new c.EventEmitter()), this.onDimensionsChange = this._onDimensionsChange.event, this._onRenderedViewportChange = this.register(new c.EventEmitter()), this.onRenderedViewportChange = this._onRenderedViewportChange.event, this._onRender = this.register(new c.EventEmitter()), this.onRender = this._onRender.event, this._onRefreshRequest = this.register(new c.EventEmitter()), this.onRefreshRequest = this._onRefreshRequest.event, this._renderDebouncer = new o2.RenderDebouncer(_4.window, (e4, t4) => this._renderRows(e4, t4)), this.register(this._renderDebouncer), this._screenDprMonitor = new a.ScreenDprMonitor(_4.window), this._screenDprMonitor.setListener(() => this.handleDevicePixelRatioChange()), this.register(this._screenDprMonitor), this.register(h3.onResize(() => this._fullRefresh())), this.register(h3.buffers.onBufferActivate(() => {
               var e4;
               return null === (e4 = this._renderer.value) || void 0 === e4 ? void 0 : e4.clear();
             })), this.register(i3.onOptionChange(() => this._handleOptionsChanged())), this.register(this._charSizeService.onCharSizeChange(() => this.handleCharSizeChanged())), this.register(r2.onDecorationRegistered(() => this._fullRefresh())), this.register(r2.onDecorationRemoved(() => this._fullRefresh())), this.register(i3.onMultipleOptionChange(["customGlyphs", "drawBoldTextInBrightColors", "letterSpacing", "lineHeight", "fontFamily", "fontSize", "fontWeight", "fontWeightBold", "minimumContrastRatio"], () => {
@@ -1878,7 +1878,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -1886,12 +1886,12 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.SelectionService = void 0;
-        const n = i2(9806), o2 = i2(9504), a2 = i2(456), h2 = i2(4725), c2 = i2(8460), l2 = i2(844), d = i2(6114), _3 = i2(4841), u = i2(511), f = i2(2585), v2 = String.fromCharCode(160), p = new RegExp(v2, "g");
+        const n = i2(9806), o2 = i2(9504), a = i2(456), h2 = i2(4725), c = i2(8460), l2 = i2(844), d = i2(6114), _3 = i2(4841), u = i2(511), f = i2(2585), v2 = String.fromCharCode(160), p = new RegExp(v2, "g");
         let g2 = t2.SelectionService = class extends l2.Disposable {
           constructor(e3, t3, i3, s3, r2, n2, o3, h3, d2) {
-            super(), this._element = e3, this._screenElement = t3, this._linkifier = i3, this._bufferService = s3, this._coreService = r2, this._mouseService = n2, this._optionsService = o3, this._renderService = h3, this._coreBrowserService = d2, this._dragScrollAmount = 0, this._enabled = true, this._workCell = new u.CellData(), this._mouseDownTimeStamp = 0, this._oldHasSelection = false, this._oldSelectionStart = void 0, this._oldSelectionEnd = void 0, this._onLinuxMouseSelection = this.register(new c2.EventEmitter()), this.onLinuxMouseSelection = this._onLinuxMouseSelection.event, this._onRedrawRequest = this.register(new c2.EventEmitter()), this.onRequestRedraw = this._onRedrawRequest.event, this._onSelectionChange = this.register(new c2.EventEmitter()), this.onSelectionChange = this._onSelectionChange.event, this._onRequestScrollLines = this.register(new c2.EventEmitter()), this.onRequestScrollLines = this._onRequestScrollLines.event, this._mouseMoveListener = (e4) => this._handleMouseMove(e4), this._mouseUpListener = (e4) => this._handleMouseUp(e4), this._coreService.onUserInput(() => {
+            super(), this._element = e3, this._screenElement = t3, this._linkifier = i3, this._bufferService = s3, this._coreService = r2, this._mouseService = n2, this._optionsService = o3, this._renderService = h3, this._coreBrowserService = d2, this._dragScrollAmount = 0, this._enabled = true, this._workCell = new u.CellData(), this._mouseDownTimeStamp = 0, this._oldHasSelection = false, this._oldSelectionStart = void 0, this._oldSelectionEnd = void 0, this._onLinuxMouseSelection = this.register(new c.EventEmitter()), this.onLinuxMouseSelection = this._onLinuxMouseSelection.event, this._onRedrawRequest = this.register(new c.EventEmitter()), this.onRequestRedraw = this._onRedrawRequest.event, this._onSelectionChange = this.register(new c.EventEmitter()), this.onSelectionChange = this._onSelectionChange.event, this._onRequestScrollLines = this.register(new c.EventEmitter()), this.onRequestScrollLines = this._onRequestScrollLines.event, this._mouseMoveListener = (e4) => this._handleMouseMove(e4), this._mouseUpListener = (e4) => this._handleMouseUp(e4), this._coreService.onUserInput(() => {
               this.hasSelection && this.clearSelection();
-            }), this._trimListener = this._bufferService.buffer.lines.onTrim((e4) => this._handleTrim(e4)), this.register(this._bufferService.buffers.onBufferActivate((e4) => this._handleBufferActivate(e4))), this.enable(), this._model = new a2.SelectionModel(this._bufferService), this._activeSelectionMode = 0, this.register((0, l2.toDisposable)(() => {
+            }), this._trimListener = this._bufferService.buffer.lines.onTrim((e4) => this._handleTrim(e4)), this.register(this._bufferService.buffers.onBufferActivate((e4) => this._handleBufferActivate(e4))), this.enable(), this._model = new a.SelectionModel(this._bufferService), this._activeSelectionMode = 0, this.register((0, l2.toDisposable)(() => {
               this._removeMouseDownListeners();
             }));
           }
@@ -2081,20 +2081,20 @@ WARNING: This link could potentially be dangerous`)) {
             const r2 = this._bufferService.buffer, n2 = r2.lines.get(e3[1]);
             if (!n2) return;
             const o3 = r2.translateBufferLineToString(e3[1], false);
-            let a3 = this._convertViewportColToCharacterIndex(n2, e3[0]), h3 = a3;
-            const c3 = e3[0] - a3;
+            let a2 = this._convertViewportColToCharacterIndex(n2, e3[0]), h3 = a2;
+            const c2 = e3[0] - a2;
             let l3 = 0, d2 = 0, _4 = 0, u2 = 0;
-            if (" " === o3.charAt(a3)) {
-              for (; a3 > 0 && " " === o3.charAt(a3 - 1); ) a3--;
+            if (" " === o3.charAt(a2)) {
+              for (; a2 > 0 && " " === o3.charAt(a2 - 1); ) a2--;
               for (; h3 < o3.length && " " === o3.charAt(h3 + 1); ) h3++;
             } else {
               let t4 = e3[0], i4 = e3[0];
               0 === n2.getWidth(t4) && (l3++, t4--), 2 === n2.getWidth(i4) && (d2++, i4++);
               const s4 = n2.getString(i4).length;
-              for (s4 > 1 && (u2 += s4 - 1, h3 += s4 - 1); t4 > 0 && a3 > 0 && !this._isCharWordSeparator(n2.loadCell(t4 - 1, this._workCell)); ) {
+              for (s4 > 1 && (u2 += s4 - 1, h3 += s4 - 1); t4 > 0 && a2 > 0 && !this._isCharWordSeparator(n2.loadCell(t4 - 1, this._workCell)); ) {
                 n2.loadCell(t4 - 1, this._workCell);
                 const e4 = this._workCell.getChars().length;
-                0 === this._workCell.getWidth() ? (l3++, t4--) : e4 > 1 && (_4 += e4 - 1, a3 -= e4 - 1), a3--, t4--;
+                0 === this._workCell.getWidth() ? (l3++, t4--) : e4 > 1 && (_4 += e4 - 1, a2 -= e4 - 1), a2--, t4--;
               }
               for (; i4 < n2.length && h3 + 1 < o3.length && !this._isCharWordSeparator(n2.loadCell(i4 + 1, this._workCell)); ) {
                 n2.loadCell(i4 + 1, this._workCell);
@@ -2103,8 +2103,8 @@ WARNING: This link could potentially be dangerous`)) {
               }
             }
             h3++;
-            let f2 = a3 + c3 - l3 + _4, v3 = Math.min(this._bufferService.cols, h3 - a3 + l3 + d2 - _4 - u2);
-            if (t3 || "" !== o3.slice(a3, h3).trim()) {
+            let f2 = a2 + c2 - l3 + _4, v3 = Math.min(this._bufferService.cols, h3 - a2 + l3 + d2 - _4 - u2);
+            if (t3 || "" !== o3.slice(a2, h3).trim()) {
               if (i3 && 0 === f2 && 32 !== n2.getCodePoint(0)) {
                 const t4 = r2.lines.get(e3[1] - 1);
                 if (t4 && n2.isWrapped && 32 !== t4.getCodePoint(this._bufferService.cols - 1)) {
@@ -2158,7 +2158,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -2166,7 +2166,7 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.ThemeService = t2.DEFAULT_ANSI_COLORS = void 0;
-        const n = i2(7239), o2 = i2(8055), a2 = i2(8460), h2 = i2(844), c2 = i2(2585), l2 = o2.css.toColor("#ffffff"), d = o2.css.toColor("#000000"), _3 = o2.css.toColor("#ffffff"), u = o2.css.toColor("#000000"), f = { css: "rgba(255, 255, 255, 0.3)", rgba: 4294967117 };
+        const n = i2(7239), o2 = i2(8055), a = i2(8460), h2 = i2(844), c = i2(2585), l2 = o2.css.toColor("#ffffff"), d = o2.css.toColor("#000000"), _3 = o2.css.toColor("#ffffff"), u = o2.css.toColor("#000000"), f = { css: "rgba(255, 255, 255, 0.3)", rgba: 4294967117 };
         t2.DEFAULT_ANSI_COLORS = Object.freeze((() => {
           const e3 = [o2.css.toColor("#2e3436"), o2.css.toColor("#cc0000"), o2.css.toColor("#4e9a06"), o2.css.toColor("#c4a000"), o2.css.toColor("#3465a4"), o2.css.toColor("#75507b"), o2.css.toColor("#06989a"), o2.css.toColor("#d3d7cf"), o2.css.toColor("#555753"), o2.css.toColor("#ef2929"), o2.css.toColor("#8ae234"), o2.css.toColor("#fce94f"), o2.css.toColor("#729fcf"), o2.css.toColor("#ad7fa8"), o2.css.toColor("#34e2e2"), o2.css.toColor("#eeeeec")], t3 = [0, 95, 135, 175, 215, 255];
           for (let i3 = 0; i3 < 216; i3++) {
@@ -2184,7 +2184,7 @@ WARNING: This link could potentially be dangerous`)) {
             return this._colors;
           }
           constructor(e3) {
-            super(), this._optionsService = e3, this._contrastCache = new n.ColorContrastCache(), this._halfContrastCache = new n.ColorContrastCache(), this._onChangeColors = this.register(new a2.EventEmitter()), this.onChangeColors = this._onChangeColors.event, this._colors = { foreground: l2, background: d, cursor: _3, cursorAccent: u, selectionForeground: void 0, selectionBackgroundTransparent: f, selectionBackgroundOpaque: o2.color.blend(d, f), selectionInactiveBackgroundTransparent: f, selectionInactiveBackgroundOpaque: o2.color.blend(d, f), ansi: t2.DEFAULT_ANSI_COLORS.slice(), contrastCache: this._contrastCache, halfContrastCache: this._halfContrastCache }, this._updateRestoreColors(), this._setTheme(this._optionsService.rawOptions.theme), this.register(this._optionsService.onSpecificOptionChange("minimumContrastRatio", () => this._contrastCache.clear())), this.register(this._optionsService.onSpecificOptionChange("theme", () => this._setTheme(this._optionsService.rawOptions.theme)));
+            super(), this._optionsService = e3, this._contrastCache = new n.ColorContrastCache(), this._halfContrastCache = new n.ColorContrastCache(), this._onChangeColors = this.register(new a.EventEmitter()), this.onChangeColors = this._onChangeColors.event, this._colors = { foreground: l2, background: d, cursor: _3, cursorAccent: u, selectionForeground: void 0, selectionBackgroundTransparent: f, selectionBackgroundOpaque: o2.color.blend(d, f), selectionInactiveBackgroundTransparent: f, selectionInactiveBackgroundOpaque: o2.color.blend(d, f), ansi: t2.DEFAULT_ANSI_COLORS.slice(), contrastCache: this._contrastCache, halfContrastCache: this._halfContrastCache }, this._updateRestoreColors(), this._setTheme(this._optionsService.rawOptions.theme), this.register(this._optionsService.onSpecificOptionChange("minimumContrastRatio", () => this._contrastCache.clear())), this.register(this._optionsService.onSpecificOptionChange("theme", () => this._setTheme(this._optionsService.rawOptions.theme)));
           }
           _setTheme(e3 = {}) {
             const i3 = this._colors;
@@ -2235,7 +2235,7 @@ WARNING: This link could potentially be dangerous`)) {
           }
           return t3;
         }
-        t2.ThemeService = v2 = s2([r(0, c2.IOptionsService)], v2);
+        t2.ThemeService = v2 = s2([r(0, c.IOptionsService)], v2);
       }, 6349: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CircularList = void 0;
         const s2 = i2(8460), r = i2(844);
@@ -2319,8 +2319,8 @@ WARNING: This link could potentially be dangerous`)) {
       }, 8055: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.contrastRatio = t2.toPaddedHex = t2.rgba = t2.rgb = t2.css = t2.color = t2.channels = t2.NULL_COLOR = void 0;
         const s2 = i2(6114);
-        let r = 0, n = 0, o2 = 0, a2 = 0;
-        var h2, c2, l2, d, _3;
+        let r = 0, n = 0, o2 = 0, a = 0;
+        var h2, c, l2, d, _3;
         function u(e3) {
           const t3 = e3.toString(16);
           return t3.length < 2 ? "0" + t3 : t3;
@@ -2336,12 +2336,12 @@ WARNING: This link could potentially be dangerous`)) {
           };
         }(h2 || (t2.channels = h2 = {})), function(e3) {
           function t3(e4, t4) {
-            return a2 = Math.round(255 * t4), [r, n, o2] = _3.toChannels(e4.rgba), { css: h2.toCss(r, n, o2, a2), rgba: h2.toRgba(r, n, o2, a2) };
+            return a = Math.round(255 * t4), [r, n, o2] = _3.toChannels(e4.rgba), { css: h2.toCss(r, n, o2, a), rgba: h2.toRgba(r, n, o2, a) };
           }
           e3.blend = function(e4, t4) {
-            if (a2 = (255 & t4.rgba) / 255, 1 === a2) return { css: t4.css, rgba: t4.rgba };
-            const i3 = t4.rgba >> 24 & 255, s3 = t4.rgba >> 16 & 255, c3 = t4.rgba >> 8 & 255, l3 = e4.rgba >> 24 & 255, d2 = e4.rgba >> 16 & 255, _4 = e4.rgba >> 8 & 255;
-            return r = l3 + Math.round((i3 - l3) * a2), n = d2 + Math.round((s3 - d2) * a2), o2 = _4 + Math.round((c3 - _4) * a2), { css: h2.toCss(r, n, o2), rgba: h2.toRgba(r, n, o2) };
+            if (a = (255 & t4.rgba) / 255, 1 === a) return { css: t4.css, rgba: t4.rgba };
+            const i3 = t4.rgba >> 24 & 255, s3 = t4.rgba >> 16 & 255, c2 = t4.rgba >> 8 & 255, l3 = e4.rgba >> 24 & 255, d2 = e4.rgba >> 16 & 255, _4 = e4.rgba >> 8 & 255;
+            return r = l3 + Math.round((i3 - l3) * a), n = d2 + Math.round((s3 - d2) * a), o2 = _4 + Math.round((c2 - _4) * a), { css: h2.toCss(r, n, o2), rgba: h2.toRgba(r, n, o2) };
           }, e3.isOpaque = function(e4) {
             return 255 == (255 & e4.rgba);
           }, e3.ensureContrastRatio = function(e4, t4, i3) {
@@ -2351,11 +2351,11 @@ WARNING: This link could potentially be dangerous`)) {
             const t4 = (255 | e4.rgba) >>> 0;
             return [r, n, o2] = _3.toChannels(t4), { css: h2.toCss(r, n, o2), rgba: t4 };
           }, e3.opacity = t3, e3.multiplyOpacity = function(e4, i3) {
-            return a2 = 255 & e4.rgba, t3(e4, a2 * i3 / 255);
+            return a = 255 & e4.rgba, t3(e4, a * i3 / 255);
           }, e3.toColorRGB = function(e4) {
             return [e4.rgba >> 24 & 255, e4.rgba >> 16 & 255, e4.rgba >> 8 & 255];
           };
-        }(c2 || (t2.color = c2 = {})), function(e3) {
+        }(c || (t2.color = c = {})), function(e3) {
           let t3, i3;
           if (!s2.isNode) {
             const e4 = document.createElement("canvas");
@@ -2368,18 +2368,18 @@ WARNING: This link could potentially be dangerous`)) {
               case 4:
                 return r = parseInt(e4.slice(1, 2).repeat(2), 16), n = parseInt(e4.slice(2, 3).repeat(2), 16), o2 = parseInt(e4.slice(3, 4).repeat(2), 16), _3.toColor(r, n, o2);
               case 5:
-                return r = parseInt(e4.slice(1, 2).repeat(2), 16), n = parseInt(e4.slice(2, 3).repeat(2), 16), o2 = parseInt(e4.slice(3, 4).repeat(2), 16), a2 = parseInt(e4.slice(4, 5).repeat(2), 16), _3.toColor(r, n, o2, a2);
+                return r = parseInt(e4.slice(1, 2).repeat(2), 16), n = parseInt(e4.slice(2, 3).repeat(2), 16), o2 = parseInt(e4.slice(3, 4).repeat(2), 16), a = parseInt(e4.slice(4, 5).repeat(2), 16), _3.toColor(r, n, o2, a);
               case 7:
                 return { css: e4, rgba: (parseInt(e4.slice(1), 16) << 8 | 255) >>> 0 };
               case 9:
                 return { css: e4, rgba: parseInt(e4.slice(1), 16) >>> 0 };
             }
             const s3 = e4.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(,\s*(0|1|\d?\.(\d+))\s*)?\)/);
-            if (s3) return r = parseInt(s3[1]), n = parseInt(s3[2]), o2 = parseInt(s3[3]), a2 = Math.round(255 * (void 0 === s3[5] ? 1 : parseFloat(s3[5]))), _3.toColor(r, n, o2, a2);
+            if (s3) return r = parseInt(s3[1]), n = parseInt(s3[2]), o2 = parseInt(s3[3]), a = Math.round(255 * (void 0 === s3[5] ? 1 : parseFloat(s3[5]))), _3.toColor(r, n, o2, a);
             if (!t3 || !i3) throw new Error("css.toColor: Unsupported css format");
             if (t3.fillStyle = i3, t3.fillStyle = e4, "string" != typeof t3.fillStyle) throw new Error("css.toColor: Unsupported css format");
-            if (t3.fillRect(0, 0, 1, 1), [r, n, o2, a2] = t3.getImageData(0, 0, 1, 1).data, 255 !== a2) throw new Error("css.toColor: Unsupported css format");
-            return { rgba: h2.toRgba(r, n, o2, a2), css: e4 };
+            if (t3.fillRect(0, 0, 1, 1), [r, n, o2, a] = t3.getImageData(0, 0, 1, 1).data, 255 !== a) throw new Error("css.toColor: Unsupported css format");
+            return { rgba: h2.toRgba(r, n, o2, a), css: e4 };
           };
         }(l2 || (t2.css = l2 = {})), function(e3) {
           function t3(e4, t4, i3) {
@@ -2392,33 +2392,33 @@ WARNING: This link could potentially be dangerous`)) {
         }(d || (t2.rgb = d = {})), function(e3) {
           function t3(e4, t4, i4) {
             const s3 = e4 >> 24 & 255, r2 = e4 >> 16 & 255, n2 = e4 >> 8 & 255;
-            let o3 = t4 >> 24 & 255, a3 = t4 >> 16 & 255, h3 = t4 >> 8 & 255, c3 = f(d.relativeLuminance2(o3, a3, h3), d.relativeLuminance2(s3, r2, n2));
-            for (; c3 < i4 && (o3 > 0 || a3 > 0 || h3 > 0); ) o3 -= Math.max(0, Math.ceil(0.1 * o3)), a3 -= Math.max(0, Math.ceil(0.1 * a3)), h3 -= Math.max(0, Math.ceil(0.1 * h3)), c3 = f(d.relativeLuminance2(o3, a3, h3), d.relativeLuminance2(s3, r2, n2));
-            return (o3 << 24 | a3 << 16 | h3 << 8 | 255) >>> 0;
+            let o3 = t4 >> 24 & 255, a2 = t4 >> 16 & 255, h3 = t4 >> 8 & 255, c2 = f(d.relativeLuminance2(o3, a2, h3), d.relativeLuminance2(s3, r2, n2));
+            for (; c2 < i4 && (o3 > 0 || a2 > 0 || h3 > 0); ) o3 -= Math.max(0, Math.ceil(0.1 * o3)), a2 -= Math.max(0, Math.ceil(0.1 * a2)), h3 -= Math.max(0, Math.ceil(0.1 * h3)), c2 = f(d.relativeLuminance2(o3, a2, h3), d.relativeLuminance2(s3, r2, n2));
+            return (o3 << 24 | a2 << 16 | h3 << 8 | 255) >>> 0;
           }
           function i3(e4, t4, i4) {
             const s3 = e4 >> 24 & 255, r2 = e4 >> 16 & 255, n2 = e4 >> 8 & 255;
-            let o3 = t4 >> 24 & 255, a3 = t4 >> 16 & 255, h3 = t4 >> 8 & 255, c3 = f(d.relativeLuminance2(o3, a3, h3), d.relativeLuminance2(s3, r2, n2));
-            for (; c3 < i4 && (o3 < 255 || a3 < 255 || h3 < 255); ) o3 = Math.min(255, o3 + Math.ceil(0.1 * (255 - o3))), a3 = Math.min(255, a3 + Math.ceil(0.1 * (255 - a3))), h3 = Math.min(255, h3 + Math.ceil(0.1 * (255 - h3))), c3 = f(d.relativeLuminance2(o3, a3, h3), d.relativeLuminance2(s3, r2, n2));
-            return (o3 << 24 | a3 << 16 | h3 << 8 | 255) >>> 0;
+            let o3 = t4 >> 24 & 255, a2 = t4 >> 16 & 255, h3 = t4 >> 8 & 255, c2 = f(d.relativeLuminance2(o3, a2, h3), d.relativeLuminance2(s3, r2, n2));
+            for (; c2 < i4 && (o3 < 255 || a2 < 255 || h3 < 255); ) o3 = Math.min(255, o3 + Math.ceil(0.1 * (255 - o3))), a2 = Math.min(255, a2 + Math.ceil(0.1 * (255 - a2))), h3 = Math.min(255, h3 + Math.ceil(0.1 * (255 - h3))), c2 = f(d.relativeLuminance2(o3, a2, h3), d.relativeLuminance2(s3, r2, n2));
+            return (o3 << 24 | a2 << 16 | h3 << 8 | 255) >>> 0;
           }
           e3.ensureContrastRatio = function(e4, s3, r2) {
             const n2 = d.relativeLuminance(e4 >> 8), o3 = d.relativeLuminance(s3 >> 8);
             if (f(n2, o3) < r2) {
               if (o3 < n2) {
-                const o4 = t3(e4, s3, r2), a4 = f(n2, d.relativeLuminance(o4 >> 8));
-                if (a4 < r2) {
+                const o4 = t3(e4, s3, r2), a3 = f(n2, d.relativeLuminance(o4 >> 8));
+                if (a3 < r2) {
                   const t4 = i3(e4, s3, r2);
-                  return a4 > f(n2, d.relativeLuminance(t4 >> 8)) ? o4 : t4;
+                  return a3 > f(n2, d.relativeLuminance(t4 >> 8)) ? o4 : t4;
                 }
                 return o4;
               }
-              const a3 = i3(e4, s3, r2), h3 = f(n2, d.relativeLuminance(a3 >> 8));
+              const a2 = i3(e4, s3, r2), h3 = f(n2, d.relativeLuminance(a2 >> 8));
               if (h3 < r2) {
                 const i4 = t3(e4, s3, r2);
-                return h3 > f(n2, d.relativeLuminance(i4 >> 8)) ? a3 : i4;
+                return h3 > f(n2, d.relativeLuminance(i4 >> 8)) ? a2 : i4;
               }
-              return a3;
+              return a2;
             }
           }, e3.reduceLuminance = t3, e3.increaseLuminance = i3, e3.toChannels = function(e4) {
             return [e4 >> 24 & 255, e4 >> 16 & 255, e4 >> 8 & 255, 255 & e4];
@@ -2428,8 +2428,8 @@ WARNING: This link could potentially be dangerous`)) {
         }(_3 || (t2.rgba = _3 = {})), t2.toPaddedHex = u, t2.contrastRatio = f;
       }, 8969: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CoreTerminal = void 0;
-        const s2 = i2(844), r = i2(2585), n = i2(4348), o2 = i2(7866), a2 = i2(744), h2 = i2(7302), c2 = i2(6975), l2 = i2(8460), d = i2(1753), _3 = i2(1480), u = i2(7994), f = i2(9282), v2 = i2(5435), p = i2(5981), g2 = i2(2660);
-        let m2 = false;
+        const s2 = i2(844), r = i2(2585), n = i2(4348), o2 = i2(7866), a = i2(744), h2 = i2(7302), c = i2(6975), l2 = i2(8460), d = i2(1753), _3 = i2(1480), u = i2(7994), f = i2(9282), v2 = i2(5435), p = i2(5981), g2 = i2(2660);
+        let m = false;
         class S extends s2.Disposable {
           get onScroll() {
             return this._onScrollApi || (this._onScrollApi = this.register(new l2.EventEmitter()), this._onScroll.event((e3) => {
@@ -2453,7 +2453,7 @@ WARNING: This link could potentially be dangerous`)) {
             for (const t3 in e3) this.optionsService.options[t3] = e3[t3];
           }
           constructor(e3) {
-            super(), this._windowsWrappingHeuristics = this.register(new s2.MutableDisposable()), this._onBinary = this.register(new l2.EventEmitter()), this.onBinary = this._onBinary.event, this._onData = this.register(new l2.EventEmitter()), this.onData = this._onData.event, this._onLineFeed = this.register(new l2.EventEmitter()), this.onLineFeed = this._onLineFeed.event, this._onResize = this.register(new l2.EventEmitter()), this.onResize = this._onResize.event, this._onWriteParsed = this.register(new l2.EventEmitter()), this.onWriteParsed = this._onWriteParsed.event, this._onScroll = this.register(new l2.EventEmitter()), this._instantiationService = new n.InstantiationService(), this.optionsService = this.register(new h2.OptionsService(e3)), this._instantiationService.setService(r.IOptionsService, this.optionsService), this._bufferService = this.register(this._instantiationService.createInstance(a2.BufferService)), this._instantiationService.setService(r.IBufferService, this._bufferService), this._logService = this.register(this._instantiationService.createInstance(o2.LogService)), this._instantiationService.setService(r.ILogService, this._logService), this.coreService = this.register(this._instantiationService.createInstance(c2.CoreService)), this._instantiationService.setService(r.ICoreService, this.coreService), this.coreMouseService = this.register(this._instantiationService.createInstance(d.CoreMouseService)), this._instantiationService.setService(r.ICoreMouseService, this.coreMouseService), this.unicodeService = this.register(this._instantiationService.createInstance(_3.UnicodeService)), this._instantiationService.setService(r.IUnicodeService, this.unicodeService), this._charsetService = this._instantiationService.createInstance(u.CharsetService), this._instantiationService.setService(r.ICharsetService, this._charsetService), this._oscLinkService = this._instantiationService.createInstance(g2.OscLinkService), this._instantiationService.setService(r.IOscLinkService, this._oscLinkService), this._inputHandler = this.register(new v2.InputHandler(this._bufferService, this._charsetService, this.coreService, this._logService, this.optionsService, this._oscLinkService, this.coreMouseService, this.unicodeService)), this.register((0, l2.forwardEvent)(this._inputHandler.onLineFeed, this._onLineFeed)), this.register(this._inputHandler), this.register((0, l2.forwardEvent)(this._bufferService.onResize, this._onResize)), this.register((0, l2.forwardEvent)(this.coreService.onData, this._onData)), this.register((0, l2.forwardEvent)(this.coreService.onBinary, this._onBinary)), this.register(this.coreService.onRequestScrollToBottom(() => this.scrollToBottom())), this.register(this.coreService.onUserInput(() => this._writeBuffer.handleUserInput())), this.register(this.optionsService.onMultipleOptionChange(["windowsMode", "windowsPty"], () => this._handleWindowsPtyOptionChange())), this.register(this._bufferService.onScroll((e4) => {
+            super(), this._windowsWrappingHeuristics = this.register(new s2.MutableDisposable()), this._onBinary = this.register(new l2.EventEmitter()), this.onBinary = this._onBinary.event, this._onData = this.register(new l2.EventEmitter()), this.onData = this._onData.event, this._onLineFeed = this.register(new l2.EventEmitter()), this.onLineFeed = this._onLineFeed.event, this._onResize = this.register(new l2.EventEmitter()), this.onResize = this._onResize.event, this._onWriteParsed = this.register(new l2.EventEmitter()), this.onWriteParsed = this._onWriteParsed.event, this._onScroll = this.register(new l2.EventEmitter()), this._instantiationService = new n.InstantiationService(), this.optionsService = this.register(new h2.OptionsService(e3)), this._instantiationService.setService(r.IOptionsService, this.optionsService), this._bufferService = this.register(this._instantiationService.createInstance(a.BufferService)), this._instantiationService.setService(r.IBufferService, this._bufferService), this._logService = this.register(this._instantiationService.createInstance(o2.LogService)), this._instantiationService.setService(r.ILogService, this._logService), this.coreService = this.register(this._instantiationService.createInstance(c.CoreService)), this._instantiationService.setService(r.ICoreService, this.coreService), this.coreMouseService = this.register(this._instantiationService.createInstance(d.CoreMouseService)), this._instantiationService.setService(r.ICoreMouseService, this.coreMouseService), this.unicodeService = this.register(this._instantiationService.createInstance(_3.UnicodeService)), this._instantiationService.setService(r.IUnicodeService, this.unicodeService), this._charsetService = this._instantiationService.createInstance(u.CharsetService), this._instantiationService.setService(r.ICharsetService, this._charsetService), this._oscLinkService = this._instantiationService.createInstance(g2.OscLinkService), this._instantiationService.setService(r.IOscLinkService, this._oscLinkService), this._inputHandler = this.register(new v2.InputHandler(this._bufferService, this._charsetService, this.coreService, this._logService, this.optionsService, this._oscLinkService, this.coreMouseService, this.unicodeService)), this.register((0, l2.forwardEvent)(this._inputHandler.onLineFeed, this._onLineFeed)), this.register(this._inputHandler), this.register((0, l2.forwardEvent)(this._bufferService.onResize, this._onResize)), this.register((0, l2.forwardEvent)(this.coreService.onData, this._onData)), this.register((0, l2.forwardEvent)(this.coreService.onBinary, this._onBinary)), this.register(this.coreService.onRequestScrollToBottom(() => this.scrollToBottom())), this.register(this.coreService.onUserInput(() => this._writeBuffer.handleUserInput())), this.register(this.optionsService.onMultipleOptionChange(["windowsMode", "windowsPty"], () => this._handleWindowsPtyOptionChange())), this.register(this._bufferService.onScroll((e4) => {
               this._onScroll.fire({ position: this._bufferService.buffer.ydisp, source: 0 }), this._inputHandler.markRangeDirty(this._bufferService.buffer.scrollTop, this._bufferService.buffer.scrollBottom);
             })), this.register(this._inputHandler.onScroll((e4) => {
               this._onScroll.fire({ position: this._bufferService.buffer.ydisp, source: 0 }), this._inputHandler.markRangeDirty(this._bufferService.buffer.scrollTop, this._bufferService.buffer.scrollBottom);
@@ -2463,10 +2463,10 @@ WARNING: This link could potentially be dangerous`)) {
             this._writeBuffer.write(e3, t3);
           }
           writeSync(e3, t3) {
-            this._logService.logLevel <= r.LogLevelEnum.WARN && !m2 && (this._logService.warn("writeSync is unreliable and will be removed soon."), m2 = true), this._writeBuffer.writeSync(e3, t3);
+            this._logService.logLevel <= r.LogLevelEnum.WARN && !m && (this._logService.warn("writeSync is unreliable and will be removed soon."), m = true), this._writeBuffer.writeSync(e3, t3);
           }
           resize(e3, t3) {
-            isNaN(e3) || isNaN(t3) || (e3 = Math.max(e3, a2.MINIMUM_COLS), t3 = Math.max(t3, a2.MINIMUM_ROWS), this._bufferService.resize(e3, t3));
+            isNaN(e3) || isNaN(t3) || (e3 = Math.max(e3, a.MINIMUM_COLS), t3 = Math.max(t3, a.MINIMUM_ROWS), this._bufferService.resize(e3, t3));
           }
           scroll(e3, t3 = false) {
             this._bufferService.scroll(e3, t3);
@@ -2550,7 +2550,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -2558,7 +2558,7 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.InputHandler = t2.WindowsOptionsReportType = void 0;
-        const n = i2(2584), o2 = i2(7116), a2 = i2(2015), h2 = i2(844), c2 = i2(482), l2 = i2(8437), d = i2(8460), _3 = i2(643), u = i2(511), f = i2(3734), v2 = i2(2585), p = i2(6242), g2 = i2(6351), m2 = i2(5941), S = { "(": 0, ")": 1, "*": 2, "+": 3, "-": 1, ".": 2 }, C = 131072;
+        const n = i2(2584), o2 = i2(7116), a = i2(2015), h2 = i2(844), c = i2(482), l2 = i2(8437), d = i2(8460), _3 = i2(643), u = i2(511), f = i2(3734), v2 = i2(2585), p = i2(6242), g2 = i2(6351), m = i2(5941), S = { "(": 0, ")": 1, "*": 2, "+": 3, "-": 1, ".": 2 }, C = 131072;
         function b(e3, t3) {
           if (e3 > 24) return t3.setWinLines || false;
           switch (e3) {
@@ -2609,17 +2609,17 @@ WARNING: This link could potentially be dangerous`)) {
           }
           return false;
         }
-        var y3;
+        var y;
         !function(e3) {
           e3[e3.GET_WIN_SIZE_PIXELS = 0] = "GET_WIN_SIZE_PIXELS", e3[e3.GET_CELL_SIZE_PIXELS = 1] = "GET_CELL_SIZE_PIXELS";
-        }(y3 || (t2.WindowsOptionsReportType = y3 = {}));
+        }(y || (t2.WindowsOptionsReportType = y = {}));
         let w2 = 0;
         class E extends h2.Disposable {
           getAttrData() {
             return this._curAttrData;
           }
-          constructor(e3, t3, i3, s3, r2, h3, _4, f2, v3 = new a2.EscapeSequenceParser()) {
-            super(), this._bufferService = e3, this._charsetService = t3, this._coreService = i3, this._logService = s3, this._optionsService = r2, this._oscLinkService = h3, this._coreMouseService = _4, this._unicodeService = f2, this._parser = v3, this._parseBuffer = new Uint32Array(4096), this._stringDecoder = new c2.StringToUtf32(), this._utf8Decoder = new c2.Utf8ToUtf32(), this._workCell = new u.CellData(), this._windowTitle = "", this._iconName = "", this._windowTitleStack = [], this._iconNameStack = [], this._curAttrData = l2.DEFAULT_ATTR_DATA.clone(), this._eraseAttrDataInternal = l2.DEFAULT_ATTR_DATA.clone(), this._onRequestBell = this.register(new d.EventEmitter()), this.onRequestBell = this._onRequestBell.event, this._onRequestRefreshRows = this.register(new d.EventEmitter()), this.onRequestRefreshRows = this._onRequestRefreshRows.event, this._onRequestReset = this.register(new d.EventEmitter()), this.onRequestReset = this._onRequestReset.event, this._onRequestSendFocus = this.register(new d.EventEmitter()), this.onRequestSendFocus = this._onRequestSendFocus.event, this._onRequestSyncScrollBar = this.register(new d.EventEmitter()), this.onRequestSyncScrollBar = this._onRequestSyncScrollBar.event, this._onRequestWindowsOptionsReport = this.register(new d.EventEmitter()), this.onRequestWindowsOptionsReport = this._onRequestWindowsOptionsReport.event, this._onA11yChar = this.register(new d.EventEmitter()), this.onA11yChar = this._onA11yChar.event, this._onA11yTab = this.register(new d.EventEmitter()), this.onA11yTab = this._onA11yTab.event, this._onCursorMove = this.register(new d.EventEmitter()), this.onCursorMove = this._onCursorMove.event, this._onLineFeed = this.register(new d.EventEmitter()), this.onLineFeed = this._onLineFeed.event, this._onScroll = this.register(new d.EventEmitter()), this.onScroll = this._onScroll.event, this._onTitleChange = this.register(new d.EventEmitter()), this.onTitleChange = this._onTitleChange.event, this._onColor = this.register(new d.EventEmitter()), this.onColor = this._onColor.event, this._parseStack = { paused: false, cursorStartX: 0, cursorStartY: 0, decodedLength: 0, position: 0 }, this._specialColors = [256, 257, 258], this.register(this._parser), this._dirtyRowTracker = new k2(this._bufferService), this._activeBuffer = this._bufferService.buffer, this.register(this._bufferService.buffers.onBufferActivate((e4) => this._activeBuffer = e4.activeBuffer)), this._parser.setCsiHandlerFallback((e4, t4) => {
+          constructor(e3, t3, i3, s3, r2, h3, _4, f2, v3 = new a.EscapeSequenceParser()) {
+            super(), this._bufferService = e3, this._charsetService = t3, this._coreService = i3, this._logService = s3, this._optionsService = r2, this._oscLinkService = h3, this._coreMouseService = _4, this._unicodeService = f2, this._parser = v3, this._parseBuffer = new Uint32Array(4096), this._stringDecoder = new c.StringToUtf32(), this._utf8Decoder = new c.Utf8ToUtf32(), this._workCell = new u.CellData(), this._windowTitle = "", this._iconName = "", this._windowTitleStack = [], this._iconNameStack = [], this._curAttrData = l2.DEFAULT_ATTR_DATA.clone(), this._eraseAttrDataInternal = l2.DEFAULT_ATTR_DATA.clone(), this._onRequestBell = this.register(new d.EventEmitter()), this.onRequestBell = this._onRequestBell.event, this._onRequestRefreshRows = this.register(new d.EventEmitter()), this.onRequestRefreshRows = this._onRequestRefreshRows.event, this._onRequestReset = this.register(new d.EventEmitter()), this.onRequestReset = this._onRequestReset.event, this._onRequestSendFocus = this.register(new d.EventEmitter()), this.onRequestSendFocus = this._onRequestSendFocus.event, this._onRequestSyncScrollBar = this.register(new d.EventEmitter()), this.onRequestSyncScrollBar = this._onRequestSyncScrollBar.event, this._onRequestWindowsOptionsReport = this.register(new d.EventEmitter()), this.onRequestWindowsOptionsReport = this._onRequestWindowsOptionsReport.event, this._onA11yChar = this.register(new d.EventEmitter()), this.onA11yChar = this._onA11yChar.event, this._onA11yTab = this.register(new d.EventEmitter()), this.onA11yTab = this._onA11yTab.event, this._onCursorMove = this.register(new d.EventEmitter()), this.onCursorMove = this._onCursorMove.event, this._onLineFeed = this.register(new d.EventEmitter()), this.onLineFeed = this._onLineFeed.event, this._onScroll = this.register(new d.EventEmitter()), this.onScroll = this._onScroll.event, this._onTitleChange = this.register(new d.EventEmitter()), this.onTitleChange = this._onTitleChange.event, this._onColor = this.register(new d.EventEmitter()), this.onColor = this._onColor.event, this._parseStack = { paused: false, cursorStartX: 0, cursorStartY: 0, decodedLength: 0, position: 0 }, this._specialColors = [256, 257, 258], this.register(this._parser), this._dirtyRowTracker = new k2(this._bufferService), this._activeBuffer = this._bufferService.buffer, this.register(this._bufferService.buffers.onBufferActivate((e4) => this._activeBuffer = e4.activeBuffer)), this._parser.setCsiHandlerFallback((e4, t4) => {
               this._logService.debug("Unknown CSI code: ", { identifier: this._parser.identToString(e4), params: t4.toArray() });
             }), this._parser.setEscHandlerFallback((e4) => {
               this._logService.debug("Unknown ESC code: ", { identifier: this._parser.identToString(e4) });
@@ -2664,7 +2664,7 @@ WARNING: This link could potentially be dangerous`)) {
           }
           print(e3, t3, i3) {
             let s3, r2;
-            const n2 = this._charsetService.charset, o3 = this._optionsService.rawOptions.screenReaderMode, a3 = this._bufferService.cols, h3 = this._coreService.decPrivateModes.wraparound, l3 = this._coreService.modes.insertMode, d2 = this._curAttrData;
+            const n2 = this._charsetService.charset, o3 = this._optionsService.rawOptions.screenReaderMode, a2 = this._bufferService.cols, h3 = this._coreService.decPrivateModes.wraparound, l3 = this._coreService.modes.insertMode, d2 = this._curAttrData;
             let u2 = this._activeBuffer.lines.get(this._activeBuffer.ybase + this._activeBuffer.y);
             this._dirtyRowTracker.markDirty(this._activeBuffer.y), this._activeBuffer.x && i3 - t3 > 0 && 2 === u2.getWidth(this._activeBuffer.x - 1) && u2.setCellFromCodePoint(this._activeBuffer.x - 1, 0, 1, d2.fg, d2.bg, d2.extended);
             for (let f2 = t3; f2 < i3; ++f2) {
@@ -2672,17 +2672,17 @@ WARNING: This link could potentially be dangerous`)) {
                 const e4 = n2[String.fromCharCode(s3)];
                 e4 && (s3 = e4.charCodeAt(0));
               }
-              if (o3 && this._onA11yChar.fire((0, c2.stringFromCodePoint)(s3)), this._getCurrentLinkId() && this._oscLinkService.addLineToLink(this._getCurrentLinkId(), this._activeBuffer.ybase + this._activeBuffer.y), r2 || !this._activeBuffer.x) {
-                if (this._activeBuffer.x + r2 - 1 >= a3) {
+              if (o3 && this._onA11yChar.fire((0, c.stringFromCodePoint)(s3)), this._getCurrentLinkId() && this._oscLinkService.addLineToLink(this._getCurrentLinkId(), this._activeBuffer.ybase + this._activeBuffer.y), r2 || !this._activeBuffer.x) {
+                if (this._activeBuffer.x + r2 - 1 >= a2) {
                   if (h3) {
-                    for (; this._activeBuffer.x < a3; ) u2.setCellFromCodePoint(this._activeBuffer.x++, 0, 1, d2.fg, d2.bg, d2.extended);
+                    for (; this._activeBuffer.x < a2; ) u2.setCellFromCodePoint(this._activeBuffer.x++, 0, 1, d2.fg, d2.bg, d2.extended);
                     this._activeBuffer.x = 0, this._activeBuffer.y++, this._activeBuffer.y === this._activeBuffer.scrollBottom + 1 ? (this._activeBuffer.y--, this._bufferService.scroll(this._eraseAttrData(), true)) : (this._activeBuffer.y >= this._bufferService.rows && (this._activeBuffer.y = this._bufferService.rows - 1), this._activeBuffer.lines.get(this._activeBuffer.ybase + this._activeBuffer.y).isWrapped = true), u2 = this._activeBuffer.lines.get(this._activeBuffer.ybase + this._activeBuffer.y);
-                  } else if (this._activeBuffer.x = a3 - 1, 2 === r2) continue;
+                  } else if (this._activeBuffer.x = a2 - 1, 2 === r2) continue;
                 }
-                if (l3 && (u2.insertCells(this._activeBuffer.x, r2, this._activeBuffer.getNullCell(d2), d2), 2 === u2.getWidth(a3 - 1) && u2.setCellFromCodePoint(a3 - 1, _3.NULL_CELL_CODE, _3.NULL_CELL_WIDTH, d2.fg, d2.bg, d2.extended)), u2.setCellFromCodePoint(this._activeBuffer.x++, s3, r2, d2.fg, d2.bg, d2.extended), r2 > 0) for (; --r2; ) u2.setCellFromCodePoint(this._activeBuffer.x++, 0, 0, d2.fg, d2.bg, d2.extended);
+                if (l3 && (u2.insertCells(this._activeBuffer.x, r2, this._activeBuffer.getNullCell(d2), d2), 2 === u2.getWidth(a2 - 1) && u2.setCellFromCodePoint(a2 - 1, _3.NULL_CELL_CODE, _3.NULL_CELL_WIDTH, d2.fg, d2.bg, d2.extended)), u2.setCellFromCodePoint(this._activeBuffer.x++, s3, r2, d2.fg, d2.bg, d2.extended), r2 > 0) for (; --r2; ) u2.setCellFromCodePoint(this._activeBuffer.x++, 0, 0, d2.fg, d2.bg, d2.extended);
               } else u2.getWidth(this._activeBuffer.x - 1) ? u2.addCodepointToCell(this._activeBuffer.x - 1, s3) : u2.addCodepointToCell(this._activeBuffer.x - 2, s3);
             }
-            i3 - t3 > 0 && (u2.loadCell(this._activeBuffer.x - 1, this._workCell), 2 === this._workCell.getWidth() || this._workCell.getCode() > 65535 ? this._parser.precedingCodepoint = 0 : this._workCell.isCombined() ? this._parser.precedingCodepoint = this._workCell.getChars().charCodeAt(0) : this._parser.precedingCodepoint = this._workCell.content), this._activeBuffer.x < a3 && i3 - t3 > 0 && 0 === u2.getWidth(this._activeBuffer.x) && !u2.hasContent(this._activeBuffer.x) && u2.setCellFromCodePoint(this._activeBuffer.x, 0, 1, d2.fg, d2.bg, d2.extended), this._dirtyRowTracker.markDirty(this._activeBuffer.y);
+            i3 - t3 > 0 && (u2.loadCell(this._activeBuffer.x - 1, this._workCell), 2 === this._workCell.getWidth() || this._workCell.getCode() > 65535 ? this._parser.precedingCodepoint = 0 : this._workCell.isCombined() ? this._parser.precedingCodepoint = this._workCell.getChars().charCodeAt(0) : this._parser.precedingCodepoint = this._workCell.content), this._activeBuffer.x < a2 && i3 - t3 > 0 && 0 === u2.getWidth(this._activeBuffer.x) && !u2.hasContent(this._activeBuffer.x) && u2.setCellFromCodePoint(this._activeBuffer.x, 0, 1, d2.fg, d2.bg, d2.extended), this._dirtyRowTracker.markDirty(this._activeBuffer.y);
           }
           registerCsiHandler(e3, t3) {
             return "t" !== e3.final || e3.prefix || e3.intermediates ? this._parser.registerCsiHandler(e3, t3) : this._parser.registerCsiHandler(e3, (e4) => !b(e4.params[0], this._optionsService.rawOptions.windowOptions) || t3(e4));
@@ -3081,8 +3081,8 @@ WARNING: This link could potentially be dangerous`)) {
             return true;
           }
           requestMode(e3, t3) {
-            const i3 = this._coreService.decPrivateModes, { activeProtocol: s3, activeEncoding: r2 } = this._coreMouseService, o3 = this._coreService, { buffers: a3, cols: h3 } = this._bufferService, { active: c3, alt: l3 } = a3, d2 = this._optionsService.rawOptions, _4 = (e4) => e4 ? 1 : 2, u2 = e3.params[0];
-            return f2 = u2, v3 = t3 ? 2 === u2 ? 4 : 4 === u2 ? _4(o3.modes.insertMode) : 12 === u2 ? 3 : 20 === u2 ? _4(d2.convertEol) : 0 : 1 === u2 ? _4(i3.applicationCursorKeys) : 3 === u2 ? d2.windowOptions.setWinLines ? 80 === h3 ? 2 : 132 === h3 ? 1 : 0 : 0 : 6 === u2 ? _4(i3.origin) : 7 === u2 ? _4(i3.wraparound) : 8 === u2 ? 3 : 9 === u2 ? _4("X10" === s3) : 12 === u2 ? _4(d2.cursorBlink) : 25 === u2 ? _4(!o3.isCursorHidden) : 45 === u2 ? _4(i3.reverseWraparound) : 66 === u2 ? _4(i3.applicationKeypad) : 67 === u2 ? 4 : 1e3 === u2 ? _4("VT200" === s3) : 1002 === u2 ? _4("DRAG" === s3) : 1003 === u2 ? _4("ANY" === s3) : 1004 === u2 ? _4(i3.sendFocus) : 1005 === u2 ? 4 : 1006 === u2 ? _4("SGR" === r2) : 1015 === u2 ? 4 : 1016 === u2 ? _4("SGR_PIXELS" === r2) : 1048 === u2 ? 1 : 47 === u2 || 1047 === u2 || 1049 === u2 ? _4(c3 === l3) : 2004 === u2 ? _4(i3.bracketedPasteMode) : 0, o3.triggerDataEvent(`${n.C0.ESC}[${t3 ? "" : "?"}${f2};${v3}$y`), true;
+            const i3 = this._coreService.decPrivateModes, { activeProtocol: s3, activeEncoding: r2 } = this._coreMouseService, o3 = this._coreService, { buffers: a2, cols: h3 } = this._bufferService, { active: c2, alt: l3 } = a2, d2 = this._optionsService.rawOptions, _4 = (e4) => e4 ? 1 : 2, u2 = e3.params[0];
+            return f2 = u2, v3 = t3 ? 2 === u2 ? 4 : 4 === u2 ? _4(o3.modes.insertMode) : 12 === u2 ? 3 : 20 === u2 ? _4(d2.convertEol) : 0 : 1 === u2 ? _4(i3.applicationCursorKeys) : 3 === u2 ? d2.windowOptions.setWinLines ? 80 === h3 ? 2 : 132 === h3 ? 1 : 0 : 0 : 6 === u2 ? _4(i3.origin) : 7 === u2 ? _4(i3.wraparound) : 8 === u2 ? 3 : 9 === u2 ? _4("X10" === s3) : 12 === u2 ? _4(d2.cursorBlink) : 25 === u2 ? _4(!o3.isCursorHidden) : 45 === u2 ? _4(i3.reverseWraparound) : 66 === u2 ? _4(i3.applicationKeypad) : 67 === u2 ? 4 : 1e3 === u2 ? _4("VT200" === s3) : 1002 === u2 ? _4("DRAG" === s3) : 1003 === u2 ? _4("ANY" === s3) : 1004 === u2 ? _4(i3.sendFocus) : 1005 === u2 ? 4 : 1006 === u2 ? _4("SGR" === r2) : 1015 === u2 ? 4 : 1016 === u2 ? _4("SGR_PIXELS" === r2) : 1048 === u2 ? 1 : 47 === u2 || 1047 === u2 || 1049 === u2 ? _4(c2 === l3) : 2004 === u2 ? _4(i3.bracketedPasteMode) : 0, o3.triggerDataEvent(`${n.C0.ESC}[${t3 ? "" : "?"}${f2};${v3}$y`), true;
             var f2, v3;
           }
           _updateAttrColor(e3, t3, i3, s3, r2) {
@@ -3179,10 +3179,10 @@ WARNING: This link could potentially be dangerous`)) {
             const t3 = e3.length > 1 ? e3.params[1] : 0;
             switch (e3.params[0]) {
               case 14:
-                2 !== t3 && this._onRequestWindowsOptionsReport.fire(y3.GET_WIN_SIZE_PIXELS);
+                2 !== t3 && this._onRequestWindowsOptionsReport.fire(y.GET_WIN_SIZE_PIXELS);
                 break;
               case 16:
-                this._onRequestWindowsOptionsReport.fire(y3.GET_CELL_SIZE_PIXELS);
+                this._onRequestWindowsOptionsReport.fire(y.GET_CELL_SIZE_PIXELS);
                 break;
               case 18:
                 this._bufferService && this._coreService.triggerDataEvent(`${n.C0.ESC}[8;${this._bufferService.rows};${this._bufferService.cols}t`);
@@ -3215,7 +3215,7 @@ WARNING: This link could potentially be dangerous`)) {
                 const i4 = parseInt(e4);
                 if (L2(i4)) if ("?" === s3) t3.push({ type: 0, index: i4 });
                 else {
-                  const e5 = (0, m2.parseColor)(s3);
+                  const e5 = (0, m.parseColor)(s3);
                   e5 && t3.push({ type: 1, index: i4, color: e5 });
                 }
               }
@@ -3240,7 +3240,7 @@ WARNING: This link could potentially be dangerous`)) {
             const i3 = e3.split(";");
             for (let e4 = 0; e4 < i3.length && !(t3 >= this._specialColors.length); ++e4, ++t3) if ("?" === i3[e4]) this._onColor.fire([{ type: 0, index: this._specialColors[t3] }]);
             else {
-              const s3 = (0, m2.parseColor)(i3[e4]);
+              const s3 = (0, m.parseColor)(i3[e4]);
               s3 && this._onColor.fire([{ type: 1, index: this._specialColors[t3], color: s3 }]);
             }
             return true;
@@ -3723,10 +3723,10 @@ WARNING: This link could potentially be dangerous`)) {
         t2.ExtendedAttrs = s2;
       }, 9092: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.Buffer = t2.MAX_BUFFER_SIZE = void 0;
-        const s2 = i2(6349), r = i2(7226), n = i2(3734), o2 = i2(8437), a2 = i2(4634), h2 = i2(511), c2 = i2(643), l2 = i2(4863), d = i2(7116);
+        const s2 = i2(6349), r = i2(7226), n = i2(3734), o2 = i2(8437), a = i2(4634), h2 = i2(511), c = i2(643), l2 = i2(4863), d = i2(7116);
         t2.MAX_BUFFER_SIZE = 4294967295, t2.Buffer = class {
           constructor(e3, t3, i3) {
-            this._hasScrollback = e3, this._optionsService = t3, this._bufferService = i3, this.ydisp = 0, this.ybase = 0, this.y = 0, this.x = 0, this.tabs = {}, this.savedY = 0, this.savedX = 0, this.savedCurAttrData = o2.DEFAULT_ATTR_DATA.clone(), this.savedCharset = d.DEFAULT_CHARSET, this.markers = [], this._nullCell = h2.CellData.fromCharData([0, c2.NULL_CELL_CHAR, c2.NULL_CELL_WIDTH, c2.NULL_CELL_CODE]), this._whitespaceCell = h2.CellData.fromCharData([0, c2.WHITESPACE_CELL_CHAR, c2.WHITESPACE_CELL_WIDTH, c2.WHITESPACE_CELL_CODE]), this._isClearing = false, this._memoryCleanupQueue = new r.IdleTaskQueue(), this._memoryCleanupPosition = 0, this._cols = this._bufferService.cols, this._rows = this._bufferService.rows, this.lines = new s2.CircularList(this._getCorrectBufferLength(this._rows)), this.scrollTop = 0, this.scrollBottom = this._rows - 1, this.setupTabStops();
+            this._hasScrollback = e3, this._optionsService = t3, this._bufferService = i3, this.ydisp = 0, this.ybase = 0, this.y = 0, this.x = 0, this.tabs = {}, this.savedY = 0, this.savedX = 0, this.savedCurAttrData = o2.DEFAULT_ATTR_DATA.clone(), this.savedCharset = d.DEFAULT_CHARSET, this.markers = [], this._nullCell = h2.CellData.fromCharData([0, c.NULL_CELL_CHAR, c.NULL_CELL_WIDTH, c.NULL_CELL_CODE]), this._whitespaceCell = h2.CellData.fromCharData([0, c.WHITESPACE_CELL_CHAR, c.WHITESPACE_CELL_WIDTH, c.WHITESPACE_CELL_CODE]), this._isClearing = false, this._memoryCleanupQueue = new r.IdleTaskQueue(), this._memoryCleanupPosition = 0, this._cols = this._bufferService.cols, this._rows = this._bufferService.rows, this.lines = new s2.CircularList(this._getCorrectBufferLength(this._rows)), this.scrollTop = 0, this.scrollBottom = this._rows - 1, this.setupTabStops();
           }
           getNullCell(e3) {
             return e3 ? (this._nullCell.fg = e3.fg, this._nullCell.bg = e3.bg, this._nullCell.extended = e3.extended) : (this._nullCell.fg = 0, this._nullCell.bg = 0, this._nullCell.extended = new n.ExtendedAttrs()), this._nullCell;
@@ -3792,10 +3792,10 @@ WARNING: This link could potentially be dangerous`)) {
             this._cols !== e3 && (e3 > this._cols ? this._reflowLarger(e3, t3) : this._reflowSmaller(e3, t3));
           }
           _reflowLarger(e3, t3) {
-            const i3 = (0, a2.reflowLargerGetLinesToRemove)(this.lines, this._cols, e3, this.ybase + this.y, this.getNullCell(o2.DEFAULT_ATTR_DATA));
+            const i3 = (0, a.reflowLargerGetLinesToRemove)(this.lines, this._cols, e3, this.ybase + this.y, this.getNullCell(o2.DEFAULT_ATTR_DATA));
             if (i3.length > 0) {
-              const s3 = (0, a2.reflowLargerCreateNewLayout)(this.lines, i3);
-              (0, a2.reflowLargerApplyNewLayout)(this.lines, s3.layout), this._reflowLargerAdjustViewport(e3, t3, s3.countRemoved);
+              const s3 = (0, a.reflowLargerCreateNewLayout)(this.lines, i3);
+              (0, a.reflowLargerApplyNewLayout)(this.lines, s3.layout), this._reflowLargerAdjustViewport(e3, t3, s3.countRemoved);
             }
           }
           _reflowLargerAdjustViewport(e3, t3, i3) {
@@ -3810,11 +3810,11 @@ WARNING: This link could potentially be dangerous`)) {
             for (let n2 = this.lines.length - 1; n2 >= 0; n2--) {
               let h3 = this.lines.get(n2);
               if (!h3 || !h3.isWrapped && h3.getTrimmedLength() <= e3) continue;
-              const c3 = [h3];
-              for (; h3.isWrapped && n2 > 0; ) h3 = this.lines.get(--n2), c3.unshift(h3);
+              const c2 = [h3];
+              for (; h3.isWrapped && n2 > 0; ) h3 = this.lines.get(--n2), c2.unshift(h3);
               const l3 = this.ybase + this.y;
-              if (l3 >= n2 && l3 < n2 + c3.length) continue;
-              const d2 = c3[c3.length - 1].getTrimmedLength(), _3 = (0, a2.reflowSmallerGetNewLineLengths)(c3, this._cols, e3), u = _3.length - c3.length;
+              if (l3 >= n2 && l3 < n2 + c2.length) continue;
+              const d2 = c2[c2.length - 1].getTrimmedLength(), _3 = (0, a.reflowSmallerGetNewLineLengths)(c2, this._cols, e3), u = _3.length - c2.length;
               let f;
               f = 0 === this.ybase && this.y !== this.lines.length - 1 ? Math.max(0, this.y - this.lines.maxLength + u) : Math.max(0, this.lines.length - this.lines.maxLength + u);
               const v2 = [];
@@ -3822,20 +3822,20 @@ WARNING: This link could potentially be dangerous`)) {
                 const e5 = this.getBlankLine(o2.DEFAULT_ATTR_DATA, true);
                 v2.push(e5);
               }
-              v2.length > 0 && (s3.push({ start: n2 + c3.length + r2, newLines: v2 }), r2 += v2.length), c3.push(...v2);
+              v2.length > 0 && (s3.push({ start: n2 + c2.length + r2, newLines: v2 }), r2 += v2.length), c2.push(...v2);
               let p = _3.length - 1, g2 = _3[p];
               0 === g2 && (p--, g2 = _3[p]);
-              let m2 = c3.length - u - 1, S = d2;
-              for (; m2 >= 0; ) {
+              let m = c2.length - u - 1, S = d2;
+              for (; m >= 0; ) {
                 const e4 = Math.min(S, g2);
-                if (void 0 === c3[p]) break;
-                if (c3[p].copyCellsFrom(c3[m2], S - e4, g2 - e4, e4, true), g2 -= e4, 0 === g2 && (p--, g2 = _3[p]), S -= e4, 0 === S) {
-                  m2--;
-                  const e5 = Math.max(m2, 0);
-                  S = (0, a2.getWrappedLineTrimmedLength)(c3, e5, this._cols);
+                if (void 0 === c2[p]) break;
+                if (c2[p].copyCellsFrom(c2[m], S - e4, g2 - e4, e4, true), g2 -= e4, 0 === g2 && (p--, g2 = _3[p]), S -= e4, 0 === S) {
+                  m--;
+                  const e5 = Math.max(m, 0);
+                  S = (0, a.getWrappedLineTrimmedLength)(c2, e5, this._cols);
                 }
               }
-              for (let t4 = 0; t4 < c3.length; t4++) _3[t4] < e3 && c3[t4].setCell(_3[t4], i3);
+              for (let t4 = 0; t4 < c2.length; t4++) _3[t4] < e3 && c2[t4].setCell(_3[t4], i3);
               let C = u - f;
               for (; C-- > 0; ) 0 === this.ybase ? this.y < t3 - 1 ? (this.y++, this.lines.pop()) : (this.ybase++, this.ydisp++) : this.ybase < Math.min(this.lines.maxLength, this.lines.length + r2) - t3 && (this.ybase === this.ydisp && this.ydisp++, this.ybase++);
               this.savedY = Math.min(this.savedY + u, this.ybase + t3 - 1);
@@ -3844,15 +3844,15 @@ WARNING: This link could potentially be dangerous`)) {
               const e4 = [], t4 = [];
               for (let e5 = 0; e5 < this.lines.length; e5++) t4.push(this.lines.get(e5));
               const i4 = this.lines.length;
-              let n2 = i4 - 1, o3 = 0, a3 = s3[o3];
+              let n2 = i4 - 1, o3 = 0, a2 = s3[o3];
               this.lines.length = Math.min(this.lines.maxLength, this.lines.length + r2);
               let h3 = 0;
-              for (let c4 = Math.min(this.lines.maxLength - 1, i4 + r2 - 1); c4 >= 0; c4--) if (a3 && a3.start > n2 + h3) {
-                for (let e5 = a3.newLines.length - 1; e5 >= 0; e5--) this.lines.set(c4--, a3.newLines[e5]);
-                c4++, e4.push({ index: n2 + 1, amount: a3.newLines.length }), h3 += a3.newLines.length, a3 = s3[++o3];
-              } else this.lines.set(c4, t4[n2--]);
-              let c3 = 0;
-              for (let t5 = e4.length - 1; t5 >= 0; t5--) e4[t5].index += c3, this.lines.onInsertEmitter.fire(e4[t5]), c3 += e4[t5].amount;
+              for (let c3 = Math.min(this.lines.maxLength - 1, i4 + r2 - 1); c3 >= 0; c3--) if (a2 && a2.start > n2 + h3) {
+                for (let e5 = a2.newLines.length - 1; e5 >= 0; e5--) this.lines.set(c3--, a2.newLines[e5]);
+                c3++, e4.push({ index: n2 + 1, amount: a2.newLines.length }), h3 += a2.newLines.length, a2 = s3[++o3];
+              } else this.lines.set(c3, t4[n2--]);
+              let c2 = 0;
+              for (let t5 = e4.length - 1; t5 >= 0; t5--) e4[t5].index += c2, this.lines.onInsertEmitter.fire(e4[t5]), c2 += e4[t5].amount;
               const l3 = Math.max(0, i4 + r2 - this.lines.maxLength);
               l3 > 0 && this.lines.onTrimEmitter.fire(l3);
             }
@@ -3906,7 +3906,7 @@ WARNING: This link could potentially be dangerous`)) {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.BufferLine = t2.DEFAULT_ATTR_DATA = void 0;
         const s2 = i2(3734), r = i2(511), n = i2(643), o2 = i2(482);
         t2.DEFAULT_ATTR_DATA = Object.freeze(new s2.AttributeData());
-        let a2 = 0;
+        let a = 0;
         class h2 {
           constructor(e3, t3, i3 = false) {
             this.isWrapped = i3, this._combined = {}, this._extendedAttrs = {}, this._data = new Uint32Array(3 * e3);
@@ -3951,7 +3951,7 @@ WARNING: This link could potentially be dangerous`)) {
             return 536870912 & this._data[3 * e3 + 2];
           }
           loadCell(e3, t3) {
-            return a2 = 3 * e3, t3.content = this._data[a2 + 0], t3.fg = this._data[a2 + 1], t3.bg = this._data[a2 + 2], 2097152 & t3.content && (t3.combinedData = this._combined[e3]), 268435456 & t3.bg && (t3.extended = this._extendedAttrs[e3]), t3;
+            return a = 3 * e3, t3.content = this._data[a + 0], t3.fg = this._data[a + 1], t3.bg = this._data[a + 2], 2097152 & t3.content && (t3.combinedData = this._combined[e3]), 268435456 & t3.bg && (t3.extended = this._extendedAttrs[e3]), t3;
           }
           setCell(e3, t3) {
             2097152 & t3.content && (this._combined[e3] = t3.combinedData), 268435456 & t3.bg && (this._extendedAttrs[e3] = t3.extended), this._data[3 * e3 + 0] = t3.content, this._data[3 * e3 + 1] = t3.fg, this._data[3 * e3 + 2] = t3.bg;
@@ -4084,24 +4084,24 @@ WARNING: This link could potentially be dangerous`)) {
         }
         Object.defineProperty(t2, "__esModule", { value: true }), t2.getWrappedLineTrimmedLength = t2.reflowSmallerGetNewLineLengths = t2.reflowLargerApplyNewLayout = t2.reflowLargerCreateNewLayout = t2.reflowLargerGetLinesToRemove = void 0, t2.reflowLargerGetLinesToRemove = function(e3, t3, s2, r, n) {
           const o2 = [];
-          for (let a2 = 0; a2 < e3.length - 1; a2++) {
-            let h2 = a2, c2 = e3.get(++h2);
-            if (!c2.isWrapped) continue;
-            const l2 = [e3.get(a2)];
-            for (; h2 < e3.length && c2.isWrapped; ) l2.push(c2), c2 = e3.get(++h2);
-            if (r >= a2 && r < h2) {
-              a2 += l2.length - 1;
+          for (let a = 0; a < e3.length - 1; a++) {
+            let h2 = a, c = e3.get(++h2);
+            if (!c.isWrapped) continue;
+            const l2 = [e3.get(a)];
+            for (; h2 < e3.length && c.isWrapped; ) l2.push(c), c = e3.get(++h2);
+            if (r >= a && r < h2) {
+              a += l2.length - 1;
               continue;
             }
             let d = 0, _3 = i2(l2, d, t3), u = 1, f = 0;
             for (; u < l2.length; ) {
-              const e4 = i2(l2, u, t3), r2 = e4 - f, o3 = s2 - _3, a3 = Math.min(r2, o3);
-              l2[d].copyCellsFrom(l2[u], f, _3, a3, false), _3 += a3, _3 === s2 && (d++, _3 = 0), f += a3, f === e4 && (u++, f = 0), 0 === _3 && 0 !== d && 2 === l2[d - 1].getWidth(s2 - 1) && (l2[d].copyCellsFrom(l2[d - 1], s2 - 1, _3++, 1, false), l2[d - 1].setCell(s2 - 1, n));
+              const e4 = i2(l2, u, t3), r2 = e4 - f, o3 = s2 - _3, a2 = Math.min(r2, o3);
+              l2[d].copyCellsFrom(l2[u], f, _3, a2, false), _3 += a2, _3 === s2 && (d++, _3 = 0), f += a2, f === e4 && (u++, f = 0), 0 === _3 && 0 !== d && 2 === l2[d - 1].getWidth(s2 - 1) && (l2[d].copyCellsFrom(l2[d - 1], s2 - 1, _3++, 1, false), l2[d - 1].setCell(s2 - 1, n));
             }
             l2[d].replaceCells(_3, s2, n);
             let v2 = 0;
             for (let e4 = l2.length - 1; e4 > 0 && (e4 > d || 0 === l2[e4].getTrimmedLength()); e4--) v2++;
-            v2 > 0 && (o2.push(a2 + l2.length - v2), o2.push(v2)), a2 += l2.length - 1;
+            v2 > 0 && (o2.push(a + l2.length - v2), o2.push(v2)), a += l2.length - 1;
           }
           return o2;
         }, t2.reflowLargerCreateNewLayout = function(e3, t3) {
@@ -4119,16 +4119,16 @@ WARNING: This link could potentially be dangerous`)) {
           e3.length = t3.length;
         }, t2.reflowSmallerGetNewLineLengths = function(e3, t3, s2) {
           const r = [], n = e3.map((s3, r2) => i2(e3, r2, t3)).reduce((e4, t4) => e4 + t4);
-          let o2 = 0, a2 = 0, h2 = 0;
+          let o2 = 0, a = 0, h2 = 0;
           for (; h2 < n; ) {
             if (n - h2 < s2) {
               r.push(n - h2);
               break;
             }
             o2 += s2;
-            const c2 = i2(e3, a2, t3);
-            o2 > c2 && (o2 -= c2, a2++);
-            const l2 = 2 === e3[a2].getWidth(o2 - 1);
+            const c = i2(e3, a, t3);
+            o2 > c && (o2 -= c, a++);
+            const l2 = 2 === e3[a].getWidth(o2 - 1);
             l2 && o2--;
             const d = l2 ? s2 - 1 : s2;
             r.push(d), h2 += d;
@@ -4244,7 +4244,7 @@ WARNING: This link could potentially be dangerous`)) {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.evaluateKeyboardEvent = void 0;
         const s2 = i2(2584), r = { 48: ["0", ")"], 49: ["1", "!"], 50: ["2", "@"], 51: ["3", "#"], 52: ["4", "$"], 53: ["5", "%"], 54: ["6", "^"], 55: ["7", "&"], 56: ["8", "*"], 57: ["9", "("], 186: [";", ":"], 187: ["=", "+"], 188: [",", "<"], 189: ["-", "_"], 190: [".", ">"], 191: ["/", "?"], 192: ["`", "~"], 219: ["[", "{"], 220: ["\\", "|"], 221: ["]", "}"], 222: ["'", '"'] };
         t2.evaluateKeyboardEvent = function(e3, t3, i3, n) {
-          const o2 = { type: 0, cancel: false, key: void 0 }, a2 = (e3.shiftKey ? 1 : 0) | (e3.altKey ? 2 : 0) | (e3.ctrlKey ? 4 : 0) | (e3.metaKey ? 8 : 0);
+          const o2 = { type: 0, cancel: false, key: void 0 }, a = (e3.shiftKey ? 1 : 0) | (e3.altKey ? 2 : 0) | (e3.ctrlKey ? 4 : 0) | (e3.metaKey ? 8 : 0);
           switch (e3.keyCode) {
             case 0:
               "UIKeyInputUpArrow" === e3.key ? o2.key = t3 ? s2.C0.ESC + "OA" : s2.C0.ESC + "[A" : "UIKeyInputLeftArrow" === e3.key ? o2.key = t3 ? s2.C0.ESC + "OD" : s2.C0.ESC + "[D" : "UIKeyInputRightArrow" === e3.key ? o2.key = t3 ? s2.C0.ESC + "OC" : s2.C0.ESC + "[C" : "UIKeyInputDownArrow" === e3.key && (o2.key = t3 ? s2.C0.ESC + "OB" : s2.C0.ESC + "[B");
@@ -4271,73 +4271,73 @@ WARNING: This link could potentially be dangerous`)) {
               break;
             case 37:
               if (e3.metaKey) break;
-              a2 ? (o2.key = s2.C0.ESC + "[1;" + (a2 + 1) + "D", o2.key === s2.C0.ESC + "[1;3D" && (o2.key = s2.C0.ESC + (i3 ? "b" : "[1;5D"))) : o2.key = t3 ? s2.C0.ESC + "OD" : s2.C0.ESC + "[D";
+              a ? (o2.key = s2.C0.ESC + "[1;" + (a + 1) + "D", o2.key === s2.C0.ESC + "[1;3D" && (o2.key = s2.C0.ESC + (i3 ? "b" : "[1;5D"))) : o2.key = t3 ? s2.C0.ESC + "OD" : s2.C0.ESC + "[D";
               break;
             case 39:
               if (e3.metaKey) break;
-              a2 ? (o2.key = s2.C0.ESC + "[1;" + (a2 + 1) + "C", o2.key === s2.C0.ESC + "[1;3C" && (o2.key = s2.C0.ESC + (i3 ? "f" : "[1;5C"))) : o2.key = t3 ? s2.C0.ESC + "OC" : s2.C0.ESC + "[C";
+              a ? (o2.key = s2.C0.ESC + "[1;" + (a + 1) + "C", o2.key === s2.C0.ESC + "[1;3C" && (o2.key = s2.C0.ESC + (i3 ? "f" : "[1;5C"))) : o2.key = t3 ? s2.C0.ESC + "OC" : s2.C0.ESC + "[C";
               break;
             case 38:
               if (e3.metaKey) break;
-              a2 ? (o2.key = s2.C0.ESC + "[1;" + (a2 + 1) + "A", i3 || o2.key !== s2.C0.ESC + "[1;3A" || (o2.key = s2.C0.ESC + "[1;5A")) : o2.key = t3 ? s2.C0.ESC + "OA" : s2.C0.ESC + "[A";
+              a ? (o2.key = s2.C0.ESC + "[1;" + (a + 1) + "A", i3 || o2.key !== s2.C0.ESC + "[1;3A" || (o2.key = s2.C0.ESC + "[1;5A")) : o2.key = t3 ? s2.C0.ESC + "OA" : s2.C0.ESC + "[A";
               break;
             case 40:
               if (e3.metaKey) break;
-              a2 ? (o2.key = s2.C0.ESC + "[1;" + (a2 + 1) + "B", i3 || o2.key !== s2.C0.ESC + "[1;3B" || (o2.key = s2.C0.ESC + "[1;5B")) : o2.key = t3 ? s2.C0.ESC + "OB" : s2.C0.ESC + "[B";
+              a ? (o2.key = s2.C0.ESC + "[1;" + (a + 1) + "B", i3 || o2.key !== s2.C0.ESC + "[1;3B" || (o2.key = s2.C0.ESC + "[1;5B")) : o2.key = t3 ? s2.C0.ESC + "OB" : s2.C0.ESC + "[B";
               break;
             case 45:
               e3.shiftKey || e3.ctrlKey || (o2.key = s2.C0.ESC + "[2~");
               break;
             case 46:
-              o2.key = a2 ? s2.C0.ESC + "[3;" + (a2 + 1) + "~" : s2.C0.ESC + "[3~";
+              o2.key = a ? s2.C0.ESC + "[3;" + (a + 1) + "~" : s2.C0.ESC + "[3~";
               break;
             case 36:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "H" : t3 ? s2.C0.ESC + "OH" : s2.C0.ESC + "[H";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "H" : t3 ? s2.C0.ESC + "OH" : s2.C0.ESC + "[H";
               break;
             case 35:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "F" : t3 ? s2.C0.ESC + "OF" : s2.C0.ESC + "[F";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "F" : t3 ? s2.C0.ESC + "OF" : s2.C0.ESC + "[F";
               break;
             case 33:
-              e3.shiftKey ? o2.type = 2 : e3.ctrlKey ? o2.key = s2.C0.ESC + "[5;" + (a2 + 1) + "~" : o2.key = s2.C0.ESC + "[5~";
+              e3.shiftKey ? o2.type = 2 : e3.ctrlKey ? o2.key = s2.C0.ESC + "[5;" + (a + 1) + "~" : o2.key = s2.C0.ESC + "[5~";
               break;
             case 34:
-              e3.shiftKey ? o2.type = 3 : e3.ctrlKey ? o2.key = s2.C0.ESC + "[6;" + (a2 + 1) + "~" : o2.key = s2.C0.ESC + "[6~";
+              e3.shiftKey ? o2.type = 3 : e3.ctrlKey ? o2.key = s2.C0.ESC + "[6;" + (a + 1) + "~" : o2.key = s2.C0.ESC + "[6~";
               break;
             case 112:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "P" : s2.C0.ESC + "OP";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "P" : s2.C0.ESC + "OP";
               break;
             case 113:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "Q" : s2.C0.ESC + "OQ";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "Q" : s2.C0.ESC + "OQ";
               break;
             case 114:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "R" : s2.C0.ESC + "OR";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "R" : s2.C0.ESC + "OR";
               break;
             case 115:
-              o2.key = a2 ? s2.C0.ESC + "[1;" + (a2 + 1) + "S" : s2.C0.ESC + "OS";
+              o2.key = a ? s2.C0.ESC + "[1;" + (a + 1) + "S" : s2.C0.ESC + "OS";
               break;
             case 116:
-              o2.key = a2 ? s2.C0.ESC + "[15;" + (a2 + 1) + "~" : s2.C0.ESC + "[15~";
+              o2.key = a ? s2.C0.ESC + "[15;" + (a + 1) + "~" : s2.C0.ESC + "[15~";
               break;
             case 117:
-              o2.key = a2 ? s2.C0.ESC + "[17;" + (a2 + 1) + "~" : s2.C0.ESC + "[17~";
+              o2.key = a ? s2.C0.ESC + "[17;" + (a + 1) + "~" : s2.C0.ESC + "[17~";
               break;
             case 118:
-              o2.key = a2 ? s2.C0.ESC + "[18;" + (a2 + 1) + "~" : s2.C0.ESC + "[18~";
+              o2.key = a ? s2.C0.ESC + "[18;" + (a + 1) + "~" : s2.C0.ESC + "[18~";
               break;
             case 119:
-              o2.key = a2 ? s2.C0.ESC + "[19;" + (a2 + 1) + "~" : s2.C0.ESC + "[19~";
+              o2.key = a ? s2.C0.ESC + "[19;" + (a + 1) + "~" : s2.C0.ESC + "[19~";
               break;
             case 120:
-              o2.key = a2 ? s2.C0.ESC + "[20;" + (a2 + 1) + "~" : s2.C0.ESC + "[20~";
+              o2.key = a ? s2.C0.ESC + "[20;" + (a + 1) + "~" : s2.C0.ESC + "[20~";
               break;
             case 121:
-              o2.key = a2 ? s2.C0.ESC + "[21;" + (a2 + 1) + "~" : s2.C0.ESC + "[21~";
+              o2.key = a ? s2.C0.ESC + "[21;" + (a + 1) + "~" : s2.C0.ESC + "[21~";
               break;
             case 122:
-              o2.key = a2 ? s2.C0.ESC + "[23;" + (a2 + 1) + "~" : s2.C0.ESC + "[23~";
+              o2.key = a ? s2.C0.ESC + "[23;" + (a + 1) + "~" : s2.C0.ESC + "[23~";
               break;
             case 123:
-              o2.key = a2 ? s2.C0.ESC + "[24;" + (a2 + 1) + "~" : s2.C0.ESC + "[24~";
+              o2.key = a ? s2.C0.ESC + "[24;" + (a + 1) + "~" : s2.C0.ESC + "[24~";
               break;
             default:
               if (!e3.ctrlKey || e3.shiftKey || e3.altKey || e3.metaKey) if (i3 && !n || !e3.altKey || e3.metaKey) !i3 || e3.altKey || e3.ctrlKey || e3.shiftKey || !e3.metaKey ? e3.key && !e3.ctrlKey && !e3.altKey && !e3.metaKey && e3.keyCode >= 48 && 1 === e3.key.length ? o2.key = e3.key : e3.key && e3.ctrlKey && ("_" === e3.key && (o2.key = s2.C0.US), "@" === e3.key && (o2.key = s2.C0.NUL)) : 65 === e3.keyCode && (o2.type = 1);
@@ -4403,30 +4403,30 @@ WARNING: This link could potentially be dangerous`)) {
           decode(e3, t3) {
             const i2 = e3.length;
             if (!i2) return 0;
-            let s2, r, n, o2, a2 = 0, h2 = 0, c2 = 0;
+            let s2, r, n, o2, a = 0, h2 = 0, c = 0;
             if (this.interim[0]) {
               let s3 = false, r2 = this.interim[0];
               r2 &= 192 == (224 & r2) ? 31 : 224 == (240 & r2) ? 15 : 7;
               let n2, o3 = 0;
               for (; (n2 = 63 & this.interim[++o3]) && o3 < 4; ) r2 <<= 6, r2 |= n2;
               const h3 = 192 == (224 & this.interim[0]) ? 2 : 224 == (240 & this.interim[0]) ? 3 : 4, l3 = h3 - o3;
-              for (; c2 < l3; ) {
-                if (c2 >= i2) return 0;
-                if (n2 = e3[c2++], 128 != (192 & n2)) {
-                  c2--, s3 = true;
+              for (; c < l3; ) {
+                if (c >= i2) return 0;
+                if (n2 = e3[c++], 128 != (192 & n2)) {
+                  c--, s3 = true;
                   break;
                 }
                 this.interim[o3++] = n2, r2 <<= 6, r2 |= 63 & n2;
               }
-              s3 || (2 === h3 ? r2 < 128 ? c2-- : t3[a2++] = r2 : 3 === h3 ? r2 < 2048 || r2 >= 55296 && r2 <= 57343 || 65279 === r2 || (t3[a2++] = r2) : r2 < 65536 || r2 > 1114111 || (t3[a2++] = r2)), this.interim.fill(0);
+              s3 || (2 === h3 ? r2 < 128 ? c-- : t3[a++] = r2 : 3 === h3 ? r2 < 2048 || r2 >= 55296 && r2 <= 57343 || 65279 === r2 || (t3[a++] = r2) : r2 < 65536 || r2 > 1114111 || (t3[a++] = r2)), this.interim.fill(0);
             }
             const l2 = i2 - 4;
-            let d = c2;
+            let d = c;
             for (; d < i2; ) {
-              for (; !(!(d < l2) || 128 & (s2 = e3[d]) || 128 & (r = e3[d + 1]) || 128 & (n = e3[d + 2]) || 128 & (o2 = e3[d + 3])); ) t3[a2++] = s2, t3[a2++] = r, t3[a2++] = n, t3[a2++] = o2, d += 4;
-              if (s2 = e3[d++], s2 < 128) t3[a2++] = s2;
+              for (; !(!(d < l2) || 128 & (s2 = e3[d]) || 128 & (r = e3[d + 1]) || 128 & (n = e3[d + 2]) || 128 & (o2 = e3[d + 3])); ) t3[a++] = s2, t3[a++] = r, t3[a++] = n, t3[a++] = o2, d += 4;
+              if (s2 = e3[d++], s2 < 128) t3[a++] = s2;
               else if (192 == (224 & s2)) {
-                if (d >= i2) return this.interim[0] = s2, a2;
+                if (d >= i2) return this.interim[0] = s2, a;
                 if (r = e3[d++], 128 != (192 & r)) {
                   d--;
                   continue;
@@ -4435,41 +4435,41 @@ WARNING: This link could potentially be dangerous`)) {
                   d--;
                   continue;
                 }
-                t3[a2++] = h2;
+                t3[a++] = h2;
               } else if (224 == (240 & s2)) {
-                if (d >= i2) return this.interim[0] = s2, a2;
+                if (d >= i2) return this.interim[0] = s2, a;
                 if (r = e3[d++], 128 != (192 & r)) {
                   d--;
                   continue;
                 }
-                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, a2;
+                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, a;
                 if (n = e3[d++], 128 != (192 & n)) {
                   d--;
                   continue;
                 }
                 if (h2 = (15 & s2) << 12 | (63 & r) << 6 | 63 & n, h2 < 2048 || h2 >= 55296 && h2 <= 57343 || 65279 === h2) continue;
-                t3[a2++] = h2;
+                t3[a++] = h2;
               } else if (240 == (248 & s2)) {
-                if (d >= i2) return this.interim[0] = s2, a2;
+                if (d >= i2) return this.interim[0] = s2, a;
                 if (r = e3[d++], 128 != (192 & r)) {
                   d--;
                   continue;
                 }
-                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, a2;
+                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, a;
                 if (n = e3[d++], 128 != (192 & n)) {
                   d--;
                   continue;
                 }
-                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, this.interim[2] = n, a2;
+                if (d >= i2) return this.interim[0] = s2, this.interim[1] = r, this.interim[2] = n, a;
                 if (o2 = e3[d++], 128 != (192 & o2)) {
                   d--;
                   continue;
                 }
                 if (h2 = (7 & s2) << 18 | (63 & r) << 12 | (63 & n) << 6 | 63 & o2, h2 < 65536 || h2 > 1114111) continue;
-                t3[a2++] = h2;
+                t3[a++] = h2;
               }
             }
-            return a2;
+            return a;
           }
         };
       }, 225: (e2, t2) => {
@@ -4632,13 +4632,13 @@ WARNING: This link could potentially be dangerous`)) {
             this._active = o2, this._ident = 0;
           }
         };
-        const a2 = new r.Params();
-        a2.addParam(0), t2.DcsHandler = class {
+        const a = new r.Params();
+        a.addParam(0), t2.DcsHandler = class {
           constructor(e3) {
-            this._handler = e3, this._data = "", this._params = a2, this._hitLimit = false;
+            this._handler = e3, this._data = "", this._params = a, this._hitLimit = false;
           }
           hook(e3) {
-            this._params = e3.length > 1 || e3.params[0] ? e3.clone() : a2, this._data = "", this._hitLimit = false;
+            this._params = e3.length > 1 || e3.params[0] ? e3.clone() : a, this._data = "", this._hitLimit = false;
           }
           put(e3, t3, i3) {
             this._hitLimit || (this._data += (0, s2.utf32ToString)(e3, t3, i3), this._data.length > n.PAYLOAD_LIMIT && (this._data = "", this._hitLimit = true));
@@ -4646,14 +4646,14 @@ WARNING: This link could potentially be dangerous`)) {
           unhook(e3) {
             let t3 = false;
             if (this._hitLimit) t3 = false;
-            else if (e3 && (t3 = this._handler(this._data, this._params), t3 instanceof Promise)) return t3.then((e4) => (this._params = a2, this._data = "", this._hitLimit = false, e4));
-            return this._params = a2, this._data = "", this._hitLimit = false, t3;
+            else if (e3 && (t3 = this._handler(this._data, this._params), t3 instanceof Promise)) return t3.then((e4) => (this._params = a, this._data = "", this._hitLimit = false, e4));
+            return this._params = a, this._data = "", this._hitLimit = false, t3;
           }
         };
       }, 2015: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.EscapeSequenceParser = t2.VT500_TRANSITION_TABLE = t2.TransitionTable = void 0;
         const s2 = i2(844), r = i2(8742), n = i2(6242), o2 = i2(6351);
-        class a2 {
+        class a {
           constructor(e3) {
             this.table = new Uint8Array(e3);
           }
@@ -4667,17 +4667,17 @@ WARNING: This link could potentially be dangerous`)) {
             for (let r2 = 0; r2 < e3.length; r2++) this.table[t3 << 8 | e3[r2]] = i3 << 4 | s3;
           }
         }
-        t2.TransitionTable = a2;
+        t2.TransitionTable = a;
         const h2 = 160;
         t2.VT500_TRANSITION_TABLE = function() {
-          const e3 = new a2(4095), t3 = Array.apply(null, Array(256)).map((e4, t4) => t4), i3 = (e4, i4) => t3.slice(e4, i4), s3 = i3(32, 127), r2 = i3(0, 24);
+          const e3 = new a(4095), t3 = Array.apply(null, Array(256)).map((e4, t4) => t4), i3 = (e4, i4) => t3.slice(e4, i4), s3 = i3(32, 127), r2 = i3(0, 24);
           r2.push(25), r2.push.apply(r2, i3(28, 32));
           const n2 = i3(0, 14);
           let o3;
           for (o3 in e3.setDefault(1, 0), e3.addMany(s3, 0, 2, 0), n2) e3.addMany([24, 26, 153, 154], o3, 3, 0), e3.addMany(i3(128, 144), o3, 3, 0), e3.addMany(i3(144, 152), o3, 3, 0), e3.add(156, o3, 0, 0), e3.add(27, o3, 11, 1), e3.add(157, o3, 4, 8), e3.addMany([152, 158, 159], o3, 0, 7), e3.add(155, o3, 11, 3), e3.add(144, o3, 11, 9);
           return e3.addMany(r2, 0, 3, 0), e3.addMany(r2, 1, 3, 1), e3.add(127, 1, 0, 1), e3.addMany(r2, 8, 0, 8), e3.addMany(r2, 3, 3, 3), e3.add(127, 3, 0, 3), e3.addMany(r2, 4, 3, 4), e3.add(127, 4, 0, 4), e3.addMany(r2, 6, 3, 6), e3.addMany(r2, 5, 3, 5), e3.add(127, 5, 0, 5), e3.addMany(r2, 2, 3, 2), e3.add(127, 2, 0, 2), e3.add(93, 1, 4, 8), e3.addMany(s3, 8, 5, 8), e3.add(127, 8, 5, 8), e3.addMany([156, 27, 24, 26, 7], 8, 6, 0), e3.addMany(i3(28, 32), 8, 0, 8), e3.addMany([88, 94, 95], 1, 0, 7), e3.addMany(s3, 7, 0, 7), e3.addMany(r2, 7, 0, 7), e3.add(156, 7, 0, 0), e3.add(127, 7, 0, 7), e3.add(91, 1, 11, 3), e3.addMany(i3(64, 127), 3, 7, 0), e3.addMany(i3(48, 60), 3, 8, 4), e3.addMany([60, 61, 62, 63], 3, 9, 4), e3.addMany(i3(48, 60), 4, 8, 4), e3.addMany(i3(64, 127), 4, 7, 0), e3.addMany([60, 61, 62, 63], 4, 0, 6), e3.addMany(i3(32, 64), 6, 0, 6), e3.add(127, 6, 0, 6), e3.addMany(i3(64, 127), 6, 0, 0), e3.addMany(i3(32, 48), 3, 9, 5), e3.addMany(i3(32, 48), 5, 9, 5), e3.addMany(i3(48, 64), 5, 0, 6), e3.addMany(i3(64, 127), 5, 7, 0), e3.addMany(i3(32, 48), 4, 9, 5), e3.addMany(i3(32, 48), 1, 9, 2), e3.addMany(i3(32, 48), 2, 9, 2), e3.addMany(i3(48, 127), 2, 10, 0), e3.addMany(i3(48, 80), 1, 10, 0), e3.addMany(i3(81, 88), 1, 10, 0), e3.addMany([89, 90, 92], 1, 10, 0), e3.addMany(i3(96, 127), 1, 10, 0), e3.add(80, 1, 11, 9), e3.addMany(r2, 9, 0, 9), e3.add(127, 9, 0, 9), e3.addMany(i3(28, 32), 9, 0, 9), e3.addMany(i3(32, 48), 9, 9, 12), e3.addMany(i3(48, 60), 9, 8, 10), e3.addMany([60, 61, 62, 63], 9, 9, 10), e3.addMany(r2, 11, 0, 11), e3.addMany(i3(32, 128), 11, 0, 11), e3.addMany(i3(28, 32), 11, 0, 11), e3.addMany(r2, 10, 0, 10), e3.add(127, 10, 0, 10), e3.addMany(i3(28, 32), 10, 0, 10), e3.addMany(i3(48, 60), 10, 8, 10), e3.addMany([60, 61, 62, 63], 10, 0, 11), e3.addMany(i3(32, 48), 10, 9, 12), e3.addMany(r2, 12, 0, 12), e3.add(127, 12, 0, 12), e3.addMany(i3(28, 32), 12, 0, 12), e3.addMany(i3(32, 48), 12, 9, 12), e3.addMany(i3(48, 64), 12, 0, 11), e3.addMany(i3(64, 127), 12, 12, 13), e3.addMany(i3(64, 127), 10, 12, 13), e3.addMany(i3(64, 127), 9, 12, 13), e3.addMany(r2, 13, 13, 13), e3.addMany(s3, 13, 13, 13), e3.add(127, 13, 0, 13), e3.addMany([27, 156, 24, 26], 13, 14, 0), e3.add(h2, 0, 2, 0), e3.add(h2, 8, 5, 8), e3.add(h2, 6, 0, 6), e3.add(h2, 11, 0, 11), e3.add(h2, 13, 13, 13), e3;
         }();
-        class c2 extends s2.Disposable {
+        class c extends s2.Disposable {
           constructor(e3 = t2.VT500_TRANSITION_TABLE) {
             super(), this._transitions = e3, this._parseStack = { state: 0, handlers: [], handlerPos: 0, transition: 0, chunkPos: 0 }, this.initialState = 0, this.currentState = this.initialState, this._params = new r.Params(), this._params.addParam(0), this._collect = 0, this.precedingCodepoint = 0, this._printHandlerFb = (e4, t3, i3) => {
             }, this._executeHandlerFb = (e4) => {
@@ -4848,9 +4848,9 @@ WARNING: This link could potentially be dangerous`)) {
                   break;
                 case 7:
                   const o4 = this._csiHandlers[this._collect << 8 | r2];
-                  let a3 = o4 ? o4.length - 1 : -1;
-                  for (; a3 >= 0 && (s3 = o4[a3](this._params), true !== s3); a3--) if (s3 instanceof Promise) return this._preserveStack(3, o4, a3, n2, i4), s3;
-                  a3 < 0 && this._csiHandlerFb(this._collect << 8 | r2, this._params), this.precedingCodepoint = 0;
+                  let a2 = o4 ? o4.length - 1 : -1;
+                  for (; a2 >= 0 && (s3 = o4[a2](this._params), true !== s3); a2--) if (s3 instanceof Promise) return this._preserveStack(3, o4, a2, n2, i4), s3;
+                  a2 < 0 && this._csiHandlerFb(this._collect << 8 | r2, this._params), this.precedingCodepoint = 0;
                   break;
                 case 8:
                   do {
@@ -4871,9 +4871,9 @@ WARNING: This link could potentially be dangerous`)) {
                   this._collect <<= 8, this._collect |= r2;
                   break;
                 case 10:
-                  const c3 = this._escHandlers[this._collect << 8 | r2];
-                  let l2 = c3 ? c3.length - 1 : -1;
-                  for (; l2 >= 0 && (s3 = c3[l2](), true !== s3); l2--) if (s3 instanceof Promise) return this._preserveStack(4, c3, l2, n2, i4), s3;
+                  const c2 = this._escHandlers[this._collect << 8 | r2];
+                  let l2 = c2 ? c2.length - 1 : -1;
+                  for (; l2 >= 0 && (s3 = c2[l2](), true !== s3); l2--) if (s3 instanceof Promise) return this._preserveStack(4, c2, l2, n2, i4), s3;
                   l2 < 0 && this._escHandlerFb(this._collect << 8 | r2), this.precedingCodepoint = 0;
                   break;
                 case 11:
@@ -4909,7 +4909,7 @@ WARNING: This link could potentially be dangerous`)) {
             }
           }
         }
-        t2.EscapeSequenceParser = c2;
+        t2.EscapeSequenceParser = c;
       }, 6242: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.OscHandler = t2.OscParser = void 0;
         const s2 = i2(5770), r = i2(482), n = [];
@@ -5214,7 +5214,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -5222,14 +5222,14 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.BufferService = t2.MINIMUM_ROWS = t2.MINIMUM_COLS = void 0;
-        const n = i2(8460), o2 = i2(844), a2 = i2(5295), h2 = i2(2585);
+        const n = i2(8460), o2 = i2(844), a = i2(5295), h2 = i2(2585);
         t2.MINIMUM_COLS = 2, t2.MINIMUM_ROWS = 1;
-        let c2 = t2.BufferService = class extends o2.Disposable {
+        let c = t2.BufferService = class extends o2.Disposable {
           get buffer() {
             return this.buffers.active;
           }
           constructor(e3) {
-            super(), this.isUserScrolling = false, this._onResize = this.register(new n.EventEmitter()), this.onResize = this._onResize.event, this._onScroll = this.register(new n.EventEmitter()), this.onScroll = this._onScroll.event, this.cols = Math.max(e3.rawOptions.cols || 0, t2.MINIMUM_COLS), this.rows = Math.max(e3.rawOptions.rows || 0, t2.MINIMUM_ROWS), this.buffers = this.register(new a2.BufferSet(e3, this));
+            super(), this.isUserScrolling = false, this._onResize = this.register(new n.EventEmitter()), this.onResize = this._onResize.event, this._onScroll = this.register(new n.EventEmitter()), this.onScroll = this._onScroll.event, this.cols = Math.max(e3.rawOptions.cols || 0, t2.MINIMUM_COLS), this.rows = Math.max(e3.rawOptions.rows || 0, t2.MINIMUM_ROWS), this.buffers = this.register(new a.BufferSet(e3, this));
           }
           resize(e3, t3) {
             this.cols = e3, this.rows = t3, this.buffers.resize(e3, t3), this._onResize.fire({ cols: e3, rows: t3 });
@@ -5261,7 +5261,7 @@ WARNING: This link could potentially be dangerous`)) {
             s3.ydisp = Math.max(Math.min(s3.ydisp + e3, s3.ybase), 0), r2 !== s3.ydisp && (t3 || this._onScroll.fire(s3.ydisp));
           }
         };
-        t2.BufferService = c2 = s2([r(0, h2.IOptionsService)], c2);
+        t2.BufferService = c = s2([r(0, h2.IOptionsService)], c);
       }, 7994: (e2, t2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CharsetService = void 0, t2.CharsetService = class {
           constructor() {
@@ -5281,7 +5281,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -5289,22 +5289,22 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CoreMouseService = void 0;
-        const n = i2(2585), o2 = i2(8460), a2 = i2(844), h2 = { NONE: { events: 0, restrict: () => false }, X10: { events: 1, restrict: (e3) => 4 !== e3.button && 1 === e3.action && (e3.ctrl = false, e3.alt = false, e3.shift = false, true) }, VT200: { events: 19, restrict: (e3) => 32 !== e3.action }, DRAG: { events: 23, restrict: (e3) => 32 !== e3.action || 3 !== e3.button }, ANY: { events: 31, restrict: (e3) => true } };
-        function c2(e3, t3) {
+        const n = i2(2585), o2 = i2(8460), a = i2(844), h2 = { NONE: { events: 0, restrict: () => false }, X10: { events: 1, restrict: (e3) => 4 !== e3.button && 1 === e3.action && (e3.ctrl = false, e3.alt = false, e3.shift = false, true) }, VT200: { events: 19, restrict: (e3) => 32 !== e3.action }, DRAG: { events: 23, restrict: (e3) => 32 !== e3.action || 3 !== e3.button }, ANY: { events: 31, restrict: (e3) => true } };
+        function c(e3, t3) {
           let i3 = (e3.ctrl ? 16 : 0) | (e3.shift ? 4 : 0) | (e3.alt ? 8 : 0);
           return 4 === e3.button ? (i3 |= 64, i3 |= e3.action) : (i3 |= 3 & e3.button, 4 & e3.button && (i3 |= 64), 8 & e3.button && (i3 |= 128), 32 === e3.action ? i3 |= 32 : 0 !== e3.action || t3 || (i3 |= 3)), i3;
         }
         const l2 = String.fromCharCode, d = { DEFAULT: (e3) => {
-          const t3 = [c2(e3, false) + 32, e3.col + 32, e3.row + 32];
+          const t3 = [c(e3, false) + 32, e3.col + 32, e3.row + 32];
           return t3[0] > 255 || t3[1] > 255 || t3[2] > 255 ? "" : `\x1B[M${l2(t3[0])}${l2(t3[1])}${l2(t3[2])}`;
         }, SGR: (e3) => {
           const t3 = 0 === e3.action && 4 !== e3.button ? "m" : "M";
-          return `\x1B[<${c2(e3, true)};${e3.col};${e3.row}${t3}`;
+          return `\x1B[<${c(e3, true)};${e3.col};${e3.row}${t3}`;
         }, SGR_PIXELS: (e3) => {
           const t3 = 0 === e3.action && 4 !== e3.button ? "m" : "M";
-          return `\x1B[<${c2(e3, true)};${e3.x};${e3.y}${t3}`;
+          return `\x1B[<${c(e3, true)};${e3.x};${e3.y}${t3}`;
         } };
-        let _3 = t2.CoreMouseService = class extends a2.Disposable {
+        let _3 = t2.CoreMouseService = class extends a.Disposable {
           constructor(e3, t3) {
             super(), this._bufferService = e3, this._coreService = t3, this._protocols = {}, this._encodings = {}, this._activeProtocol = "", this._activeEncoding = "", this._lastEvent = null, this._onProtocolChange = this.register(new o2.EventEmitter()), this.onProtocolChange = this._onProtocolChange.event;
             for (const e4 of Object.keys(h2)) this.addProtocol(e4, h2[e4]);
@@ -5366,7 +5366,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -5374,13 +5374,13 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.CoreService = void 0;
-        const n = i2(1439), o2 = i2(8460), a2 = i2(844), h2 = i2(2585), c2 = Object.freeze({ insertMode: false }), l2 = Object.freeze({ applicationCursorKeys: false, applicationKeypad: false, bracketedPasteMode: false, origin: false, reverseWraparound: false, sendFocus: false, wraparound: true });
-        let d = t2.CoreService = class extends a2.Disposable {
+        const n = i2(1439), o2 = i2(8460), a = i2(844), h2 = i2(2585), c = Object.freeze({ insertMode: false }), l2 = Object.freeze({ applicationCursorKeys: false, applicationKeypad: false, bracketedPasteMode: false, origin: false, reverseWraparound: false, sendFocus: false, wraparound: true });
+        let d = t2.CoreService = class extends a.Disposable {
           constructor(e3, t3, i3) {
-            super(), this._bufferService = e3, this._logService = t3, this._optionsService = i3, this.isCursorInitialized = false, this.isCursorHidden = false, this._onData = this.register(new o2.EventEmitter()), this.onData = this._onData.event, this._onUserInput = this.register(new o2.EventEmitter()), this.onUserInput = this._onUserInput.event, this._onBinary = this.register(new o2.EventEmitter()), this.onBinary = this._onBinary.event, this._onRequestScrollToBottom = this.register(new o2.EventEmitter()), this.onRequestScrollToBottom = this._onRequestScrollToBottom.event, this.modes = (0, n.clone)(c2), this.decPrivateModes = (0, n.clone)(l2);
+            super(), this._bufferService = e3, this._logService = t3, this._optionsService = i3, this.isCursorInitialized = false, this.isCursorHidden = false, this._onData = this.register(new o2.EventEmitter()), this.onData = this._onData.event, this._onUserInput = this.register(new o2.EventEmitter()), this.onUserInput = this._onUserInput.event, this._onBinary = this.register(new o2.EventEmitter()), this.onBinary = this._onBinary.event, this._onRequestScrollToBottom = this.register(new o2.EventEmitter()), this.onRequestScrollToBottom = this._onRequestScrollToBottom.event, this.modes = (0, n.clone)(c), this.decPrivateModes = (0, n.clone)(l2);
           }
           reset() {
-            this.modes = (0, n.clone)(c2), this.decPrivateModes = (0, n.clone)(l2);
+            this.modes = (0, n.clone)(c), this.decPrivateModes = (0, n.clone)(l2);
           }
           triggerDataEvent(e3, t3 = false) {
             if (this._optionsService.rawOptions.disableStdin) return;
@@ -5395,8 +5395,8 @@ WARNING: This link could potentially be dangerous`)) {
       }, 9074: (e2, t2, i2) => {
         Object.defineProperty(t2, "__esModule", { value: true }), t2.DecorationService = void 0;
         const s2 = i2(8055), r = i2(8460), n = i2(844), o2 = i2(6106);
-        let a2 = 0, h2 = 0;
-        class c2 extends n.Disposable {
+        let a = 0, h2 = 0;
+        class c extends n.Disposable {
           get decorations() {
             return this._decorations.values();
           }
@@ -5420,17 +5420,17 @@ WARNING: This link could potentially be dangerous`)) {
           }
           *getDecorationsAtCell(e3, t3, i3) {
             var s3, r2, n2;
-            let o3 = 0, a3 = 0;
-            for (const h3 of this._decorations.getKeyIterator(t3)) o3 = null !== (s3 = h3.options.x) && void 0 !== s3 ? s3 : 0, a3 = o3 + (null !== (r2 = h3.options.width) && void 0 !== r2 ? r2 : 1), e3 >= o3 && e3 < a3 && (!i3 || (null !== (n2 = h3.options.layer) && void 0 !== n2 ? n2 : "bottom") === i3) && (yield h3);
+            let o3 = 0, a2 = 0;
+            for (const h3 of this._decorations.getKeyIterator(t3)) o3 = null !== (s3 = h3.options.x) && void 0 !== s3 ? s3 : 0, a2 = o3 + (null !== (r2 = h3.options.width) && void 0 !== r2 ? r2 : 1), e3 >= o3 && e3 < a2 && (!i3 || (null !== (n2 = h3.options.layer) && void 0 !== n2 ? n2 : "bottom") === i3) && (yield h3);
           }
           forEachDecorationAtCell(e3, t3, i3, s3) {
             this._decorations.forEachByKey(t3, (t4) => {
               var r2, n2, o3;
-              a2 = null !== (r2 = t4.options.x) && void 0 !== r2 ? r2 : 0, h2 = a2 + (null !== (n2 = t4.options.width) && void 0 !== n2 ? n2 : 1), e3 >= a2 && e3 < h2 && (!i3 || (null !== (o3 = t4.options.layer) && void 0 !== o3 ? o3 : "bottom") === i3) && s3(t4);
+              a = null !== (r2 = t4.options.x) && void 0 !== r2 ? r2 : 0, h2 = a + (null !== (n2 = t4.options.width) && void 0 !== n2 ? n2 : 1), e3 >= a && e3 < h2 && (!i3 || (null !== (o3 = t4.options.layer) && void 0 !== o3 ? o3 : "bottom") === i3) && s3(t4);
             });
           }
         }
-        t2.DecorationService = c2;
+        t2.DecorationService = c;
         class l2 extends n.Disposable {
           get isDisposed() {
             return this._isDisposed;
@@ -5496,7 +5496,7 @@ WARNING: This link could potentially be dangerous`)) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a3 = e3.length - 1; a3 >= 0; a3--) (r2 = e3[a3]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -5504,8 +5504,8 @@ WARNING: This link could potentially be dangerous`)) {
           };
         };
         Object.defineProperty(t2, "__esModule", { value: true }), t2.traceCall = t2.setTraceLogger = t2.LogService = void 0;
-        const n = i2(844), o2 = i2(2585), a2 = { trace: o2.LogLevelEnum.TRACE, debug: o2.LogLevelEnum.DEBUG, info: o2.LogLevelEnum.INFO, warn: o2.LogLevelEnum.WARN, error: o2.LogLevelEnum.ERROR, off: o2.LogLevelEnum.OFF };
-        let h2, c2 = t2.LogService = class extends n.Disposable {
+        const n = i2(844), o2 = i2(2585), a = { trace: o2.LogLevelEnum.TRACE, debug: o2.LogLevelEnum.DEBUG, info: o2.LogLevelEnum.INFO, warn: o2.LogLevelEnum.WARN, error: o2.LogLevelEnum.ERROR, off: o2.LogLevelEnum.OFF };
+        let h2, c = t2.LogService = class extends n.Disposable {
           get logLevel() {
             return this._logLevel;
           }
@@ -5513,7 +5513,7 @@ WARNING: This link could potentially be dangerous`)) {
             super(), this._optionsService = e3, this._logLevel = o2.LogLevelEnum.OFF, this._updateLogLevel(), this.register(this._optionsService.onSpecificOptionChange("logLevel", () => this._updateLogLevel())), h2 = this;
           }
           _updateLogLevel() {
-            this._logLevel = a2[this._optionsService.rawOptions.logLevel];
+            this._logLevel = a[this._optionsService.rawOptions.logLevel];
           }
           _evalLazyOptionalParams(e3) {
             for (let t3 = 0; t3 < e3.length; t3++) "function" == typeof e3[t3] && (e3[t3] = e3[t3]());
@@ -5542,7 +5542,7 @@ WARNING: This link could potentially be dangerous`)) {
             this._logLevel <= o2.LogLevelEnum.ERROR && this._log(null !== (s3 = null === (i3 = this._optionsService.options.logger) || void 0 === i3 ? void 0 : i3.error.bind(this._optionsService.options.logger)) && void 0 !== s3 ? s3 : console.error, e3, t3);
           }
         };
-        t2.LogService = c2 = s2([r(0, o2.IOptionsService)], c2), t2.setTraceLogger = function(e3) {
+        t2.LogService = c = s2([r(0, o2.IOptionsService)], c), t2.setTraceLogger = function(e3) {
           h2 = e3;
         }, t2.traceCall = function(e3, t3, i3) {
           if ("function" != typeof i3.value) throw new Error("not supported");
@@ -5559,7 +5559,7 @@ WARNING: This link could potentially be dangerous`)) {
         const s2 = i2(8460), r = i2(844), n = i2(6114);
         t2.DEFAULT_OPTIONS = { cols: 80, rows: 24, cursorBlink: false, cursorStyle: "block", cursorWidth: 1, cursorInactiveStyle: "outline", customGlyphs: true, drawBoldTextInBrightColors: true, fastScrollModifier: "alt", fastScrollSensitivity: 5, fontFamily: "courier-new, courier, monospace", fontSize: 15, fontWeight: "normal", fontWeightBold: "bold", ignoreBracketedPasteMode: false, lineHeight: 1, letterSpacing: 0, linkHandler: null, logLevel: "info", logger: null, scrollback: 1e3, scrollOnUserInput: true, scrollSensitivity: 1, screenReaderMode: false, smoothScrollDuration: 0, macOptionIsMeta: false, macOptionClickForcesSelection: false, minimumContrastRatio: 1, disableStdin: false, allowProposedApi: false, allowTransparency: false, tabStopWidth: 8, theme: {}, rightClickSelectsWord: n.isMac, windowOptions: {}, windowsMode: false, windowsPty: {}, wordSeparator: " ()[]{}',\"`", altClickMovesCursor: true, convertEol: false, termName: "xterm", cancelEvents: false, overviewRulerWidth: 0 };
         const o2 = ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"];
-        class a2 extends r.Disposable {
+        class a extends r.Disposable {
           constructor(e3) {
             super(), this._onOptionChange = this.register(new s2.EventEmitter()), this.onOptionChange = this._onOptionChange.event;
             const i3 = Object.assign({}, t2.DEFAULT_OPTIONS);
@@ -5635,12 +5635,12 @@ WARNING: This link could potentially be dangerous`)) {
             return i3;
           }
         }
-        t2.OptionsService = a2;
+        t2.OptionsService = a;
       }, 2660: function(e2, t2, i2) {
         var s2 = this && this.__decorate || function(e3, t3, i3, s3) {
           var r2, n2 = arguments.length, o3 = n2 < 3 ? t3 : null === s3 ? s3 = Object.getOwnPropertyDescriptor(t3, i3) : s3;
           if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o3 = Reflect.decorate(e3, t3, i3, s3);
-          else for (var a2 = e3.length - 1; a2 >= 0; a2--) (r2 = e3[a2]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
+          else for (var a = e3.length - 1; a >= 0; a--) (r2 = e3[a]) && (o3 = (n2 < 3 ? r2(o3) : n2 > 3 ? r2(t3, i3, o3) : r2(t3, i3)) || o3);
           return n2 > 3 && o3 && Object.defineProperty(t3, i3, o3), o3;
         }, r = this && this.__param || function(e3, t3) {
           return function(i3, s3) {
@@ -5760,7 +5760,7 @@ WARNING: This link could potentially be dangerous`)) {
       return (() => {
         var e2 = s;
         Object.defineProperty(e2, "__esModule", { value: true }), e2.Terminal = void 0;
-        const t2 = i(9042), r = i(3236), n = i(844), o2 = i(5741), a2 = i(8285), h2 = i(7975), c2 = i(7090), l2 = ["cols", "rows"];
+        const t2 = i(9042), r = i(3236), n = i(844), o2 = i(5741), a = i(8285), h2 = i(7975), c = i(7090), l2 = ["cols", "rows"];
         class d extends n.Disposable {
           constructor(e3) {
             super(), this._core = this.register(new r.Terminal(e3)), this._addonManager = this.register(new o2.AddonManager()), this._publicOptions = Object.assign({}, this._core.options);
@@ -5821,7 +5821,7 @@ WARNING: This link could potentially be dangerous`)) {
             return this._parser || (this._parser = new h2.ParserApi(this._core)), this._parser;
           }
           get unicode() {
-            return this._checkProposedApi(), new c2.UnicodeApi(this._core);
+            return this._checkProposedApi(), new c.UnicodeApi(this._core);
           }
           get textarea() {
             return this._core.textarea;
@@ -5833,7 +5833,7 @@ WARNING: This link could potentially be dangerous`)) {
             return this._core.cols;
           }
           get buffer() {
-            return this._buffer || (this._buffer = this.register(new a2.BufferNamespaceApi(this._core))), this._buffer;
+            return this._buffer || (this._buffer = this.register(new a.BufferNamespaceApi(this._core))), this._buffer;
           }
           get markers() {
             return this._checkProposedApi(), this._core.markers;
@@ -6024,9 +6024,9 @@ Dispatch.prototype = dispatch.prototype = {
   }
 };
 function get(type2, name) {
-  for (var i = 0, n = type2.length, c2; i < n; ++i) {
-    if ((c2 = type2[i]).name === name) {
-      return c2.value;
+  for (var i = 0, n = type2.length, c; i < n; ++i) {
+    if ((c = type2[i]).name === name) {
+      return c.value;
     }
   }
 }
@@ -6088,7 +6088,7 @@ function selector_default(selector) {
 // node_modules/d3-selection/src/selection/select.js
 function select_default(select) {
   if (typeof select !== "function") select = selector_default(select);
-  for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
       if ((node = group[i]) && (subnode = select.call(node, node.__data__, i, group))) {
         if ("__data__" in node) subnode.__data__ = node.__data__;
@@ -6100,8 +6100,8 @@ function select_default(select) {
 }
 
 // node_modules/d3-selection/src/array.js
-function array(x3) {
-  return x3 == null ? [] : Array.isArray(x3) ? x3 : Array.from(x3);
+function array(x) {
+  return x == null ? [] : Array.isArray(x) ? x : Array.from(x);
 }
 
 // node_modules/d3-selection/src/selectorAll.js
@@ -6123,7 +6123,7 @@ function arrayAll(select) {
 function selectAll_default(select) {
   if (typeof select === "function") select = arrayAll(select);
   else select = selectorAll_default(select);
-  for (var groups = this._groups, m2 = groups.length, subgroups = [], parents = [], j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
         subgroups.push(select.call(node, node.__data__, i, group));
@@ -6177,7 +6177,7 @@ function selectChildren_default(match) {
 // node_modules/d3-selection/src/selection/filter.js
 function filter_default(match) {
   if (typeof match !== "function") match = matcher_default(match);
-  for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
       if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
         subgroup.push(node);
@@ -6220,9 +6220,9 @@ EnterNode.prototype = {
 };
 
 // node_modules/d3-selection/src/constant.js
-function constant_default(x3) {
+function constant_default(x) {
   return function() {
-    return x3;
+    return x;
   };
 }
 
@@ -6278,7 +6278,7 @@ function data_default(value, key) {
   if (!arguments.length) return Array.from(this, datum);
   var bind = key ? bindKey : bindIndex, parents = this._parents, groups = this._groups;
   if (typeof value !== "function") value = constant_default(value);
-  for (var m2 = groups.length, update = new Array(m2), enter = new Array(m2), exit = new Array(m2), j = 0; j < m2; ++j) {
+  for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
     var parent = parents[j], group = groups[j], groupLength = group.length, data = arraylike(value.call(parent, parent && parent.__data__, j, parents)), dataLength = data.length, enterGroup = enter[j] = new Array(dataLength), updateGroup = update[j] = new Array(dataLength), exitGroup = exit[j] = new Array(groupLength);
     bind(parent, group, enterGroup, updateGroup, exitGroup, data, key);
     for (var i0 = 0, i1 = 0, previous, next; i0 < dataLength; ++i0) {
@@ -6324,7 +6324,7 @@ function join_default(onenter, onupdate, onexit) {
 // node_modules/d3-selection/src/selection/merge.js
 function merge_default(context) {
   var selection2 = context.selection ? context.selection() : context;
-  for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m2 = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m2; ++j) {
+  for (var groups0 = this._groups, groups1 = selection2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
     for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group0[i] || group1[i]) {
         merge[i] = node;
@@ -6339,7 +6339,7 @@ function merge_default(context) {
 
 // node_modules/d3-selection/src/selection/order.js
 function order_default() {
-  for (var groups = this._groups, j = -1, m2 = groups.length; ++j < m2; ) {
+  for (var groups = this._groups, j = -1, m = groups.length; ++j < m; ) {
     for (var group = groups[j], i = group.length - 1, next = group[i], node; --i >= 0; ) {
       if (node = group[i]) {
         if (next && node.compareDocumentPosition(next) ^ 4) next.parentNode.insertBefore(node, next);
@@ -6353,10 +6353,10 @@ function order_default() {
 // node_modules/d3-selection/src/selection/sort.js
 function sort_default(compare) {
   if (!compare) compare = ascending;
-  function compareNode(a2, b) {
-    return a2 && b ? compare(a2.__data__, b.__data__) : !a2 - !b;
+  function compareNode(a, b) {
+    return a && b ? compare(a.__data__, b.__data__) : !a - !b;
   }
-  for (var groups = this._groups, m2 = groups.length, sortgroups = new Array(m2), j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, sortgroups = new Array(m), j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, sortgroup = sortgroups[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group[i]) {
         sortgroup[i] = node;
@@ -6366,8 +6366,8 @@ function sort_default(compare) {
   }
   return new Selection(sortgroups, this._parents).order();
 }
-function ascending(a2, b) {
-  return a2 < b ? -1 : a2 > b ? 1 : a2 >= b ? 0 : NaN;
+function ascending(a, b) {
+  return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
 }
 
 // node_modules/d3-selection/src/selection/call.js
@@ -6385,7 +6385,7 @@ function nodes_default() {
 
 // node_modules/d3-selection/src/selection/node.js
 function node_default() {
-  for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
+  for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length; i < n; ++i) {
       var node = group[i];
       if (node) return node;
@@ -6408,7 +6408,7 @@ function empty_default() {
 
 // node_modules/d3-selection/src/selection/each.js
 function each_default(callback) {
-  for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
+  for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
       if (node = group[i]) callback.call(node, node.__data__, i, group);
     }
@@ -6692,7 +6692,7 @@ function onRemove(typename) {
   return function() {
     var on = this.__on;
     if (!on) return;
-    for (var j = 0, i = -1, m2 = on.length, o2; j < m2; ++j) {
+    for (var j = 0, i = -1, m = on.length, o2; j < m; ++j) {
       if (o2 = on[j], (!typename.type || o2.type === typename.type) && o2.name === typename.name) {
         this.removeEventListener(o2.type, o2.listener, o2.options);
       } else {
@@ -6706,7 +6706,7 @@ function onRemove(typename) {
 function onAdd(typename, value, options) {
   return function() {
     var on = this.__on, o2, listener = contextListener(value);
-    if (on) for (var j = 0, m2 = on.length; j < m2; ++j) {
+    if (on) for (var j = 0, m = on.length; j < m; ++j) {
       if ((o2 = on[j]).type === typename.type && o2.name === typename.name) {
         this.removeEventListener(o2.type, o2.listener, o2.options);
         this.addEventListener(o2.type, o2.listener = listener, o2.options = options);
@@ -6724,7 +6724,7 @@ function on_default(typename, value, options) {
   var typenames = parseTypenames2(typename + ""), i, n = typenames.length, t;
   if (arguments.length < 2) {
     var on = this.node().__on;
-    if (on) for (var j = 0, m2 = on.length, o2; j < m2; ++j) {
+    if (on) for (var j = 0, m = on.length, o2; j < m; ++j) {
       for (i = 0, o2 = on[j]; i < n; ++i) {
         if ((t = typenames[i]).type === o2.type && t.name === o2.name) {
           return o2.value;
@@ -6766,7 +6766,7 @@ function dispatch_default2(type2, params) {
 
 // node_modules/d3-selection/src/selection/iterator.js
 function* iterator_default() {
-  for (var groups = this._groups, j = 0, m2 = groups.length; j < m2; ++j) {
+  for (var groups = this._groups, j = 0, m = groups.length; j < m; ++j) {
     for (var group = groups[j], i = 0, n = group.length, node; i < n; ++i) {
       if (node = group[i]) yield node;
     }
@@ -6828,249 +6828,6 @@ var selection_default = selection;
 // node_modules/d3-selection/src/select.js
 function select_default2(selector) {
   return typeof selector === "string" ? new Selection([[document.querySelector(selector)]], [document.documentElement]) : new Selection([[selector]], root);
-}
-
-// node_modules/d3-selection/src/sourceEvent.js
-function sourceEvent_default(event) {
-  let sourceEvent;
-  while (sourceEvent = event.sourceEvent) event = sourceEvent;
-  return event;
-}
-
-// node_modules/d3-selection/src/pointer.js
-function pointer_default(event, node) {
-  event = sourceEvent_default(event);
-  if (node === void 0) node = event.currentTarget;
-  if (node) {
-    var svg = node.ownerSVGElement || node;
-    if (svg.createSVGPoint) {
-      var point = svg.createSVGPoint();
-      point.x = event.clientX, point.y = event.clientY;
-      point = point.matrixTransform(node.getScreenCTM().inverse());
-      return [point.x, point.y];
-    }
-    if (node.getBoundingClientRect) {
-      var rect = node.getBoundingClientRect();
-      return [event.clientX - rect.left - node.clientLeft, event.clientY - rect.top - node.clientTop];
-    }
-  }
-  return [event.pageX, event.pageY];
-}
-
-// node_modules/d3-drag/src/noevent.js
-var nonpassive = { passive: false };
-var nonpassivecapture = { capture: true, passive: false };
-function nopropagation(event) {
-  event.stopImmediatePropagation();
-}
-function noevent_default(event) {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-}
-
-// node_modules/d3-drag/src/nodrag.js
-function nodrag_default(view) {
-  var root2 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", noevent_default, nonpassivecapture);
-  if ("onselectstart" in root2) {
-    selection2.on("selectstart.drag", noevent_default, nonpassivecapture);
-  } else {
-    root2.__noselect = root2.style.MozUserSelect;
-    root2.style.MozUserSelect = "none";
-  }
-}
-function yesdrag(view, noclick) {
-  var root2 = view.document.documentElement, selection2 = select_default2(view).on("dragstart.drag", null);
-  if (noclick) {
-    selection2.on("click.drag", noevent_default, nonpassivecapture);
-    setTimeout(function() {
-      selection2.on("click.drag", null);
-    }, 0);
-  }
-  if ("onselectstart" in root2) {
-    selection2.on("selectstart.drag", null);
-  } else {
-    root2.style.MozUserSelect = root2.__noselect;
-    delete root2.__noselect;
-  }
-}
-
-// node_modules/d3-drag/src/constant.js
-var constant_default2 = (x3) => () => x3;
-
-// node_modules/d3-drag/src/event.js
-function DragEvent(type2, {
-  sourceEvent,
-  subject,
-  target,
-  identifier,
-  active,
-  x: x3,
-  y: y3,
-  dx,
-  dy,
-  dispatch: dispatch2
-}) {
-  Object.defineProperties(this, {
-    type: { value: type2, enumerable: true, configurable: true },
-    sourceEvent: { value: sourceEvent, enumerable: true, configurable: true },
-    subject: { value: subject, enumerable: true, configurable: true },
-    target: { value: target, enumerable: true, configurable: true },
-    identifier: { value: identifier, enumerable: true, configurable: true },
-    active: { value: active, enumerable: true, configurable: true },
-    x: { value: x3, enumerable: true, configurable: true },
-    y: { value: y3, enumerable: true, configurable: true },
-    dx: { value: dx, enumerable: true, configurable: true },
-    dy: { value: dy, enumerable: true, configurable: true },
-    _: { value: dispatch2 }
-  });
-}
-DragEvent.prototype.on = function() {
-  var value = this._.on.apply(this._, arguments);
-  return value === this._ ? this : value;
-};
-
-// node_modules/d3-drag/src/drag.js
-function defaultFilter(event) {
-  return !event.ctrlKey && !event.button;
-}
-function defaultContainer() {
-  return this.parentNode;
-}
-function defaultSubject(event, d) {
-  return d == null ? { x: event.x, y: event.y } : d;
-}
-function defaultTouchable() {
-  return navigator.maxTouchPoints || "ontouchstart" in this;
-}
-function drag_default() {
-  var filter2 = defaultFilter, container = defaultContainer, subject = defaultSubject, touchable = defaultTouchable, gestures = {}, listeners = dispatch_default("start", "drag", "end"), active = 0, mousedownx, mousedowny, mousemoving, touchending, clickDistance2 = 0;
-  function drag(selection2) {
-    selection2.on("mousedown.drag", mousedowned).filter(touchable).on("touchstart.drag", touchstarted).on("touchmove.drag", touchmoved, nonpassive).on("touchend.drag touchcancel.drag", touchended).style("touch-action", "none").style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
-  }
-  function mousedowned(event, d) {
-    if (touchending || !filter2.call(this, event, d)) return;
-    var gesture = beforestart(this, container.call(this, event, d), event, d, "mouse");
-    if (!gesture) return;
-    select_default2(event.view).on("mousemove.drag", mousemoved, nonpassivecapture).on("mouseup.drag", mouseupped, nonpassivecapture);
-    nodrag_default(event.view);
-    nopropagation(event);
-    mousemoving = false;
-    mousedownx = event.clientX;
-    mousedowny = event.clientY;
-    gesture("start", event);
-  }
-  function mousemoved(event) {
-    noevent_default(event);
-    if (!mousemoving) {
-      var dx = event.clientX - mousedownx, dy = event.clientY - mousedowny;
-      mousemoving = dx * dx + dy * dy > clickDistance2;
-    }
-    gestures.mouse("drag", event);
-  }
-  function mouseupped(event) {
-    select_default2(event.view).on("mousemove.drag mouseup.drag", null);
-    yesdrag(event.view, mousemoving);
-    noevent_default(event);
-    gestures.mouse("end", event);
-  }
-  function touchstarted(event, d) {
-    if (!filter2.call(this, event, d)) return;
-    var touches = event.changedTouches, c2 = container.call(this, event, d), n = touches.length, i, gesture;
-    for (i = 0; i < n; ++i) {
-      if (gesture = beforestart(this, c2, event, d, touches[i].identifier, touches[i])) {
-        nopropagation(event);
-        gesture("start", event, touches[i]);
-      }
-    }
-  }
-  function touchmoved(event) {
-    var touches = event.changedTouches, n = touches.length, i, gesture;
-    for (i = 0; i < n; ++i) {
-      if (gesture = gestures[touches[i].identifier]) {
-        noevent_default(event);
-        gesture("drag", event, touches[i]);
-      }
-    }
-  }
-  function touchended(event) {
-    var touches = event.changedTouches, n = touches.length, i, gesture;
-    if (touchending) clearTimeout(touchending);
-    touchending = setTimeout(function() {
-      touchending = null;
-    }, 500);
-    for (i = 0; i < n; ++i) {
-      if (gesture = gestures[touches[i].identifier]) {
-        nopropagation(event);
-        gesture("end", event, touches[i]);
-      }
-    }
-  }
-  function beforestart(that, container2, event, d, identifier, touch) {
-    var dispatch2 = listeners.copy(), p = pointer_default(touch || event, container2), dx, dy, s;
-    if ((s = subject.call(that, new DragEvent("beforestart", {
-      sourceEvent: event,
-      target: drag,
-      identifier,
-      active,
-      x: p[0],
-      y: p[1],
-      dx: 0,
-      dy: 0,
-      dispatch: dispatch2
-    }), d)) == null) return;
-    dx = s.x - p[0] || 0;
-    dy = s.y - p[1] || 0;
-    return function gesture(type2, event2, touch2) {
-      var p0 = p, n;
-      switch (type2) {
-        case "start":
-          gestures[identifier] = gesture, n = active++;
-          break;
-        case "end":
-          delete gestures[identifier], --active;
-        case "drag":
-          p = pointer_default(touch2 || event2, container2), n = active;
-          break;
-      }
-      dispatch2.call(
-        type2,
-        that,
-        new DragEvent(type2, {
-          sourceEvent: event2,
-          subject: s,
-          target: drag,
-          identifier,
-          active: n,
-          x: p[0] + dx,
-          y: p[1] + dy,
-          dx: p[0] - p0[0],
-          dy: p[1] - p0[1],
-          dispatch: dispatch2
-        }),
-        d
-      );
-    };
-  }
-  drag.filter = function(_3) {
-    return arguments.length ? (filter2 = typeof _3 === "function" ? _3 : constant_default2(!!_3), drag) : filter2;
-  };
-  drag.container = function(_3) {
-    return arguments.length ? (container = typeof _3 === "function" ? _3 : constant_default2(_3), drag) : container;
-  };
-  drag.subject = function(_3) {
-    return arguments.length ? (subject = typeof _3 === "function" ? _3 : constant_default2(_3), drag) : subject;
-  };
-  drag.touchable = function(_3) {
-    return arguments.length ? (touchable = typeof _3 === "function" ? _3 : constant_default2(!!_3), drag) : touchable;
-  };
-  drag.on = function() {
-    var value = listeners.on.apply(listeners, arguments);
-    return value === listeners ? drag : value;
-  };
-  drag.clickDistance = function(_3) {
-    return arguments.length ? (clickDistance2 = (_3 = +_3) * _3, drag) : Math.sqrt(clickDistance2);
-  };
-  return drag;
 }
 
 // node_modules/d3-color/src/define.js
@@ -7277,16 +7034,16 @@ function color_formatRgb() {
   return this.rgb().formatRgb();
 }
 function color(format) {
-  var m2, l2;
+  var m, l2;
   format = (format + "").trim().toLowerCase();
-  return (m2 = reHex.exec(format)) ? (l2 = m2[1].length, m2 = parseInt(m2[1], 16), l2 === 6 ? rgbn(m2) : l2 === 3 ? new Rgb(m2 >> 8 & 15 | m2 >> 4 & 240, m2 >> 4 & 15 | m2 & 240, (m2 & 15) << 4 | m2 & 15, 1) : l2 === 8 ? rgba(m2 >> 24 & 255, m2 >> 16 & 255, m2 >> 8 & 255, (m2 & 255) / 255) : l2 === 4 ? rgba(m2 >> 12 & 15 | m2 >> 8 & 240, m2 >> 8 & 15 | m2 >> 4 & 240, m2 >> 4 & 15 | m2 & 240, ((m2 & 15) << 4 | m2 & 15) / 255) : null) : (m2 = reRgbInteger.exec(format)) ? new Rgb(m2[1], m2[2], m2[3], 1) : (m2 = reRgbPercent.exec(format)) ? new Rgb(m2[1] * 255 / 100, m2[2] * 255 / 100, m2[3] * 255 / 100, 1) : (m2 = reRgbaInteger.exec(format)) ? rgba(m2[1], m2[2], m2[3], m2[4]) : (m2 = reRgbaPercent.exec(format)) ? rgba(m2[1] * 255 / 100, m2[2] * 255 / 100, m2[3] * 255 / 100, m2[4]) : (m2 = reHslPercent.exec(format)) ? hsla(m2[1], m2[2] / 100, m2[3] / 100, 1) : (m2 = reHslaPercent.exec(format)) ? hsla(m2[1], m2[2] / 100, m2[3] / 100, m2[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
+  return (m = reHex.exec(format)) ? (l2 = m[1].length, m = parseInt(m[1], 16), l2 === 6 ? rgbn(m) : l2 === 3 ? new Rgb(m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, (m & 15) << 4 | m & 15, 1) : l2 === 8 ? rgba(m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, (m & 255) / 255) : l2 === 4 ? rgba(m >> 12 & 15 | m >> 8 & 240, m >> 8 & 15 | m >> 4 & 240, m >> 4 & 15 | m & 240, ((m & 15) << 4 | m & 15) / 255) : null) : (m = reRgbInteger.exec(format)) ? new Rgb(m[1], m[2], m[3], 1) : (m = reRgbPercent.exec(format)) ? new Rgb(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, 1) : (m = reRgbaInteger.exec(format)) ? rgba(m[1], m[2], m[3], m[4]) : (m = reRgbaPercent.exec(format)) ? rgba(m[1] * 255 / 100, m[2] * 255 / 100, m[3] * 255 / 100, m[4]) : (m = reHslPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, 1) : (m = reHslaPercent.exec(format)) ? hsla(m[1], m[2] / 100, m[3] / 100, m[4]) : named.hasOwnProperty(format) ? rgbn(named[format]) : format === "transparent" ? new Rgb(NaN, NaN, NaN, 0) : null;
 }
 function rgbn(n) {
   return new Rgb(n >> 16 & 255, n >> 8 & 255, n & 255, 1);
 }
-function rgba(r, g2, b, a2) {
-  if (a2 <= 0) r = g2 = b = NaN;
-  return new Rgb(r, g2, b, a2);
+function rgba(r, g2, b, a) {
+  if (a <= 0) r = g2 = b = NaN;
+  return new Rgb(r, g2, b, a);
 }
 function rgbConvert(o2) {
   if (!(o2 instanceof Color)) o2 = color(o2);
@@ -7335,8 +7092,8 @@ function rgb_formatHex8() {
   return `#${hex(this.r)}${hex(this.g)}${hex(this.b)}${hex((isNaN(this.opacity) ? 1 : this.opacity) * 255)}`;
 }
 function rgb_formatRgb() {
-  const a2 = clampa(this.opacity);
-  return `${a2 === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a2 === 1 ? ")" : `, ${a2})`}`;
+  const a = clampa(this.opacity);
+  return `${a === 1 ? "rgb(" : "rgba("}${clampi(this.r)}, ${clampi(this.g)}, ${clampi(this.b)}${a === 1 ? ")" : `, ${a})`}`;
 }
 function clampa(opacity) {
   return isNaN(opacity) ? 1 : Math.max(0, Math.min(1, opacity));
@@ -7348,11 +7105,11 @@ function hex(value) {
   value = clampi(value);
   return (value < 16 ? "0" : "") + value.toString(16);
 }
-function hsla(h2, s, l2, a2) {
-  if (a2 <= 0) h2 = s = l2 = NaN;
+function hsla(h2, s, l2, a) {
+  if (a <= 0) h2 = s = l2 = NaN;
   else if (l2 <= 0 || l2 >= 1) h2 = s = NaN;
   else if (s <= 0) h2 = NaN;
-  return new Hsl(h2, s, l2, a2);
+  return new Hsl(h2, s, l2, a);
 }
 function hslConvert(o2) {
   if (o2 instanceof Hsl) return new Hsl(o2.h, o2.s, o2.l, o2.opacity);
@@ -7406,8 +7163,8 @@ define_default(Hsl, hsl, extend(Color, {
     return (0 <= this.s && this.s <= 1 || isNaN(this.s)) && (0 <= this.l && this.l <= 1) && (0 <= this.opacity && this.opacity <= 1);
   },
   formatHsl() {
-    const a2 = clampa(this.opacity);
-    return `${a2 === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a2 === 1 ? ")" : `, ${a2})`}`;
+    const a = clampa(this.opacity);
+    return `${a === 1 ? "hsl(" : "hsla("}${clamph(this.h)}, ${clampt(this.s) * 100}%, ${clampt(this.l) * 100}%${a === 1 ? ")" : `, ${a})`}`;
   }
 }));
 function clamph(value) {
@@ -7444,32 +7201,32 @@ function basisClosed_default(values) {
 }
 
 // node_modules/d3-interpolate/src/constant.js
-var constant_default3 = (x3) => () => x3;
+var constant_default2 = (x) => () => x;
 
 // node_modules/d3-interpolate/src/color.js
-function linear(a2, d) {
+function linear(a, d) {
   return function(t) {
-    return a2 + t * d;
+    return a + t * d;
   };
 }
-function exponential(a2, b, y3) {
-  return a2 = Math.pow(a2, y3), b = Math.pow(b, y3) - a2, y3 = 1 / y3, function(t) {
-    return Math.pow(a2 + t * b, y3);
+function exponential(a, b, y) {
+  return a = Math.pow(a, y), b = Math.pow(b, y) - a, y = 1 / y, function(t) {
+    return Math.pow(a + t * b, y);
   };
 }
-function gamma(y3) {
-  return (y3 = +y3) === 1 ? nogamma : function(a2, b) {
-    return b - a2 ? exponential(a2, b, y3) : constant_default3(isNaN(a2) ? b : a2);
+function gamma(y) {
+  return (y = +y) === 1 ? nogamma : function(a, b) {
+    return b - a ? exponential(a, b, y) : constant_default2(isNaN(a) ? b : a);
   };
 }
-function nogamma(a2, b) {
-  var d = b - a2;
-  return d ? linear(a2, d) : constant_default3(isNaN(a2) ? b : a2);
+function nogamma(a, b) {
+  var d = b - a;
+  return d ? linear(a, d) : constant_default2(isNaN(a) ? b : a);
 }
 
 // node_modules/d3-interpolate/src/rgb.js
-var rgb_default = function rgbGamma(y3) {
-  var color2 = gamma(y3);
+var rgb_default = function rgbGamma(y) {
+  var color2 = gamma(y);
   function rgb2(start2, end) {
     var r = color2((start2 = rgb(start2)).r, (end = rgb(end)).r), g2 = color2(start2.g, end.g), b = color2(start2.b, end.b), opacity = nogamma(start2.opacity, end.opacity);
     return function(t) {
@@ -7508,9 +7265,9 @@ var rgbBasis = rgbSpline(basis_default);
 var rgbBasisClosed = rgbSpline(basisClosed_default);
 
 // node_modules/d3-interpolate/src/number.js
-function number_default(a2, b) {
-  return a2 = +a2, b = +b, function(t) {
-    return a2 * (1 - t) + b * t;
+function number_default(a, b) {
+  return a = +a, b = +b, function(t) {
+    return a * (1 - t) + b * t;
   };
 }
 
@@ -7527,10 +7284,10 @@ function one(b) {
     return b(t) + "";
   };
 }
-function string_default(a2, b) {
+function string_default(a, b) {
   var bi = reA.lastIndex = reB.lastIndex = 0, am, bm, bs, i = -1, s = [], q = [];
-  a2 = a2 + "", b = b + "";
-  while ((am = reA.exec(a2)) && (bm = reB.exec(b))) {
+  a = a + "", b = b + "";
+  while ((am = reA.exec(a)) && (bm = reB.exec(b))) {
     if ((bs = bm.index) > bi) {
       bs = b.slice(bi, bs);
       if (s[i]) s[i] += bs;
@@ -7566,16 +7323,16 @@ var identity = {
   scaleX: 1,
   scaleY: 1
 };
-function decompose_default(a2, b, c2, d, e, f) {
+function decompose_default(a, b, c, d, e, f) {
   var scaleX, scaleY, skewX;
-  if (scaleX = Math.sqrt(a2 * a2 + b * b)) a2 /= scaleX, b /= scaleX;
-  if (skewX = a2 * c2 + b * d) c2 -= a2 * skewX, d -= b * skewX;
-  if (scaleY = Math.sqrt(c2 * c2 + d * d)) c2 /= scaleY, d /= scaleY, skewX /= scaleY;
-  if (a2 * d < b * c2) a2 = -a2, b = -b, skewX = -skewX, scaleX = -scaleX;
+  if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
+  if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
+  if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
+  if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
   return {
     translateX: e,
     translateY: f,
-    rotate: Math.atan2(b, a2) * degrees,
+    rotate: Math.atan2(b, a) * degrees,
     skewX: Math.atan(skewX) * degrees,
     scaleX,
     scaleY
@@ -7585,8 +7342,8 @@ function decompose_default(a2, b, c2, d, e, f) {
 // node_modules/d3-interpolate/src/transform/parse.js
 var svgNode;
 function parseCss(value) {
-  const m2 = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
-  return m2.isIdentity ? identity : decompose_default(m2.a, m2.b, m2.c, m2.d, m2.e, m2.f);
+  const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
+  return m.isIdentity ? identity : decompose_default(m.a, m.b, m.c, m.d, m.e, m.f);
 }
 function parseSvg(value) {
   if (value == null) return identity;
@@ -7610,18 +7367,18 @@ function interpolateTransform(parse, pxComma, pxParen, degParen) {
       s.push("translate(" + xb + pxComma + yb + pxParen);
     }
   }
-  function rotate(a2, b, s, q) {
-    if (a2 !== b) {
-      if (a2 - b > 180) b += 360;
-      else if (b - a2 > 180) a2 += 360;
-      q.push({ i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default(a2, b) });
+  function rotate(a, b, s, q) {
+    if (a !== b) {
+      if (a - b > 180) b += 360;
+      else if (b - a > 180) a += 360;
+      q.push({ i: s.push(pop(s) + "rotate(", null, degParen) - 2, x: number_default(a, b) });
     } else if (b) {
       s.push(pop(s) + "rotate(" + b + degParen);
     }
   }
-  function skewX(a2, b, s, q) {
-    if (a2 !== b) {
-      q.push({ i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default(a2, b) });
+  function skewX(a, b, s, q) {
+    if (a !== b) {
+      q.push({ i: s.push(pop(s) + "skewX(", null, degParen) - 2, x: number_default(a, b) });
     } else if (b) {
       s.push(pop(s) + "skewX(" + b + degParen);
     }
@@ -7634,14 +7391,14 @@ function interpolateTransform(parse, pxComma, pxParen, degParen) {
       s.push(pop(s) + "scale(" + xb + "," + yb + ")");
     }
   }
-  return function(a2, b) {
+  return function(a, b) {
     var s = [], q = [];
-    a2 = parse(a2), b = parse(b);
-    translate(a2.translateX, a2.translateY, b.translateX, b.translateY, s, q);
-    rotate(a2.rotate, b.rotate, s, q);
-    skewX(a2.skewX, b.skewX, s, q);
-    scale(a2.scaleX, a2.scaleY, b.scaleX, b.scaleY, s, q);
-    a2 = b = null;
+    a = parse(a), b = parse(b);
+    translate(a.translateX, a.translateY, b.translateX, b.translateY, s, q);
+    rotate(a.rotate, b.rotate, s, q);
+    skewX(a.skewX, b.skewX, s, q);
+    scale(a.scaleX, a.scaleY, b.scaleX, b.scaleY, s, q);
+    a = b = null;
     return function(t) {
       var i = -1, n = q.length, o2;
       while (++i < n) s[(o2 = q[i]).i] = o2.x(t);
@@ -7651,51 +7408,6 @@ function interpolateTransform(parse, pxComma, pxParen, degParen) {
 }
 var interpolateTransformCss = interpolateTransform(parseCss, "px, ", "px)", "deg)");
 var interpolateTransformSvg = interpolateTransform(parseSvg, ", ", ")", ")");
-
-// node_modules/d3-interpolate/src/zoom.js
-var epsilon2 = 1e-12;
-function cosh(x3) {
-  return ((x3 = Math.exp(x3)) + 1 / x3) / 2;
-}
-function sinh(x3) {
-  return ((x3 = Math.exp(x3)) - 1 / x3) / 2;
-}
-function tanh(x3) {
-  return ((x3 = Math.exp(2 * x3)) - 1) / (x3 + 1);
-}
-var zoom_default = function zoomRho(rho, rho2, rho4) {
-  function zoom(p0, p1) {
-    var ux0 = p0[0], uy0 = p0[1], w0 = p0[2], ux1 = p1[0], uy1 = p1[1], w1 = p1[2], dx = ux1 - ux0, dy = uy1 - uy0, d2 = dx * dx + dy * dy, i, S;
-    if (d2 < epsilon2) {
-      S = Math.log(w1 / w0) / rho;
-      i = function(t) {
-        return [
-          ux0 + t * dx,
-          uy0 + t * dy,
-          w0 * Math.exp(rho * t * S)
-        ];
-      };
-    } else {
-      var d1 = Math.sqrt(d2), b0 = (w1 * w1 - w0 * w0 + rho4 * d2) / (2 * w0 * rho2 * d1), b1 = (w1 * w1 - w0 * w0 - rho4 * d2) / (2 * w1 * rho2 * d1), r0 = Math.log(Math.sqrt(b0 * b0 + 1) - b0), r1 = Math.log(Math.sqrt(b1 * b1 + 1) - b1);
-      S = (r1 - r0) / rho;
-      i = function(t) {
-        var s = t * S, coshr0 = cosh(r0), u = w0 / (rho2 * d1) * (coshr0 * tanh(rho * s + r0) - sinh(r0));
-        return [
-          ux0 + u * dx,
-          uy0 + u * dy,
-          w0 * coshr0 / cosh(rho * s + r0)
-        ];
-      };
-    }
-    i.duration = S * 1e3 * rho / Math.SQRT2;
-    return i;
-  }
-  zoom.rho = function(_3) {
-    var _1 = Math.max(1e-3, +_3), _22 = _1 * _1, _4 = _22 * _22;
-    return zoomRho(_1, _22, _4);
-  };
-  return zoom;
-}(Math.SQRT2, 2, 4);
 
 // node_modules/d3-timer/src/timer.js
 var frame = 0;
@@ -7820,13 +7532,13 @@ var STARTED = 3;
 var RUNNING = 4;
 var ENDING = 5;
 var ENDED = 6;
-function schedule_default(node, name, id2, index2, group, timing) {
+function schedule_default(node, name, id2, index, group, timing) {
   var schedules = node.__transition;
   if (!schedules) node.__transition = {};
   else if (id2 in schedules) return;
   create(node, id2, {
     name,
-    index: index2,
+    index,
     // For context during callback.
     group,
     // For context during callback.
@@ -8009,9 +7721,9 @@ function tweenValue(transition2, name, value) {
 }
 
 // node_modules/d3-transition/src/transition/interpolate.js
-function interpolate_default(a2, b) {
-  var c2;
-  return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c2 = color(b)) ? (b = c2, rgb_default) : string_default)(a2, b);
+function interpolate_default(a, b) {
+  var c;
+  return (typeof b === "number" ? number_default : b instanceof color ? rgb_default : (c = color(b)) ? (b = c, rgb_default) : string_default)(a, b);
 }
 
 // node_modules/d3-transition/src/transition/attr.js
@@ -8164,7 +7876,7 @@ function easeVarying_default(value) {
 // node_modules/d3-transition/src/transition/filter.js
 function filter_default2(match) {
   if (typeof match !== "function") match = matcher_default(match);
-  for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, subgroup = subgroups[j] = [], node, i = 0; i < n; ++i) {
       if ((node = group[i]) && match.call(node, node.__data__, i, group)) {
         subgroup.push(node);
@@ -8177,7 +7889,7 @@ function filter_default2(match) {
 // node_modules/d3-transition/src/transition/merge.js
 function merge_default2(transition2) {
   if (transition2._id !== this._id) throw new Error();
-  for (var groups0 = this._groups, groups1 = transition2._groups, m0 = groups0.length, m1 = groups1.length, m2 = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m2; ++j) {
+  for (var groups0 = this._groups, groups1 = transition2._groups, m0 = groups0.length, m1 = groups1.length, m = Math.min(m0, m1), merges = new Array(m0), j = 0; j < m; ++j) {
     for (var group0 = groups0[j], group1 = groups1[j], n = group0.length, merge = merges[j] = new Array(n), node, i = 0; i < n; ++i) {
       if (node = group0[i] || group1[i]) {
         merge[i] = node;
@@ -8227,7 +7939,7 @@ function remove_default2() {
 function select_default3(select) {
   var name = this._name, id2 = this._id;
   if (typeof select !== "function") select = selector_default(select);
-  for (var groups = this._groups, m2 = groups.length, subgroups = new Array(m2), j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = new Array(m), j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, subgroup = subgroups[j] = new Array(n), node, subnode, i = 0; i < n; ++i) {
       if ((node = group[i]) && (subnode = select.call(node, node.__data__, i, group))) {
         if ("__data__" in node) subnode.__data__ = node.__data__;
@@ -8243,7 +7955,7 @@ function select_default3(select) {
 function selectAll_default2(select) {
   var name = this._name, id2 = this._id;
   if (typeof select !== "function") select = selectorAll_default(select);
-  for (var groups = this._groups, m2 = groups.length, subgroups = [], parents = [], j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, subgroups = [], parents = [], j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
         for (var children2 = select.call(node, node.__data__, i, group), child, inherit2 = get2(node, id2), k2 = 0, l2 = children2.length; k2 < l2; ++k2) {
@@ -8373,7 +8085,7 @@ function textTween_default(value) {
 // node_modules/d3-transition/src/transition/transition.js
 function transition_default() {
   var name = this._name, id0 = this._id, id1 = newId();
-  for (var groups = this._groups, m2 = groups.length, j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
         var inherit2 = get2(node, id0);
@@ -8487,7 +8199,7 @@ function transition_default2(name) {
   } else {
     id2 = newId(), (timing = defaultTiming).time = now(), name = name == null ? null : name + "";
   }
-  for (var groups = this._groups, m2 = groups.length, j = 0; j < m2; ++j) {
+  for (var groups = this._groups, m = groups.length, j = 0; j < m; ++j) {
     for (var group = groups[j], n = group.length, node, i = 0; i < n; ++i) {
       if (node = group[i]) {
         schedule_default(node, name, id2, i, group, timing || inherit(node, id2));
@@ -8512,8 +8224,8 @@ function number2(e) {
 var X = {
   name: "x",
   handles: ["w", "e"].map(type),
-  input: function(x3, e) {
-    return x3 == null ? null : [[+x3[0], e[0][1]], [+x3[1], e[1][1]]];
+  input: function(x, e) {
+    return x == null ? null : [[+x[0], e[0][1]], [+x[1], e[1][1]]];
   },
   output: function(xy) {
     return xy && [xy[0][0], xy[1][0]];
@@ -8522,8 +8234,8 @@ var X = {
 var Y = {
   name: "y",
   handles: ["n", "s"].map(type),
-  input: function(y3, e) {
-    return y3 == null ? null : [[e[0][0], +y3[0]], [e[1][0], +y3[1]]];
+  input: function(y, e) {
+    return y == null ? null : [[e[0][0], +y[0]], [e[1][0], +y[1]]];
   },
   output: function(xy) {
     return xy && [xy[0][1], xy[1][1]];
@@ -8543,750 +8255,43 @@ function type(t) {
   return { type: t };
 }
 
-// node_modules/d3-force/src/center.js
-function center_default(x3, y3) {
-  var nodes, strength = 1;
-  if (x3 == null) x3 = 0;
-  if (y3 == null) y3 = 0;
-  function force() {
-    var i, n = nodes.length, node, sx = 0, sy = 0;
-    for (i = 0; i < n; ++i) {
-      node = nodes[i], sx += node.x, sy += node.y;
-    }
-    for (sx = (sx / n - x3) * strength, sy = (sy / n - y3) * strength, i = 0; i < n; ++i) {
-      node = nodes[i], node.x -= sx, node.y -= sy;
-    }
-  }
-  force.initialize = function(_3) {
-    nodes = _3;
-  };
-  force.x = function(_3) {
-    return arguments.length ? (x3 = +_3, force) : x3;
-  };
-  force.y = function(_3) {
-    return arguments.length ? (y3 = +_3, force) : y3;
-  };
-  force.strength = function(_3) {
-    return arguments.length ? (strength = +_3, force) : strength;
-  };
-  return force;
-}
-
-// node_modules/d3-quadtree/src/add.js
-function add_default(d) {
-  const x3 = +this._x.call(null, d), y3 = +this._y.call(null, d);
-  return add(this.cover(x3, y3), x3, y3, d);
-}
-function add(tree, x3, y3, d) {
-  if (isNaN(x3) || isNaN(y3)) return tree;
-  var parent, node = tree._root, leaf = { data: d }, x0 = tree._x0, y0 = tree._y0, x1 = tree._x1, y1 = tree._y1, xm, ym, xp, yp, right, bottom, i, j;
-  if (!node) return tree._root = leaf, tree;
-  while (node.length) {
-    if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
-    else x1 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-    if (parent = node, !(node = node[i = bottom << 1 | right])) return parent[i] = leaf, tree;
-  }
-  xp = +tree._x.call(null, node.data);
-  yp = +tree._y.call(null, node.data);
-  if (x3 === xp && y3 === yp) return leaf.next = node, parent ? parent[i] = leaf : tree._root = leaf, tree;
-  do {
-    parent = parent ? parent[i] = new Array(4) : tree._root = new Array(4);
-    if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
-    else x1 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-  } while ((i = bottom << 1 | right) === (j = (yp >= ym) << 1 | xp >= xm));
-  return parent[j] = node, parent[i] = leaf, tree;
-}
-function addAll(data) {
-  var d, i, n = data.length, x3, y3, xz = new Array(n), yz = new Array(n), x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-  for (i = 0; i < n; ++i) {
-    if (isNaN(x3 = +this._x.call(null, d = data[i])) || isNaN(y3 = +this._y.call(null, d))) continue;
-    xz[i] = x3;
-    yz[i] = y3;
-    if (x3 < x0) x0 = x3;
-    if (x3 > x1) x1 = x3;
-    if (y3 < y0) y0 = y3;
-    if (y3 > y1) y1 = y3;
-  }
-  if (x0 > x1 || y0 > y1) return this;
-  this.cover(x0, y0).cover(x1, y1);
-  for (i = 0; i < n; ++i) {
-    add(this, xz[i], yz[i], data[i]);
-  }
-  return this;
-}
-
-// node_modules/d3-quadtree/src/cover.js
-function cover_default(x3, y3) {
-  if (isNaN(x3 = +x3) || isNaN(y3 = +y3)) return this;
-  var x0 = this._x0, y0 = this._y0, x1 = this._x1, y1 = this._y1;
-  if (isNaN(x0)) {
-    x1 = (x0 = Math.floor(x3)) + 1;
-    y1 = (y0 = Math.floor(y3)) + 1;
-  } else {
-    var z = x1 - x0 || 1, node = this._root, parent, i;
-    while (x0 > x3 || x3 >= x1 || y0 > y3 || y3 >= y1) {
-      i = (y3 < y0) << 1 | x3 < x0;
-      parent = new Array(4), parent[i] = node, node = parent, z *= 2;
-      switch (i) {
-        case 0:
-          x1 = x0 + z, y1 = y0 + z;
-          break;
-        case 1:
-          x0 = x1 - z, y1 = y0 + z;
-          break;
-        case 2:
-          x1 = x0 + z, y0 = y1 - z;
-          break;
-        case 3:
-          x0 = x1 - z, y0 = y1 - z;
-          break;
-      }
-    }
-    if (this._root && this._root.length) this._root = node;
-  }
-  this._x0 = x0;
-  this._y0 = y0;
-  this._x1 = x1;
-  this._y1 = y1;
-  return this;
-}
-
-// node_modules/d3-quadtree/src/data.js
-function data_default2() {
-  var data = [];
-  this.visit(function(node) {
-    if (!node.length) do
-      data.push(node.data);
-    while (node = node.next);
-  });
-  return data;
-}
-
-// node_modules/d3-quadtree/src/extent.js
-function extent_default(_3) {
-  return arguments.length ? this.cover(+_3[0][0], +_3[0][1]).cover(+_3[1][0], +_3[1][1]) : isNaN(this._x0) ? void 0 : [[this._x0, this._y0], [this._x1, this._y1]];
-}
-
-// node_modules/d3-quadtree/src/quad.js
-function quad_default(node, x0, y0, x1, y1) {
-  this.node = node;
-  this.x0 = x0;
-  this.y0 = y0;
-  this.x1 = x1;
-  this.y1 = y1;
-}
-
-// node_modules/d3-quadtree/src/find.js
-function find_default(x3, y3, radius) {
-  var data, x0 = this._x0, y0 = this._y0, x1, y1, x22, y22, x32 = this._x1, y32 = this._y1, quads = [], node = this._root, q, i;
-  if (node) quads.push(new quad_default(node, x0, y0, x32, y32));
-  if (radius == null) radius = Infinity;
-  else {
-    x0 = x3 - radius, y0 = y3 - radius;
-    x32 = x3 + radius, y32 = y3 + radius;
-    radius *= radius;
-  }
-  while (q = quads.pop()) {
-    if (!(node = q.node) || (x1 = q.x0) > x32 || (y1 = q.y0) > y32 || (x22 = q.x1) < x0 || (y22 = q.y1) < y0) continue;
-    if (node.length) {
-      var xm = (x1 + x22) / 2, ym = (y1 + y22) / 2;
-      quads.push(
-        new quad_default(node[3], xm, ym, x22, y22),
-        new quad_default(node[2], x1, ym, xm, y22),
-        new quad_default(node[1], xm, y1, x22, ym),
-        new quad_default(node[0], x1, y1, xm, ym)
-      );
-      if (i = (y3 >= ym) << 1 | x3 >= xm) {
-        q = quads[quads.length - 1];
-        quads[quads.length - 1] = quads[quads.length - 1 - i];
-        quads[quads.length - 1 - i] = q;
-      }
-    } else {
-      var dx = x3 - +this._x.call(null, node.data), dy = y3 - +this._y.call(null, node.data), d2 = dx * dx + dy * dy;
-      if (d2 < radius) {
-        var d = Math.sqrt(radius = d2);
-        x0 = x3 - d, y0 = y3 - d;
-        x32 = x3 + d, y32 = y3 + d;
-        data = node.data;
-      }
-    }
-  }
-  return data;
-}
-
-// node_modules/d3-quadtree/src/remove.js
-function remove_default3(d) {
-  if (isNaN(x3 = +this._x.call(null, d)) || isNaN(y3 = +this._y.call(null, d))) return this;
-  var parent, node = this._root, retainer, previous, next, x0 = this._x0, y0 = this._y0, x1 = this._x1, y1 = this._y1, x3, y3, xm, ym, right, bottom, i, j;
-  if (!node) return this;
-  if (node.length) while (true) {
-    if (right = x3 >= (xm = (x0 + x1) / 2)) x0 = xm;
-    else x1 = xm;
-    if (bottom = y3 >= (ym = (y0 + y1) / 2)) y0 = ym;
-    else y1 = ym;
-    if (!(parent = node, node = node[i = bottom << 1 | right])) return this;
-    if (!node.length) break;
-    if (parent[i + 1 & 3] || parent[i + 2 & 3] || parent[i + 3 & 3]) retainer = parent, j = i;
-  }
-  while (node.data !== d) if (!(previous = node, node = node.next)) return this;
-  if (next = node.next) delete node.next;
-  if (previous) return next ? previous.next = next : delete previous.next, this;
-  if (!parent) return this._root = next, this;
-  next ? parent[i] = next : delete parent[i];
-  if ((node = parent[0] || parent[1] || parent[2] || parent[3]) && node === (parent[3] || parent[2] || parent[1] || parent[0]) && !node.length) {
-    if (retainer) retainer[j] = node;
-    else this._root = node;
-  }
-  return this;
-}
-function removeAll(data) {
-  for (var i = 0, n = data.length; i < n; ++i) this.remove(data[i]);
-  return this;
-}
-
-// node_modules/d3-quadtree/src/root.js
-function root_default() {
-  return this._root;
-}
-
-// node_modules/d3-quadtree/src/size.js
-function size_default2() {
-  var size = 0;
-  this.visit(function(node) {
-    if (!node.length) do
-      ++size;
-    while (node = node.next);
-  });
-  return size;
-}
-
-// node_modules/d3-quadtree/src/visit.js
-function visit_default(callback) {
-  var quads = [], q, node = this._root, child, x0, y0, x1, y1;
-  if (node) quads.push(new quad_default(node, this._x0, this._y0, this._x1, this._y1));
-  while (q = quads.pop()) {
-    if (!callback(node = q.node, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1) && node.length) {
-      var xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
-      if (child = node[3]) quads.push(new quad_default(child, xm, ym, x1, y1));
-      if (child = node[2]) quads.push(new quad_default(child, x0, ym, xm, y1));
-      if (child = node[1]) quads.push(new quad_default(child, xm, y0, x1, ym));
-      if (child = node[0]) quads.push(new quad_default(child, x0, y0, xm, ym));
-    }
-  }
-  return this;
-}
-
-// node_modules/d3-quadtree/src/visitAfter.js
-function visitAfter_default(callback) {
-  var quads = [], next = [], q;
-  if (this._root) quads.push(new quad_default(this._root, this._x0, this._y0, this._x1, this._y1));
-  while (q = quads.pop()) {
-    var node = q.node;
-    if (node.length) {
-      var child, x0 = q.x0, y0 = q.y0, x1 = q.x1, y1 = q.y1, xm = (x0 + x1) / 2, ym = (y0 + y1) / 2;
-      if (child = node[0]) quads.push(new quad_default(child, x0, y0, xm, ym));
-      if (child = node[1]) quads.push(new quad_default(child, xm, y0, x1, ym));
-      if (child = node[2]) quads.push(new quad_default(child, x0, ym, xm, y1));
-      if (child = node[3]) quads.push(new quad_default(child, xm, ym, x1, y1));
-    }
-    next.push(q);
-  }
-  while (q = next.pop()) {
-    callback(q.node, q.x0, q.y0, q.x1, q.y1);
-  }
-  return this;
-}
-
-// node_modules/d3-quadtree/src/x.js
-function defaultX(d) {
-  return d[0];
-}
-function x_default(_3) {
-  return arguments.length ? (this._x = _3, this) : this._x;
-}
-
-// node_modules/d3-quadtree/src/y.js
-function defaultY(d) {
-  return d[1];
-}
-function y_default(_3) {
-  return arguments.length ? (this._y = _3, this) : this._y;
-}
-
-// node_modules/d3-quadtree/src/quadtree.js
-function quadtree(nodes, x3, y3) {
-  var tree = new Quadtree(x3 == null ? defaultX : x3, y3 == null ? defaultY : y3, NaN, NaN, NaN, NaN);
-  return nodes == null ? tree : tree.addAll(nodes);
-}
-function Quadtree(x3, y3, x0, y0, x1, y1) {
-  this._x = x3;
-  this._y = y3;
-  this._x0 = x0;
-  this._y0 = y0;
-  this._x1 = x1;
-  this._y1 = y1;
-  this._root = void 0;
-}
-function leaf_copy(leaf) {
-  var copy = { data: leaf.data }, next = copy;
-  while (leaf = leaf.next) next = next.next = { data: leaf.data };
-  return copy;
-}
-var treeProto = quadtree.prototype = Quadtree.prototype;
-treeProto.copy = function() {
-  var copy = new Quadtree(this._x, this._y, this._x0, this._y0, this._x1, this._y1), node = this._root, nodes, child;
-  if (!node) return copy;
-  if (!node.length) return copy._root = leaf_copy(node), copy;
-  nodes = [{ source: node, target: copy._root = new Array(4) }];
-  while (node = nodes.pop()) {
-    for (var i = 0; i < 4; ++i) {
-      if (child = node.source[i]) {
-        if (child.length) nodes.push({ source: child, target: node.target[i] = new Array(4) });
-        else node.target[i] = leaf_copy(child);
-      }
-    }
-  }
-  return copy;
-};
-treeProto.add = add_default;
-treeProto.addAll = addAll;
-treeProto.cover = cover_default;
-treeProto.data = data_default2;
-treeProto.extent = extent_default;
-treeProto.find = find_default;
-treeProto.remove = remove_default3;
-treeProto.removeAll = removeAll;
-treeProto.root = root_default;
-treeProto.size = size_default2;
-treeProto.visit = visit_default;
-treeProto.visitAfter = visitAfter_default;
-treeProto.x = x_default;
-treeProto.y = y_default;
-
-// node_modules/d3-force/src/constant.js
-function constant_default5(x3) {
-  return function() {
-    return x3;
-  };
-}
-
-// node_modules/d3-force/src/jiggle.js
-function jiggle_default(random) {
-  return (random() - 0.5) * 1e-6;
-}
-
-// node_modules/d3-force/src/collide.js
-function x(d) {
-  return d.x + d.vx;
-}
-function y(d) {
-  return d.y + d.vy;
-}
-function collide_default(radius) {
-  var nodes, radii, random, strength = 1, iterations = 1;
-  if (typeof radius !== "function") radius = constant_default5(radius == null ? 1 : +radius);
-  function force() {
-    var i, n = nodes.length, tree, node, xi, yi, ri, ri2;
-    for (var k2 = 0; k2 < iterations; ++k2) {
-      tree = quadtree(nodes, x, y).visitAfter(prepare);
-      for (i = 0; i < n; ++i) {
-        node = nodes[i];
-        ri = radii[node.index], ri2 = ri * ri;
-        xi = node.x + node.vx;
-        yi = node.y + node.vy;
-        tree.visit(apply);
-      }
-    }
-    function apply(quad, x0, y0, x1, y1) {
-      var data = quad.data, rj = quad.r, r = ri + rj;
-      if (data) {
-        if (data.index > node.index) {
-          var x3 = xi - data.x - data.vx, y3 = yi - data.y - data.vy, l2 = x3 * x3 + y3 * y3;
-          if (l2 < r * r) {
-            if (x3 === 0) x3 = jiggle_default(random), l2 += x3 * x3;
-            if (y3 === 0) y3 = jiggle_default(random), l2 += y3 * y3;
-            l2 = (r - (l2 = Math.sqrt(l2))) / l2 * strength;
-            node.vx += (x3 *= l2) * (r = (rj *= rj) / (ri2 + rj));
-            node.vy += (y3 *= l2) * r;
-            data.vx -= x3 * (r = 1 - r);
-            data.vy -= y3 * r;
-          }
-        }
-        return;
-      }
-      return x0 > xi + r || x1 < xi - r || y0 > yi + r || y1 < yi - r;
-    }
-  }
-  function prepare(quad) {
-    if (quad.data) return quad.r = radii[quad.data.index];
-    for (var i = quad.r = 0; i < 4; ++i) {
-      if (quad[i] && quad[i].r > quad.r) {
-        quad.r = quad[i].r;
-      }
-    }
-  }
-  function initialize() {
-    if (!nodes) return;
-    var i, n = nodes.length, node;
-    radii = new Array(n);
-    for (i = 0; i < n; ++i) node = nodes[i], radii[node.index] = +radius(node, i, nodes);
-  }
-  force.initialize = function(_nodes, _random) {
-    nodes = _nodes;
-    random = _random;
-    initialize();
-  };
-  force.iterations = function(_3) {
-    return arguments.length ? (iterations = +_3, force) : iterations;
-  };
-  force.strength = function(_3) {
-    return arguments.length ? (strength = +_3, force) : strength;
-  };
-  force.radius = function(_3) {
-    return arguments.length ? (radius = typeof _3 === "function" ? _3 : constant_default5(+_3), initialize(), force) : radius;
-  };
-  return force;
-}
-
-// node_modules/d3-force/src/link.js
-function index(d) {
-  return d.index;
-}
-function find2(nodeById, nodeId) {
-  var node = nodeById.get(nodeId);
-  if (!node) throw new Error("node not found: " + nodeId);
-  return node;
-}
-function link_default(links) {
-  var id2 = index, strength = defaultStrength, strengths, distance = constant_default5(30), distances, nodes, count, bias, random, iterations = 1;
-  if (links == null) links = [];
-  function defaultStrength(link) {
-    return 1 / Math.min(count[link.source.index], count[link.target.index]);
-  }
-  function force(alpha) {
-    for (var k2 = 0, n = links.length; k2 < iterations; ++k2) {
-      for (var i = 0, link, source, target, x3, y3, l2, b; i < n; ++i) {
-        link = links[i], source = link.source, target = link.target;
-        x3 = target.x + target.vx - source.x - source.vx || jiggle_default(random);
-        y3 = target.y + target.vy - source.y - source.vy || jiggle_default(random);
-        l2 = Math.sqrt(x3 * x3 + y3 * y3);
-        l2 = (l2 - distances[i]) / l2 * alpha * strengths[i];
-        x3 *= l2, y3 *= l2;
-        target.vx -= x3 * (b = bias[i]);
-        target.vy -= y3 * b;
-        source.vx += x3 * (b = 1 - b);
-        source.vy += y3 * b;
-      }
-    }
-  }
-  function initialize() {
-    if (!nodes) return;
-    var i, n = nodes.length, m2 = links.length, nodeById = new Map(nodes.map((d, i2) => [id2(d, i2, nodes), d])), link;
-    for (i = 0, count = new Array(n); i < m2; ++i) {
-      link = links[i], link.index = i;
-      if (typeof link.source !== "object") link.source = find2(nodeById, link.source);
-      if (typeof link.target !== "object") link.target = find2(nodeById, link.target);
-      count[link.source.index] = (count[link.source.index] || 0) + 1;
-      count[link.target.index] = (count[link.target.index] || 0) + 1;
-    }
-    for (i = 0, bias = new Array(m2); i < m2; ++i) {
-      link = links[i], bias[i] = count[link.source.index] / (count[link.source.index] + count[link.target.index]);
-    }
-    strengths = new Array(m2), initializeStrength();
-    distances = new Array(m2), initializeDistance();
-  }
-  function initializeStrength() {
-    if (!nodes) return;
-    for (var i = 0, n = links.length; i < n; ++i) {
-      strengths[i] = +strength(links[i], i, links);
-    }
-  }
-  function initializeDistance() {
-    if (!nodes) return;
-    for (var i = 0, n = links.length; i < n; ++i) {
-      distances[i] = +distance(links[i], i, links);
-    }
-  }
-  force.initialize = function(_nodes, _random) {
-    nodes = _nodes;
-    random = _random;
-    initialize();
-  };
-  force.links = function(_3) {
-    return arguments.length ? (links = _3, initialize(), force) : links;
-  };
-  force.id = function(_3) {
-    return arguments.length ? (id2 = _3, force) : id2;
-  };
-  force.iterations = function(_3) {
-    return arguments.length ? (iterations = +_3, force) : iterations;
-  };
-  force.strength = function(_3) {
-    return arguments.length ? (strength = typeof _3 === "function" ? _3 : constant_default5(+_3), initializeStrength(), force) : strength;
-  };
-  force.distance = function(_3) {
-    return arguments.length ? (distance = typeof _3 === "function" ? _3 : constant_default5(+_3), initializeDistance(), force) : distance;
-  };
-  return force;
-}
-
-// node_modules/d3-force/src/lcg.js
-var a = 1664525;
-var c = 1013904223;
-var m = 4294967296;
-function lcg_default() {
-  let s = 1;
-  return () => (s = (a * s + c) % m) / m;
-}
-
-// node_modules/d3-force/src/simulation.js
-function x2(d) {
-  return d.x;
-}
-function y2(d) {
-  return d.y;
-}
-var initialRadius = 10;
-var initialAngle = Math.PI * (3 - Math.sqrt(5));
-function simulation_default(nodes) {
-  var simulation, alpha = 1, alphaMin = 1e-3, alphaDecay = 1 - Math.pow(alphaMin, 1 / 300), alphaTarget = 0, velocityDecay = 0.6, forces = /* @__PURE__ */ new Map(), stepper = timer(step), event = dispatch_default("tick", "end"), random = lcg_default();
-  if (nodes == null) nodes = [];
-  function step() {
-    tick2();
-    event.call("tick", simulation);
-    if (alpha < alphaMin) {
-      stepper.stop();
-      event.call("end", simulation);
-    }
-  }
-  function tick2(iterations) {
-    var i, n = nodes.length, node;
-    if (iterations === void 0) iterations = 1;
-    for (var k2 = 0; k2 < iterations; ++k2) {
-      alpha += (alphaTarget - alpha) * alphaDecay;
-      forces.forEach(function(force) {
-        force(alpha);
-      });
-      for (i = 0; i < n; ++i) {
-        node = nodes[i];
-        if (node.fx == null) node.x += node.vx *= velocityDecay;
-        else node.x = node.fx, node.vx = 0;
-        if (node.fy == null) node.y += node.vy *= velocityDecay;
-        else node.y = node.fy, node.vy = 0;
-      }
-    }
-    return simulation;
-  }
-  function initializeNodes() {
-    for (var i = 0, n = nodes.length, node; i < n; ++i) {
-      node = nodes[i], node.index = i;
-      if (node.fx != null) node.x = node.fx;
-      if (node.fy != null) node.y = node.fy;
-      if (isNaN(node.x) || isNaN(node.y)) {
-        var radius = initialRadius * Math.sqrt(0.5 + i), angle = i * initialAngle;
-        node.x = radius * Math.cos(angle);
-        node.y = radius * Math.sin(angle);
-      }
-      if (isNaN(node.vx) || isNaN(node.vy)) {
-        node.vx = node.vy = 0;
-      }
-    }
-  }
-  function initializeForce(force) {
-    if (force.initialize) force.initialize(nodes, random);
-    return force;
-  }
-  initializeNodes();
-  return simulation = {
-    tick: tick2,
-    restart: function() {
-      return stepper.restart(step), simulation;
-    },
-    stop: function() {
-      return stepper.stop(), simulation;
-    },
-    nodes: function(_3) {
-      return arguments.length ? (nodes = _3, initializeNodes(), forces.forEach(initializeForce), simulation) : nodes;
-    },
-    alpha: function(_3) {
-      return arguments.length ? (alpha = +_3, simulation) : alpha;
-    },
-    alphaMin: function(_3) {
-      return arguments.length ? (alphaMin = +_3, simulation) : alphaMin;
-    },
-    alphaDecay: function(_3) {
-      return arguments.length ? (alphaDecay = +_3, simulation) : +alphaDecay;
-    },
-    alphaTarget: function(_3) {
-      return arguments.length ? (alphaTarget = +_3, simulation) : alphaTarget;
-    },
-    velocityDecay: function(_3) {
-      return arguments.length ? (velocityDecay = 1 - _3, simulation) : 1 - velocityDecay;
-    },
-    randomSource: function(_3) {
-      return arguments.length ? (random = _3, forces.forEach(initializeForce), simulation) : random;
-    },
-    force: function(name, _3) {
-      return arguments.length > 1 ? (_3 == null ? forces.delete(name) : forces.set(name, initializeForce(_3)), simulation) : forces.get(name);
-    },
-    find: function(x3, y3, radius) {
-      var i = 0, n = nodes.length, dx, dy, d2, node, closest;
-      if (radius == null) radius = Infinity;
-      else radius *= radius;
-      for (i = 0; i < n; ++i) {
-        node = nodes[i];
-        dx = x3 - node.x;
-        dy = y3 - node.y;
-        d2 = dx * dx + dy * dy;
-        if (d2 < radius) closest = node, radius = d2;
-      }
-      return closest;
-    },
-    on: function(name, _3) {
-      return arguments.length > 1 ? (event.on(name, _3), simulation) : event.on(name);
-    }
-  };
-}
-
-// node_modules/d3-force/src/manyBody.js
-function manyBody_default() {
-  var nodes, node, random, alpha, strength = constant_default5(-30), strengths, distanceMin2 = 1, distanceMax2 = Infinity, theta2 = 0.81;
-  function force(_3) {
-    var i, n = nodes.length, tree = quadtree(nodes, x2, y2).visitAfter(accumulate);
-    for (alpha = _3, i = 0; i < n; ++i) node = nodes[i], tree.visit(apply);
-  }
-  function initialize() {
-    if (!nodes) return;
-    var i, n = nodes.length, node2;
-    strengths = new Array(n);
-    for (i = 0; i < n; ++i) node2 = nodes[i], strengths[node2.index] = +strength(node2, i, nodes);
-  }
-  function accumulate(quad) {
-    var strength2 = 0, q, c2, weight = 0, x3, y3, i;
-    if (quad.length) {
-      for (x3 = y3 = i = 0; i < 4; ++i) {
-        if ((q = quad[i]) && (c2 = Math.abs(q.value))) {
-          strength2 += q.value, weight += c2, x3 += c2 * q.x, y3 += c2 * q.y;
-        }
-      }
-      quad.x = x3 / weight;
-      quad.y = y3 / weight;
-    } else {
-      q = quad;
-      q.x = q.data.x;
-      q.y = q.data.y;
-      do
-        strength2 += strengths[q.data.index];
-      while (q = q.next);
-    }
-    quad.value = strength2;
-  }
-  function apply(quad, x1, _3, x22) {
-    if (!quad.value) return true;
-    var x3 = quad.x - node.x, y3 = quad.y - node.y, w2 = x22 - x1, l2 = x3 * x3 + y3 * y3;
-    if (w2 * w2 / theta2 < l2) {
-      if (l2 < distanceMax2) {
-        if (x3 === 0) x3 = jiggle_default(random), l2 += x3 * x3;
-        if (y3 === 0) y3 = jiggle_default(random), l2 += y3 * y3;
-        if (l2 < distanceMin2) l2 = Math.sqrt(distanceMin2 * l2);
-        node.vx += x3 * quad.value * alpha / l2;
-        node.vy += y3 * quad.value * alpha / l2;
-      }
-      return true;
-    } else if (quad.length || l2 >= distanceMax2) return;
-    if (quad.data !== node || quad.next) {
-      if (x3 === 0) x3 = jiggle_default(random), l2 += x3 * x3;
-      if (y3 === 0) y3 = jiggle_default(random), l2 += y3 * y3;
-      if (l2 < distanceMin2) l2 = Math.sqrt(distanceMin2 * l2);
-    }
-    do
-      if (quad.data !== node) {
-        w2 = strengths[quad.data.index] * alpha / l2;
-        node.vx += x3 * w2;
-        node.vy += y3 * w2;
-      }
-    while (quad = quad.next);
-  }
-  force.initialize = function(_nodes, _random) {
-    nodes = _nodes;
-    random = _random;
-    initialize();
-  };
-  force.strength = function(_3) {
-    return arguments.length ? (strength = typeof _3 === "function" ? _3 : constant_default5(+_3), initialize(), force) : strength;
-  };
-  force.distanceMin = function(_3) {
-    return arguments.length ? (distanceMin2 = _3 * _3, force) : Math.sqrt(distanceMin2);
-  };
-  force.distanceMax = function(_3) {
-    return arguments.length ? (distanceMax2 = _3 * _3, force) : Math.sqrt(distanceMax2);
-  };
-  force.theta = function(_3) {
-    return arguments.length ? (theta2 = _3 * _3, force) : Math.sqrt(theta2);
-  };
-  return force;
-}
-
-// node_modules/d3-zoom/src/constant.js
-var constant_default6 = (x3) => () => x3;
-
-// node_modules/d3-zoom/src/event.js
-function ZoomEvent(type2, {
-  sourceEvent,
-  target,
-  transform: transform2,
-  dispatch: dispatch2
-}) {
-  Object.defineProperties(this, {
-    type: { value: type2, enumerable: true, configurable: true },
-    sourceEvent: { value: sourceEvent, enumerable: true, configurable: true },
-    target: { value: target, enumerable: true, configurable: true },
-    transform: { value: transform2, enumerable: true, configurable: true },
-    _: { value: dispatch2 }
-  });
-}
-
 // node_modules/d3-zoom/src/transform.js
-function Transform(k2, x3, y3) {
+function Transform(k2, x, y) {
   this.k = k2;
-  this.x = x3;
-  this.y = y3;
+  this.x = x;
+  this.y = y;
 }
 Transform.prototype = {
   constructor: Transform,
   scale: function(k2) {
     return k2 === 1 ? this : new Transform(this.k * k2, this.x, this.y);
   },
-  translate: function(x3, y3) {
-    return x3 === 0 & y3 === 0 ? this : new Transform(this.k, this.x + this.k * x3, this.y + this.k * y3);
+  translate: function(x, y) {
+    return x === 0 & y === 0 ? this : new Transform(this.k, this.x + this.k * x, this.y + this.k * y);
   },
   apply: function(point) {
     return [point[0] * this.k + this.x, point[1] * this.k + this.y];
   },
-  applyX: function(x3) {
-    return x3 * this.k + this.x;
+  applyX: function(x) {
+    return x * this.k + this.x;
   },
-  applyY: function(y3) {
-    return y3 * this.k + this.y;
+  applyY: function(y) {
+    return y * this.k + this.y;
   },
   invert: function(location2) {
     return [(location2[0] - this.x) / this.k, (location2[1] - this.y) / this.k];
   },
-  invertX: function(x3) {
-    return (x3 - this.x) / this.k;
+  invertX: function(x) {
+    return (x - this.x) / this.k;
   },
-  invertY: function(y3) {
-    return (y3 - this.y) / this.k;
+  invertY: function(y) {
+    return (y - this.y) / this.k;
   },
-  rescaleX: function(x3) {
-    return x3.copy().domain(x3.range().map(this.invertX, this).map(x3.invert, x3));
+  rescaleX: function(x) {
+    return x.copy().domain(x.range().map(this.invertX, this).map(x.invert, x));
   },
-  rescaleY: function(y3) {
-    return y3.copy().domain(y3.range().map(this.invertY, this).map(y3.invert, y3));
+  rescaleY: function(y) {
+    return y.copy().domain(y.range().map(this.invertY, this).map(y.invert, y));
   },
   toString: function() {
     return "translate(" + this.x + "," + this.y + ") scale(" + this.k + ")";
@@ -9297,330 +8302,6 @@ transform.prototype = Transform.prototype;
 function transform(node) {
   while (!node.__zoom) if (!(node = node.parentNode)) return identity2;
   return node.__zoom;
-}
-
-// node_modules/d3-zoom/src/noevent.js
-function nopropagation3(event) {
-  event.stopImmediatePropagation();
-}
-function noevent_default3(event) {
-  event.preventDefault();
-  event.stopImmediatePropagation();
-}
-
-// node_modules/d3-zoom/src/zoom.js
-function defaultFilter2(event) {
-  return (!event.ctrlKey || event.type === "wheel") && !event.button;
-}
-function defaultExtent() {
-  var e = this;
-  if (e instanceof SVGElement) {
-    e = e.ownerSVGElement || e;
-    if (e.hasAttribute("viewBox")) {
-      e = e.viewBox.baseVal;
-      return [[e.x, e.y], [e.x + e.width, e.y + e.height]];
-    }
-    return [[0, 0], [e.width.baseVal.value, e.height.baseVal.value]];
-  }
-  return [[0, 0], [e.clientWidth, e.clientHeight]];
-}
-function defaultTransform() {
-  return this.__zoom || identity2;
-}
-function defaultWheelDelta(event) {
-  return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 2e-3) * (event.ctrlKey ? 10 : 1);
-}
-function defaultTouchable2() {
-  return navigator.maxTouchPoints || "ontouchstart" in this;
-}
-function defaultConstrain(transform2, extent, translateExtent) {
-  var dx0 = transform2.invertX(extent[0][0]) - translateExtent[0][0], dx1 = transform2.invertX(extent[1][0]) - translateExtent[1][0], dy0 = transform2.invertY(extent[0][1]) - translateExtent[0][1], dy1 = transform2.invertY(extent[1][1]) - translateExtent[1][1];
-  return transform2.translate(
-    dx1 > dx0 ? (dx0 + dx1) / 2 : Math.min(0, dx0) || Math.max(0, dx1),
-    dy1 > dy0 ? (dy0 + dy1) / 2 : Math.min(0, dy0) || Math.max(0, dy1)
-  );
-}
-function zoom_default2() {
-  var filter2 = defaultFilter2, extent = defaultExtent, constrain = defaultConstrain, wheelDelta = defaultWheelDelta, touchable = defaultTouchable2, scaleExtent = [0, Infinity], translateExtent = [[-Infinity, -Infinity], [Infinity, Infinity]], duration = 250, interpolate = zoom_default, listeners = dispatch_default("start", "zoom", "end"), touchstarting, touchfirst, touchending, touchDelay = 500, wheelDelay = 150, clickDistance2 = 0, tapDistance = 10;
-  function zoom(selection2) {
-    selection2.property("__zoom", defaultTransform).on("wheel.zoom", wheeled, { passive: false }).on("mousedown.zoom", mousedowned).on("dblclick.zoom", dblclicked).filter(touchable).on("touchstart.zoom", touchstarted).on("touchmove.zoom", touchmoved).on("touchend.zoom touchcancel.zoom", touchended).style("-webkit-tap-highlight-color", "rgba(0,0,0,0)");
-  }
-  zoom.transform = function(collection, transform2, point, event) {
-    var selection2 = collection.selection ? collection.selection() : collection;
-    selection2.property("__zoom", defaultTransform);
-    if (collection !== selection2) {
-      schedule(collection, transform2, point, event);
-    } else {
-      selection2.interrupt().each(function() {
-        gesture(this, arguments).event(event).start().zoom(null, typeof transform2 === "function" ? transform2.apply(this, arguments) : transform2).end();
-      });
-    }
-  };
-  zoom.scaleBy = function(selection2, k2, p, event) {
-    zoom.scaleTo(selection2, function() {
-      var k0 = this.__zoom.k, k1 = typeof k2 === "function" ? k2.apply(this, arguments) : k2;
-      return k0 * k1;
-    }, p, event);
-  };
-  zoom.scaleTo = function(selection2, k2, p, event) {
-    zoom.transform(selection2, function() {
-      var e = extent.apply(this, arguments), t0 = this.__zoom, p0 = p == null ? centroid(e) : typeof p === "function" ? p.apply(this, arguments) : p, p1 = t0.invert(p0), k1 = typeof k2 === "function" ? k2.apply(this, arguments) : k2;
-      return constrain(translate(scale(t0, k1), p0, p1), e, translateExtent);
-    }, p, event);
-  };
-  zoom.translateBy = function(selection2, x3, y3, event) {
-    zoom.transform(selection2, function() {
-      return constrain(this.__zoom.translate(
-        typeof x3 === "function" ? x3.apply(this, arguments) : x3,
-        typeof y3 === "function" ? y3.apply(this, arguments) : y3
-      ), extent.apply(this, arguments), translateExtent);
-    }, null, event);
-  };
-  zoom.translateTo = function(selection2, x3, y3, p, event) {
-    zoom.transform(selection2, function() {
-      var e = extent.apply(this, arguments), t = this.__zoom, p0 = p == null ? centroid(e) : typeof p === "function" ? p.apply(this, arguments) : p;
-      return constrain(identity2.translate(p0[0], p0[1]).scale(t.k).translate(
-        typeof x3 === "function" ? -x3.apply(this, arguments) : -x3,
-        typeof y3 === "function" ? -y3.apply(this, arguments) : -y3
-      ), e, translateExtent);
-    }, p, event);
-  };
-  function scale(transform2, k2) {
-    k2 = Math.max(scaleExtent[0], Math.min(scaleExtent[1], k2));
-    return k2 === transform2.k ? transform2 : new Transform(k2, transform2.x, transform2.y);
-  }
-  function translate(transform2, p0, p1) {
-    var x3 = p0[0] - p1[0] * transform2.k, y3 = p0[1] - p1[1] * transform2.k;
-    return x3 === transform2.x && y3 === transform2.y ? transform2 : new Transform(transform2.k, x3, y3);
-  }
-  function centroid(extent2) {
-    return [(+extent2[0][0] + +extent2[1][0]) / 2, (+extent2[0][1] + +extent2[1][1]) / 2];
-  }
-  function schedule(transition2, transform2, point, event) {
-    transition2.on("start.zoom", function() {
-      gesture(this, arguments).event(event).start();
-    }).on("interrupt.zoom end.zoom", function() {
-      gesture(this, arguments).event(event).end();
-    }).tween("zoom", function() {
-      var that = this, args = arguments, g2 = gesture(that, args).event(event), e = extent.apply(that, args), p = point == null ? centroid(e) : typeof point === "function" ? point.apply(that, args) : point, w2 = Math.max(e[1][0] - e[0][0], e[1][1] - e[0][1]), a2 = that.__zoom, b = typeof transform2 === "function" ? transform2.apply(that, args) : transform2, i = interpolate(a2.invert(p).concat(w2 / a2.k), b.invert(p).concat(w2 / b.k));
-      return function(t) {
-        if (t === 1) t = b;
-        else {
-          var l2 = i(t), k2 = w2 / l2[2];
-          t = new Transform(k2, p[0] - l2[0] * k2, p[1] - l2[1] * k2);
-        }
-        g2.zoom(null, t);
-      };
-    });
-  }
-  function gesture(that, args, clean) {
-    return !clean && that.__zooming || new Gesture(that, args);
-  }
-  function Gesture(that, args) {
-    this.that = that;
-    this.args = args;
-    this.active = 0;
-    this.sourceEvent = null;
-    this.extent = extent.apply(that, args);
-    this.taps = 0;
-  }
-  Gesture.prototype = {
-    event: function(event) {
-      if (event) this.sourceEvent = event;
-      return this;
-    },
-    start: function() {
-      if (++this.active === 1) {
-        this.that.__zooming = this;
-        this.emit("start");
-      }
-      return this;
-    },
-    zoom: function(key, transform2) {
-      if (this.mouse && key !== "mouse") this.mouse[1] = transform2.invert(this.mouse[0]);
-      if (this.touch0 && key !== "touch") this.touch0[1] = transform2.invert(this.touch0[0]);
-      if (this.touch1 && key !== "touch") this.touch1[1] = transform2.invert(this.touch1[0]);
-      this.that.__zoom = transform2;
-      this.emit("zoom");
-      return this;
-    },
-    end: function() {
-      if (--this.active === 0) {
-        delete this.that.__zooming;
-        this.emit("end");
-      }
-      return this;
-    },
-    emit: function(type2) {
-      var d = select_default2(this.that).datum();
-      listeners.call(
-        type2,
-        this.that,
-        new ZoomEvent(type2, {
-          sourceEvent: this.sourceEvent,
-          target: zoom,
-          type: type2,
-          transform: this.that.__zoom,
-          dispatch: listeners
-        }),
-        d
-      );
-    }
-  };
-  function wheeled(event, ...args) {
-    if (!filter2.apply(this, arguments)) return;
-    var g2 = gesture(this, args).event(event), t = this.__zoom, k2 = Math.max(scaleExtent[0], Math.min(scaleExtent[1], t.k * Math.pow(2, wheelDelta.apply(this, arguments)))), p = pointer_default(event);
-    if (g2.wheel) {
-      if (g2.mouse[0][0] !== p[0] || g2.mouse[0][1] !== p[1]) {
-        g2.mouse[1] = t.invert(g2.mouse[0] = p);
-      }
-      clearTimeout(g2.wheel);
-    } else if (t.k === k2) return;
-    else {
-      g2.mouse = [p, t.invert(p)];
-      interrupt_default(this);
-      g2.start();
-    }
-    noevent_default3(event);
-    g2.wheel = setTimeout(wheelidled, wheelDelay);
-    g2.zoom("mouse", constrain(translate(scale(t, k2), g2.mouse[0], g2.mouse[1]), g2.extent, translateExtent));
-    function wheelidled() {
-      g2.wheel = null;
-      g2.end();
-    }
-  }
-  function mousedowned(event, ...args) {
-    if (touchending || !filter2.apply(this, arguments)) return;
-    var currentTarget = event.currentTarget, g2 = gesture(this, args, true).event(event), v2 = select_default2(event.view).on("mousemove.zoom", mousemoved, true).on("mouseup.zoom", mouseupped, true), p = pointer_default(event, currentTarget), x0 = event.clientX, y0 = event.clientY;
-    nodrag_default(event.view);
-    nopropagation3(event);
-    g2.mouse = [p, this.__zoom.invert(p)];
-    interrupt_default(this);
-    g2.start();
-    function mousemoved(event2) {
-      noevent_default3(event2);
-      if (!g2.moved) {
-        var dx = event2.clientX - x0, dy = event2.clientY - y0;
-        g2.moved = dx * dx + dy * dy > clickDistance2;
-      }
-      g2.event(event2).zoom("mouse", constrain(translate(g2.that.__zoom, g2.mouse[0] = pointer_default(event2, currentTarget), g2.mouse[1]), g2.extent, translateExtent));
-    }
-    function mouseupped(event2) {
-      v2.on("mousemove.zoom mouseup.zoom", null);
-      yesdrag(event2.view, g2.moved);
-      noevent_default3(event2);
-      g2.event(event2).end();
-    }
-  }
-  function dblclicked(event, ...args) {
-    if (!filter2.apply(this, arguments)) return;
-    var t0 = this.__zoom, p0 = pointer_default(event.changedTouches ? event.changedTouches[0] : event, this), p1 = t0.invert(p0), k1 = t0.k * (event.shiftKey ? 0.5 : 2), t1 = constrain(translate(scale(t0, k1), p0, p1), extent.apply(this, args), translateExtent);
-    noevent_default3(event);
-    if (duration > 0) select_default2(this).transition().duration(duration).call(schedule, t1, p0, event);
-    else select_default2(this).call(zoom.transform, t1, p0, event);
-  }
-  function touchstarted(event, ...args) {
-    if (!filter2.apply(this, arguments)) return;
-    var touches = event.touches, n = touches.length, g2 = gesture(this, args, event.changedTouches.length === n).event(event), started, i, t, p;
-    nopropagation3(event);
-    for (i = 0; i < n; ++i) {
-      t = touches[i], p = pointer_default(t, this);
-      p = [p, this.__zoom.invert(p), t.identifier];
-      if (!g2.touch0) g2.touch0 = p, started = true, g2.taps = 1 + !!touchstarting;
-      else if (!g2.touch1 && g2.touch0[2] !== p[2]) g2.touch1 = p, g2.taps = 0;
-    }
-    if (touchstarting) touchstarting = clearTimeout(touchstarting);
-    if (started) {
-      if (g2.taps < 2) touchfirst = p[0], touchstarting = setTimeout(function() {
-        touchstarting = null;
-      }, touchDelay);
-      interrupt_default(this);
-      g2.start();
-    }
-  }
-  function touchmoved(event, ...args) {
-    if (!this.__zooming) return;
-    var g2 = gesture(this, args).event(event), touches = event.changedTouches, n = touches.length, i, t, p, l2;
-    noevent_default3(event);
-    for (i = 0; i < n; ++i) {
-      t = touches[i], p = pointer_default(t, this);
-      if (g2.touch0 && g2.touch0[2] === t.identifier) g2.touch0[0] = p;
-      else if (g2.touch1 && g2.touch1[2] === t.identifier) g2.touch1[0] = p;
-    }
-    t = g2.that.__zoom;
-    if (g2.touch1) {
-      var p0 = g2.touch0[0], l0 = g2.touch0[1], p1 = g2.touch1[0], l1 = g2.touch1[1], dp = (dp = p1[0] - p0[0]) * dp + (dp = p1[1] - p0[1]) * dp, dl = (dl = l1[0] - l0[0]) * dl + (dl = l1[1] - l0[1]) * dl;
-      t = scale(t, Math.sqrt(dp / dl));
-      p = [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2];
-      l2 = [(l0[0] + l1[0]) / 2, (l0[1] + l1[1]) / 2];
-    } else if (g2.touch0) p = g2.touch0[0], l2 = g2.touch0[1];
-    else return;
-    g2.zoom("touch", constrain(translate(t, p, l2), g2.extent, translateExtent));
-  }
-  function touchended(event, ...args) {
-    if (!this.__zooming) return;
-    var g2 = gesture(this, args).event(event), touches = event.changedTouches, n = touches.length, i, t;
-    nopropagation3(event);
-    if (touchending) clearTimeout(touchending);
-    touchending = setTimeout(function() {
-      touchending = null;
-    }, touchDelay);
-    for (i = 0; i < n; ++i) {
-      t = touches[i];
-      if (g2.touch0 && g2.touch0[2] === t.identifier) delete g2.touch0;
-      else if (g2.touch1 && g2.touch1[2] === t.identifier) delete g2.touch1;
-    }
-    if (g2.touch1 && !g2.touch0) g2.touch0 = g2.touch1, delete g2.touch1;
-    if (g2.touch0) g2.touch0[1] = this.__zoom.invert(g2.touch0[0]);
-    else {
-      g2.end();
-      if (g2.taps === 2) {
-        t = pointer_default(t, this);
-        if (Math.hypot(touchfirst[0] - t[0], touchfirst[1] - t[1]) < tapDistance) {
-          var p = select_default2(this).on("dblclick.zoom");
-          if (p) p.apply(this, arguments);
-        }
-      }
-    }
-  }
-  zoom.wheelDelta = function(_3) {
-    return arguments.length ? (wheelDelta = typeof _3 === "function" ? _3 : constant_default6(+_3), zoom) : wheelDelta;
-  };
-  zoom.filter = function(_3) {
-    return arguments.length ? (filter2 = typeof _3 === "function" ? _3 : constant_default6(!!_3), zoom) : filter2;
-  };
-  zoom.touchable = function(_3) {
-    return arguments.length ? (touchable = typeof _3 === "function" ? _3 : constant_default6(!!_3), zoom) : touchable;
-  };
-  zoom.extent = function(_3) {
-    return arguments.length ? (extent = typeof _3 === "function" ? _3 : constant_default6([[+_3[0][0], +_3[0][1]], [+_3[1][0], +_3[1][1]]]), zoom) : extent;
-  };
-  zoom.scaleExtent = function(_3) {
-    return arguments.length ? (scaleExtent[0] = +_3[0], scaleExtent[1] = +_3[1], zoom) : [scaleExtent[0], scaleExtent[1]];
-  };
-  zoom.translateExtent = function(_3) {
-    return arguments.length ? (translateExtent[0][0] = +_3[0][0], translateExtent[1][0] = +_3[1][0], translateExtent[0][1] = +_3[0][1], translateExtent[1][1] = +_3[1][1], zoom) : [[translateExtent[0][0], translateExtent[0][1]], [translateExtent[1][0], translateExtent[1][1]]];
-  };
-  zoom.constrain = function(_3) {
-    return arguments.length ? (constrain = _3, zoom) : constrain;
-  };
-  zoom.duration = function(_3) {
-    return arguments.length ? (duration = +_3, zoom) : duration;
-  };
-  zoom.interpolate = function(_3) {
-    return arguments.length ? (interpolate = _3, zoom) : interpolate;
-  };
-  zoom.on = function() {
-    var value = listeners.on.apply(listeners, arguments);
-    return value === listeners ? zoom : value;
-  };
-  zoom.clickDistance = function(_3) {
-    return arguments.length ? (clickDistance2 = (_3 = +_3) * _3, zoom) : Math.sqrt(clickDistance2);
-  };
-  zoom.tapDistance = function(_3) {
-    return arguments.length ? (tapDistance = +_3, zoom) : tapDistance;
-  };
-  return zoom;
 }
 
 // apps/agios-command-center/src/app.js
@@ -9645,8 +8326,8 @@ var o = class {
     if (!this._terminal || !this._terminal.element || !this._terminal.element.parentElement) return;
     let t = this._terminal._core._renderService.dimensions;
     if (t.css.cell.width === 0 || t.css.cell.height === 0) return;
-    let s = this._terminal.options.scrollback === 0 ? 0 : this._terminal.options.overviewRuler?.width || 14, r = window.getComputedStyle(this._terminal.element.parentElement), l2 = parseInt(r.getPropertyValue("height")), a2 = Math.max(0, parseInt(r.getPropertyValue("width"))), i = window.getComputedStyle(this._terminal.element), n = { top: parseInt(i.getPropertyValue("padding-top")), bottom: parseInt(i.getPropertyValue("padding-bottom")), right: parseInt(i.getPropertyValue("padding-right")), left: parseInt(i.getPropertyValue("padding-left")) }, m2 = n.top + n.bottom, d = n.right + n.left, c2 = l2 - m2, p = a2 - d - s;
-    return { cols: Math.max(h, Math.floor(p / t.css.cell.width)), rows: Math.max(_, Math.floor(c2 / t.css.cell.height)) };
+    let s = this._terminal.options.scrollback === 0 ? 0 : this._terminal.options.overviewRuler?.width || 14, r = window.getComputedStyle(this._terminal.element.parentElement), l2 = parseInt(r.getPropertyValue("height")), a = Math.max(0, parseInt(r.getPropertyValue("width"))), i = window.getComputedStyle(this._terminal.element), n = { top: parseInt(i.getPropertyValue("padding-top")), bottom: parseInt(i.getPropertyValue("padding-bottom")), right: parseInt(i.getPropertyValue("padding-right")), left: parseInt(i.getPropertyValue("padding-left")) }, m = n.top + n.bottom, d = n.right + n.left, c = l2 - m, p = a - d - s;
+    return { cols: Math.max(h, Math.floor(p / t.css.cell.width)), rows: Math.max(_, Math.floor(c / t.css.cell.height)) };
   }
 };
 
@@ -9681,13 +8362,13 @@ function k(l2) {
 }
 var g = class l {
   static computeLink(e, t, n, o2) {
-    let p = new RegExp(t.source, (t.flags || "") + "g"), [i, r] = l._getWindowedLineStrings(e - 1, n), s = i.join(""), a2, d = [];
-    for (; a2 = p.exec(s); ) {
-      let u = a2[0];
+    let p = new RegExp(t.source, (t.flags || "") + "g"), [i, r] = l._getWindowedLineStrings(e - 1, n), s = i.join(""), a, d = [];
+    for (; a = p.exec(s); ) {
+      let u = a[0];
       if (!k(u)) continue;
-      let [c2, h2] = l._mapStrIdx(n, r, 0, a2.index), [m2, f] = l._mapStrIdx(n, c2, h2, u.length);
-      if (c2 === -1 || h2 === -1 || m2 === -1 || f === -1) continue;
-      let b = { start: { x: h2 + 1, y: c2 + 1 }, end: { x: f, y: m2 + 1 } };
+      let [c, h2] = l._mapStrIdx(n, r, 0, a.index), [m, f] = l._mapStrIdx(n, c, h2, u.length);
+      if (c === -1 || h2 === -1 || m === -1 || f === -1) continue;
+      let b = { start: { x: h2 + 1, y: c + 1 }, end: { x: f, y: m + 1 } };
       d.push({ range: b, text: u, activate: o2 });
     }
     return d;
@@ -9695,12 +8376,12 @@ var g = class l {
   static _getWindowedLineStrings(e, t) {
     let n, o2 = e, p = e, i = 0, r = "", s = [];
     if (n = t.buffer.active.getLine(e)) {
-      let a2 = n.translateToString(true);
-      if (n.isWrapped && a2[0] !== " ") {
+      let a = n.translateToString(true);
+      if (n.isWrapped && a[0] !== " ") {
         for (i = 0; (n = t.buffer.active.getLine(--o2)) && i < 2048 && (r = n.translateToString(true), i += r.length, s.push(r), !(!n.isWrapped || r.indexOf(" ") !== -1)); ) ;
         s.reverse();
       }
-      for (s.push(a2), i = 0; (n = t.buffer.active.getLine(++p)) && n.isWrapped && i < 2048 && (r = n.translateToString(true), i += r.length, s.push(r), r.indexOf(" ") === -1); ) ;
+      for (s.push(a), i = 0; (n = t.buffer.active.getLine(++p)) && n.isWrapped && i < 2048 && (r = n.translateToString(true), i += r.length, s.push(r), r.indexOf(" ") === -1); ) ;
     }
     return [s, o2];
   }
@@ -9709,14 +8390,14 @@ var g = class l {
     for (; o2; ) {
       let s = p.getLine(t);
       if (!s) return [-1, -1];
-      for (let a2 = r; a2 < s.length; ++a2) {
-        s.getCell(a2, i);
+      for (let a = r; a < s.length; ++a) {
+        s.getCell(a, i);
         let d = i.getChars();
-        if (i.getWidth() && (o2 -= d.length || 1, a2 === s.length - 1 && d === "")) {
-          let c2 = p.getLine(t + 1);
-          c2 && c2.isWrapped && (c2.getCell(0, i), i.getWidth() === 2 && (o2 += 1));
+        if (i.getWidth() && (o2 -= d.length || 1, a === s.length - 1 && d === "")) {
+          let c = p.getLine(t + 1);
+          c && c.isWrapped && (c.getCell(0, i), i.getWidth() === 2 && (o2 += 1));
         }
-        if (o2 < 0) return [t, a2];
+        if (o2 < 0) return [t, a];
       }
       t++, r = 0;
     }
@@ -9928,9 +8609,9 @@ var EventDispatcher = class {
     const listeners = this._listeners;
     const listenerArray = listeners[type2];
     if (listenerArray !== void 0) {
-      const index2 = listenerArray.indexOf(listener);
-      if (index2 !== -1) {
-        listenerArray.splice(index2, 1);
+      const index = listenerArray.indexOf(listener);
+      if (index !== -1) {
+        listenerArray.splice(index, 1);
       }
     }
   }
@@ -9963,39 +8644,39 @@ function generateUUID() {
 function clamp(value, min2, max2) {
   return Math.max(min2, Math.min(max2, value));
 }
-function euclideanModulo(n, m2) {
-  return (n % m2 + m2) % m2;
+function euclideanModulo(n, m) {
+  return (n % m + m) % m;
 }
-function mapLinear(x3, a1, a2, b1, b2) {
-  return b1 + (x3 - a1) * (b2 - b1) / (a2 - a1);
+function mapLinear(x, a1, a2, b1, b2) {
+  return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
 }
-function inverseLerp(x3, y3, value) {
-  if (x3 !== y3) {
-    return (value - x3) / (y3 - x3);
+function inverseLerp(x, y, value) {
+  if (x !== y) {
+    return (value - x) / (y - x);
   } else {
     return 0;
   }
 }
-function lerp(x3, y3, t) {
-  return (1 - t) * x3 + t * y3;
+function lerp(x, y, t) {
+  return (1 - t) * x + t * y;
 }
-function damp(x3, y3, lambda, dt) {
-  return lerp(x3, y3, 1 - Math.exp(-lambda * dt));
+function damp(x, y, lambda, dt) {
+  return lerp(x, y, 1 - Math.exp(-lambda * dt));
 }
-function pingpong(x3, length = 1) {
-  return length - Math.abs(euclideanModulo(x3, length * 2) - length);
+function pingpong(x, length = 1) {
+  return length - Math.abs(euclideanModulo(x, length * 2) - length);
 }
-function smoothstep(x3, min2, max2) {
-  if (x3 <= min2) return 0;
-  if (x3 >= max2) return 1;
-  x3 = (x3 - min2) / (max2 - min2);
-  return x3 * x3 * (3 - 2 * x3);
+function smoothstep(x, min2, max2) {
+  if (x <= min2) return 0;
+  if (x >= max2) return 1;
+  x = (x - min2) / (max2 - min2);
+  return x * x * (3 - 2 * x);
 }
-function smootherstep(x3, min2, max2) {
-  if (x3 <= min2) return 0;
-  if (x3 >= max2) return 1;
-  x3 = (x3 - min2) / (max2 - min2);
-  return x3 * x3 * x3 * (x3 * (x3 * 6 - 15) + 10);
+function smootherstep(x, min2, max2) {
+  if (x <= min2) return 0;
+  if (x >= max2) return 1;
+  x = (x - min2) / (max2 - min2);
+  return x * x * x * (x * (x * 6 - 15) + 10);
 }
 function randInt(low, high) {
   return low + Math.floor(Math.random() * (high - low + 1));
@@ -10028,35 +8709,35 @@ function ceilPowerOfTwo(value) {
 function floorPowerOfTwo(value) {
   return Math.pow(2, Math.floor(Math.log(value) / Math.LN2));
 }
-function setQuaternionFromProperEuler(q, a2, b, c2, order) {
+function setQuaternionFromProperEuler(q, a, b, c, order) {
   const cos = Math.cos;
   const sin = Math.sin;
-  const c22 = cos(b / 2);
+  const c2 = cos(b / 2);
   const s2 = sin(b / 2);
-  const c13 = cos((a2 + c2) / 2);
-  const s13 = sin((a2 + c2) / 2);
-  const c1_3 = cos((a2 - c2) / 2);
-  const s1_3 = sin((a2 - c2) / 2);
-  const c3_1 = cos((c2 - a2) / 2);
-  const s3_1 = sin((c2 - a2) / 2);
+  const c13 = cos((a + c) / 2);
+  const s13 = sin((a + c) / 2);
+  const c1_3 = cos((a - c) / 2);
+  const s1_3 = sin((a - c) / 2);
+  const c3_1 = cos((c - a) / 2);
+  const s3_1 = sin((c - a) / 2);
   switch (order) {
     case "XYX":
-      q.set(c22 * s13, s2 * c1_3, s2 * s1_3, c22 * c13);
+      q.set(c2 * s13, s2 * c1_3, s2 * s1_3, c2 * c13);
       break;
     case "YZY":
-      q.set(s2 * s1_3, c22 * s13, s2 * c1_3, c22 * c13);
+      q.set(s2 * s1_3, c2 * s13, s2 * c1_3, c2 * c13);
       break;
     case "ZXZ":
-      q.set(s2 * c1_3, s2 * s1_3, c22 * s13, c22 * c13);
+      q.set(s2 * c1_3, s2 * s1_3, c2 * s13, c2 * c13);
       break;
     case "XZX":
-      q.set(c22 * s13, s2 * s3_1, s2 * c3_1, c22 * c13);
+      q.set(c2 * s13, s2 * s3_1, s2 * c3_1, c2 * c13);
       break;
     case "YXY":
-      q.set(s2 * c3_1, c22 * s13, s2 * s3_1, c22 * c13);
+      q.set(s2 * c3_1, c2 * s13, s2 * s3_1, c2 * c13);
       break;
     case "ZYZ":
-      q.set(s2 * s3_1, s2 * c3_1, c22 * s13, c22 * c13);
+      q.set(s2 * s3_1, s2 * c3_1, c2 * s13, c2 * c13);
       break;
     default:
       console.warn("THREE.MathUtils: .setQuaternionFromProperEuler() encountered an unknown order: " + order);
@@ -10129,10 +8810,10 @@ var MathUtils = {
   denormalize
 };
 var Vector2 = class _Vector2 {
-  constructor(x3 = 0, y3 = 0) {
+  constructor(x = 0, y = 0) {
     _Vector2.prototype.isVector2 = true;
-    this.x = x3;
-    this.y = y3;
+    this.x = x;
+    this.y = y;
   }
   get width() {
     return this.x;
@@ -10146,9 +8827,9 @@ var Vector2 = class _Vector2 {
   set height(value) {
     this.y = value;
   }
-  set(x3, y3) {
-    this.x = x3;
-    this.y = y3;
+  set(x, y) {
+    this.x = x;
+    this.y = y;
     return this;
   }
   setScalar(scalar) {
@@ -10156,16 +8837,16 @@ var Vector2 = class _Vector2 {
     this.y = scalar;
     return this;
   }
-  setX(x3) {
-    this.x = x3;
+  setX(x) {
+    this.x = x;
     return this;
   }
-  setY(y3) {
-    this.y = y3;
+  setY(y) {
+    this.y = y;
     return this;
   }
-  setComponent(index2, value) {
-    switch (index2) {
+  setComponent(index, value) {
+    switch (index) {
       case 0:
         this.x = value;
         break;
@@ -10173,18 +8854,18 @@ var Vector2 = class _Vector2 {
         this.y = value;
         break;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
     return this;
   }
-  getComponent(index2) {
-    switch (index2) {
+  getComponent(index) {
+    switch (index) {
       case 0:
         return this.x;
       case 1:
         return this.y;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
   }
   clone() {
@@ -10205,9 +8886,9 @@ var Vector2 = class _Vector2 {
     this.y += s;
     return this;
   }
-  addVectors(a2, b) {
-    this.x = a2.x + b.x;
-    this.y = a2.y + b.y;
+  addVectors(a, b) {
+    this.x = a.x + b.x;
+    this.y = a.y + b.y;
     return this;
   }
   addScaledVector(v2, s) {
@@ -10225,9 +8906,9 @@ var Vector2 = class _Vector2 {
     this.y -= s;
     return this;
   }
-  subVectors(a2, b) {
-    this.x = a2.x - b.x;
-    this.y = a2.y - b.y;
+  subVectors(a, b) {
+    this.x = a.x - b.x;
+    this.y = a.y - b.y;
     return this;
   }
   multiply(v2) {
@@ -10248,11 +8929,11 @@ var Vector2 = class _Vector2 {
   divideScalar(scalar) {
     return this.multiplyScalar(1 / scalar);
   }
-  applyMatrix3(m2) {
-    const x3 = this.x, y3 = this.y;
-    const e = m2.elements;
-    this.x = e[0] * x3 + e[3] * y3 + e[6];
-    this.y = e[1] * x3 + e[4] * y3 + e[7];
+  applyMatrix3(m) {
+    const x = this.x, y = this.y;
+    const e = m.elements;
+    this.x = e[0] * x + e[3] * y + e[6];
+    this.y = e[1] * x + e[4] * y + e[7];
     return this;
   }
   min(v2) {
@@ -10368,17 +9049,17 @@ var Vector2 = class _Vector2 {
     array2[offset + 1] = this.y;
     return array2;
   }
-  fromBufferAttribute(attribute, index2) {
-    this.x = attribute.getX(index2);
-    this.y = attribute.getY(index2);
+  fromBufferAttribute(attribute, index) {
+    this.x = attribute.getX(index);
+    this.y = attribute.getY(index);
     return this;
   }
   rotateAround(center, angle) {
-    const c2 = Math.cos(angle), s = Math.sin(angle);
-    const x3 = this.x - center.x;
-    const y3 = this.y - center.y;
-    this.x = x3 * c2 - y3 * s + center.x;
-    this.y = x3 * s + y3 * c2 + center.y;
+    const c = Math.cos(angle), s = Math.sin(angle);
+    const x = this.x - center.x;
+    const y = this.y - center.y;
+    this.x = x * c - y * s + center.x;
+    this.y = x * s + y * c + center.y;
     return this;
   }
   random() {
@@ -10436,9 +9117,9 @@ var Matrix3 = class _Matrix3 {
     );
     return this;
   }
-  copy(m2) {
+  copy(m) {
     const te = this.elements;
-    const me = m2.elements;
+    const me = m.elements;
     te[0] = me[0];
     te[1] = me[1];
     te[2] = me[2];
@@ -10456,8 +9137,8 @@ var Matrix3 = class _Matrix3 {
     zAxis.setFromMatrix3Column(this, 2);
     return this;
   }
-  setFromMatrix4(m2) {
-    const me = m2.elements;
+  setFromMatrix4(m) {
+    const me = m.elements;
     this.set(
       me[0],
       me[4],
@@ -10471,14 +9152,14 @@ var Matrix3 = class _Matrix3 {
     );
     return this;
   }
-  multiply(m2) {
-    return this.multiplyMatrices(this, m2);
+  multiply(m) {
+    return this.multiplyMatrices(this, m);
   }
-  premultiply(m2) {
-    return this.multiplyMatrices(m2, this);
+  premultiply(m) {
+    return this.multiplyMatrices(m, this);
   }
-  multiplyMatrices(a2, b) {
-    const ae = a2.elements;
+  multiplyMatrices(a, b) {
+    const ae = a.elements;
     const be = b.elements;
     const te = this.elements;
     const a11 = ae[0], a12 = ae[3], a13 = ae[6];
@@ -10513,8 +9194,8 @@ var Matrix3 = class _Matrix3 {
   }
   determinant() {
     const te = this.elements;
-    const a2 = te[0], b = te[1], c2 = te[2], d = te[3], e = te[4], f = te[5], g2 = te[6], h2 = te[7], i = te[8];
-    return a2 * e * i - a2 * f * h2 - b * d * i + b * f * g2 + c2 * d * h2 - c2 * e * g2;
+    const a = te[0], b = te[1], c = te[2], d = te[3], e = te[4], f = te[5], g2 = te[6], h2 = te[7], i = te[8];
+    return a * e * i - a * f * h2 - b * d * i + b * f * g2 + c * d * h2 - c * e * g2;
   }
   invert() {
     const te = this.elements, n11 = te[0], n21 = te[1], n31 = te[2], n12 = te[3], n22 = te[4], n32 = te[5], n13 = te[6], n23 = te[7], n33 = te[8], t11 = n33 * n22 - n32 * n23, t12 = n32 * n13 - n33 * n12, t13 = n23 * n12 - n22 * n13, det = n11 * t11 + n21 * t12 + n31 * t13;
@@ -10533,44 +9214,44 @@ var Matrix3 = class _Matrix3 {
   }
   transpose() {
     let tmp;
-    const m2 = this.elements;
-    tmp = m2[1];
-    m2[1] = m2[3];
-    m2[3] = tmp;
-    tmp = m2[2];
-    m2[2] = m2[6];
-    m2[6] = tmp;
-    tmp = m2[5];
-    m2[5] = m2[7];
-    m2[7] = tmp;
+    const m = this.elements;
+    tmp = m[1];
+    m[1] = m[3];
+    m[3] = tmp;
+    tmp = m[2];
+    m[2] = m[6];
+    m[6] = tmp;
+    tmp = m[5];
+    m[5] = m[7];
+    m[7] = tmp;
     return this;
   }
   getNormalMatrix(matrix4) {
     return this.setFromMatrix4(matrix4).invert().transpose();
   }
   transposeIntoArray(r) {
-    const m2 = this.elements;
-    r[0] = m2[0];
-    r[1] = m2[3];
-    r[2] = m2[6];
-    r[3] = m2[1];
-    r[4] = m2[4];
-    r[5] = m2[7];
-    r[6] = m2[2];
-    r[7] = m2[5];
-    r[8] = m2[8];
+    const m = this.elements;
+    r[0] = m[0];
+    r[1] = m[3];
+    r[2] = m[6];
+    r[3] = m[1];
+    r[4] = m[4];
+    r[5] = m[7];
+    r[6] = m[2];
+    r[7] = m[5];
+    r[8] = m[8];
     return this;
   }
   setUvTransform(tx, ty, sx, sy, rotation, cx, cy) {
-    const c2 = Math.cos(rotation);
+    const c = Math.cos(rotation);
     const s = Math.sin(rotation);
     this.set(
-      sx * c2,
+      sx * c,
       sx * s,
-      -sx * (c2 * cx + s * cy) + cx + tx,
+      -sx * (c * cx + s * cy) + cx + tx,
       -sy * s,
-      sy * c2,
-      -sy * (-s * cx + c2 * cy) + cy + ty,
+      sy * c,
+      -sy * (-s * cx + c * cy) + cy + ty,
       0,
       0,
       1
@@ -10591,15 +9272,15 @@ var Matrix3 = class _Matrix3 {
     return this;
   }
   // for 2D Transforms
-  makeTranslation(x3, y3) {
-    if (x3.isVector2) {
+  makeTranslation(x, y) {
+    if (x.isVector2) {
       this.set(
         1,
         0,
-        x3.x,
+        x.x,
         0,
         1,
-        x3.y,
+        x.y,
         0,
         0,
         1
@@ -10608,10 +9289,10 @@ var Matrix3 = class _Matrix3 {
       this.set(
         1,
         0,
-        x3,
+        x,
         0,
         1,
-        y3,
+        y,
         0,
         0,
         1
@@ -10620,14 +9301,14 @@ var Matrix3 = class _Matrix3 {
     return this;
   }
   makeRotation(theta) {
-    const c2 = Math.cos(theta);
+    const c = Math.cos(theta);
     const s = Math.sin(theta);
     this.set(
-      c2,
+      c,
       -s,
       0,
       s,
-      c2,
+      c,
       0,
       0,
       0,
@@ -10635,13 +9316,13 @@ var Matrix3 = class _Matrix3 {
     );
     return this;
   }
-  makeScale(x3, y3) {
+  makeScale(x, y) {
     this.set(
-      x3,
+      x,
       0,
       0,
       0,
-      y3,
+      y,
       0,
       0,
       0,
@@ -10720,21 +9401,21 @@ function probeAsync(gl, sync, interval2) {
   });
 }
 function toNormalizedProjectionMatrix(projectionMatrix) {
-  const m2 = projectionMatrix.elements;
-  m2[2] = 0.5 * m2[2] + 0.5 * m2[3];
-  m2[6] = 0.5 * m2[6] + 0.5 * m2[7];
-  m2[10] = 0.5 * m2[10] + 0.5 * m2[11];
-  m2[14] = 0.5 * m2[14] + 0.5 * m2[15];
+  const m = projectionMatrix.elements;
+  m[2] = 0.5 * m[2] + 0.5 * m[3];
+  m[6] = 0.5 * m[6] + 0.5 * m[7];
+  m[10] = 0.5 * m[10] + 0.5 * m[11];
+  m[14] = 0.5 * m[14] + 0.5 * m[15];
 }
 function toReversedProjectionMatrix(projectionMatrix) {
-  const m2 = projectionMatrix.elements;
-  const isPerspectiveMatrix = m2[11] === -1;
+  const m = projectionMatrix.elements;
+  const isPerspectiveMatrix = m[11] === -1;
   if (isPerspectiveMatrix) {
-    m2[10] = -m2[10] - 1;
-    m2[14] = -m2[14];
+    m[10] = -m[10] - 1;
+    m[14] = -m[14];
   } else {
-    m2[10] = -m2[10];
-    m2[14] = -m2[14] + 1;
+    m[10] = -m[10];
+    m[14] = -m[14] + 1;
   }
 }
 var ColorManagement = {
@@ -10809,11 +9490,11 @@ var ColorManagement = {
     return this.spaces[colorSpace].workingColorSpaceConfig.unpackColorSpace;
   }
 };
-function SRGBToLinear(c2) {
-  return c2 < 0.04045 ? c2 * 0.0773993808 : Math.pow(c2 * 0.9478672986 + 0.0521327014, 2.4);
+function SRGBToLinear(c) {
+  return c < 0.04045 ? c * 0.0773993808 : Math.pow(c * 0.9478672986 + 0.0521327014, 2.4);
 }
-function LinearToSRGB(c2) {
-  return c2 < 31308e-7 ? c2 * 12.92 : 1.055 * Math.pow(c2, 0.41666) - 0.055;
+function LinearToSRGB(c) {
+  return c < 31308e-7 ? c * 12.92 : 1.055 * Math.pow(c, 0.41666) - 0.055;
 }
 var REC709_PRIMARIES = [0.64, 0.33, 0.3, 0.6, 0.15, 0.06];
 var REC709_LUMINANCE_COEFFICIENTS = [0.2126, 0.7152, 0.0722];
@@ -11166,10 +9847,10 @@ Texture.DEFAULT_IMAGE = null;
 Texture.DEFAULT_MAPPING = UVMapping;
 Texture.DEFAULT_ANISOTROPY = 1;
 var Vector4 = class _Vector4 {
-  constructor(x3 = 0, y3 = 0, z = 0, w2 = 1) {
+  constructor(x = 0, y = 0, z = 0, w2 = 1) {
     _Vector4.prototype.isVector4 = true;
-    this.x = x3;
-    this.y = y3;
+    this.x = x;
+    this.y = y;
     this.z = z;
     this.w = w2;
   }
@@ -11185,9 +9866,9 @@ var Vector4 = class _Vector4 {
   set height(value) {
     this.w = value;
   }
-  set(x3, y3, z, w2) {
-    this.x = x3;
-    this.y = y3;
+  set(x, y, z, w2) {
+    this.x = x;
+    this.y = y;
     this.z = z;
     this.w = w2;
     return this;
@@ -11199,12 +9880,12 @@ var Vector4 = class _Vector4 {
     this.w = scalar;
     return this;
   }
-  setX(x3) {
-    this.x = x3;
+  setX(x) {
+    this.x = x;
     return this;
   }
-  setY(y3) {
-    this.y = y3;
+  setY(y) {
+    this.y = y;
     return this;
   }
   setZ(z) {
@@ -11215,8 +9896,8 @@ var Vector4 = class _Vector4 {
     this.w = w2;
     return this;
   }
-  setComponent(index2, value) {
-    switch (index2) {
+  setComponent(index, value) {
+    switch (index) {
       case 0:
         this.x = value;
         break;
@@ -11230,12 +9911,12 @@ var Vector4 = class _Vector4 {
         this.w = value;
         break;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
     return this;
   }
-  getComponent(index2) {
-    switch (index2) {
+  getComponent(index) {
+    switch (index) {
       case 0:
         return this.x;
       case 1:
@@ -11245,7 +9926,7 @@ var Vector4 = class _Vector4 {
       case 3:
         return this.w;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
   }
   clone() {
@@ -11272,11 +9953,11 @@ var Vector4 = class _Vector4 {
     this.w += s;
     return this;
   }
-  addVectors(a2, b) {
-    this.x = a2.x + b.x;
-    this.y = a2.y + b.y;
-    this.z = a2.z + b.z;
-    this.w = a2.w + b.w;
+  addVectors(a, b) {
+    this.x = a.x + b.x;
+    this.y = a.y + b.y;
+    this.z = a.z + b.z;
+    this.w = a.w + b.w;
     return this;
   }
   addScaledVector(v2, s) {
@@ -11300,11 +9981,11 @@ var Vector4 = class _Vector4 {
     this.w -= s;
     return this;
   }
-  subVectors(a2, b) {
-    this.x = a2.x - b.x;
-    this.y = a2.y - b.y;
-    this.z = a2.z - b.z;
-    this.w = a2.w - b.w;
+  subVectors(a, b) {
+    this.x = a.x - b.x;
+    this.y = a.y - b.y;
+    this.z = a.z - b.z;
+    this.w = a.w - b.w;
     return this;
   }
   multiply(v2) {
@@ -11321,13 +10002,13 @@ var Vector4 = class _Vector4 {
     this.w *= scalar;
     return this;
   }
-  applyMatrix4(m2) {
-    const x3 = this.x, y3 = this.y, z = this.z, w2 = this.w;
-    const e = m2.elements;
-    this.x = e[0] * x3 + e[4] * y3 + e[8] * z + e[12] * w2;
-    this.y = e[1] * x3 + e[5] * y3 + e[9] * z + e[13] * w2;
-    this.z = e[2] * x3 + e[6] * y3 + e[10] * z + e[14] * w2;
-    this.w = e[3] * x3 + e[7] * y3 + e[11] * z + e[15] * w2;
+  applyMatrix4(m) {
+    const x = this.x, y = this.y, z = this.z, w2 = this.w;
+    const e = m.elements;
+    this.x = e[0] * x + e[4] * y + e[8] * z + e[12] * w2;
+    this.y = e[1] * x + e[5] * y + e[9] * z + e[13] * w2;
+    this.z = e[2] * x + e[6] * y + e[10] * z + e[14] * w2;
+    this.w = e[3] * x + e[7] * y + e[11] * z + e[15] * w2;
     return this;
   }
   divide(v2) {
@@ -11354,11 +10035,11 @@ var Vector4 = class _Vector4 {
     }
     return this;
   }
-  setAxisAngleFromRotationMatrix(m2) {
-    let angle, x3, y3, z;
-    const epsilon = 0.01, epsilon22 = 0.1, te = m2.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10];
+  setAxisAngleFromRotationMatrix(m) {
+    let angle, x, y, z;
+    const epsilon = 0.01, epsilon2 = 0.1, te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10];
     if (Math.abs(m12 - m21) < epsilon && Math.abs(m13 - m31) < epsilon && Math.abs(m23 - m32) < epsilon) {
-      if (Math.abs(m12 + m21) < epsilon22 && Math.abs(m13 + m31) < epsilon22 && Math.abs(m23 + m32) < epsilon22 && Math.abs(m11 + m22 + m33 - 3) < epsilon22) {
+      if (Math.abs(m12 + m21) < epsilon2 && Math.abs(m13 + m31) < epsilon2 && Math.abs(m23 + m32) < epsilon2 && Math.abs(m11 + m22 + m33 - 3) < epsilon2) {
         this.set(1, 0, 0, 0);
         return this;
       }
@@ -11371,36 +10052,36 @@ var Vector4 = class _Vector4 {
       const yz = (m23 + m32) / 4;
       if (xx > yy && xx > zz) {
         if (xx < epsilon) {
-          x3 = 0;
-          y3 = 0.707106781;
+          x = 0;
+          y = 0.707106781;
           z = 0.707106781;
         } else {
-          x3 = Math.sqrt(xx);
-          y3 = xy / x3;
-          z = xz / x3;
+          x = Math.sqrt(xx);
+          y = xy / x;
+          z = xz / x;
         }
       } else if (yy > zz) {
         if (yy < epsilon) {
-          x3 = 0.707106781;
-          y3 = 0;
+          x = 0.707106781;
+          y = 0;
           z = 0.707106781;
         } else {
-          y3 = Math.sqrt(yy);
-          x3 = xy / y3;
-          z = yz / y3;
+          y = Math.sqrt(yy);
+          x = xy / y;
+          z = yz / y;
         }
       } else {
         if (zz < epsilon) {
-          x3 = 0.707106781;
-          y3 = 0.707106781;
+          x = 0.707106781;
+          y = 0.707106781;
           z = 0;
         } else {
           z = Math.sqrt(zz);
-          x3 = xz / z;
-          y3 = yz / z;
+          x = xz / z;
+          y = yz / z;
         }
       }
-      this.set(x3, y3, z, angle);
+      this.set(x, y, z, angle);
       return this;
     }
     let s = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12));
@@ -11411,8 +10092,8 @@ var Vector4 = class _Vector4 {
     this.w = Math.acos((m11 + m22 + m33 - 1) / 2);
     return this;
   }
-  setFromMatrixPosition(m2) {
-    const e = m2.elements;
+  setFromMatrixPosition(m) {
+    const e = m.elements;
     this.x = e[12];
     this.y = e[13];
     this.z = e[14];
@@ -11535,11 +10216,11 @@ var Vector4 = class _Vector4 {
     array2[offset + 3] = this.w;
     return array2;
   }
-  fromBufferAttribute(attribute, index2) {
-    this.x = attribute.getX(index2);
-    this.y = attribute.getY(index2);
-    this.z = attribute.getZ(index2);
-    this.w = attribute.getW(index2);
+  fromBufferAttribute(attribute, index) {
+    this.x = attribute.getX(index);
+    this.y = attribute.getY(index);
+    this.z = attribute.getZ(index);
+    this.w = attribute.getW(index);
     return this;
   }
   random() {
@@ -11686,10 +10367,10 @@ var Data3DTexture = class extends Texture {
   }
 };
 var Quaternion = class {
-  constructor(x3 = 0, y3 = 0, z = 0, w2 = 1) {
+  constructor(x = 0, y = 0, z = 0, w2 = 1) {
     this.isQuaternion = true;
-    this._x = x3;
-    this._y = y3;
+    this._x = x;
+    this._y = y;
     this._z = z;
     this._w = w2;
   }
@@ -11779,9 +10460,9 @@ var Quaternion = class {
     this._w = value;
     this._onChangeCallback();
   }
-  set(x3, y3, z, w2) {
-    this._x = x3;
-    this._y = y3;
+  set(x, y, z, w2) {
+    this._x = x;
+    this._y = y;
     this._z = z;
     this._w = w2;
     this._onChangeCallback();
@@ -11799,14 +10480,14 @@ var Quaternion = class {
     return this;
   }
   setFromEuler(euler, update = true) {
-    const x3 = euler._x, y3 = euler._y, z = euler._z, order = euler._order;
+    const x = euler._x, y = euler._y, z = euler._z, order = euler._order;
     const cos = Math.cos;
     const sin = Math.sin;
-    const c1 = cos(x3 / 2);
-    const c2 = cos(y3 / 2);
+    const c1 = cos(x / 2);
+    const c2 = cos(y / 2);
     const c3 = cos(z / 2);
-    const s1 = sin(x3 / 2);
-    const s2 = sin(y3 / 2);
+    const s1 = sin(x / 2);
+    const s2 = sin(y / 2);
     const s3 = sin(z / 2);
     switch (order) {
       case "XYZ":
@@ -11860,8 +10541,8 @@ var Quaternion = class {
     this._onChangeCallback();
     return this;
   }
-  setFromRotationMatrix(m2) {
-    const te = m2.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33;
+  setFromRotationMatrix(m) {
+    const te = m.elements, m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33;
     if (trace > 0) {
       const s = 0.5 / Math.sqrt(trace + 1);
       this._w = 0.25 / s;
@@ -11968,8 +10649,8 @@ var Quaternion = class {
   premultiply(q) {
     return this.multiplyQuaternions(q, this);
   }
-  multiplyQuaternions(a2, b) {
-    const qax = a2._x, qay = a2._y, qaz = a2._z, qaw = a2._w;
+  multiplyQuaternions(a, b) {
+    const qax = a._x, qay = a._y, qaz = a._z, qaw = a._w;
     const qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
     this._x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
     this._y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
@@ -11981,8 +10662,8 @@ var Quaternion = class {
   slerp(qb, t) {
     if (t === 0) return this;
     if (t === 1) return this.copy(qb);
-    const x3 = this._x, y3 = this._y, z = this._z, w2 = this._w;
-    let cosHalfTheta = w2 * qb._w + x3 * qb._x + y3 * qb._y + z * qb._z;
+    const x = this._x, y = this._y, z = this._z, w2 = this._w;
+    let cosHalfTheta = w2 * qb._w + x * qb._x + y * qb._y + z * qb._z;
     if (cosHalfTheta < 0) {
       this._w = -qb._w;
       this._x = -qb._x;
@@ -11994,8 +10675,8 @@ var Quaternion = class {
     }
     if (cosHalfTheta >= 1) {
       this._w = w2;
-      this._x = x3;
-      this._y = y3;
+      this._x = x;
+      this._y = y;
       this._z = z;
       return this;
     }
@@ -12003,8 +10684,8 @@ var Quaternion = class {
     if (sqrSinHalfTheta <= Number.EPSILON) {
       const s = 1 - t;
       this._w = s * w2 + t * this._w;
-      this._x = s * x3 + t * this._x;
-      this._y = s * y3 + t * this._y;
+      this._x = s * x + t * this._x;
+      this._y = s * y + t * this._y;
       this._z = s * z + t * this._z;
       this.normalize();
       return this;
@@ -12013,8 +10694,8 @@ var Quaternion = class {
     const halfTheta = Math.atan2(sinHalfTheta, cosHalfTheta);
     const ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta, ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
     this._w = w2 * ratioA + this._w * ratioB;
-    this._x = x3 * ratioA + this._x * ratioB;
-    this._y = y3 * ratioA + this._y * ratioB;
+    this._x = x * ratioA + this._x * ratioB;
+    this._y = y * ratioA + this._y * ratioB;
     this._z = z * ratioA + this._z * ratioB;
     this._onChangeCallback();
     return this;
@@ -12053,11 +10734,11 @@ var Quaternion = class {
     array2[offset + 3] = this._w;
     return array2;
   }
-  fromBufferAttribute(attribute, index2) {
-    this._x = attribute.getX(index2);
-    this._y = attribute.getY(index2);
-    this._z = attribute.getZ(index2);
-    this._w = attribute.getW(index2);
+  fromBufferAttribute(attribute, index) {
+    this._x = attribute.getX(index);
+    this._y = attribute.getY(index);
+    this._z = attribute.getZ(index);
+    this._w = attribute.getW(index);
     this._onChangeCallback();
     return this;
   }
@@ -12078,16 +10759,16 @@ var Quaternion = class {
   }
 };
 var Vector3 = class _Vector3 {
-  constructor(x3 = 0, y3 = 0, z = 0) {
+  constructor(x = 0, y = 0, z = 0) {
     _Vector3.prototype.isVector3 = true;
-    this.x = x3;
-    this.y = y3;
+    this.x = x;
+    this.y = y;
     this.z = z;
   }
-  set(x3, y3, z) {
+  set(x, y, z) {
     if (z === void 0) z = this.z;
-    this.x = x3;
-    this.y = y3;
+    this.x = x;
+    this.y = y;
     this.z = z;
     return this;
   }
@@ -12097,20 +10778,20 @@ var Vector3 = class _Vector3 {
     this.z = scalar;
     return this;
   }
-  setX(x3) {
-    this.x = x3;
+  setX(x) {
+    this.x = x;
     return this;
   }
-  setY(y3) {
-    this.y = y3;
+  setY(y) {
+    this.y = y;
     return this;
   }
   setZ(z) {
     this.z = z;
     return this;
   }
-  setComponent(index2, value) {
-    switch (index2) {
+  setComponent(index, value) {
+    switch (index) {
       case 0:
         this.x = value;
         break;
@@ -12121,12 +10802,12 @@ var Vector3 = class _Vector3 {
         this.z = value;
         break;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
     return this;
   }
-  getComponent(index2) {
-    switch (index2) {
+  getComponent(index) {
+    switch (index) {
       case 0:
         return this.x;
       case 1:
@@ -12134,7 +10815,7 @@ var Vector3 = class _Vector3 {
       case 2:
         return this.z;
       default:
-        throw new Error("index is out of range: " + index2);
+        throw new Error("index is out of range: " + index);
     }
   }
   clone() {
@@ -12158,10 +10839,10 @@ var Vector3 = class _Vector3 {
     this.z += s;
     return this;
   }
-  addVectors(a2, b) {
-    this.x = a2.x + b.x;
-    this.y = a2.y + b.y;
-    this.z = a2.z + b.z;
+  addVectors(a, b) {
+    this.x = a.x + b.x;
+    this.y = a.y + b.y;
+    this.z = a.z + b.z;
     return this;
   }
   addScaledVector(v2, s) {
@@ -12182,10 +10863,10 @@ var Vector3 = class _Vector3 {
     this.z -= s;
     return this;
   }
-  subVectors(a2, b) {
-    this.x = a2.x - b.x;
-    this.y = a2.y - b.y;
-    this.z = a2.z - b.z;
+  subVectors(a, b) {
+    this.x = a.x - b.x;
+    this.y = a.y - b.y;
+    this.z = a.z - b.z;
     return this;
   }
   multiply(v2) {
@@ -12200,10 +10881,10 @@ var Vector3 = class _Vector3 {
     this.z *= scalar;
     return this;
   }
-  multiplyVectors(a2, b) {
-    this.x = a2.x * b.x;
-    this.y = a2.y * b.y;
-    this.z = a2.z * b.z;
+  multiplyVectors(a, b) {
+    this.x = a.x * b.x;
+    this.y = a.y * b.y;
+    this.z = a.z * b.z;
     return this;
   }
   applyEuler(euler) {
@@ -12212,24 +10893,24 @@ var Vector3 = class _Vector3 {
   applyAxisAngle(axis, angle) {
     return this.applyQuaternion(_quaternion$4.setFromAxisAngle(axis, angle));
   }
-  applyMatrix3(m2) {
-    const x3 = this.x, y3 = this.y, z = this.z;
-    const e = m2.elements;
-    this.x = e[0] * x3 + e[3] * y3 + e[6] * z;
-    this.y = e[1] * x3 + e[4] * y3 + e[7] * z;
-    this.z = e[2] * x3 + e[5] * y3 + e[8] * z;
+  applyMatrix3(m) {
+    const x = this.x, y = this.y, z = this.z;
+    const e = m.elements;
+    this.x = e[0] * x + e[3] * y + e[6] * z;
+    this.y = e[1] * x + e[4] * y + e[7] * z;
+    this.z = e[2] * x + e[5] * y + e[8] * z;
     return this;
   }
-  applyNormalMatrix(m2) {
-    return this.applyMatrix3(m2).normalize();
+  applyNormalMatrix(m) {
+    return this.applyMatrix3(m).normalize();
   }
-  applyMatrix4(m2) {
-    const x3 = this.x, y3 = this.y, z = this.z;
-    const e = m2.elements;
-    const w2 = 1 / (e[3] * x3 + e[7] * y3 + e[11] * z + e[15]);
-    this.x = (e[0] * x3 + e[4] * y3 + e[8] * z + e[12]) * w2;
-    this.y = (e[1] * x3 + e[5] * y3 + e[9] * z + e[13]) * w2;
-    this.z = (e[2] * x3 + e[6] * y3 + e[10] * z + e[14]) * w2;
+  applyMatrix4(m) {
+    const x = this.x, y = this.y, z = this.z;
+    const e = m.elements;
+    const w2 = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
+    this.x = (e[0] * x + e[4] * y + e[8] * z + e[12]) * w2;
+    this.y = (e[1] * x + e[5] * y + e[9] * z + e[13]) * w2;
+    this.z = (e[2] * x + e[6] * y + e[10] * z + e[14]) * w2;
     return this;
   }
   applyQuaternion(q) {
@@ -12249,12 +10930,12 @@ var Vector3 = class _Vector3 {
   unproject(camera) {
     return this.applyMatrix4(camera.projectionMatrixInverse).applyMatrix4(camera.matrixWorld);
   }
-  transformDirection(m2) {
-    const x3 = this.x, y3 = this.y, z = this.z;
-    const e = m2.elements;
-    this.x = e[0] * x3 + e[4] * y3 + e[8] * z;
-    this.y = e[1] * x3 + e[5] * y3 + e[9] * z;
-    this.z = e[2] * x3 + e[6] * y3 + e[10] * z;
+  transformDirection(m) {
+    const x = this.x, y = this.y, z = this.z;
+    const e = m.elements;
+    this.x = e[0] * x + e[4] * y + e[8] * z;
+    this.y = e[1] * x + e[5] * y + e[9] * z;
+    this.z = e[2] * x + e[6] * y + e[10] * z;
     return this.normalize();
   }
   divide(v2) {
@@ -12358,8 +11039,8 @@ var Vector3 = class _Vector3 {
   cross(v2) {
     return this.crossVectors(this, v2);
   }
-  crossVectors(a2, b) {
-    const ax = a2.x, ay = a2.y, az = a2.z;
+  crossVectors(a, b) {
+    const ax = a.x, ay = a.y, az = a.z;
     const bx = b.x, by = b.y, bz = b.z;
     this.x = ay * bz - az * by;
     this.y = az * bx - ax * bz;
@@ -12405,36 +11086,36 @@ var Vector3 = class _Vector3 {
     this.z = sinPhiRadius * Math.cos(theta);
     return this;
   }
-  setFromCylindrical(c2) {
-    return this.setFromCylindricalCoords(c2.radius, c2.theta, c2.y);
+  setFromCylindrical(c) {
+    return this.setFromCylindricalCoords(c.radius, c.theta, c.y);
   }
-  setFromCylindricalCoords(radius, theta, y3) {
+  setFromCylindricalCoords(radius, theta, y) {
     this.x = radius * Math.sin(theta);
-    this.y = y3;
+    this.y = y;
     this.z = radius * Math.cos(theta);
     return this;
   }
-  setFromMatrixPosition(m2) {
-    const e = m2.elements;
+  setFromMatrixPosition(m) {
+    const e = m.elements;
     this.x = e[12];
     this.y = e[13];
     this.z = e[14];
     return this;
   }
-  setFromMatrixScale(m2) {
-    const sx = this.setFromMatrixColumn(m2, 0).length();
-    const sy = this.setFromMatrixColumn(m2, 1).length();
-    const sz = this.setFromMatrixColumn(m2, 2).length();
+  setFromMatrixScale(m) {
+    const sx = this.setFromMatrixColumn(m, 0).length();
+    const sy = this.setFromMatrixColumn(m, 1).length();
+    const sz = this.setFromMatrixColumn(m, 2).length();
     this.x = sx;
     this.y = sy;
     this.z = sz;
     return this;
   }
-  setFromMatrixColumn(m2, index2) {
-    return this.fromArray(m2.elements, index2 * 4);
+  setFromMatrixColumn(m, index) {
+    return this.fromArray(m.elements, index * 4);
   }
-  setFromMatrix3Column(m2, index2) {
-    return this.fromArray(m2.elements, index2 * 3);
+  setFromMatrix3Column(m, index) {
+    return this.fromArray(m.elements, index * 3);
   }
   setFromEuler(e) {
     this.x = e._x;
@@ -12442,10 +11123,10 @@ var Vector3 = class _Vector3 {
     this.z = e._z;
     return this;
   }
-  setFromColor(c2) {
-    this.x = c2.r;
-    this.y = c2.g;
-    this.z = c2.b;
+  setFromColor(c) {
+    this.x = c.r;
+    this.y = c.g;
+    this.z = c.b;
     return this;
   }
   equals(v2) {
@@ -12463,10 +11144,10 @@ var Vector3 = class _Vector3 {
     array2[offset + 2] = this.z;
     return array2;
   }
-  fromBufferAttribute(attribute, index2) {
-    this.x = attribute.getX(index2);
-    this.y = attribute.getY(index2);
-    this.z = attribute.getZ(index2);
+  fromBufferAttribute(attribute, index) {
+    this.x = attribute.getX(index);
+    this.y = attribute.getY(index);
+    this.z = attribute.getZ(index);
     return this;
   }
   random() {
@@ -12478,10 +11159,10 @@ var Vector3 = class _Vector3 {
   randomDirection() {
     const theta = Math.random() * Math.PI * 2;
     const u = Math.random() * 2 - 1;
-    const c2 = Math.sqrt(1 - u * u);
-    this.x = c2 * Math.cos(theta);
+    const c = Math.sqrt(1 - u * u);
+    this.x = c * Math.cos(theta);
     this.y = u;
-    this.z = c2 * Math.sin(theta);
+    this.z = c * Math.sin(theta);
     return this;
   }
   *[Symbol.iterator]() {
@@ -12972,7 +11653,7 @@ var Ray = class {
     const a01 = -this.direction.dot(_segDir);
     const b0 = _diff.dot(this.direction);
     const b1 = -_diff.dot(_segDir);
-    const c2 = _diff.lengthSq();
+    const c = _diff.lengthSq();
     const det = Math.abs(1 - a01 * a01);
     let s0, s1, sqrDist, extDet;
     if (det > 0) {
@@ -12985,36 +11666,36 @@ var Ray = class {
             const invDet = 1 / det;
             s0 *= invDet;
             s1 *= invDet;
-            sqrDist = s0 * (s0 + a01 * s1 + 2 * b0) + s1 * (a01 * s0 + s1 + 2 * b1) + c2;
+            sqrDist = s0 * (s0 + a01 * s1 + 2 * b0) + s1 * (a01 * s0 + s1 + 2 * b1) + c;
           } else {
             s1 = segExtent;
             s0 = Math.max(0, -(a01 * s1 + b0));
-            sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c2;
+            sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
           }
         } else {
           s1 = -segExtent;
           s0 = Math.max(0, -(a01 * s1 + b0));
-          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c2;
+          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
         }
       } else {
         if (s1 <= -extDet) {
           s0 = Math.max(0, -(-a01 * segExtent + b0));
           s1 = s0 > 0 ? -segExtent : Math.min(Math.max(-segExtent, -b1), segExtent);
-          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c2;
+          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
         } else if (s1 <= extDet) {
           s0 = 0;
           s1 = Math.min(Math.max(-segExtent, -b1), segExtent);
-          sqrDist = s1 * (s1 + 2 * b1) + c2;
+          sqrDist = s1 * (s1 + 2 * b1) + c;
         } else {
           s0 = Math.max(0, -(a01 * segExtent + b0));
           s1 = s0 > 0 ? segExtent : Math.min(Math.max(-segExtent, -b1), segExtent);
-          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c2;
+          sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
         }
       }
     } else {
       s1 = a01 > 0 ? -segExtent : segExtent;
       s0 = Math.max(0, -(a01 * s1 + b0));
-      sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c2;
+      sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
     }
     if (optionalPointOnRay) {
       optionalPointOnRay.copy(this.origin).addScaledVector(this.direction, s0);
@@ -13106,9 +11787,9 @@ var Ray = class {
   intersectsBox(box) {
     return this.intersectBox(box, _vector$a) !== null;
   }
-  intersectTriangle(a2, b, c2, backfaceCulling, target) {
-    _edge1.subVectors(b, a2);
-    _edge2.subVectors(c2, a2);
+  intersectTriangle(a, b, c, backfaceCulling, target) {
+    _edge1.subVectors(b, a);
+    _edge2.subVectors(c, a);
     _normal$1.crossVectors(_edge1, _edge2);
     let DdN = this.direction.dot(_normal$1);
     let sign;
@@ -13121,7 +11802,7 @@ var Ray = class {
     } else {
       return null;
     }
-    _diff.subVectors(this.origin, a2);
+    _diff.subVectors(this.origin, a);
     const DdQxE2 = sign * this.direction.dot(_edge2.crossVectors(_diff, _edge2));
     if (DdQxE2 < 0) {
       return null;
@@ -13220,9 +11901,9 @@ var Matrix4 = class _Matrix4 {
   clone() {
     return new _Matrix4().fromArray(this.elements);
   }
-  copy(m2) {
+  copy(m) {
     const te = this.elements;
-    const me = m2.elements;
+    const me = m.elements;
     te[0] = me[0];
     te[1] = me[1];
     te[2] = me[2];
@@ -13241,15 +11922,15 @@ var Matrix4 = class _Matrix4 {
     te[15] = me[15];
     return this;
   }
-  copyPosition(m2) {
-    const te = this.elements, me = m2.elements;
+  copyPosition(m) {
+    const te = this.elements, me = m.elements;
     te[12] = me[12];
     te[13] = me[13];
     te[14] = me[14];
     return this;
   }
-  setFromMatrix3(m2) {
-    const me = m2.elements;
+  setFromMatrix3(m) {
+    const me = m.elements;
     this.set(
       me[0],
       me[3],
@@ -13297,12 +11978,12 @@ var Matrix4 = class _Matrix4 {
     );
     return this;
   }
-  extractRotation(m2) {
+  extractRotation(m) {
     const te = this.elements;
-    const me = m2.elements;
-    const scaleX = 1 / _v1$5.setFromMatrixColumn(m2, 0).length();
-    const scaleY = 1 / _v1$5.setFromMatrixColumn(m2, 1).length();
-    const scaleZ = 1 / _v1$5.setFromMatrixColumn(m2, 2).length();
+    const me = m.elements;
+    const scaleX = 1 / _v1$5.setFromMatrixColumn(m, 0).length();
+    const scaleY = 1 / _v1$5.setFromMatrixColumn(m, 1).length();
+    const scaleZ = 1 / _v1$5.setFromMatrixColumn(m, 2).length();
     te[0] = me[0] * scaleX;
     te[1] = me[1] * scaleX;
     te[2] = me[2] * scaleX;
@@ -13323,72 +12004,72 @@ var Matrix4 = class _Matrix4 {
   }
   makeRotationFromEuler(euler) {
     const te = this.elements;
-    const x3 = euler.x, y3 = euler.y, z = euler.z;
-    const a2 = Math.cos(x3), b = Math.sin(x3);
-    const c2 = Math.cos(y3), d = Math.sin(y3);
+    const x = euler.x, y = euler.y, z = euler.z;
+    const a = Math.cos(x), b = Math.sin(x);
+    const c = Math.cos(y), d = Math.sin(y);
     const e = Math.cos(z), f = Math.sin(z);
     if (euler.order === "XYZ") {
-      const ae = a2 * e, af = a2 * f, be = b * e, bf = b * f;
-      te[0] = c2 * e;
-      te[4] = -c2 * f;
+      const ae = a * e, af = a * f, be = b * e, bf = b * f;
+      te[0] = c * e;
+      te[4] = -c * f;
       te[8] = d;
       te[1] = af + be * d;
       te[5] = ae - bf * d;
-      te[9] = -b * c2;
+      te[9] = -b * c;
       te[2] = bf - ae * d;
       te[6] = be + af * d;
-      te[10] = a2 * c2;
+      te[10] = a * c;
     } else if (euler.order === "YXZ") {
-      const ce = c2 * e, cf = c2 * f, de = d * e, df = d * f;
+      const ce = c * e, cf = c * f, de = d * e, df = d * f;
       te[0] = ce + df * b;
       te[4] = de * b - cf;
-      te[8] = a2 * d;
-      te[1] = a2 * f;
-      te[5] = a2 * e;
+      te[8] = a * d;
+      te[1] = a * f;
+      te[5] = a * e;
       te[9] = -b;
       te[2] = cf * b - de;
       te[6] = df + ce * b;
-      te[10] = a2 * c2;
+      te[10] = a * c;
     } else if (euler.order === "ZXY") {
-      const ce = c2 * e, cf = c2 * f, de = d * e, df = d * f;
+      const ce = c * e, cf = c * f, de = d * e, df = d * f;
       te[0] = ce - df * b;
-      te[4] = -a2 * f;
+      te[4] = -a * f;
       te[8] = de + cf * b;
       te[1] = cf + de * b;
-      te[5] = a2 * e;
+      te[5] = a * e;
       te[9] = df - ce * b;
-      te[2] = -a2 * d;
+      te[2] = -a * d;
       te[6] = b;
-      te[10] = a2 * c2;
+      te[10] = a * c;
     } else if (euler.order === "ZYX") {
-      const ae = a2 * e, af = a2 * f, be = b * e, bf = b * f;
-      te[0] = c2 * e;
+      const ae = a * e, af = a * f, be = b * e, bf = b * f;
+      te[0] = c * e;
       te[4] = be * d - af;
       te[8] = ae * d + bf;
-      te[1] = c2 * f;
+      te[1] = c * f;
       te[5] = bf * d + ae;
       te[9] = af * d - be;
       te[2] = -d;
-      te[6] = b * c2;
-      te[10] = a2 * c2;
+      te[6] = b * c;
+      te[10] = a * c;
     } else if (euler.order === "YZX") {
-      const ac = a2 * c2, ad = a2 * d, bc = b * c2, bd = b * d;
-      te[0] = c2 * e;
+      const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+      te[0] = c * e;
       te[4] = bd - ac * f;
       te[8] = bc * f + ad;
       te[1] = f;
-      te[5] = a2 * e;
+      te[5] = a * e;
       te[9] = -b * e;
       te[2] = -d * e;
       te[6] = ad * f + bc;
       te[10] = ac - bd * f;
     } else if (euler.order === "XZY") {
-      const ac = a2 * c2, ad = a2 * d, bc = b * c2, bd = b * d;
-      te[0] = c2 * e;
+      const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
+      te[0] = c * e;
       te[4] = -f;
       te[8] = d * e;
       te[1] = ac * f + bd;
-      te[5] = a2 * e;
+      te[5] = a * e;
       te[9] = ad * f - bc;
       te[2] = bc * f - ad;
       te[6] = b * e;
@@ -13436,14 +12117,14 @@ var Matrix4 = class _Matrix4 {
     te[10] = _z.z;
     return this;
   }
-  multiply(m2) {
-    return this.multiplyMatrices(this, m2);
+  multiply(m) {
+    return this.multiplyMatrices(this, m);
   }
-  premultiply(m2) {
-    return this.multiplyMatrices(m2, this);
+  premultiply(m) {
+    return this.multiplyMatrices(m, this);
   }
-  multiplyMatrices(a2, b) {
-    const ae = a2.elements;
+  multiplyMatrices(a, b) {
+    const ae = a.elements;
     const be = b.elements;
     const te = this.elements;
     const a11 = ae[0], a12 = ae[4], a13 = ae[8], a14 = ae[12];
@@ -13523,15 +12204,15 @@ var Matrix4 = class _Matrix4 {
     te[14] = tmp;
     return this;
   }
-  setPosition(x3, y3, z) {
+  setPosition(x, y, z) {
     const te = this.elements;
-    if (x3.isVector3) {
-      te[12] = x3.x;
-      te[13] = x3.y;
-      te[14] = x3.z;
+    if (x.isVector3) {
+      te[12] = x.x;
+      te[13] = x.y;
+      te[14] = x.z;
     } else {
-      te[12] = x3;
-      te[13] = y3;
+      te[12] = x;
+      te[13] = y;
       te[14] = z;
     }
     return this;
@@ -13561,18 +12242,18 @@ var Matrix4 = class _Matrix4 {
   }
   scale(v2) {
     const te = this.elements;
-    const x3 = v2.x, y3 = v2.y, z = v2.z;
-    te[0] *= x3;
-    te[4] *= y3;
+    const x = v2.x, y = v2.y, z = v2.z;
+    te[0] *= x;
+    te[4] *= y;
     te[8] *= z;
-    te[1] *= x3;
-    te[5] *= y3;
+    te[1] *= x;
+    te[5] *= y;
     te[9] *= z;
-    te[2] *= x3;
-    te[6] *= y3;
+    te[2] *= x;
+    te[6] *= y;
     te[10] *= z;
-    te[3] *= x3;
-    te[7] *= y3;
+    te[3] *= x;
+    te[7] *= y;
     te[11] *= z;
     return this;
   }
@@ -13583,21 +12264,21 @@ var Matrix4 = class _Matrix4 {
     const scaleZSq = te[8] * te[8] + te[9] * te[9] + te[10] * te[10];
     return Math.sqrt(Math.max(scaleXSq, scaleYSq, scaleZSq));
   }
-  makeTranslation(x3, y3, z) {
-    if (x3.isVector3) {
+  makeTranslation(x, y, z) {
+    if (x.isVector3) {
       this.set(
         1,
         0,
         0,
-        x3.x,
+        x.x,
         0,
         1,
         0,
-        x3.y,
+        x.y,
         0,
         0,
         1,
-        x3.z,
+        x.z,
         0,
         0,
         0,
@@ -13608,11 +12289,11 @@ var Matrix4 = class _Matrix4 {
         1,
         0,
         0,
-        x3,
+        x,
         0,
         1,
         0,
-        y3,
+        y,
         0,
         0,
         1,
@@ -13626,19 +12307,19 @@ var Matrix4 = class _Matrix4 {
     return this;
   }
   makeRotationX(theta) {
-    const c2 = Math.cos(theta), s = Math.sin(theta);
+    const c = Math.cos(theta), s = Math.sin(theta);
     this.set(
       1,
       0,
       0,
       0,
       0,
-      c2,
+      c,
       -s,
       0,
       0,
       s,
-      c2,
+      c,
       0,
       0,
       0,
@@ -13648,9 +12329,9 @@ var Matrix4 = class _Matrix4 {
     return this;
   }
   makeRotationY(theta) {
-    const c2 = Math.cos(theta), s = Math.sin(theta);
+    const c = Math.cos(theta), s = Math.sin(theta);
     this.set(
-      c2,
+      c,
       0,
       s,
       0,
@@ -13660,7 +12341,7 @@ var Matrix4 = class _Matrix4 {
       0,
       -s,
       0,
-      c2,
+      c,
       0,
       0,
       0,
@@ -13670,14 +12351,14 @@ var Matrix4 = class _Matrix4 {
     return this;
   }
   makeRotationZ(theta) {
-    const c2 = Math.cos(theta), s = Math.sin(theta);
+    const c = Math.cos(theta), s = Math.sin(theta);
     this.set(
-      c2,
+      c,
       -s,
       0,
       0,
       s,
-      c2,
+      c,
       0,
       0,
       0,
@@ -13692,23 +12373,23 @@ var Matrix4 = class _Matrix4 {
     return this;
   }
   makeRotationAxis(axis, angle) {
-    const c2 = Math.cos(angle);
+    const c = Math.cos(angle);
     const s = Math.sin(angle);
-    const t = 1 - c2;
-    const x3 = axis.x, y3 = axis.y, z = axis.z;
-    const tx = t * x3, ty = t * y3;
+    const t = 1 - c;
+    const x = axis.x, y = axis.y, z = axis.z;
+    const tx = t * x, ty = t * y;
     this.set(
-      tx * x3 + c2,
-      tx * y3 - s * z,
-      tx * z + s * y3,
+      tx * x + c,
+      tx * y - s * z,
+      tx * z + s * y,
       0,
-      tx * y3 + s * z,
-      ty * y3 + c2,
-      ty * z - s * x3,
+      tx * y + s * z,
+      ty * y + c,
+      ty * z - s * x,
       0,
-      tx * z - s * y3,
-      ty * z + s * x3,
-      t * z * z + c2,
+      tx * z - s * y,
+      ty * z + s * x,
+      t * z * z + c,
       0,
       0,
       0,
@@ -13717,14 +12398,14 @@ var Matrix4 = class _Matrix4 {
     );
     return this;
   }
-  makeScale(x3, y3, z) {
+  makeScale(x, y, z) {
     this.set(
-      x3,
+      x,
       0,
       0,
       0,
       0,
-      y3,
+      y,
       0,
       0,
       0,
@@ -13761,11 +12442,11 @@ var Matrix4 = class _Matrix4 {
   }
   compose(position, quaternion, scale) {
     const te = this.elements;
-    const x3 = quaternion._x, y3 = quaternion._y, z = quaternion._z, w2 = quaternion._w;
-    const x22 = x3 + x3, y22 = y3 + y3, z2 = z + z;
-    const xx = x3 * x22, xy = x3 * y22, xz = x3 * z2;
-    const yy = y3 * y22, yz = y3 * z2, zz = z * z2;
-    const wx = w2 * x22, wy = w2 * y22, wz = w2 * z2;
+    const x = quaternion._x, y = quaternion._y, z = quaternion._z, w2 = quaternion._w;
+    const x2 = x + x, y2 = y + y, z2 = z + z;
+    const xx = x * x2, xy = x * y2, xz = x * z2;
+    const yy = y * y2, yz = y * z2, zz = z * z2;
+    const wx = w2 * x2, wy = w2 * y2, wz = w2 * z2;
     const sx = scale.x, sy = scale.y, sz = scale.z;
     te[0] = (1 - (yy + zz)) * sx;
     te[1] = (xy + wz) * sx;
@@ -13816,31 +12497,31 @@ var Matrix4 = class _Matrix4 {
   }
   makePerspective(left, right, top, bottom, near, far, coordinateSystem = WebGLCoordinateSystem) {
     const te = this.elements;
-    const x3 = 2 * near / (right - left);
-    const y3 = 2 * near / (top - bottom);
-    const a2 = (right + left) / (right - left);
+    const x = 2 * near / (right - left);
+    const y = 2 * near / (top - bottom);
+    const a = (right + left) / (right - left);
     const b = (top + bottom) / (top - bottom);
-    let c2, d;
+    let c, d;
     if (coordinateSystem === WebGLCoordinateSystem) {
-      c2 = -(far + near) / (far - near);
+      c = -(far + near) / (far - near);
       d = -2 * far * near / (far - near);
     } else if (coordinateSystem === WebGPUCoordinateSystem) {
-      c2 = -far / (far - near);
+      c = -far / (far - near);
       d = -far * near / (far - near);
     } else {
       throw new Error("THREE.Matrix4.makePerspective(): Invalid coordinate system: " + coordinateSystem);
     }
-    te[0] = x3;
+    te[0] = x;
     te[4] = 0;
-    te[8] = a2;
+    te[8] = a;
     te[12] = 0;
     te[1] = 0;
-    te[5] = y3;
+    te[5] = y;
     te[9] = b;
     te[13] = 0;
     te[2] = 0;
     te[6] = 0;
-    te[10] = c2;
+    te[10] = c;
     te[14] = d;
     te[3] = 0;
     te[7] = 0;
@@ -13853,8 +12534,8 @@ var Matrix4 = class _Matrix4 {
     const w2 = 1 / (right - left);
     const h2 = 1 / (top - bottom);
     const p = 1 / (far - near);
-    const x3 = (right + left) * w2;
-    const y3 = (top + bottom) * h2;
+    const x = (right + left) * w2;
+    const y = (top + bottom) * h2;
     let z, zInv;
     if (coordinateSystem === WebGLCoordinateSystem) {
       z = (far + near) * p;
@@ -13868,11 +12549,11 @@ var Matrix4 = class _Matrix4 {
     te[0] = 2 * w2;
     te[4] = 0;
     te[8] = 0;
-    te[12] = -x3;
+    te[12] = -x;
     te[1] = 0;
     te[5] = 2 * h2;
     te[9] = 0;
-    te[13] = -y3;
+    te[13] = -y;
     te[2] = 0;
     te[6] = 0;
     te[10] = zInv;
@@ -13928,10 +12609,10 @@ var _z = /* @__PURE__ */ new Vector3();
 var _matrix$2 = /* @__PURE__ */ new Matrix4();
 var _quaternion$3 = /* @__PURE__ */ new Quaternion();
 var Euler = class _Euler {
-  constructor(x3 = 0, y3 = 0, z = 0, order = _Euler.DEFAULT_ORDER) {
+  constructor(x = 0, y = 0, z = 0, order = _Euler.DEFAULT_ORDER) {
     this.isEuler = true;
-    this._x = x3;
-    this._y = y3;
+    this._x = x;
+    this._y = y;
     this._z = z;
     this._order = order;
   }
@@ -13963,9 +12644,9 @@ var Euler = class _Euler {
     this._order = value;
     this._onChangeCallback();
   }
-  set(x3, y3, z, order = this._order) {
-    this._x = x3;
-    this._y = y3;
+  set(x, y, z, order = this._order) {
+    this._x = x;
+    this._y = y;
     this._z = z;
     this._order = order;
     this._onChangeCallback();
@@ -13982,8 +12663,8 @@ var Euler = class _Euler {
     this._onChangeCallback();
     return this;
   }
-  setFromRotationMatrix(m2, order = this._order, update = true) {
-    const te = m2.elements;
+  setFromRotationMatrix(m, order = this._order, update = true) {
+    const te = m.elements;
     const m11 = te[0], m12 = te[4], m13 = te[8];
     const m21 = te[1], m22 = te[5], m23 = te[9];
     const m31 = te[2], m32 = te[6], m33 = te[10];
@@ -14230,8 +12911,8 @@ var Object3D = class _Object3D extends EventDispatcher {
   setRotationFromEuler(euler) {
     this.quaternion.setFromEuler(euler, true);
   }
-  setRotationFromMatrix(m2) {
-    this.quaternion.setFromRotationMatrix(m2);
+  setRotationFromMatrix(m) {
+    this.quaternion.setFromRotationMatrix(m);
   }
   setRotationFromQuaternion(q) {
     this.quaternion.copy(q);
@@ -14277,11 +12958,11 @@ var Object3D = class _Object3D extends EventDispatcher {
     this.updateWorldMatrix(true, false);
     return vector.applyMatrix4(_m1$3.copy(this.matrixWorld).invert());
   }
-  lookAt(x3, y3, z) {
-    if (x3.isVector3) {
-      _target.copy(x3);
+  lookAt(x, y, z) {
+    if (x.isVector3) {
+      _target.copy(x);
     } else {
-      _target.set(x3, y3, z);
+      _target.set(x, y, z);
     }
     const parent = this.parent;
     this.updateWorldMatrix(true, false);
@@ -14329,10 +13010,10 @@ var Object3D = class _Object3D extends EventDispatcher {
       }
       return this;
     }
-    const index2 = this.children.indexOf(object);
-    if (index2 !== -1) {
+    const index = this.children.indexOf(object);
+    if (index !== -1) {
       object.parent = null;
-      this.children.splice(index2, 1);
+      this.children.splice(index, 1);
       object.dispatchEvent(_removedEvent);
       _childremovedEvent.child = object;
       this.dispatchEvent(_childremovedEvent);
@@ -14699,14 +13380,14 @@ var _v40 = /* @__PURE__ */ new Vector4();
 var _v41 = /* @__PURE__ */ new Vector4();
 var _v42 = /* @__PURE__ */ new Vector4();
 var Triangle = class _Triangle {
-  constructor(a2 = new Vector3(), b = new Vector3(), c2 = new Vector3()) {
-    this.a = a2;
+  constructor(a = new Vector3(), b = new Vector3(), c = new Vector3()) {
+    this.a = a;
     this.b = b;
-    this.c = c2;
+    this.c = c;
   }
-  static getNormal(a2, b, c2, target) {
-    target.subVectors(c2, b);
-    _v0$2.subVectors(a2, b);
+  static getNormal(a, b, c, target) {
+    target.subVectors(c, b);
+    _v0$2.subVectors(a, b);
     target.cross(_v0$2);
     const targetLengthSq = target.lengthSq();
     if (targetLengthSq > 0) {
@@ -14716,10 +13397,10 @@ var Triangle = class _Triangle {
   }
   // static/instance method to calculate barycentric coordinates
   // based on: http://www.blackpawn.com/texts/pointinpoly/default.html
-  static getBarycoord(point, a2, b, c2, target) {
-    _v0$2.subVectors(c2, a2);
-    _v1$3.subVectors(b, a2);
-    _v2$2.subVectors(point, a2);
+  static getBarycoord(point, a, b, c, target) {
+    _v0$2.subVectors(c, a);
+    _v1$3.subVectors(b, a);
+    _v2$2.subVectors(point, a);
     const dot00 = _v0$2.dot(_v0$2);
     const dot01 = _v0$2.dot(_v1$3);
     const dot02 = _v0$2.dot(_v2$2);
@@ -14735,8 +13416,8 @@ var Triangle = class _Triangle {
     const v2 = (dot00 * dot12 - dot01 * dot02) * invDenom;
     return target.set(1 - u - v2, v2, u);
   }
-  static containsPoint(point, a2, b, c2) {
-    if (this.getBarycoord(point, a2, b, c2, _v3$2) === null) {
+  static containsPoint(point, a, b, c) {
+    if (this.getBarycoord(point, a, b, c, _v3$2) === null) {
       return false;
     }
     return _v3$2.x >= 0 && _v3$2.y >= 0 && _v3$2.x + _v3$2.y <= 1;
@@ -14768,15 +13449,15 @@ var Triangle = class _Triangle {
     target.addScaledVector(_v42, barycoord.z);
     return target;
   }
-  static isFrontFacing(a2, b, c2, direction) {
-    _v0$2.subVectors(c2, b);
-    _v1$3.subVectors(a2, b);
+  static isFrontFacing(a, b, c, direction) {
+    _v0$2.subVectors(c, b);
+    _v1$3.subVectors(a, b);
     return _v0$2.cross(_v1$3).dot(direction) < 0 ? true : false;
   }
-  set(a2, b, c2) {
-    this.a.copy(a2);
+  set(a, b, c) {
+    this.a.copy(a);
     this.b.copy(b);
-    this.c.copy(c2);
+    this.c.copy(c);
     return this;
   }
   setFromPointsAndIndices(points, i0, i1, i2) {
@@ -14830,15 +13511,15 @@ var Triangle = class _Triangle {
     return box.intersectsTriangle(this);
   }
   closestPointToPoint(p, target) {
-    const a2 = this.a, b = this.b, c2 = this.c;
+    const a = this.a, b = this.b, c = this.c;
     let v2, w2;
-    _vab.subVectors(b, a2);
-    _vac.subVectors(c2, a2);
-    _vap.subVectors(p, a2);
+    _vab.subVectors(b, a);
+    _vac.subVectors(c, a);
+    _vap.subVectors(p, a);
     const d1 = _vab.dot(_vap);
     const d2 = _vac.dot(_vap);
     if (d1 <= 0 && d2 <= 0) {
-      return target.copy(a2);
+      return target.copy(a);
     }
     _vbp.subVectors(p, b);
     const d3 = _vab.dot(_vbp);
@@ -14849,29 +13530,29 @@ var Triangle = class _Triangle {
     const vc = d1 * d4 - d3 * d2;
     if (vc <= 0 && d1 >= 0 && d3 <= 0) {
       v2 = d1 / (d1 - d3);
-      return target.copy(a2).addScaledVector(_vab, v2);
+      return target.copy(a).addScaledVector(_vab, v2);
     }
-    _vcp.subVectors(p, c2);
+    _vcp.subVectors(p, c);
     const d5 = _vab.dot(_vcp);
     const d6 = _vac.dot(_vcp);
     if (d6 >= 0 && d5 <= d6) {
-      return target.copy(c2);
+      return target.copy(c);
     }
     const vb = d5 * d2 - d1 * d6;
     if (vb <= 0 && d2 >= 0 && d6 <= 0) {
       w2 = d2 / (d2 - d6);
-      return target.copy(a2).addScaledVector(_vac, w2);
+      return target.copy(a).addScaledVector(_vac, w2);
     }
     const va = d3 * d6 - d5 * d4;
     if (va <= 0 && d4 - d3 >= 0 && d5 - d6 >= 0) {
-      _vbc.subVectors(c2, b);
+      _vbc.subVectors(c, b);
       w2 = (d4 - d3) / (d4 - d3 + (d5 - d6));
       return target.copy(b).addScaledVector(_vbc, w2);
     }
     const denom = 1 / (va + vb + vc);
     v2 = vb * denom;
     w2 = vc * denom;
-    return target.copy(a2).addScaledVector(_vab, v2).addScaledVector(_vac, w2);
+    return target.copy(a).addScaledVector(_vab, v2).addScaledVector(_vac, w2);
   }
   equals(triangle) {
     return triangle.a.equals(this.a) && triangle.b.equals(this.b) && triangle.c.equals(this.c);
@@ -15104,11 +13785,11 @@ var Color2 = class {
         console.warn("THREE.Color: Alpha component of " + style + " will be ignored.");
       }
     }
-    let m2;
-    if (m2 = /^(\w+)\(([^\)]*)\)/.exec(style)) {
+    let m;
+    if (m = /^(\w+)\(([^\)]*)\)/.exec(style)) {
       let color2;
-      const name = m2[1];
-      const components = m2[2];
+      const name = m[1];
+      const components = m[2];
       switch (name) {
         case "rgb":
         case "rgba":
@@ -15146,8 +13827,8 @@ var Color2 = class {
         default:
           console.warn("THREE.Color: Unknown color model " + style);
       }
-    } else if (m2 = /^\#([A-Fa-f\d]+)$/.exec(style)) {
-      const hex2 = m2[1];
+    } else if (m = /^\#([A-Fa-f\d]+)$/.exec(style)) {
+      const hex2 = m[1];
       const size = hex2.length;
       if (size === 3) {
         return this.setRGB(
@@ -15324,16 +14005,16 @@ var Color2 = class {
     this.b = v2.z;
     return this;
   }
-  applyMatrix3(m2) {
+  applyMatrix3(m) {
     const r = this.r, g2 = this.g, b = this.b;
-    const e = m2.elements;
+    const e = m.elements;
     this.r = e[0] * r + e[3] * g2 + e[6] * b;
     this.g = e[1] * r + e[4] * g2 + e[7] * b;
     this.b = e[2] * r + e[5] * g2 + e[8] * b;
     return this;
   }
-  equals(c2) {
-    return c2.r === this.r && c2.g === this.g && c2.b === this.b;
+  equals(c) {
+    return c.r === this.r && c.g === this.g && c.b === this.b;
   }
   fromArray(array2, offset = 0) {
     this.r = array2[offset];
@@ -15347,10 +14028,10 @@ var Color2 = class {
     array2[offset + 2] = this.b;
     return array2;
   }
-  fromBufferAttribute(attribute, index2) {
-    this.r = attribute.getX(index2);
-    this.g = attribute.getY(index2);
-    this.b = attribute.getZ(index2);
+  fromBufferAttribute(attribute, index) {
+    this.r = attribute.getX(index);
+    this.g = attribute.getY(index);
+    this.b = attribute.getZ(index);
     return this;
   }
   toJSON() {
@@ -15809,42 +14490,42 @@ var BufferAttribute = class {
     this.array.set(array2);
     return this;
   }
-  applyMatrix3(m2) {
+  applyMatrix3(m) {
     if (this.itemSize === 2) {
       for (let i = 0, l2 = this.count; i < l2; i++) {
         _vector2$1.fromBufferAttribute(this, i);
-        _vector2$1.applyMatrix3(m2);
+        _vector2$1.applyMatrix3(m);
         this.setXY(i, _vector2$1.x, _vector2$1.y);
       }
     } else if (this.itemSize === 3) {
       for (let i = 0, l2 = this.count; i < l2; i++) {
         _vector$9.fromBufferAttribute(this, i);
-        _vector$9.applyMatrix3(m2);
+        _vector$9.applyMatrix3(m);
         this.setXYZ(i, _vector$9.x, _vector$9.y, _vector$9.z);
       }
     }
     return this;
   }
-  applyMatrix4(m2) {
+  applyMatrix4(m) {
     for (let i = 0, l2 = this.count; i < l2; i++) {
       _vector$9.fromBufferAttribute(this, i);
-      _vector$9.applyMatrix4(m2);
+      _vector$9.applyMatrix4(m);
       this.setXYZ(i, _vector$9.x, _vector$9.y, _vector$9.z);
     }
     return this;
   }
-  applyNormalMatrix(m2) {
+  applyNormalMatrix(m) {
     for (let i = 0, l2 = this.count; i < l2; i++) {
       _vector$9.fromBufferAttribute(this, i);
-      _vector$9.applyNormalMatrix(m2);
+      _vector$9.applyNormalMatrix(m);
       this.setXYZ(i, _vector$9.x, _vector$9.y, _vector$9.z);
     }
     return this;
   }
-  transformDirection(m2) {
+  transformDirection(m) {
     for (let i = 0, l2 = this.count; i < l2; i++) {
       _vector$9.fromBufferAttribute(this, i);
-      _vector$9.transformDirection(m2);
+      _vector$9.transformDirection(m);
       this.setXYZ(i, _vector$9.x, _vector$9.y, _vector$9.z);
     }
     return this;
@@ -15853,90 +14534,90 @@ var BufferAttribute = class {
     this.array.set(value, offset);
     return this;
   }
-  getComponent(index2, component) {
-    let value = this.array[index2 * this.itemSize + component];
+  getComponent(index, component) {
+    let value = this.array[index * this.itemSize + component];
     if (this.normalized) value = denormalize(value, this.array);
     return value;
   }
-  setComponent(index2, component, value) {
+  setComponent(index, component, value) {
     if (this.normalized) value = normalize(value, this.array);
-    this.array[index2 * this.itemSize + component] = value;
+    this.array[index * this.itemSize + component] = value;
     return this;
   }
-  getX(index2) {
-    let x3 = this.array[index2 * this.itemSize];
-    if (this.normalized) x3 = denormalize(x3, this.array);
-    return x3;
+  getX(index) {
+    let x = this.array[index * this.itemSize];
+    if (this.normalized) x = denormalize(x, this.array);
+    return x;
   }
-  setX(index2, x3) {
-    if (this.normalized) x3 = normalize(x3, this.array);
-    this.array[index2 * this.itemSize] = x3;
+  setX(index, x) {
+    if (this.normalized) x = normalize(x, this.array);
+    this.array[index * this.itemSize] = x;
     return this;
   }
-  getY(index2) {
-    let y3 = this.array[index2 * this.itemSize + 1];
-    if (this.normalized) y3 = denormalize(y3, this.array);
-    return y3;
+  getY(index) {
+    let y = this.array[index * this.itemSize + 1];
+    if (this.normalized) y = denormalize(y, this.array);
+    return y;
   }
-  setY(index2, y3) {
-    if (this.normalized) y3 = normalize(y3, this.array);
-    this.array[index2 * this.itemSize + 1] = y3;
+  setY(index, y) {
+    if (this.normalized) y = normalize(y, this.array);
+    this.array[index * this.itemSize + 1] = y;
     return this;
   }
-  getZ(index2) {
-    let z = this.array[index2 * this.itemSize + 2];
+  getZ(index) {
+    let z = this.array[index * this.itemSize + 2];
     if (this.normalized) z = denormalize(z, this.array);
     return z;
   }
-  setZ(index2, z) {
+  setZ(index, z) {
     if (this.normalized) z = normalize(z, this.array);
-    this.array[index2 * this.itemSize + 2] = z;
+    this.array[index * this.itemSize + 2] = z;
     return this;
   }
-  getW(index2) {
-    let w2 = this.array[index2 * this.itemSize + 3];
+  getW(index) {
+    let w2 = this.array[index * this.itemSize + 3];
     if (this.normalized) w2 = denormalize(w2, this.array);
     return w2;
   }
-  setW(index2, w2) {
+  setW(index, w2) {
     if (this.normalized) w2 = normalize(w2, this.array);
-    this.array[index2 * this.itemSize + 3] = w2;
+    this.array[index * this.itemSize + 3] = w2;
     return this;
   }
-  setXY(index2, x3, y3) {
-    index2 *= this.itemSize;
+  setXY(index, x, y) {
+    index *= this.itemSize;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
     }
-    this.array[index2 + 0] = x3;
-    this.array[index2 + 1] = y3;
+    this.array[index + 0] = x;
+    this.array[index + 1] = y;
     return this;
   }
-  setXYZ(index2, x3, y3, z) {
-    index2 *= this.itemSize;
+  setXYZ(index, x, y, z) {
+    index *= this.itemSize;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
       z = normalize(z, this.array);
     }
-    this.array[index2 + 0] = x3;
-    this.array[index2 + 1] = y3;
-    this.array[index2 + 2] = z;
+    this.array[index + 0] = x;
+    this.array[index + 1] = y;
+    this.array[index + 2] = z;
     return this;
   }
-  setXYZW(index2, x3, y3, z, w2) {
-    index2 *= this.itemSize;
+  setXYZW(index, x, y, z, w2) {
+    index *= this.itemSize;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
       z = normalize(z, this.array);
       w2 = normalize(w2, this.array);
     }
-    this.array[index2 + 0] = x3;
-    this.array[index2 + 1] = y3;
-    this.array[index2 + 2] = z;
-    this.array[index2 + 3] = w2;
+    this.array[index + 0] = x;
+    this.array[index + 1] = y;
+    this.array[index + 2] = z;
+    this.array[index + 3] = w2;
     return this;
   }
   onUpload(callback) {
@@ -16002,11 +14683,11 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
   getIndex() {
     return this.index;
   }
-  setIndex(index2) {
-    if (Array.isArray(index2)) {
-      this.index = new (arrayNeedsUint32(index2) ? Uint32BufferAttribute : Uint16BufferAttribute)(index2, 1);
+  setIndex(index) {
+    if (Array.isArray(index)) {
+      this.index = new (arrayNeedsUint32(index) ? Uint32BufferAttribute : Uint16BufferAttribute)(index, 1);
     } else {
-      this.index = index2;
+      this.index = index;
     }
     return this;
   }
@@ -16090,13 +14771,13 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
     this.applyMatrix4(_m1$2);
     return this;
   }
-  translate(x3, y3, z) {
-    _m1$2.makeTranslation(x3, y3, z);
+  translate(x, y, z) {
+    _m1$2.makeTranslation(x, y, z);
     this.applyMatrix4(_m1$2);
     return this;
   }
-  scale(x3, y3, z) {
-    _m1$2.makeScale(x3, y3, z);
+  scale(x, y, z) {
+    _m1$2.makeScale(x, y, z);
     this.applyMatrix4(_m1$2);
     return this;
   }
@@ -16227,9 +14908,9 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
     }
   }
   computeTangents() {
-    const index2 = this.index;
+    const index = this.index;
     const attributes = this.attributes;
-    if (index2 === null || attributes.position === void 0 || attributes.normal === void 0 || attributes.uv === void 0) {
+    if (index === null || attributes.position === void 0 || attributes.normal === void 0 || attributes.uv === void 0) {
       console.error("THREE.BufferGeometry: .computeTangents() failed. Missing required attributes (index, position, normal or uv)");
       return;
     }
@@ -16246,13 +14927,13 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       tan2[i] = new Vector3();
     }
     const vA = new Vector3(), vB = new Vector3(), vC = new Vector3(), uvA = new Vector2(), uvB = new Vector2(), uvC = new Vector2(), sdir = new Vector3(), tdir = new Vector3();
-    function handleTriangle(a2, b, c2) {
-      vA.fromBufferAttribute(positionAttribute, a2);
+    function handleTriangle(a, b, c) {
+      vA.fromBufferAttribute(positionAttribute, a);
       vB.fromBufferAttribute(positionAttribute, b);
-      vC.fromBufferAttribute(positionAttribute, c2);
-      uvA.fromBufferAttribute(uvAttribute, a2);
+      vC.fromBufferAttribute(positionAttribute, c);
+      uvA.fromBufferAttribute(uvAttribute, a);
       uvB.fromBufferAttribute(uvAttribute, b);
-      uvC.fromBufferAttribute(uvAttribute, c2);
+      uvC.fromBufferAttribute(uvAttribute, c);
       vB.sub(vA);
       vC.sub(vA);
       uvB.sub(uvA);
@@ -16261,18 +14942,18 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       if (!isFinite(r)) return;
       sdir.copy(vB).multiplyScalar(uvC.y).addScaledVector(vC, -uvB.y).multiplyScalar(r);
       tdir.copy(vC).multiplyScalar(uvB.x).addScaledVector(vB, -uvC.x).multiplyScalar(r);
-      tan1[a2].add(sdir);
+      tan1[a].add(sdir);
       tan1[b].add(sdir);
-      tan1[c2].add(sdir);
-      tan2[a2].add(tdir);
+      tan1[c].add(sdir);
+      tan2[a].add(tdir);
       tan2[b].add(tdir);
-      tan2[c2].add(tdir);
+      tan2[c].add(tdir);
     }
     let groups = this.groups;
     if (groups.length === 0) {
       groups = [{
         start: 0,
-        count: index2.count
+        count: index.count
       }];
     }
     for (let i = 0, il = groups.length; i < il; ++i) {
@@ -16281,9 +14962,9 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       const count = group.count;
       for (let j = start2, jl = start2 + count; j < jl; j += 3) {
         handleTriangle(
-          index2.getX(j + 0),
-          index2.getX(j + 1),
-          index2.getX(j + 2)
+          index.getX(j + 0),
+          index.getX(j + 1),
+          index.getX(j + 2)
         );
       }
     }
@@ -16305,14 +14986,14 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       const start2 = group.start;
       const count = group.count;
       for (let j = start2, jl = start2 + count; j < jl; j += 3) {
-        handleVertex(index2.getX(j + 0));
-        handleVertex(index2.getX(j + 1));
-        handleVertex(index2.getX(j + 2));
+        handleVertex(index.getX(j + 0));
+        handleVertex(index.getX(j + 1));
+        handleVertex(index.getX(j + 2));
       }
     }
   }
   computeVertexNormals() {
-    const index2 = this.index;
+    const index = this.index;
     const positionAttribute = this.getAttribute("position");
     if (positionAttribute !== void 0) {
       let normalAttribute = this.getAttribute("normal");
@@ -16327,11 +15008,11 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       const pA = new Vector3(), pB = new Vector3(), pC = new Vector3();
       const nA = new Vector3(), nB = new Vector3(), nC = new Vector3();
       const cb = new Vector3(), ab = new Vector3();
-      if (index2) {
-        for (let i = 0, il = index2.count; i < il; i += 3) {
-          const vA = index2.getX(i + 0);
-          const vB = index2.getX(i + 1);
-          const vC = index2.getX(i + 2);
+      if (index) {
+        for (let i = 0, il = index.count; i < il; i += 3) {
+          const vA = index.getX(i + 0);
+          const vB = index.getX(i + 1);
+          const vC = index.getX(i + 2);
           pA.fromBufferAttribute(positionAttribute, vA);
           pB.fromBufferAttribute(positionAttribute, vB);
           pC.fromBufferAttribute(positionAttribute, vC);
@@ -16379,15 +15060,15 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       const itemSize = attribute.itemSize;
       const normalized = attribute.normalized;
       const array22 = new array2.constructor(indices2.length * itemSize);
-      let index2 = 0, index22 = 0;
+      let index = 0, index2 = 0;
       for (let i = 0, l2 = indices2.length; i < l2; i++) {
         if (attribute.isInterleavedBufferAttribute) {
-          index2 = indices2[i] * attribute.data.stride + attribute.offset;
+          index = indices2[i] * attribute.data.stride + attribute.offset;
         } else {
-          index2 = indices2[i] * itemSize;
+          index = indices2[i] * itemSize;
         }
         for (let j = 0; j < itemSize; j++) {
-          array22[index22++] = array2[index2++];
+          array22[index2++] = array2[index++];
         }
       }
       return new BufferAttribute(array22, itemSize, normalized);
@@ -16443,11 +15124,11 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
       return data;
     }
     data.data = { attributes: {} };
-    const index2 = this.index;
-    if (index2 !== null) {
+    const index = this.index;
+    if (index !== null) {
       data.data.index = {
-        type: index2.array.constructor.name,
-        array: Array.prototype.slice.call(index2.array)
+        type: index.array.constructor.name,
+        array: Array.prototype.slice.call(index.array)
       };
     }
     const attributes = this.attributes;
@@ -16498,9 +15179,9 @@ var BufferGeometry = class _BufferGeometry extends EventDispatcher {
     this.boundingSphere = null;
     const data = {};
     this.name = source.name;
-    const index2 = source.index;
-    if (index2 !== null) {
-      this.setIndex(index2.clone(data));
+    const index = source.index;
+    if (index !== null) {
+      this.setIndex(index.clone(data));
     }
     const attributes = source.attributes;
     for (const name in attributes) {
@@ -16580,20 +15261,20 @@ var Mesh = class extends Object3D {
       if (morphAttribute !== void 0) {
         this.morphTargetInfluences = [];
         this.morphTargetDictionary = {};
-        for (let m2 = 0, ml = morphAttribute.length; m2 < ml; m2++) {
-          const name = morphAttribute[m2].name || String(m2);
+        for (let m = 0, ml = morphAttribute.length; m < ml; m++) {
+          const name = morphAttribute[m].name || String(m);
           this.morphTargetInfluences.push(0);
-          this.morphTargetDictionary[name] = m2;
+          this.morphTargetDictionary[name] = m;
         }
       }
     }
   }
-  getVertexPosition(index2, target) {
+  getVertexPosition(index, target) {
     const geometry = this.geometry;
     const position = geometry.attributes.position;
     const morphPosition = geometry.morphAttributes.position;
     const morphTargetsRelative = geometry.morphTargetsRelative;
-    target.fromBufferAttribute(position, index2);
+    target.fromBufferAttribute(position, index);
     const morphInfluences = this.morphTargetInfluences;
     if (morphPosition && morphInfluences) {
       _morphA.set(0, 0, 0);
@@ -16601,7 +15282,7 @@ var Mesh = class extends Object3D {
         const influence = morphInfluences[i];
         const morphAttribute = morphPosition[i];
         if (influence === 0) continue;
-        _tempA.fromBufferAttribute(morphAttribute, index2);
+        _tempA.fromBufferAttribute(morphAttribute, index);
         if (morphTargetsRelative) {
           _morphA.addScaledVector(_tempA, influence);
         } else {
@@ -16636,25 +15317,25 @@ var Mesh = class extends Object3D {
     let intersection;
     const geometry = this.geometry;
     const material = this.material;
-    const index2 = geometry.index;
+    const index = geometry.index;
     const position = geometry.attributes.position;
     const uv = geometry.attributes.uv;
     const uv1 = geometry.attributes.uv1;
     const normal = geometry.attributes.normal;
     const groups = geometry.groups;
     const drawRange = geometry.drawRange;
-    if (index2 !== null) {
+    if (index !== null) {
       if (Array.isArray(material)) {
         for (let i = 0, il = groups.length; i < il; i++) {
           const group = groups[i];
           const groupMaterial = material[group.materialIndex];
           const start2 = Math.max(group.start, drawRange.start);
-          const end = Math.min(index2.count, Math.min(group.start + group.count, drawRange.start + drawRange.count));
+          const end = Math.min(index.count, Math.min(group.start + group.count, drawRange.start + drawRange.count));
           for (let j = start2, jl = end; j < jl; j += 3) {
-            const a2 = index2.getX(j);
-            const b = index2.getX(j + 1);
-            const c2 = index2.getX(j + 2);
-            intersection = checkGeometryIntersection(this, groupMaterial, raycaster, rayLocalSpace, uv, uv1, normal, a2, b, c2);
+            const a = index.getX(j);
+            const b = index.getX(j + 1);
+            const c = index.getX(j + 2);
+            intersection = checkGeometryIntersection(this, groupMaterial, raycaster, rayLocalSpace, uv, uv1, normal, a, b, c);
             if (intersection) {
               intersection.faceIndex = Math.floor(j / 3);
               intersection.face.materialIndex = group.materialIndex;
@@ -16664,12 +15345,12 @@ var Mesh = class extends Object3D {
         }
       } else {
         const start2 = Math.max(0, drawRange.start);
-        const end = Math.min(index2.count, drawRange.start + drawRange.count);
+        const end = Math.min(index.count, drawRange.start + drawRange.count);
         for (let i = start2, il = end; i < il; i += 3) {
-          const a2 = index2.getX(i);
-          const b = index2.getX(i + 1);
-          const c2 = index2.getX(i + 2);
-          intersection = checkGeometryIntersection(this, material, raycaster, rayLocalSpace, uv, uv1, normal, a2, b, c2);
+          const a = index.getX(i);
+          const b = index.getX(i + 1);
+          const c = index.getX(i + 2);
+          intersection = checkGeometryIntersection(this, material, raycaster, rayLocalSpace, uv, uv1, normal, a, b, c);
           if (intersection) {
             intersection.faceIndex = Math.floor(i / 3);
             intersects.push(intersection);
@@ -16684,10 +15365,10 @@ var Mesh = class extends Object3D {
           const start2 = Math.max(group.start, drawRange.start);
           const end = Math.min(position.count, Math.min(group.start + group.count, drawRange.start + drawRange.count));
           for (let j = start2, jl = end; j < jl; j += 3) {
-            const a2 = j;
+            const a = j;
             const b = j + 1;
-            const c2 = j + 2;
-            intersection = checkGeometryIntersection(this, groupMaterial, raycaster, rayLocalSpace, uv, uv1, normal, a2, b, c2);
+            const c = j + 2;
+            intersection = checkGeometryIntersection(this, groupMaterial, raycaster, rayLocalSpace, uv, uv1, normal, a, b, c);
             if (intersection) {
               intersection.faceIndex = Math.floor(j / 3);
               intersection.face.materialIndex = group.materialIndex;
@@ -16699,10 +15380,10 @@ var Mesh = class extends Object3D {
         const start2 = Math.max(0, drawRange.start);
         const end = Math.min(position.count, drawRange.start + drawRange.count);
         for (let i = start2, il = end; i < il; i += 3) {
-          const a2 = i;
+          const a = i;
           const b = i + 1;
-          const c2 = i + 2;
-          intersection = checkGeometryIntersection(this, material, raycaster, rayLocalSpace, uv, uv1, normal, a2, b, c2);
+          const c = i + 2;
+          intersection = checkGeometryIntersection(this, material, raycaster, rayLocalSpace, uv, uv1, normal, a, b, c);
           if (intersection) {
             intersection.faceIndex = Math.floor(i / 3);
             intersects.push(intersection);
@@ -16730,30 +15411,30 @@ function checkIntersection$1(object, material, raycaster, ray, pA, pB, pC, point
     object
   };
 }
-function checkGeometryIntersection(object, material, raycaster, ray, uv, uv1, normal, a2, b, c2) {
-  object.getVertexPosition(a2, _vA$1);
+function checkGeometryIntersection(object, material, raycaster, ray, uv, uv1, normal, a, b, c) {
+  object.getVertexPosition(a, _vA$1);
   object.getVertexPosition(b, _vB$1);
-  object.getVertexPosition(c2, _vC$1);
+  object.getVertexPosition(c, _vC$1);
   const intersection = checkIntersection$1(object, material, raycaster, ray, _vA$1, _vB$1, _vC$1, _intersectionPoint);
   if (intersection) {
     const barycoord = new Vector3();
     Triangle.getBarycoord(_intersectionPoint, _vA$1, _vB$1, _vC$1, barycoord);
     if (uv) {
-      intersection.uv = Triangle.getInterpolatedAttribute(uv, a2, b, c2, barycoord, new Vector2());
+      intersection.uv = Triangle.getInterpolatedAttribute(uv, a, b, c, barycoord, new Vector2());
     }
     if (uv1) {
-      intersection.uv1 = Triangle.getInterpolatedAttribute(uv1, a2, b, c2, barycoord, new Vector2());
+      intersection.uv1 = Triangle.getInterpolatedAttribute(uv1, a, b, c, barycoord, new Vector2());
     }
     if (normal) {
-      intersection.normal = Triangle.getInterpolatedAttribute(normal, a2, b, c2, barycoord, new Vector3());
+      intersection.normal = Triangle.getInterpolatedAttribute(normal, a, b, c, barycoord, new Vector3());
       if (intersection.normal.dot(ray.direction) > 0) {
         intersection.normal.multiplyScalar(-1);
       }
     }
     const face = {
-      a: a2,
+      a,
       b,
-      c: c2,
+      c,
       normal: new Vector3(),
       materialIndex: 0
     };
@@ -16807,11 +15488,11 @@ var BoxGeometry = class _BoxGeometry extends BufferGeometry {
       let groupCount = 0;
       const vector = new Vector3();
       for (let iy = 0; iy < gridY1; iy++) {
-        const y3 = iy * segmentHeight - heightHalf;
+        const y = iy * segmentHeight - heightHalf;
         for (let ix = 0; ix < gridX1; ix++) {
-          const x3 = ix * segmentWidth - widthHalf;
-          vector[u] = x3 * udir;
-          vector[v2] = y3 * vdir;
+          const x = ix * segmentWidth - widthHalf;
+          vector[u] = x * udir;
+          vector[v2] = y * vdir;
           vector[w2] = depthHalf;
           vertices.push(vector.x, vector.y, vector.z);
           vector[u] = 0;
@@ -16825,12 +15506,12 @@ var BoxGeometry = class _BoxGeometry extends BufferGeometry {
       }
       for (let iy = 0; iy < gridY; iy++) {
         for (let ix = 0; ix < gridX; ix++) {
-          const a2 = numberOfVertices + ix + gridX1 * iy;
+          const a = numberOfVertices + ix + gridX1 * iy;
           const b = numberOfVertices + ix + gridX1 * (iy + 1);
-          const c2 = numberOfVertices + (ix + 1) + gridX1 * (iy + 1);
+          const c = numberOfVertices + (ix + 1) + gridX1 * (iy + 1);
           const d = numberOfVertices + (ix + 1) + gridX1 * iy;
-          indices.push(a2, b, d);
-          indices.push(b, c2, d);
+          indices.push(a, b, d);
+          indices.push(b, c, d);
           groupCount += 6;
         }
       }
@@ -17163,7 +15844,7 @@ var PerspectiveCamera = class extends Camera {
    *
    *   Note there is no reason monitors have to be the same size or in a grid.
    */
-  setViewOffset(fullWidth, fullHeight, x3, y3, width, height) {
+  setViewOffset(fullWidth, fullHeight, x, y, width, height) {
     this.aspect = fullWidth / fullHeight;
     if (this.view === null) {
       this.view = {
@@ -17179,8 +15860,8 @@ var PerspectiveCamera = class extends Camera {
     this.view.enabled = true;
     this.view.fullWidth = fullWidth;
     this.view.fullHeight = fullHeight;
-    this.view.offsetX = x3;
-    this.view.offsetY = y3;
+    this.view.offsetX = x;
+    this.view.offsetY = y;
     this.view.width = width;
     this.view.height = height;
     this.updateProjectionMatrix();
@@ -17447,8 +16128,8 @@ var Plane = class {
     this.constant = constant;
     return this;
   }
-  setComponents(x3, y3, z, w2) {
-    this.normal.set(x3, y3, z);
+  setComponents(x, y, z, w2) {
+    this.normal.set(x, y, z);
     this.constant = w2;
     return this;
   }
@@ -17457,9 +16138,9 @@ var Plane = class {
     this.constant = -point.dot(this.normal);
     return this;
   }
-  setFromCoplanarPoints(a2, b, c2) {
-    const normal = _vector1.subVectors(c2, b).cross(_vector2.subVectors(a2, b)).normalize();
-    this.setFromNormalAndCoplanarPoint(normal, a2);
+  setFromCoplanarPoints(a, b, c) {
+    const normal = _vector1.subVectors(c, b).cross(_vector2.subVectors(a, b)).normalize();
+    this.setFromNormalAndCoplanarPoint(normal, a);
     return this;
   }
   copy(plane) {
@@ -17557,9 +16238,9 @@ var Frustum = class {
     }
     return this;
   }
-  setFromProjectionMatrix(m2, coordinateSystem = WebGLCoordinateSystem) {
+  setFromProjectionMatrix(m, coordinateSystem = WebGLCoordinateSystem) {
     const planes = this.planes;
-    const me = m2.elements;
+    const me = m.elements;
     const me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3];
     const me4 = me[4], me5 = me[5], me6 = me[6], me7 = me[7];
     const me8 = me[8], me9 = me[9], me10 = me[10], me11 = me[11];
@@ -17710,7 +16391,7 @@ function WebGLAttributes(gl) {
     if (updateRanges.length === 0) {
       gl.bufferSubData(bufferType, 0, array2);
     } else {
-      updateRanges.sort((a2, b) => a2.start - b.start);
+      updateRanges.sort((a, b) => a.start - b.start);
       let mergeIndex = 0;
       for (let i = 1; i < updateRanges.length; i++) {
         const previousRange = updateRanges[mergeIndex];
@@ -17806,10 +16487,10 @@ var PlaneGeometry = class _PlaneGeometry extends BufferGeometry {
     const normals = [];
     const uvs = [];
     for (let iy = 0; iy < gridY1; iy++) {
-      const y3 = iy * segment_height - height_half;
+      const y = iy * segment_height - height_half;
       for (let ix = 0; ix < gridX1; ix++) {
-        const x3 = ix * segment_width - width_half;
-        vertices.push(x3, -y3, 0);
+        const x = ix * segment_width - width_half;
+        vertices.push(x, -y, 0);
         normals.push(0, 0, 1);
         uvs.push(ix / gridX);
         uvs.push(1 - iy / gridY);
@@ -17817,12 +16498,12 @@ var PlaneGeometry = class _PlaneGeometry extends BufferGeometry {
     }
     for (let iy = 0; iy < gridY; iy++) {
       for (let ix = 0; ix < gridX; ix++) {
-        const a2 = ix + gridX1 * iy;
+        const a = ix + gridX1 * iy;
         const b = ix + gridX1 * (iy + 1);
-        const c2 = ix + 1 + gridX1 * (iy + 1);
+        const c = ix + 1 + gridX1 * (iy + 1);
         const d = ix + 1 + gridX1 * iy;
-        indices.push(a2, b, d);
-        indices.push(b, c2, d);
+        indices.push(a, b, d);
+        indices.push(b, c, d);
       }
     }
     this.setIndex(indices);
@@ -18724,23 +17405,23 @@ function WebGLBindingStates(gl, attributes) {
   const defaultState = createBindingState(null);
   let currentState = defaultState;
   let forceUpdate = false;
-  function setup(object, material, program, geometry, index2) {
+  function setup(object, material, program, geometry, index) {
     let updateBuffers = false;
     const state2 = getBindingState(geometry, program, material);
     if (currentState !== state2) {
       currentState = state2;
       bindVertexArrayObject(currentState.object);
     }
-    updateBuffers = needsUpdate(object, geometry, program, index2);
-    if (updateBuffers) saveCache(object, geometry, program, index2);
-    if (index2 !== null) {
-      attributes.update(index2, gl.ELEMENT_ARRAY_BUFFER);
+    updateBuffers = needsUpdate(object, geometry, program, index);
+    if (updateBuffers) saveCache(object, geometry, program, index);
+    if (index !== null) {
+      attributes.update(index, gl.ELEMENT_ARRAY_BUFFER);
     }
     if (updateBuffers || forceUpdate) {
       forceUpdate = false;
       setupVertexAttributes(object, material, program, geometry);
-      if (index2 !== null) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, attributes.get(index2).buffer);
+      if (index !== null) {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, attributes.get(index).buffer);
       }
     }
   }
@@ -18794,7 +17475,7 @@ function WebGLBindingStates(gl, attributes) {
       index: null
     };
   }
-  function needsUpdate(object, geometry, program, index2) {
+  function needsUpdate(object, geometry, program, index) {
     const cachedAttributes = currentState.attributes;
     const geometryAttributes = geometry.attributes;
     let attributesNum = 0;
@@ -18815,10 +17496,10 @@ function WebGLBindingStates(gl, attributes) {
       }
     }
     if (currentState.attributesNum !== attributesNum) return true;
-    if (currentState.index !== index2) return true;
+    if (currentState.index !== index) return true;
     return false;
   }
-  function saveCache(object, geometry, program, index2) {
+  function saveCache(object, geometry, program, index) {
     const cache = {};
     const attributes2 = geometry.attributes;
     let attributesNum = 0;
@@ -18842,7 +17523,7 @@ function WebGLBindingStates(gl, attributes) {
     }
     currentState.attributes = cache;
     currentState.attributesNum = attributesNum;
-    currentState.index = index2;
+    currentState.index = index;
   }
   function initAttributes() {
     const newAttributes = currentState.newAttributes;
@@ -18877,11 +17558,11 @@ function WebGLBindingStates(gl, attributes) {
       }
     }
   }
-  function vertexAttribPointer(index2, size, type2, normalized, stride, offset, integer) {
+  function vertexAttribPointer(index, size, type2, normalized, stride, offset, integer) {
     if (integer === true) {
-      gl.vertexAttribIPointer(index2, size, type2, stride, offset);
+      gl.vertexAttribIPointer(index, size, type2, stride, offset);
     } else {
-      gl.vertexAttribPointer(index2, size, type2, normalized, stride, offset);
+      gl.vertexAttribPointer(index, size, type2, normalized, stride, offset);
     }
   }
   function setupVertexAttributes(object, material, program, geometry) {
@@ -19329,7 +18010,7 @@ var OrthographicCamera = class extends Camera {
     this.view = source.view === null ? null : Object.assign({}, source.view);
     return this;
   }
-  setViewOffset(fullWidth, fullHeight, x3, y3, width, height) {
+  setViewOffset(fullWidth, fullHeight, x, y, width, height) {
     if (this.view === null) {
       this.view = {
         enabled: true,
@@ -19344,8 +18025,8 @@ var OrthographicCamera = class extends Camera {
     this.view.enabled = true;
     this.view.fullWidth = fullWidth;
     this.view.fullHeight = fullHeight;
-    this.view.offsetX = x3;
-    this.view.offsetY = y3;
+    this.view.offsetX = x;
+    this.view.offsetY = y;
     this.view.width = width;
     this.view.height = height;
     this.updateProjectionMatrix();
@@ -19701,8 +18382,8 @@ var PMREMGenerator = class {
     const weights = [];
     let sum = 0;
     for (let i = 0; i < MAX_SAMPLES; ++i) {
-      const x4 = i / sigmaPixels;
-      const weight = Math.exp(-x4 * x4 / 2);
+      const x2 = i / sigmaPixels;
+      const weight = Math.exp(-x2 * x2 / 2);
       weights.push(weight);
       if (i === 0) {
         sum += weight;
@@ -19724,9 +18405,9 @@ var PMREMGenerator = class {
     blurUniforms["dTheta"].value = radiansPerPixel;
     blurUniforms["mipInt"].value = _lodMax - lodIn;
     const outputSize = this._sizeLods[lodOut];
-    const x3 = 3 * outputSize * (lodOut > _lodMax - LOD_MIN ? lodOut - _lodMax + LOD_MIN : 0);
-    const y3 = 4 * (this._cubeSize - outputSize);
-    _setViewport(targetOut, x3, y3, 3 * outputSize, 2 * outputSize);
+    const x = 3 * outputSize * (lodOut > _lodMax - LOD_MIN ? lodOut - _lodMax + LOD_MIN : 0);
+    const y = 4 * (this._cubeSize - outputSize);
+    _setViewport(targetOut, x, y, 3 * outputSize, 2 * outputSize);
     renderer.setRenderTarget(targetOut);
     renderer.render(blurMesh, _flatCamera);
   }
@@ -19760,26 +18441,26 @@ function _createPlanes(lodMax) {
     const uv = new Float32Array(uvSize * vertices * cubeFaces);
     const faceIndex = new Float32Array(faceIndexSize * vertices * cubeFaces);
     for (let face = 0; face < cubeFaces; face++) {
-      const x3 = face % 3 * 2 / 3 - 1;
-      const y3 = face > 2 ? 0 : -1;
+      const x = face % 3 * 2 / 3 - 1;
+      const y = face > 2 ? 0 : -1;
       const coordinates = [
-        x3,
-        y3,
+        x,
+        y,
         0,
-        x3 + 2 / 3,
-        y3,
+        x + 2 / 3,
+        y,
         0,
-        x3 + 2 / 3,
-        y3 + 1,
+        x + 2 / 3,
+        y + 1,
         0,
-        x3,
-        y3,
+        x,
+        y,
         0,
-        x3 + 2 / 3,
-        y3 + 1,
+        x + 2 / 3,
+        y + 1,
         0,
-        x3,
-        y3 + 1,
+        x,
+        y + 1,
         0
       ];
       position.set(coordinates, positionSize * vertices * face);
@@ -19805,9 +18486,9 @@ function _createRenderTarget(width, height, params) {
   cubeUVRenderTarget.scissorTest = true;
   return cubeUVRenderTarget;
 }
-function _setViewport(target, x3, y3, width, height) {
-  target.viewport.set(x3, y3, width, height);
-  target.scissor.set(x3, y3, width, height);
+function _setViewport(target, x, y, width, height) {
+  target.viewport.set(x, y, width, height);
+  target.scissor.set(x, y, width, height);
 }
 function _getBlurShader(lodMax, width, height) {
   const weights = new Float32Array(MAX_SAMPLES);
@@ -20202,19 +18883,19 @@ function WebGLGeometries(gl, attributes, info, bindingStates) {
       const array2 = geometryIndex.array;
       version = geometryIndex.version;
       for (let i = 0, l2 = array2.length; i < l2; i += 3) {
-        const a2 = array2[i + 0];
+        const a = array2[i + 0];
         const b = array2[i + 1];
-        const c2 = array2[i + 2];
-        indices.push(a2, b, b, c2, c2, a2);
+        const c = array2[i + 2];
+        indices.push(a, b, b, c, c, a);
       }
     } else if (geometryPosition !== void 0) {
       const array2 = geometryPosition.array;
       version = geometryPosition.version;
       for (let i = 0, l2 = array2.length / 3 - 1; i < l2; i += 3) {
-        const a2 = i + 0;
+        const a = i + 0;
         const b = i + 1;
-        const c2 = i + 2;
-        indices.push(a2, b, b, c2, c2, a2);
+        const c = i + 2;
+        indices.push(a, b, b, c, c, a);
       }
     } else {
       return;
@@ -20539,16 +19220,16 @@ function flatten(array2, nBlocks, blockSize) {
   }
   return r;
 }
-function arraysEqual(a2, b) {
-  if (a2.length !== b.length) return false;
-  for (let i = 0, l2 = a2.length; i < l2; i++) {
-    if (a2[i] !== b[i]) return false;
+function arraysEqual(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0, l2 = a.length; i < l2; i++) {
+    if (a[i] !== b[i]) return false;
   }
   return true;
 }
-function copyArray(a2, b) {
+function copyArray(a, b) {
   for (let i = 0, l2 = b.length; i < l2; i++) {
-    a2[i] = b[i];
+    a[i] = b[i];
   }
 }
 function allocTexUnits(textures, n) {
@@ -22309,28 +20990,28 @@ function WebGLProperties() {
     dispose
   };
 }
-function painterSortStable(a2, b) {
-  if (a2.groupOrder !== b.groupOrder) {
-    return a2.groupOrder - b.groupOrder;
-  } else if (a2.renderOrder !== b.renderOrder) {
-    return a2.renderOrder - b.renderOrder;
-  } else if (a2.material.id !== b.material.id) {
-    return a2.material.id - b.material.id;
-  } else if (a2.z !== b.z) {
-    return a2.z - b.z;
+function painterSortStable(a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } else if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } else if (a.material.id !== b.material.id) {
+    return a.material.id - b.material.id;
+  } else if (a.z !== b.z) {
+    return a.z - b.z;
   } else {
-    return a2.id - b.id;
+    return a.id - b.id;
   }
 }
-function reversePainterSortStable(a2, b) {
-  if (a2.groupOrder !== b.groupOrder) {
-    return a2.groupOrder - b.groupOrder;
-  } else if (a2.renderOrder !== b.renderOrder) {
-    return a2.renderOrder - b.renderOrder;
-  } else if (a2.z !== b.z) {
-    return b.z - a2.z;
+function reversePainterSortStable(a, b) {
+  if (a.groupOrder !== b.groupOrder) {
+    return a.groupOrder - b.groupOrder;
+  } else if (a.renderOrder !== b.renderOrder) {
+    return a.renderOrder - b.renderOrder;
+  } else if (a.z !== b.z) {
+    return b.z - a.z;
   } else {
-    return a2.id - b.id;
+    return a.id - b.id;
   }
 }
 function WebGLRenderList() {
@@ -23174,15 +21855,15 @@ function WebGLState(gl, extensions) {
       setLocked: function(lock) {
         locked = lock;
       },
-      setClear: function(r, g2, b, a2, premultipliedAlpha) {
+      setClear: function(r, g2, b, a, premultipliedAlpha) {
         if (premultipliedAlpha === true) {
-          r *= a2;
-          g2 *= a2;
-          b *= a2;
+          r *= a;
+          g2 *= a;
+          b *= a;
         }
-        color2.set(r, g2, b, a2);
+        color2.set(r, g2, b, a);
         if (currentColorClear.equals(color2) === false) {
-          gl.clearColor(r, g2, b, a2);
+          gl.clearColor(r, g2, b, a);
           currentColorClear.copy(color2);
         }
       },
@@ -25574,27 +24255,27 @@ var WebXRManager = class extends EventDispatcher {
     this.cameraAutoUpdate = true;
     this.enabled = false;
     this.isPresenting = false;
-    this.getController = function(index2) {
-      let controller = controllers[index2];
+    this.getController = function(index) {
+      let controller = controllers[index];
       if (controller === void 0) {
         controller = new WebXRController();
-        controllers[index2] = controller;
+        controllers[index] = controller;
       }
       return controller.getTargetRaySpace();
     };
-    this.getControllerGrip = function(index2) {
-      let controller = controllers[index2];
+    this.getControllerGrip = function(index) {
+      let controller = controllers[index];
       if (controller === void 0) {
         controller = new WebXRController();
-        controllers[index2] = controller;
+        controllers[index] = controller;
       }
       return controller.getGripSpace();
     };
-    this.getHand = function(index2) {
-      let controller = controllers[index2];
+    this.getHand = function(index) {
+      let controller = controllers[index];
       if (controller === void 0) {
         controller = new WebXRController();
-        controllers[index2] = controller;
+        controllers[index] = controller;
       }
       return controller.getHandSpace();
     };
@@ -25762,10 +24443,10 @@ var WebXRManager = class extends EventDispatcher {
     function onInputSourcesChange(event) {
       for (let i = 0; i < event.removed.length; i++) {
         const inputSource = event.removed[i];
-        const index2 = controllerInputSources.indexOf(inputSource);
-        if (index2 >= 0) {
-          controllerInputSources[index2] = null;
-          controllers[index2].disconnect(inputSource);
+        const index = controllerInputSources.indexOf(inputSource);
+        if (index >= 0) {
+          controllerInputSources[index] = null;
+          controllers[index].disconnect(inputSource);
         }
       }
       for (let i = 0; i < event.added.length; i++) {
@@ -26394,9 +25075,9 @@ function WebGLUniformsGroups(gl, info, capabilities, state2) {
     }
     gl.bindBuffer(gl.UNIFORM_BUFFER, null);
   }
-  function hasUniformChanged(uniform, index2, indexArray, cache) {
+  function hasUniformChanged(uniform, index, indexArray, cache) {
     const value = uniform.value;
-    const indexString = index2 + "_" + indexArray;
+    const indexString = index + "_" + indexArray;
     if (cache[indexString] === void 0) {
       if (typeof value === "number" || typeof value === "boolean") {
         cache[indexString] = value;
@@ -26486,8 +25167,8 @@ function WebGLUniformsGroups(gl, info, capabilities, state2) {
   function onUniformsGroupsDispose(event) {
     const uniformsGroup = event.target;
     uniformsGroup.removeEventListener("dispose", onUniformsGroupsDispose);
-    const index2 = allocatedBindingPoints.indexOf(uniformsGroup.__bindingPointIndex);
-    allocatedBindingPoints.splice(index2, 1);
+    const index = allocatedBindingPoints.indexOf(uniformsGroup.__bindingPointIndex);
+    allocatedBindingPoints.splice(index, 1);
     gl.deleteBuffer(buffers[uniformsGroup.id]);
     delete buffers[uniformsGroup.id];
     delete updateList[uniformsGroup.id];
@@ -26729,22 +25410,22 @@ var WebGLRenderer = class {
     this.getViewport = function(target) {
       return target.copy(_viewport);
     };
-    this.setViewport = function(x3, y3, width, height) {
-      if (x3.isVector4) {
-        _viewport.set(x3.x, x3.y, x3.z, x3.w);
+    this.setViewport = function(x, y, width, height) {
+      if (x.isVector4) {
+        _viewport.set(x.x, x.y, x.z, x.w);
       } else {
-        _viewport.set(x3, y3, width, height);
+        _viewport.set(x, y, width, height);
       }
       state2.viewport(_currentViewport.copy(_viewport).multiplyScalar(_pixelRatio).round());
     };
     this.getScissor = function(target) {
       return target.copy(_scissor);
     };
-    this.setScissor = function(x3, y3, width, height) {
-      if (x3.isVector4) {
-        _scissor.set(x3.x, x3.y, x3.z, x3.w);
+    this.setScissor = function(x, y, width, height) {
+      if (x.isVector4) {
+        _scissor.set(x.x, x.y, x.z, x.w);
       } else {
-        _scissor.set(x3, y3, width, height);
+        _scissor.set(x, y, width, height);
       }
       state2.scissor(_currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).round());
     };
@@ -26784,7 +25465,7 @@ var WebGLRenderer = class {
           const targetType = _currentRenderTarget.texture.type;
           const isUnsignedType = targetType === UnsignedByteType || targetType === UnsignedIntType || targetType === UnsignedShortType || targetType === UnsignedInt248Type || targetType === UnsignedShort4444Type || targetType === UnsignedShort5551Type;
           const clearColor = background.getClearColor();
-          const a2 = background.getClearAlpha();
+          const a = background.getClearAlpha();
           const r = clearColor.r;
           const g2 = clearColor.g;
           const b = clearColor.b;
@@ -26792,13 +25473,13 @@ var WebGLRenderer = class {
             uintClearColor[0] = r;
             uintClearColor[1] = g2;
             uintClearColor[2] = b;
-            uintClearColor[3] = a2;
+            uintClearColor[3] = a;
             _gl.clearBufferuiv(_gl.COLOR, 0, uintClearColor);
           } else {
             intClearColor[0] = r;
             intClearColor[1] = g2;
             intClearColor[2] = b;
-            intClearColor[3] = a2;
+            intClearColor[3] = a;
             _gl.clearBufferiv(_gl.COLOR, 0, intClearColor);
           }
         } else {
@@ -26889,11 +25570,11 @@ var WebGLRenderer = class {
       const frontFaceCW = object.isMesh && object.matrixWorld.determinant() < 0;
       const program = setProgram(camera, scene, geometry, material, object);
       state2.setMaterial(material, frontFaceCW);
-      let index2 = geometry.index;
+      let index = geometry.index;
       let rangeFactor = 1;
       if (material.wireframe === true) {
-        index2 = geometries.getWireframeAttribute(geometry);
-        if (index2 === void 0) return;
+        index = geometries.getWireframeAttribute(geometry);
+        if (index === void 0) return;
         rangeFactor = 2;
       }
       const drawRange = geometry.drawRange;
@@ -26904,20 +25585,20 @@ var WebGLRenderer = class {
         drawStart = Math.max(drawStart, group.start * rangeFactor);
         drawEnd = Math.min(drawEnd, (group.start + group.count) * rangeFactor);
       }
-      if (index2 !== null) {
+      if (index !== null) {
         drawStart = Math.max(drawStart, 0);
-        drawEnd = Math.min(drawEnd, index2.count);
+        drawEnd = Math.min(drawEnd, index.count);
       } else if (position !== void 0 && position !== null) {
         drawStart = Math.max(drawStart, 0);
         drawEnd = Math.min(drawEnd, position.count);
       }
       const drawCount = drawEnd - drawStart;
       if (drawCount < 0 || drawCount === Infinity) return;
-      bindingStates.setup(object, material, program, geometry, index2);
+      bindingStates.setup(object, material, program, geometry, index);
       let attribute;
       let renderer = bufferRenderer;
-      if (index2 !== null) {
-        attribute = attributes.get(index2);
+      if (index !== null) {
+        attribute = attributes.get(index);
         renderer = indexedBufferRenderer;
         renderer.setIndex(attribute);
       }
@@ -26952,7 +25633,7 @@ var WebGLRenderer = class {
             const starts = object._multiDrawStarts;
             const counts = object._multiDrawCounts;
             const drawCount2 = object._multiDrawCount;
-            const bytesPerElement = index2 ? attributes.get(index2).bytesPerElement : 1;
+            const bytesPerElement = index ? attributes.get(index).bytesPerElement : 1;
             const uniforms = properties.get(material).currentProgram.getUniforms();
             for (let i = 0; i < drawCount2; i++) {
               uniforms.setValue(_gl, "_gl_DrawID", i);
@@ -27730,7 +26411,7 @@ var WebGLRenderer = class {
       }
       _currentMaterialId = -1;
     };
-    this.readRenderTargetPixels = function(renderTarget, x3, y3, width, height, buffer, activeCubeFaceIndex) {
+    this.readRenderTargetPixels = function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
       if (!(renderTarget && renderTarget.isWebGLRenderTarget)) {
         console.error("THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.");
         return;
@@ -27753,8 +26434,8 @@ var WebGLRenderer = class {
             console.error("THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not in UnsignedByteType or implementation defined type.");
             return;
           }
-          if (x3 >= 0 && x3 <= renderTarget.width - width && (y3 >= 0 && y3 <= renderTarget.height - height)) {
-            _gl.readPixels(x3, y3, width, height, utils.convert(textureFormat), utils.convert(textureType), buffer);
+          if (x >= 0 && x <= renderTarget.width - width && (y >= 0 && y <= renderTarget.height - height)) {
+            _gl.readPixels(x, y, width, height, utils.convert(textureFormat), utils.convert(textureType), buffer);
           }
         } finally {
           const framebuffer2 = _currentRenderTarget !== null ? properties.get(_currentRenderTarget).__webglFramebuffer : null;
@@ -27762,7 +26443,7 @@ var WebGLRenderer = class {
         }
       }
     };
-    this.readRenderTargetPixelsAsync = async function(renderTarget, x3, y3, width, height, buffer, activeCubeFaceIndex) {
+    this.readRenderTargetPixelsAsync = async function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
       if (!(renderTarget && renderTarget.isWebGLRenderTarget)) {
         throw new Error("THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.");
       }
@@ -27780,12 +26461,12 @@ var WebGLRenderer = class {
         if (!capabilities.textureTypeReadable(textureType)) {
           throw new Error("THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in UnsignedByteType or implementation defined type.");
         }
-        if (x3 >= 0 && x3 <= renderTarget.width - width && (y3 >= 0 && y3 <= renderTarget.height - height)) {
+        if (x >= 0 && x <= renderTarget.width - width && (y >= 0 && y <= renderTarget.height - height)) {
           state2.bindFramebuffer(_gl.FRAMEBUFFER, framebuffer);
           const glBuffer = _gl.createBuffer();
           _gl.bindBuffer(_gl.PIXEL_PACK_BUFFER, glBuffer);
           _gl.bufferData(_gl.PIXEL_PACK_BUFFER, buffer.byteLength, _gl.STREAM_READ);
-          _gl.readPixels(x3, y3, width, height, utils.convert(textureFormat), utils.convert(textureType), 0);
+          _gl.readPixels(x, y, width, height, utils.convert(textureFormat), utils.convert(textureType), 0);
           const currFramebuffer = _currentRenderTarget !== null ? properties.get(_currentRenderTarget).__webglFramebuffer : null;
           state2.bindFramebuffer(_gl.FRAMEBUFFER, currFramebuffer);
           const sync = _gl.fenceSync(_gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
@@ -27810,10 +26491,10 @@ var WebGLRenderer = class {
       const levelScale = Math.pow(2, -level);
       const width = Math.floor(texture.image.width * levelScale);
       const height = Math.floor(texture.image.height * levelScale);
-      const x3 = position !== null ? position.x : 0;
-      const y3 = position !== null ? position.y : 0;
+      const x = position !== null ? position.x : 0;
+      const y = position !== null ? position.y : 0;
       textures.setTexture2D(texture, 0);
-      _gl.copyTexSubImage2D(_gl.TEXTURE_2D, level, 0, 0, x3, y3, width, height);
+      _gl.copyTexSubImage2D(_gl.TEXTURE_2D, level, 0, 0, x, y, width, height);
       state2.unbindTexture();
     };
     this.copyTextureToTexture = function(srcTexture, dstTexture, srcRegion = null, dstPosition = null, level = 0) {
@@ -28130,114 +26811,114 @@ var InterleavedBufferAttribute = class _InterleavedBufferAttribute {
   set needsUpdate(value) {
     this.data.needsUpdate = value;
   }
-  applyMatrix4(m2) {
+  applyMatrix4(m) {
     for (let i = 0, l2 = this.data.count; i < l2; i++) {
       _vector$6.fromBufferAttribute(this, i);
-      _vector$6.applyMatrix4(m2);
+      _vector$6.applyMatrix4(m);
       this.setXYZ(i, _vector$6.x, _vector$6.y, _vector$6.z);
     }
     return this;
   }
-  applyNormalMatrix(m2) {
+  applyNormalMatrix(m) {
     for (let i = 0, l2 = this.count; i < l2; i++) {
       _vector$6.fromBufferAttribute(this, i);
-      _vector$6.applyNormalMatrix(m2);
+      _vector$6.applyNormalMatrix(m);
       this.setXYZ(i, _vector$6.x, _vector$6.y, _vector$6.z);
     }
     return this;
   }
-  transformDirection(m2) {
+  transformDirection(m) {
     for (let i = 0, l2 = this.count; i < l2; i++) {
       _vector$6.fromBufferAttribute(this, i);
-      _vector$6.transformDirection(m2);
+      _vector$6.transformDirection(m);
       this.setXYZ(i, _vector$6.x, _vector$6.y, _vector$6.z);
     }
     return this;
   }
-  getComponent(index2, component) {
-    let value = this.array[index2 * this.data.stride + this.offset + component];
+  getComponent(index, component) {
+    let value = this.array[index * this.data.stride + this.offset + component];
     if (this.normalized) value = denormalize(value, this.array);
     return value;
   }
-  setComponent(index2, component, value) {
+  setComponent(index, component, value) {
     if (this.normalized) value = normalize(value, this.array);
-    this.data.array[index2 * this.data.stride + this.offset + component] = value;
+    this.data.array[index * this.data.stride + this.offset + component] = value;
     return this;
   }
-  setX(index2, x3) {
-    if (this.normalized) x3 = normalize(x3, this.array);
-    this.data.array[index2 * this.data.stride + this.offset] = x3;
+  setX(index, x) {
+    if (this.normalized) x = normalize(x, this.array);
+    this.data.array[index * this.data.stride + this.offset] = x;
     return this;
   }
-  setY(index2, y3) {
-    if (this.normalized) y3 = normalize(y3, this.array);
-    this.data.array[index2 * this.data.stride + this.offset + 1] = y3;
+  setY(index, y) {
+    if (this.normalized) y = normalize(y, this.array);
+    this.data.array[index * this.data.stride + this.offset + 1] = y;
     return this;
   }
-  setZ(index2, z) {
+  setZ(index, z) {
     if (this.normalized) z = normalize(z, this.array);
-    this.data.array[index2 * this.data.stride + this.offset + 2] = z;
+    this.data.array[index * this.data.stride + this.offset + 2] = z;
     return this;
   }
-  setW(index2, w2) {
+  setW(index, w2) {
     if (this.normalized) w2 = normalize(w2, this.array);
-    this.data.array[index2 * this.data.stride + this.offset + 3] = w2;
+    this.data.array[index * this.data.stride + this.offset + 3] = w2;
     return this;
   }
-  getX(index2) {
-    let x3 = this.data.array[index2 * this.data.stride + this.offset];
-    if (this.normalized) x3 = denormalize(x3, this.array);
-    return x3;
+  getX(index) {
+    let x = this.data.array[index * this.data.stride + this.offset];
+    if (this.normalized) x = denormalize(x, this.array);
+    return x;
   }
-  getY(index2) {
-    let y3 = this.data.array[index2 * this.data.stride + this.offset + 1];
-    if (this.normalized) y3 = denormalize(y3, this.array);
-    return y3;
+  getY(index) {
+    let y = this.data.array[index * this.data.stride + this.offset + 1];
+    if (this.normalized) y = denormalize(y, this.array);
+    return y;
   }
-  getZ(index2) {
-    let z = this.data.array[index2 * this.data.stride + this.offset + 2];
+  getZ(index) {
+    let z = this.data.array[index * this.data.stride + this.offset + 2];
     if (this.normalized) z = denormalize(z, this.array);
     return z;
   }
-  getW(index2) {
-    let w2 = this.data.array[index2 * this.data.stride + this.offset + 3];
+  getW(index) {
+    let w2 = this.data.array[index * this.data.stride + this.offset + 3];
     if (this.normalized) w2 = denormalize(w2, this.array);
     return w2;
   }
-  setXY(index2, x3, y3) {
-    index2 = index2 * this.data.stride + this.offset;
+  setXY(index, x, y) {
+    index = index * this.data.stride + this.offset;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
     }
-    this.data.array[index2 + 0] = x3;
-    this.data.array[index2 + 1] = y3;
+    this.data.array[index + 0] = x;
+    this.data.array[index + 1] = y;
     return this;
   }
-  setXYZ(index2, x3, y3, z) {
-    index2 = index2 * this.data.stride + this.offset;
+  setXYZ(index, x, y, z) {
+    index = index * this.data.stride + this.offset;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
       z = normalize(z, this.array);
     }
-    this.data.array[index2 + 0] = x3;
-    this.data.array[index2 + 1] = y3;
-    this.data.array[index2 + 2] = z;
+    this.data.array[index + 0] = x;
+    this.data.array[index + 1] = y;
+    this.data.array[index + 2] = z;
     return this;
   }
-  setXYZW(index2, x3, y3, z, w2) {
-    index2 = index2 * this.data.stride + this.offset;
+  setXYZW(index, x, y, z, w2) {
+    index = index * this.data.stride + this.offset;
     if (this.normalized) {
-      x3 = normalize(x3, this.array);
-      y3 = normalize(y3, this.array);
+      x = normalize(x, this.array);
+      y = normalize(y, this.array);
       z = normalize(z, this.array);
       w2 = normalize(w2, this.array);
     }
-    this.data.array[index2 + 0] = x3;
-    this.data.array[index2 + 1] = y3;
-    this.data.array[index2 + 2] = z;
-    this.data.array[index2 + 3] = w2;
+    this.data.array[index + 0] = x;
+    this.data.array[index + 1] = y;
+    this.data.array[index + 2] = z;
+    this.data.array[index + 3] = w2;
     return this;
   }
   clone(data) {
@@ -28245,9 +26926,9 @@ var InterleavedBufferAttribute = class _InterleavedBufferAttribute {
       console.log("THREE.InterleavedBufferAttribute.clone(): Cloning an interleaved buffer attribute will de-interleave buffer data.");
       const array2 = [];
       for (let i = 0; i < this.count; i++) {
-        const index2 = i * this.data.stride + this.offset;
+        const index = i * this.data.stride + this.offset;
         for (let j = 0; j < this.itemSize; j++) {
-          array2.push(this.data.array[index2 + j]);
+          array2.push(this.data.array[index + j]);
         }
       }
       return new BufferAttribute(new this.array.constructor(array2), this.itemSize, this.normalized);
@@ -28266,9 +26947,9 @@ var InterleavedBufferAttribute = class _InterleavedBufferAttribute {
       console.log("THREE.InterleavedBufferAttribute.toJSON(): Serializing an interleaved buffer attribute will de-interleave buffer data.");
       const array2 = [];
       for (let i = 0; i < this.count; i++) {
-        const index2 = i * this.data.stride + this.offset;
+        const index = i * this.data.stride + this.offset;
         for (let j = 0; j < this.itemSize; j++) {
-          array2.push(this.data.array[index2 + j]);
+          array2.push(this.data.array[index + j]);
         }
       }
       return {
@@ -28515,24 +27196,24 @@ var Line = class extends Object3D {
     const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
     const localThresholdSq = localThreshold * localThreshold;
     const step = this.isLineSegments ? 2 : 1;
-    const index2 = geometry.index;
+    const index = geometry.index;
     const attributes = geometry.attributes;
     const positionAttribute = attributes.position;
-    if (index2 !== null) {
+    if (index !== null) {
       const start2 = Math.max(0, drawRange.start);
-      const end = Math.min(index2.count, drawRange.start + drawRange.count);
+      const end = Math.min(index.count, drawRange.start + drawRange.count);
       for (let i = start2, l2 = end - 1; i < l2; i += step) {
-        const a2 = index2.getX(i);
-        const b = index2.getX(i + 1);
-        const intersect2 = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a2, b);
+        const a = index.getX(i);
+        const b = index.getX(i + 1);
+        const intersect2 = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a, b);
         if (intersect2) {
           intersects.push(intersect2);
         }
       }
       if (this.isLineLoop) {
-        const a2 = index2.getX(end - 1);
-        const b = index2.getX(start2);
-        const intersect2 = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a2, b);
+        const a = index.getX(end - 1);
+        const b = index.getX(start2);
+        const intersect2 = checkIntersection(this, raycaster, _ray$1, localThresholdSq, a, b);
         if (intersect2) {
           intersects.push(intersect2);
         }
@@ -28563,18 +27244,18 @@ var Line = class extends Object3D {
       if (morphAttribute !== void 0) {
         this.morphTargetInfluences = [];
         this.morphTargetDictionary = {};
-        for (let m2 = 0, ml = morphAttribute.length; m2 < ml; m2++) {
-          const name = morphAttribute[m2].name || String(m2);
+        for (let m = 0, ml = morphAttribute.length; m < ml; m++) {
+          const name = morphAttribute[m].name || String(m);
           this.morphTargetInfluences.push(0);
-          this.morphTargetDictionary[name] = m2;
+          this.morphTargetDictionary[name] = m;
         }
       }
     }
   }
 };
-function checkIntersection(object, raycaster, ray, thresholdSq, a2, b) {
+function checkIntersection(object, raycaster, ray, thresholdSq, a, b) {
   const positionAttribute = object.geometry.attributes.position;
-  _vStart.fromBufferAttribute(positionAttribute, a2);
+  _vStart.fromBufferAttribute(positionAttribute, a);
   _vEnd.fromBufferAttribute(positionAttribute, b);
   const distSq = ray.distanceSqToSegment(_vStart, _vEnd, _intersectPointOnRay, _intersectPointOnSegment);
   if (distSq > thresholdSq) return;
@@ -28586,7 +27267,7 @@ function checkIntersection(object, raycaster, ray, thresholdSq, a2, b) {
     // What do we want? intersection point on the ray or on the segment??
     // point: raycaster.ray.at( distance ),
     point: _intersectPointOnSegment.clone().applyMatrix4(object.matrixWorld),
-    index: a2,
+    index: a,
     face: null,
     faceIndex: null,
     barycoord: null,
@@ -28895,7 +27576,7 @@ var SphereGeometry = class _SphereGeometry extends BufferGeometry {
     widthSegments = Math.max(3, Math.floor(widthSegments));
     heightSegments = Math.max(2, Math.floor(heightSegments));
     const thetaEnd = Math.min(thetaStart + thetaLength, Math.PI);
-    let index2 = 0;
+    let index = 0;
     const grid = [];
     const vertex2 = new Vector3();
     const normal = new Vector3();
@@ -28921,18 +27602,18 @@ var SphereGeometry = class _SphereGeometry extends BufferGeometry {
         normal.copy(vertex2).normalize();
         normals.push(normal.x, normal.y, normal.z);
         uvs.push(u + uOffset, 1 - v2);
-        verticesRow.push(index2++);
+        verticesRow.push(index++);
       }
       grid.push(verticesRow);
     }
     for (let iy = 0; iy < heightSegments; iy++) {
       for (let ix = 0; ix < widthSegments; ix++) {
-        const a2 = grid[iy][ix + 1];
+        const a = grid[iy][ix + 1];
         const b = grid[iy][ix];
-        const c2 = grid[iy + 1][ix];
+        const c = grid[iy + 1][ix];
         const d = grid[iy + 1][ix + 1];
-        if (iy !== 0 || thetaStart > 0) indices.push(a2, b, d);
-        if (iy !== heightSegments - 1 || thetaEnd < Math.PI) indices.push(b, c2, d);
+        if (iy !== 0 || thetaStart > 0) indices.push(a, b, d);
+        if (iy !== heightSegments - 1 || thetaEnd < Math.PI) indices.push(b, c, d);
       }
     }
     this.setIndex(indices);
@@ -29047,8 +27728,8 @@ var Interpolant = class {
   getSettings_() {
     return this.settings || this.DefaultSettings_;
   }
-  copySampleValue_(index2) {
-    const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, offset = index2 * stride;
+  copySampleValue_(index) {
+    const result = this.resultBuffer, values = this.sampleValues, stride = this.valueSize, offset = index * stride;
     for (let i = 0; i !== stride; ++i) {
       result[i] = values[offset + i];
     }
@@ -29475,9 +28156,9 @@ var LoadingManager = class {
       return this;
     };
     this.removeHandler = function(regex) {
-      const index2 = handlers.indexOf(regex);
-      if (index2 !== -1) {
-        handlers.splice(index2, 2);
+      const index = handlers.indexOf(regex);
+      if (index !== -1) {
+        handlers.splice(index, 2);
       }
       return this;
     };
@@ -29965,8 +28646,8 @@ var Raycaster = class {
     return intersects;
   }
 };
-function ascSort(a2, b) {
-  return a2.distance - b.distance;
+function ascSort(a, b) {
+  return a.distance - b.distance;
 }
 function intersect(object, raycaster, intersects, recursive) {
   let propagate = true;
@@ -30009,14 +28690,14 @@ var Spherical = class {
   setFromVector3(v2) {
     return this.setFromCartesianCoords(v2.x, v2.y, v2.z);
   }
-  setFromCartesianCoords(x3, y3, z) {
-    this.radius = Math.sqrt(x3 * x3 + y3 * y3 + z * z);
+  setFromCartesianCoords(x, y, z) {
+    this.radius = Math.sqrt(x * x + y * y + z * z);
     if (this.radius === 0) {
       this.theta = 0;
       this.phi = 0;
     } else {
-      this.theta = Math.atan2(x3, z);
-      this.phi = Math.acos(clamp(y3 / this.radius, -1, 1));
+      this.theta = Math.atan2(x, z);
+      this.phi = Math.acos(clamp(y / this.radius, -1, 1));
     }
     return this;
   }
@@ -30394,14 +29075,14 @@ var OrbitControls = class extends Controls {
       this.enableZoom = false;
     }
   }
-  _updateZoomParameters(x3, y3) {
+  _updateZoomParameters(x, y) {
     if (!this.zoomToCursor) {
       return;
     }
     this._performCursorZoom = true;
     const rect = this.domElement.getBoundingClientRect();
-    const dx = x3 - rect.left;
-    const dy = y3 - rect.top;
+    const dx = x - rect.left;
+    const dy = y - rect.top;
     const w2 = rect.width;
     const h2 = rect.height;
     this._mouse.x = dx / w2 * 2 - 1;
@@ -30506,9 +29187,9 @@ var OrbitControls = class extends Controls {
       this._rotateStart.set(event.pageX, event.pageY);
     } else {
       const position = this._getSecondPointerPosition(event);
-      const x3 = 0.5 * (event.pageX + position.x);
-      const y3 = 0.5 * (event.pageY + position.y);
-      this._rotateStart.set(x3, y3);
+      const x = 0.5 * (event.pageX + position.x);
+      const y = 0.5 * (event.pageY + position.y);
+      this._rotateStart.set(x, y);
     }
   }
   _handleTouchStartPan(event) {
@@ -30516,9 +29197,9 @@ var OrbitControls = class extends Controls {
       this._panStart.set(event.pageX, event.pageY);
     } else {
       const position = this._getSecondPointerPosition(event);
-      const x3 = 0.5 * (event.pageX + position.x);
-      const y3 = 0.5 * (event.pageY + position.y);
-      this._panStart.set(x3, y3);
+      const x = 0.5 * (event.pageX + position.x);
+      const y = 0.5 * (event.pageY + position.y);
+      this._panStart.set(x, y);
     }
   }
   _handleTouchStartDolly(event) {
@@ -30541,9 +29222,9 @@ var OrbitControls = class extends Controls {
       this._rotateEnd.set(event.pageX, event.pageY);
     } else {
       const position = this._getSecondPointerPosition(event);
-      const x3 = 0.5 * (event.pageX + position.x);
-      const y3 = 0.5 * (event.pageY + position.y);
-      this._rotateEnd.set(x3, y3);
+      const x = 0.5 * (event.pageX + position.x);
+      const y = 0.5 * (event.pageY + position.y);
+      this._rotateEnd.set(x, y);
     }
     this._rotateDelta.subVectors(this._rotateEnd, this._rotateStart).multiplyScalar(this.rotateSpeed);
     const element = this.domElement;
@@ -30556,9 +29237,9 @@ var OrbitControls = class extends Controls {
       this._panEnd.set(event.pageX, event.pageY);
     } else {
       const position = this._getSecondPointerPosition(event);
-      const x3 = 0.5 * (event.pageX + position.x);
-      const y3 = 0.5 * (event.pageY + position.y);
-      this._panEnd.set(x3, y3);
+      const x = 0.5 * (event.pageX + position.x);
+      const y = 0.5 * (event.pageY + position.y);
+      this._panEnd.set(x, y);
     }
     this._panDelta.subVectors(this._panEnd, this._panStart).multiplyScalar(this.panSpeed);
     this._pan(this._panDelta.x, this._panDelta.y);
@@ -30853,14 +29534,14 @@ var paletteResults = document.querySelector("#palette-results");
 var sidebar = document.querySelector("#sidebar");
 var toast = document.querySelector("#toast");
 var viewLabels = {
-  command: "Command Center",
+  command: "Home",
   portfolio: "Portfolio",
   departments: "Departments",
   agents: "Agent Fleet",
   mesh: "Agent Mesh",
   work: "Goals & Work",
   artifacts: "Artifact Library",
-  paperclip: "Paperclip",
+  paperclip: "Orchestration",
   approvals: "Approvals",
   systems: "All Systems",
   system: "AI System",
@@ -30873,18 +29554,23 @@ var viewLabels = {
   performance: "Performance",
   settings: "Settings",
   agent: "Agent Workspace",
-  surfaces: "Live Apps"
+  surfaces: "Live Apps",
+  guide: "How to use AGIOS"
 };
 var state = {
   data: null,
   view: "command",
   dreaming: null,
+  liveWork: null,
+  liveMetrics: null,
+  changedLiveMetrics: [],
   memoryFolder: "all",
   memoryNote: null,
   memoryComposeOpen: false,
   memorySearchOpen: false,
   memoryTab: "notes",
   memoryGalaxy: null,
+  executionSpineCleanup: null,
   memoryGalaxyFilter: "all",
   learned: null,
   costs: null,
@@ -30910,6 +29596,9 @@ var state = {
   visionAssets: [],
   runtimeAdapters: [],
   orchestrationPlans: [],
+  selectedWorkRunId: null,
+  workRunAutoOpened: false,
+  runTraces: {},
   voice: null,
   recorder: null,
   voiceTimer: null,
@@ -30920,7 +29609,9 @@ var state = {
   operationalLoading: false,
   surfaces: [],
   activeSurface: null,
-  surfaceProbes: {}
+  surfaceProbes: {},
+  notebooklm: null,
+  notebooklmPack: null
 };
 function esc(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
@@ -31000,291 +29691,172 @@ function periodControl() {
 function signalCard(label, value, note, tone, bars) {
   return `<article class="signal-card tone-${tone}"><div class="signal-card-top"><span>${esc(label)}</span><small>LIVE VIEW</small></div><strong>${value}</strong><p>${esc(note)}</p><div class="micro-bars" aria-hidden="true">${bars.map((height) => `<i style="height:${height}%"></i>`).join("")}</div></article>`;
 }
-function operatingBrief() {
-  const active = state.runs.filter((run) => ["queued", "running"].includes(run.status));
-  const approvals = state.runs.filter((run) => run.status === "awaiting_approval");
-  const periodRuns = runsForPeriod();
-  const completed = periodRuns.filter((run) => run.status === "completed");
-  const failed = periodRuns.filter((run) => ["failed", "interrupted"].includes(run.status));
-  const next = state.data.schedules.find((job) => job.next_run_at) || state.data.schedules[0];
-  const latest = completed[0];
-  return `<section class="operating-brief"><header><div><p class="eyebrow">NOW BRIEF</p><h2>The studio knows what needs attention.</h2></div><span>REAL LOCAL STATE</span></header><div class="brief-grid">
-    <article><small>WORKING NOW</small><strong>${active.length}</strong><p>${active.length ? esc(active[0].objective) : "No worker is consuming tokens."}</p></article>
-    <article class="brief-judgment"><small>NEEDS JUDGMENT</small><strong>${approvals.length}</strong><p>${approvals.length ? "Exact run approval is waiting." : "No runtime decision is waiting."}</p></article>
-    <article><small>NEXT WAKE</small><strong>${next ? esc(relativeTime(next.next_run_at)) : "Not set"}</strong><p>${next ? esc(next.name) : "No schedule is registered."}</p></article>
-    <article><small>LATEST VERIFIED RESULT</small><strong>${latest ? esc(titleCase(latest.agent_id)) : "None yet"}</strong><p>${latest ? esc(latest.objective) : failed.length ? `${failed.length} run needs review.` : "Completed work will appear here."}</p></article>
-  </div><footer><span>${state.data.operational?.shared_memory?.fact_count ?? 0} durable memories</span><span>${state.data.summary.shared_skills} shared skills</span><button data-view-link="artifacts">Open evidence and artifacts \u2192</button></footer></section>`;
-}
 function renderAgentNavigation() {
   const target = document.querySelector("#agent-nav");
   if (!target || !state.data) return;
-  target.innerHTML = state.data.agents.map((agent, index2) => `<button class="agent-nav-item ${state.view === "agent" && state.selectedAgent === agent.id ? "is-active" : ""}" data-agent="${esc(agent.id)}"><span class="agent-orb agent-${index2 % 5}">${initials(agent.name || agent.id)}</span><span><strong>${esc(agent.name || titleCase(agent.id))}</strong><small>${esc(agent.profession || titleCase(agent.role))}</small></span><i class="status-dot status-${esc(agent.state)}"></i></button>`).join("");
+  target.innerHTML = state.data.agents.map((agent, index) => `<button class="agent-nav-item ${state.view === "agent" && state.selectedAgent === agent.id ? "is-active" : ""}" data-agent="${esc(agent.id)}"><span class="agent-orb agent-${index % 5}">${initials(agent.name || agent.id)}</span><span><strong>${esc(agent.name || titleCase(agent.id))}</strong><small>${esc(agent.profession || titleCase(agent.role))}</small></span><i class="status-dot status-${esc(agent.state)}"></i></button>`).join("");
 }
 function renderSystemNavigation() {
   const target = document.querySelector("#system-nav");
   if (!target || !state.data) return;
-  target.innerHTML = state.data.systems.map((system, index2) => {
+  target.innerHTML = state.data.systems.map((system, index) => {
     const runtime = runtimeForSystem(system.id);
     const indicator = runtime.status === "live" ? "online" : runtime.execution_enabled ? "ready" : runtime.detected ? "attention" : "planned";
-    return `<button class="system-nav-item ${state.view === "system" && state.selectedSystem === system.id ? "is-active" : ""}" data-system="${esc(system.id)}"><span class="system-glyph system-${index2 % 6}">${initials(system.name)}</span><span><strong>${esc(system.name)}</strong><small>${runtime.execution_enabled ? `${runtime.actions.length} live actions` : esc(titleCase(runtime.status))}</small></span><i class="status-dot status-${esc(indicator)}"></i></button>`;
+    return `<button class="system-nav-item ${state.view === "system" && state.selectedSystem === system.id ? "is-active" : ""}" data-system="${esc(system.id)}"><span class="system-glyph system-${index % 6}">${initials(system.name)}</span><span><strong>${esc(system.name)}</strong><small>${runtime.execution_enabled ? `${runtime.actions.length} live actions` : esc(titleCase(runtime.status))}</small></span><i class="status-dot status-${esc(indicator)}"></i></button>`;
   }).join("");
 }
-function chiefVoiceControl() {
-  const enabled = Boolean(state.voice?.input?.enabled && navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
-  return `<button class="chief-voice" type="button" data-voice-record ${enabled ? "" : "disabled"} title="${enabled ? "Speak, then review the transcript" : "Voice transcription is unavailable"}"><span>\u25CF</span><b>${enabled ? "Speak" : "Voice off"}</b></button>`;
+function liveCount(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
 }
-function renderChiefOfStaffBoard() {
-  const d = state.data;
-  const plan = state.orchestrationPlans[0] || null;
-  const ari = d.agents.find((item) => item.id === "default");
-  const department = plan ? d.departments.find((item) => item.id === plan.department_id) : null;
-  const lead = plan ? d.agents.find((item) => item.id === plan.lead_agent_id) : null;
-  const linkedRun = plan?.run_id ? state.runs.find((item) => item.run_id === plan.run_id) : null;
-  const routeState = linkedRun?.status || plan?.status || "listening";
-  const businessOptions = d.businesses.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}</option>`).join("");
-  const critics = (plan?.critics || [
-    { id: "brief", name: "Brief critic", question: "Checks the requested outcome", status: "waiting" },
-    { id: "system", name: "System critic", question: "Checks policy and consistency", status: "waiting" },
-    { id: "craft", name: "Craft critic", question: "Checks the rendered result", status: "waiting" }
-  ]).map((critic, index2) => `<article style="--critic-index:${index2}"><i></i><div><small>${esc(titleCase(critic.status))} review</small><strong>${esc(critic.name)}</strong><p>${esc(critic.question)}</p></div></article>`).join("");
-  const rationale = (plan?.rationale || []).map((item) => `<li>${esc(item)}</li>`).join("");
-  const destination = routeState === "awaiting_approval" ? ["approvals", "Route prepared", "Open exact approval \u2192"] : ["work", routeState === "completed" ? "Route completed" : "Work in motion", "Open live work \u2192"];
-  const dataRanks = { public: 0, internal: 1, private_business: 2, customer_restricted: 3 };
-  const eligibleWorkspaces = state.workspaces.filter((workspace) => {
-    const classAllowed = (dataRanks[workspace.data_class] ?? 99) <= (dataRanks[plan?.data_class] ?? -1);
-    const accessAllowed = plan?.workspace_access !== "write" || workspace.write_allowed;
-    return classAllowed && accessAllowed;
-  });
-  const workspaceOptions = eligibleWorkspaces.map((workspace) => `<option value="${esc(workspace.workspace_id)}">${esc(workspace.label)} \xB7 ${esc(titleCase(workspace.data_class))}</option>`).join("");
-  const requiredCapabilities = plan?.required_capabilities || [];
-  const runtimeOptions = state.runtimeAdapters.filter((runtime) => ["hermes", "codex"].includes(runtime.id) && runtime.execution_enabled && (!requiredCapabilities.includes("research_web") || runtime.id === "hermes")).map((runtime) => `<option value="${esc(runtime.id)}">${esc(runtime.name)} \xB7 ${esc(titleCase(runtime.status))}</option>`).join("");
-  const workspaceRoute = plan?.execution_mode === "workspace";
-  const dispatch2 = !plan ? "" : plan.status === "planned" ? `<form class="chief-dispatch-form" data-dispatch-form data-plan-id="${esc(plan.plan_id)}" data-plan-digest="${esc(plan.plan_digest)}">${workspaceRoute ? `<label>REGISTERED WORKSPACE<select name="workspaceId" required><option value="">Choose workspace</option>${workspaceOptions}</select></label><label>WORKER RUNTIME<select name="runtimeId" required>${runtimeOptions}</select></label>` : ""}<button class="chief-dispatch" type="submit" ${workspaceRoute && !eligibleWorkspaces.length ? "disabled" : ""}><span>${workspaceRoute ? "Bind the approved workspace" : "Prepare supervised run"}</span><b>Approval next \u2192</b></button>${workspaceRoute && !eligibleWorkspaces.length ? `<small>No compatible write-approved workspace is registered. Open Repositories to add a clean worktree first.</small>` : ""}</form>` : `<button class="chief-dispatch is-ready" type="button" data-view-link="${destination[0]}"><span>${destination[1]}</span><b>${destination[2]}</b></button>`;
-  return `<section class="chief-desk route-${esc(routeState)}" aria-label="Ari Vale Chief of Staff">
-    <header class="chief-header">
-      <div class="chief-identity"><p class="eyebrow">CHIEF OF STAFF \xB7 ARI VALE</p><h1>Route work with Ari.</h1><p>One outcome in. Ari chooses business, department, lead and model \u2014 you approve before anything runs.</p></div>
-      <div class="chief-presence"><i></i><span><strong>${esc(ari?.name || "Ari Vale")}</strong><small>${plan ? esc(titleCase(plan.status)) : "Listening for your outcome"}</small></span></div>
-    </header>
-    <form class="chief-command" data-chief-form>
-      <label class="chief-input"><span>TELL ARI THE OUTCOME</span><textarea name="objective" required maxlength="7200" placeholder="Example: Improve the customer dashboard, research the best motion system, build it safely and have an independent critic review the result."></textarea></label>
-      <div class="chief-command-actions">${chiefVoiceControl()}<label><span>Business</span><select name="businessId"><option value="">Ari decides</option>${businessOptions}</select></label><label><span>Data</span><select name="dataClass"><option value="internal">Internal</option><option value="public">Public</option><option value="private_business">Private business</option><option value="customer_restricted">Customer restricted</option></select></label><button class="chief-plan" type="submit"><span>Route with Ari</span><b>\u2301</b></button></div>
-      <p class="chief-command-note">Planning is local and starts no model. Voice always becomes editable text first.</p>
-    </form>
-    ${plan ? `<div class="route-review"><div><small>ARI'S ROUTING DECISION</small><h2>${esc(department?.name || plan.department_id)} \u2192 ${esc(lead?.name || plan.lead_agent_id)} \u2192 ${esc(plan.model_id)}</h2><ul>${rationale}</ul></div>${dispatch2}</div>` : ""}
-    <aside class="critic-rail"><header><div><small>GAUNTLET REVIEW</small><strong>Independent quality gates</strong></div><span>${plan ? "PLANNED" : "STANDBY"}</span></header>${critics}<p class="critic-truth">Critics run only when a real review run exists.</p></aside>
-  </section>`;
+function liveMetricSnapshot(snapshot = state.liveWork) {
+  const sources = snapshot?.sources || {};
+  return {
+    "source-agios": liveCount(sources.agios?.runs) + liveCount(sources.agios?.memory_facts) + liveCount(sources.agios?.artifacts),
+    "source-hermes": liveCount(sources.hermes?.sessions) + liveCount(sources.hermes?.messages) + liveCount(sources.hermes?.skills),
+    "source-codex": liveCount(sources.codex?.sessions) + liveCount(sources.codex?.rollout_files),
+    "source-opencode": liveCount(sources.opencode?.sessions) + liveCount(sources.opencode?.messages) + liveCount(sources.opencode?.tokens),
+    improvements: (snapshot?.improvements || []).length
+  };
 }
-function osMapRegistry() {
-  const d = state.data;
-  const nodes = [
-    { id: "owner", label: d.portfolio.owner || "Owner", detail: "Human authority", kind: "owner", radius: 23 },
-    { id: "agent:default", label: d.agents.find((item) => item.id === "default")?.name || "Ari Vale", detail: "Chief of Staff", kind: "core", radius: 30, agentId: "default" }
+function liveSourceCard(id2, title, primary, label, metrics, source) {
+  const statusValue = source?.status || "unavailable";
+  return `<article class="live-source-card" data-live-key="source-${esc(id2)}">
+    <header><div class="source-mark source-${esc(id2)}">${esc(title.slice(0, 1))}</div><div><strong>${esc(title)}</strong><small>${esc(statusValue)}</small></div><span class="source-status is-${esc(statusValue)}">${statusValue === "live" ? "LIVE" : "OFF"}</span></header>
+    <div class="source-primary"><strong>${esc(primary)}</strong><span>${esc(label)}</span></div>
+    <dl>${metrics.map(([term, value]) => `<div><dt>${esc(term)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>
+    <footer>${esc(source?.provenance || "AGIOS local control plane")}</footer>
+  </article>`;
+}
+function recentLocalWork(sources) {
+  const rows = [
+    ...(sources.hermes?.recent || []).map((item) => ({ ...item, runtime: "Hermes" })),
+    ...(sources.codex?.recent || []).map((item) => ({ ...item, runtime: "Codex" }))
+  ].sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0)).slice(0, 6);
+  if (!rows.length) return `<div class="simple-empty">No session metadata has been indexed yet.</div>`;
+  return rows.map((item) => `<div class="recent-work-row"><span class="runtime-tag">${esc(item.runtime)}</span><div><strong>${esc(item.title || `${item.runtime} session`)}</strong><small>${esc(item.source || "local")} \xB7 ${esc(relativeTime(item.updated_at))}</small></div></div>`).join("");
+}
+function improvementRows(items) {
+  if (!items.length) return `<div class="simple-empty">No verified repository improvements found.</div>`;
+  return items.slice(0, 6).map((item) => `<div class="improvement-row"><span>${esc(item.repository)}</span><div><strong>${esc(item.subject)}</strong><small>${esc(item.short_hash)} \xB7 ${esc(relativeTime(item.committed_at))}</small></div></div>`).join("");
+}
+function executionSpineStages() {
+  const routes = state.orchestrationPlans || [];
+  const pendingPlans = routes.filter((plan) => plan.status === "planned").length;
+  const pendingRuns = state.runs.filter((run) => run.status === "awaiting_approval").length;
+  const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status)).length;
+  const evidenceRuns = state.runs.filter((run) => run.response || ["completed", "failed", "interrupted"].includes(run.status)).length;
+  const learnedSkills = state.skillProposals.filter((proposal) => proposal.status === "installed").length;
+  const current = pendingPlans || pendingRuns ? "approve" : activeRuns ? "run" : evidenceRuns ? "evidence" : "intent";
+  const stages = [
+    { id: "intent", label: "Intent", count: state.directiveDrafts.length + routes.length + state.runs.length, note: "owner outcomes" },
+    { id: "route", label: "Route", count: routes.length + state.runs.length, note: "bound plans" },
+    { id: "approve", label: "Approve", count: pendingPlans + pendingRuns, note: "waiting now" },
+    { id: "run", label: "Runtime", count: activeRuns, note: "active now" },
+    { id: "evidence", label: "Evidence", count: evidenceRuns, note: "reviewable runs" },
+    { id: "learn", label: "Learn", count: state.memories.length + learnedSkills, note: "durable items" }
   ];
-  const links = [{ source: "owner", target: "agent:default", kind: "authority" }];
-  const addNode = (node) => {
-    if (!nodes.some((item) => item.id === node.id)) nodes.push(node);
-  };
-  const addLink = (source, target, kind = "registry") => {
-    if (nodes.some((item) => item.id === source) && nodes.some((item) => item.id === target)) links.push({ source, target, kind });
-  };
-  for (const business of d.businesses) {
-    addNode({ id: `business:${business.id}`, label: business.name, detail: titleCase(business.status), kind: "business", radius: 15, businessId: business.id, status: business.status });
-    addLink("agent:default", `business:${business.id}`, "portfolio");
-  }
-  for (const department of d.departments) {
-    addNode({ id: `department:${department.id}`, label: department.name, detail: `${department.ready_agents}/${department.agent_count} ready`, kind: "department", radius: 13, departmentId: department.id });
-    for (const business of d.businesses.filter((item) => item.department_ids.includes(department.id))) addLink(`business:${business.id}`, `department:${department.id}`, "organization");
-  }
-  for (const agent of d.agents.filter((item) => item.id !== "default")) {
-    addNode({ id: `agent:${agent.id}`, label: agent.name || titleCase(agent.id), detail: agent.profession || titleCase(agent.role), kind: "agent", radius: 12, agentId: agent.id, status: agent.state });
-    for (const department of d.departments.filter((item) => item.agent_ids.includes(agent.id))) addLink(`department:${department.id}`, `agent:${agent.id}`, "workforce");
-  }
-  addNode({ id: "fabric:memory", label: "Shared memory", detail: `${d.operational?.shared_memory?.fact_count ?? 0} durable facts`, kind: "fabric", radius: 17, view: "memory" });
-  addNode({ id: "fabric:skills", label: "Shared skills", detail: `${d.summary.shared_skills} available`, kind: "fabric", radius: 17, view: "skills" });
-  addLink("agent:default", "fabric:memory", "intelligence");
-  addLink("agent:default", "fabric:skills", "intelligence");
-  for (const system of d.systems) {
-    const runtime = runtimeForSystem(system.id);
-    const live = runtime.execution_enabled || ["live", "routed", "detected"].includes(runtime.status);
-    addNode({ id: `system:${system.id}`, label: system.name, detail: live ? titleCase(runtime.status) : "Planned adapter", kind: live ? "system" : "planned", radius: live ? 13 : 10, systemId: system.id, status: runtime.status });
-    addLink("agent:default", `system:${system.id}`, live ? "runtime" : "future");
-    if (system.shared_memory) addLink(`system:${system.id}`, "fabric:memory", "fabric");
-    if (system.shared_skills) addLink(`system:${system.id}`, "fabric:skills", "fabric");
-  }
-  for (const plan of state.orchestrationPlans.slice(0, 4)) {
-    addNode({ id: `plan:${plan.plan_id}`, label: plan.objective, detail: titleCase(plan.status), kind: "work", radius: 11, view: plan.run_id ? "work" : "command", status: plan.status });
-    addLink("agent:default", `plan:${plan.plan_id}`, "live-work");
-    addLink(`plan:${plan.plan_id}`, `agent:${plan.lead_agent_id}`, "assignment");
-  }
-  for (const run of state.runs.filter((item) => ["queued", "running", "awaiting_approval"].includes(item.status)).slice(0, 6)) {
-    addNode({ id: `run:${run.run_id}`, label: run.objective, detail: titleCase(run.status), kind: "work", radius: 11, view: run.status === "awaiting_approval" ? "approvals" : "work", status: run.status });
-    addLink(`agent:${run.agent_id}`, `run:${run.run_id}`, "live-work");
-  }
-  return { nodes, links };
+  return stages.map((stage) => ({ ...stage, current: stage.id === current, populated: stage.count > 0 }));
 }
-function livingOSMapSurface() {
-  const layers = [["all", "Whole OS"], ["organization", "Studios & team"], ["intelligence", "Memory & skills"], ["systems", "Models & systems"], ["work", "Live work"]];
-  const runtimeCount = state.data.systems.filter((item) => ["live", "routed", "detected"].includes(runtimeForSystem(item.id).status)).length;
-  return `<section class="living-os-map">
-    <header><div><p class="eyebrow">ONE SHARED BRAIN \xB7 LIVE REGISTRY</p><h2>Your operating system, as one explorable map.</h2><p>Ari, studios, departments, professional agents, shared intelligence and runtimes are connected here. Select any node to inspect it or open its real AGIOS surface.</p></div><div class="map-truth"><i></i><span><strong>Registry live</strong><small>Private contents remain server-side</small></span></div></header>
-    <div class="os-map-layers" aria-label="Map layers">${layers.map(([id2, label]) => `<button class="${state.osMapLayer === id2 ? "is-active" : ""}" data-os-map-layer="${id2}">${label}</button>`).join("")}</div>
-    <div class="living-os-map-grid"><div id="living-os-map-canvas" class="living-os-map-canvas" role="img" aria-label="Interactive map of the AGIOS operating registry"></div><aside id="living-os-map-inspector" class="living-os-map-inspector"><small>ARI'S SHARED MAP</small><h3>Everything has one address.</h3><p>Drag to reorganize, scroll to zoom and select a node. Motion means topology\u2014not fabricated work. Only real queued or running work receives an activity pulse.</p><div class="map-inspector-stats"><span><strong>${state.data.businesses.length}</strong> studios</span><span><strong>${state.data.agents.length}</strong> agents</span><span><strong>${runtimeCount}</strong> routed systems</span></div><div class="future-adapter-note"><i>+</i><span><strong>Adapter-ready</strong><small>Claude and future runtimes join this same registry when installed, authenticated and audited.</small></span></div></aside></div>
+function executionSpineSurface() {
+  const stages = executionSpineStages();
+  return `<section class="execution-spine-card">
+    <header><div><span>Execution spine</span><h2>Every outcome leaves a trace.</h2></div><p>Live counts from intent, routing, owner approval, runtime, evidence, and retained knowledge.</p></header>
+    <div id="execution-spine-chart" class="execution-spine-chart" aria-label="Live AGIOS execution stages"></div>
+    <div class="execution-spine-fallback">${stages.map((stage) => `<div class="${stage.current ? "is-current" : ""}"><strong>${esc(stage.count)}</strong><span>${esc(stage.label)}</span><small>${esc(stage.note)}</small></div>`).join("")}</div>
   </section>`;
 }
-function renderLivingOSMap() {
-  const host = document.querySelector("#living-os-map-canvas");
+function renderExecutionSpine() {
+  const host = document.querySelector("#execution-spine-chart");
   if (!host) return;
-  if (state.osMapSimulation) state.osMapSimulation.stop();
-  host.replaceChildren();
-  const registry = osMapRegistry();
-  const allowKinds = {
-    organization: /* @__PURE__ */ new Set(["owner", "core", "business", "department", "agent"]),
-    intelligence: /* @__PURE__ */ new Set(["owner", "core", "agent", "fabric"]),
-    systems: /* @__PURE__ */ new Set(["owner", "core", "system", "planned", "fabric"]),
-    work: /* @__PURE__ */ new Set(["owner", "core", "agent", "work"])
+  state.executionSpineCleanup?.();
+  const stages = executionSpineStages();
+  const draw = () => {
+    host.replaceChildren();
+    const width = Math.max(700, host.clientWidth || 700);
+    const height = 190;
+    const pad = 54;
+    const step = (width - pad * 2) / (stages.length - 1);
+    const points = stages.map((stage, index) => ({ ...stage, x: pad + index * step, y: index % 2 ? 116 : 72 }));
+    const svg = select_default2(host).append("svg").attr("viewBox", `0 0 ${width} ${height}`).attr("role", "img");
+    const links = points.slice(0, -1).map((point, index) => ({ source: point, target: points[index + 1], on: point.populated && points[index + 1].populated }));
+    svg.selectAll("path.spine-link").data(links).join("path").attr("class", (link) => `spine-link${link.on ? " is-on" : ""}`).attr("d", (link) => `M${link.source.x},${link.source.y} C${link.source.x + step * 0.48},${link.source.y} ${link.target.x - step * 0.48},${link.target.y} ${link.target.x},${link.target.y}`);
+    const node = svg.selectAll("g.spine-node").data(points).join("g").attr("class", (point) => `spine-node${point.current ? " is-current" : ""}${point.populated ? " is-populated" : ""}`).attr("transform", (point) => `translate(${point.x},${point.y})`);
+    node.append("circle").attr("r", (point) => point.current ? 14 : 10);
+    node.append("text").attr("class", "spine-count").attr("text-anchor", "middle").attr("y", 4).text((point) => point.count);
+    node.append("text").attr("class", "spine-label").attr("text-anchor", "middle").attr("y", (point) => point.y < 100 ? -28 : 35).text((point) => point.label);
+    node.append("text").attr("class", "spine-note").attr("text-anchor", "middle").attr("y", (point) => point.y < 100 ? -14 : 50).text((point) => point.note);
   };
-  const allowed = allowKinds[state.osMapLayer];
-  const nodes = registry.nodes.filter((item) => !allowed || allowed.has(item.kind));
-  const nodeIds = new Set(nodes.map((item) => item.id));
-  const links = registry.links.filter((item) => nodeIds.has(String(item.source)) && nodeIds.has(String(item.target)));
-  const width = Math.max(640, host.clientWidth || 920);
-  const height = Math.max(510, host.clientHeight || 560);
-  const svg = select_default2(host).append("svg").attr("viewBox", [0, 0, width, height]).attr("aria-hidden", "true");
-  const defs = svg.append("defs");
-  defs.append("radialGradient").attr("id", "os-core-glow").selectAll("stop").data([["0%", "#f8dfab"], ["35%", "#bc77f0"], ["100%", "#30234c"]]).join("stop").attr("offset", (item) => item[0]).attr("stop-color", (item) => item[1]);
-  const stage = svg.append("g");
-  svg.call(zoom_default2().scaleExtent([0.55, 2.7]).on("zoom", (event) => stage.attr("transform", event.transform)));
-  const line = stage.append("g").attr("class", "os-map-links").selectAll("line").data(links).join("line").attr("class", (item) => `link-${item.kind}`);
-  const node = stage.append("g").selectAll("g").data(nodes).join("g").attr("class", (item) => `os-map-node node-${item.kind} ${["queued", "running"].includes(item.status) ? "is-active-work" : ""}`).attr("tabindex", 0);
-  node.append("circle").attr("r", (item) => item.radius);
-  node.append("text").attr("text-anchor", "middle").attr("dy", (item) => item.radius + 14).text((item) => item.label.length > 24 ? `${item.label.slice(0, 22)}\u2026` : item.label);
-  node.append("title").text((item) => `${item.label} \xB7 ${item.detail}`);
-  const inspect = (_event, item) => {
-    const panel = document.querySelector("#living-os-map-inspector");
-    if (!panel) return;
-    const action = item.agentId ? `<button data-agent="${esc(item.agentId)}">Open agent workspace \u2192</button>` : item.systemId ? `<button data-system="${esc(item.systemId)}">Open system \u2192</button>` : item.view ? `<button data-view-link="${esc(item.view)}">Open ${esc(titleCase(item.view))} \u2192</button>` : item.businessId ? `<button data-view-link="portfolio">Open portfolio \u2192</button>` : "";
-    panel.innerHTML = `<small>${esc(titleCase(item.kind))} \xB7 SHARED REGISTRY</small><h3>${esc(item.label)}</h3><p>${esc(item.detail)}</p><div class="map-node-policy"><span><strong>Truthful state</strong><small>${esc(item.status ? titleCase(item.status) : "Registered")}</small></span><span><strong>Access</strong><small>AGIOS policy scoped</small></span></div>${action}<p class="map-inspector-foot">Selecting a node does not start work or spend tokens.</p>`;
-  };
-  node.on("click", inspect).on("keydown", (event, item) => {
-    if (["Enter", " "].includes(event.key)) inspect(event, item);
-  });
-  node.call(drag_default().on("start", (event, item) => {
-    if (!event.active) state.osMapSimulation.alphaTarget(0.18).restart();
-    item.fx = item.x;
-    item.fy = item.y;
-  }).on("drag", (event, item) => {
-    item.fx = event.x;
-    item.fy = event.y;
-  }).on("end", (event, item) => {
-    if (!event.active) state.osMapSimulation.alphaTarget(0);
-    item.fx = null;
-    item.fy = null;
-  }));
-  state.osMapSimulation = simulation_default(nodes).force("link", link_default(links).id((item) => item.id).distance((item) => ["fabric", "future"].includes(item.kind) ? 82 : item.kind === "live-work" ? 72 : 108).strength(0.42)).force("charge", manyBody_default().strength((item) => item.kind === "core" ? -720 : item.kind === "business" ? -260 : -105)).force("collide", collide_default().radius((item) => item.radius + 19)).force("center", center_default(width * 0.48, height * 0.49)).on("tick", () => {
-    line.attr("x1", (item) => item.source.x).attr("y1", (item) => item.source.y).attr("x2", (item) => item.target.x).attr("y2", (item) => item.target.y);
-    node.attr("transform", (item) => `translate(${item.x},${item.y})`);
-  });
-}
-function improvementIntelligenceSurface() {
-  const proposals = state.skillProposals;
-  const statusCount = (statuses) => proposals.filter((item) => statuses.includes(item.status)).length;
-  const activeRuns = state.runs.filter((item) => ["queued", "running"].includes(item.status)).length;
-  const failedRuns = state.runs.filter((item) => ["failed", "interrupted"].includes(item.status)).length;
-  const completedRuns = state.runs.filter((item) => item.status === "completed").length;
-  const loop = [
-    ["01", "Observe", state.runs.length, "Sessions and outcomes"],
-    ["02", "Find pattern", statusCount(["needs_evidence", "awaiting_owner_review"]), "Evidence-linked proposals"],
-    ["03", "Owner review", statusCount(["awaiting_owner_review"]), "Your judgment gate"],
-    ["04", "Author", statusCount(["approved_for_authoring", "draft_ready"]), "Bounded skill draft"],
-    ["05", "Validate", statusCount(["validated"]), "Safety and quality checks"],
-    ["06", "Install & measure", statusCount(["installed"]), "Shared, versioned capability"]
-  ];
-  const dimensions = [
-    ["Conversation analysis", state.runs.length ? `${state.runs.length} sessions` : "Standby", "Turns repeated requests into evidence, never automatic changes."],
-    ["Cost & limits", state.data.usage?.cost == null ? "Unavailable" : String(state.data.usage.cost), "Provider-reported only; missing usage never appears as zero."],
-    ["Skill performance", proposals.length ? `${proposals.length} proposals` : "No proposals", "Every improvement remains attached to source runs."],
-    ["Memory health", titleCase(state.data.operational?.shared_memory?.status || "unavailable"), `${state.data.operational?.shared_memory?.fact_count ?? 0} durable scoped facts.`],
-    ["Session hygiene", failedRuns ? `${failedRuns} need review` : "Clear", `${completedRuns} completed \xB7 ${activeRuns} active.`],
-    ["Workflow patterns", state.orchestrationPlans.length ? `${state.orchestrationPlans.length} Ari routes` : "Listening", "Routing decisions remain inspectable before execution."],
-    ["External opportunity", "Not connected", "No monitoring claim until a permitted source adapter exists."],
-    ["Business outcomes", "Needs metrics", "Revenue and outcome signals will appear only from verified sources."]
-  ];
-  return `<section class="improvement-intelligence"><header><div><p class="eyebrow">SELF-IMPROVEMENT \xB7 EVIDENCE BEFORE CHANGE</p><h2>AGIOS can grow without rewriting itself in the dark.</h2><p>Professional agents learn from verified work, propose skills in their specialty and share approved capabilities across the studio. Nothing installs itself.</p></div><button data-view-link="skills">Open Skill Lab \u2192</button></header><div class="improvement-loop">${loop.map(([index2, label, count, note], position) => `<article style="--loop-index:${position}"><small>${index2}</small><i></i><strong>${count}</strong><h3>${label}</h3><p>${note}</p></article>`).join("")}</div><div class="intelligence-radar"><div><p class="eyebrow">INTELLIGENCE RADAR</p><h3>What is worth your attention?</h3><p>Each dimension is honest about what AGIOS can currently measure.</p></div><div class="radar-grid">${dimensions.map(([name, value, note], index2) => `<article class="radar-${index2 % 4}"><span>${String(index2 + 1).padStart(2, "0")}</span><div><strong>${esc(name)}</strong><small>${esc(note)}</small></div><em>${esc(value)}</em></article>`).join("")}</div></div></section>`;
-}
-function dreamingDigestSurface() {
-  const digest = state.dreaming;
-  if (!digest) return "";
-  const cards = digest.recommendations.map((rec, index2) => {
-    const evidence = Object.entries(rec.evidence || {}).map(([key, value]) => `${key} ${value}`).join(" \xB7 ");
-    return `<article class="dreaming-card" style="--dreaming-index:${index2}">
-      <header><span class="dreaming-dim">${esc(digest.dimensions.find((d) => d.id === rec.dimension)?.label || rec.dimension)}</span><span class="dreaming-evidence">${esc(evidence)}</span></header>
-      <h3>${esc(rec.title)}</h3>
-      <p>${esc(rec.detail)}</p>
-      <footer>
-        <button class="dreaming-accept" data-dreaming-accept="${esc(rec.id)}" data-dreaming-target="${esc(rec.action.target || "")}">${esc(rec.action.label || "Accept")}</button>
-        <button class="dreaming-dismiss" data-dreaming-dismiss="${esc(rec.id)}">Not now</button>
-      </footer>
-    </article>`;
-  }).join("");
-  const dimensionChips = digest.dimensions.map((dim) => `<span class="dreaming-chip is-${esc(dim.status)}" title="${esc(dim.detail)}">${esc(dim.label)}</span>`).join("");
-  const empty2 = digest.recommendations.length ? "" : `<div class="dreaming-empty"><b>Nothing needs you right now.</b> <span>Every dimension is measured, and no real signal produced a recommendation. New evidence appears here automatically.</span></div>`;
-  return `<section class="dreaming-digest"><header><div><p class="eyebrow">DREAMING DIGEST \xB7 EVERY DAY</p><h2>${digest.recommendations.length} high-leverage recommendation${digest.recommendations.length === 1 ? "" : "s"} for you.</h2><p>Eight dimensions measured against real local stores; only genuine signals become cards. Nothing here is synthetic.</p></div><span class="dreaming-stamp">LOCAL \xB7 EVIDENCE-GATED</span></header><div class="dreaming-dims">${dimensionChips}</div><div class="dreaming-cards">${cards || empty2}</div></section>`;
+  draw();
+  const observer = new ResizeObserver(draw);
+  observer.observe(host);
+  state.executionSpineCleanup = () => observer.disconnect();
 }
 function renderCommand() {
-  const d = state.data;
-  const nextSchedules = d.schedules.slice(0, 4);
+  const sources = state.liveWork?.sources || {};
+  const agios = sources.agios || {};
+  const hermes = sources.hermes || {};
+  const codex = sources.codex || {};
+  const opencode = sources.opencode || {};
+  const plannedRoutes = state.orchestrationPlans.filter((plan) => plan.status === "planned");
   const pendingRuns = state.runs.filter((run) => run.status === "awaiting_approval");
-  const businessNodes = d.businesses.map((business) => `
-    <button class="business-node" data-business="${esc(business.id)}">
-      <b>${esc(business.name.replace(/&.*|Business|Studio/g, "").trim() || business.name)}</b>
-      <small class="status-line"><i class="status-dot status-${esc(business.status)}"></i>${esc(business.status)}</small>
-    </button>`).join("");
-  const agentChips = d.agents.map((agent, index2) => `
-    <button class="agent-chip" data-agent="${esc(agent.id)}"><div class="agent-glyph agent-${index2 % 5}">${initials(agent.id)}</div><div><strong>${esc(agent.id)}</strong><small>${esc(agent.model || "Runtime unavailable")}</small></div><i class="status-dot status-${esc(agent.state)}" title="${esc(agent.state)}"></i></button>`).join("");
-  const scheduleRows = nextSchedules.length ? nextSchedules.map((job) => `
-    <div class="schedule-row"><div class="schedule-icon">\u21BB</div><div><strong>${esc(job.name)}</strong><small>${esc(job.schedule || "Scheduled automation")}</small></div><time>${esc(relativeTime(job.next_run_at))}<small>${esc(job.state)}</small></time></div>`).join("") : `<div class="decision-empty"><strong>Schedule feed unavailable</strong><p>AGIOS could not read local Hermes schedules.</p></div>`;
+  const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status));
+  const pendingDecisions = plannedRoutes.length + pendingRuns.length;
+  const nextAction = pendingDecisions ? { label: `Review ${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"}`, attr: `data-view-link="approvals"` } : activeRuns.length ? { label: `Watch ${activeRuns.length} active run${activeRuns.length === 1 ? "" : "s"}`, attr: `data-view-link="work"` } : { label: "Ask Ari for work", attr: "data-open-directive" };
+  const opencodeCost = Number(opencode.cost || 0);
+  const lastUpdated = state.liveWork?.generated_at ? new Date(state.liveWork.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "loading";
+  const headline = pendingDecisions ? `${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"} need your judgment.` : activeRuns.length ? `${activeRuns.length} worker${activeRuns.length === 1 ? " is" : "s are"} moving.` : "The system is ready for your next move.";
+  const heroDetail = pendingDecisions ? esc(plannedRoutes[0]?.objective || pendingRuns[0]?.objective || "Review the exact route before model work starts.") : activeRuns.length ? "Follow the live runtime state. Completion still requires evidence and review." : "Give Ari one outcome. AGIOS will route it, bind the context, and stop for your approval.";
   page.innerHTML = `
-    <div class="operator-line"><span><i></i> AGIOS / LOCAL OPERATOR</span><span>${d.runtime.gateway_running ? "HERMES GATEWAY ONLINE" : "HERMES STANDING BY"}</span></div>
-    ${renderChiefOfStaffBoard()}
-    ${livingOSMapSurface()}
-    ${improvementIntelligenceSurface()}
-    ${dreamingDigestSurface()}
-    ${heading("Portfolio now", `Your operating system. <em>Today at a glance.</em>`, "Live work, approvals, memory and the portfolio remain visible below Ari's routing desk.", `<strong>\u25CF Supervised mode</strong><span>Updated ${new Date(d.generated_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>`)}
-    <div class="command-toolbar"><div class="context-line"><span class="status-dot status-online"></span><strong>${d.summary.active_businesses} active businesses</strong><span>\xB7</span><span>${d.summary.live_or_detected_systems} systems live, detected or routed</span><span>\xB7</span><span>${runsForPeriod().length} runs in period</span></div>${periodControl()}</div>
-    ${operatingBrief()}
-    <section class="signal-grid" aria-label="Operating signals">
-      ${signalCard("Fleet readiness", `${d.summary.available_agents}<small> / ${d.summary.agents}</small>`, "registered workers ready to wake", "coral", [18, 28, 22, 45, 38, 57, 48, 72, 62, 88, 78, 94])}
-      ${signalCard("Shared skills live", d.summary.shared_skills, `available to ${d.shared_fabric.skills.attached_agents} agents by policy`, "mint", [22, 35, 30, 42, 47, 44, 58, 61, 57, 70, 81, 90])}
-      ${signalCard("AGIOS shared memory", d.operational?.shared_memory?.fact_count ?? 0, `live scoped facts \xB7 ${d.shared_fabric.memory.fact_count} profile facts indexed`, "violet", [72, 64, 58, 52, 46, 38, 31, 26, 20, 16, 10, 8])}
+    <div class="signal-home">
+    <section class="signal-hero">
+      <div class="signal-hero-copy"><span class="signal-kicker">PRIVATE CONTROL PLANE / ${esc(lastUpdated)}</span><h1>${headline}</h1><p>${heroDetail}</p><div class="signal-hero-actions"><button class="primary-action" ${nextAction.attr}>${esc(nextAction.label)}</button><button class="quiet-action" data-view-link="guide">Open operator guide</button></div></div>
+      <aside class="judgment-console" data-live-key="judgment">
+        <header><span>Owner control</span>${status(pendingDecisions ? "awaiting_approval" : activeRuns.length ? "running" : "ready")}</header>
+        <strong>${pendingDecisions || activeRuns.length || 0}</strong>
+        <p>${pendingDecisions ? "bound decisions waiting" : activeRuns.length ? "workers active now" : "consequential actions waiting"}</p>
+        <div><span><b>${liveCount(agios.memory_facts)}</b> memories</span><span><b>${liveCount(hermes.skills)}</b> skills</span><span><b>${liveCount(agios.artifacts)}</b> artifacts</span></div>
+      </aside>
     </section>
-    <section class="panel usage-panel">
-      <header class="panel-header"><div><h2>AI usage & operating limits</h2><p>Subscriptions, tokens and cost remain honest when providers do not report them</p></div><button data-view-link="performance">Usage details \u2197</button></header>
-      <div class="usage-summary"><div><small>AI SYSTEMS</small><strong>${d.summary.systems}</strong><span>${d.summary.live_or_detected_systems} usable or detected</span></div><div><small>OPERATIONAL LANE</small><strong>${esc(d.operational?.status || "unavailable")}</strong><span>Hermes chat, goals and shared memory</span></div><div><small>MODEL ROUTES</small><strong>${d.summary.model_routes}</strong><span>${d.models.filter((model) => model.location === "local").length} local routes</span></div><div><small>INTEGRATIONS</small><strong>${d.summary.connected_integrations}</strong><span>registered in the governed catalog</span></div></div>
+
+    ${executionSpineSurface()}
+
+    <div class="section-heading signal-section-heading"><div><p class="eyebrow">SOURCE MATRIX</p><h2>Four runtimes. One truthful view.</h2></div><span>Safe local metadata only</span></div>
+    <section class="live-source-grid">
+      ${liveSourceCard("agios", "AGIOS", liveCount(agios.runs), "runs & evidence", [["Active", liveCount(agios.active_runs)], ["Memory", liveCount(agios.memory_facts)], ["Artifacts", liveCount(agios.artifacts)], ["Training routes", liveCount(agios.training_examples)]], agios)}
+      ${liveSourceCard("hermes", "Hermes", liveCount(hermes.sessions), "local sessions", [["Messages", liveCount(hermes.messages)], ["Skills", liveCount(hermes.skills)], ["Memory facts", liveCount(hermes.memory_facts)]], hermes)}
+      ${liveSourceCard("codex", "Codex", liveCount(codex.sessions), "indexed sessions", [["Rollouts", liveCount(codex.rollout_files)], ["Source", "local metadata"], ["Transcript bodies", "not exposed"]], codex)}
+      ${liveSourceCard("opencode", "OpenCode", liveCount(opencode.sessions), "local sessions", [["Messages", liveCount(opencode.messages)], ["Tokens", liveCount(opencode.tokens).toLocaleString()], ["Recorded cost", opencodeCost ? `$${opencodeCost.toFixed(4)}` : "$0.0000"]], opencode)}
     </section>
-    <div class="command-grid">
-      <div>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Operating portfolio</h2><p>Every studio and venture under the AGIOS control plane</p></div><button data-view-link="portfolio">Open portfolio \u2197</button></header>
-          <div class="organization-map"><div class="org-core"><small>OWNER CONTROL</small><strong>AGIOS</strong><span>${d.summary.departments} departments \xB7 ${d.summary.agents} agents</span></div><div class="business-rail">${businessNodes}</div></div>
-        </section>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Next scheduled work</h2><p>Hermes wakes workers only when work is due</p></div><button data-view-link="automations">All automations \u2197</button></header>
-          <div>${scheduleRows}</div>
-        </section>
-      </div>
-      <div>
-        <section class="panel">
-          <header class="panel-header"><div><h2>Agent workspaces</h2><p>Open an operator cockpit for any registered worker</p></div><button data-view-link="agents">Fleet table \u2197</button></header>
-          <div class="agent-compact">${agentChips}</div>
-        </section>
-        <section class="panel decision-panel"><header class="panel-header"><div><h2>Judgment queue</h2><p>Consequential actions stop here</p></div><button data-view-link="approvals">Review \u2197</button></header>${pendingRuns.length ? `<div class="decision-pending"><strong>${pendingRuns.length} exact run approval${pendingRuns.length === 1 ? "" : "s"} waiting</strong><p>${esc(pendingRuns[0].objective)}</p><button data-view-link="approvals">Open approval queue \u2192</button></div>` : `<div class="decision-empty"><div class="seal">\u2713</div><strong>Your queue is clear</strong><p>Nothing is waiting for runtime or external-action approval.</p></div>`}</section>
-      </div>
+
+    <div class="home-two-column">
+      <section class="plain-panel"><header><div><p class="eyebrow">RECENT ACTIVITY</p><h2>Hermes and Codex sessions</h2></div><button data-view-link="work">Open work \u2192</button></header><div>${recentLocalWork(sources)}</div></section>
+      <section class="plain-panel" data-live-key="improvements"><header><div><p class="eyebrow">REPOSITORY IMPROVEMENTS</p><h2>Verified code changes</h2></div><button data-view-link="skills">Skills \u2192</button></header><div>${improvementRows(state.liveWork?.improvements || [])}</div></section>
+    </div>
+
+    <section class="plain-panel next-judgment"><header><div><p class="eyebrow">OWNER CONTROL</p><h2>${pendingDecisions ? `${pendingDecisions} decision${pendingDecisions === 1 ? "" : "s"} need you` : "No consequential action is waiting"}</h2><p>${pendingDecisions ? esc(plannedRoutes[0]?.objective || pendingRuns[0]?.objective) : "Agents may research, draft and verify locally. Sending, publishing, payments and production remain stopped."}</p></div><button ${pendingDecisions ? `data-view-link="approvals"` : "data-open-directive"}>${pendingDecisions ? "Review decisions" : "Start new work"} \u2192</button></header></section>
+    </div>
+  `;
+  window.requestAnimationFrame(renderExecutionSpine);
+}
+function renderGuide() {
+  page.innerHTML = `${heading("How to use AGIOS", "One outcome in. Evidence out.", "Use this page as the operating manual. Advanced screens are optional; the five-step loop is enough for daily work.")}
+    <section class="guide-steps">
+      <article id="guide-ask"><b>1</b><div><p class="eyebrow">ASK</p><h2>Tell Ari the outcome</h2><p>Use plain language: what should be true when the work is done? Add the data class and project only when relevant. Do not choose agents or models unless you have a reason.</p><div class="guide-example"><strong>Example</strong><span>\u201CInspect the AGIOS dashboard tests and propose a simpler home page. Do not edit yet.\u201D</span></div><button data-open-directive>Ask Ari \u2192</button></div></article>
+      <article><b>2</b><div><p class="eyebrow">APPROVE</p><h2>Read the route before it runs</h2><p>Check the exact objective, specialist, runtime, model, data class, workspace access, memories and skills. Approve only that bound route. If anything is wrong, cancel and ask again.</p><button data-view-link="approvals">Open approvals \u2192</button></div></article>
+      <article><b>3</b><div><p class="eyebrow">WATCH</p><h2>Follow the real status</h2><p><strong>Queued</strong> means accepted, <strong>running</strong> means the runtime is working, <strong>completed</strong> means a response exists, and <strong>failed</strong> includes a bounded reason. A completed answer is not proof by itself.</p><button data-view-link="work">Open work \u2192</button></div></article>
+      <article><b>4</b><div><p class="eyebrow">VERIFY</p><h2>Review evidence, not claims</h2><p>Check attached memories and skills, generated files, repository changes, tests, screenshots and reviewer findings. External delivery still requires your exact approval.</p><button data-view-link="artifacts">Open evidence \u2192</button></div></article>
+      <article><b>5</b><div><p class="eyebrow">LEARN</p><h2>Keep only durable knowledge</h2><p>Save decisions, constraints and facts that agents should reuse. Do not save passwords, temporary task progress or whole transcripts. Propose skill improvements only from completed-run evidence.</p><button data-view-link="memory">Open memory \u2192</button></div></article>
+    </section>
+    <div class="guide-grid">
+      <section class="plain-panel"><p class="eyebrow">WHICH RUNTIME?</p><h2>Let routing choose by default</h2><dl class="guide-definitions"><div><dt>Hermes</dt><dd>Main orchestration, research, memory, tools and private/local routes.</dd></div><div><dt>Codex</dt><dd>Difficult approved coding in a registered workspace with its sandbox.</dd></div><div><dt>OpenCode</dt><dd>Second workspace coding runtime; deny-by-default tools, no auto mode.</dd></div><div><dt>Local workers</dt><dd>Private extraction, coding and first drafts with no hosted fallback.</dd></div></dl></section>
+      <section class="plain-panel"><p class="eyebrow">ALWAYS STOPS FOR YOU</p><h2>Consequential actions</h2><ul class="guide-boundaries"><li>Sending messages, bids, applications or forms</li><li>Publishing, production deployment or final delivery</li><li>Payments, subscriptions, pricing or contracts</li><li>Account changes, credentials or broader data access</li><li>Scope, deadline or legal commitments</li></ul></section>
+      <section class="plain-panel"><p class="eyebrow">WHERE THINGS LIVE</p><h2>The six useful screens</h2><dl class="guide-definitions"><div><dt>Home</dt><dd>Live status and your next action.</dd></div><div><dt>Work</dt><dd>Requests, routes, status and responses.</dd></div><div><dt>Approvals</dt><dd>Exact decisions waiting for you.</dd></div><div><dt>Evidence</dt><dd>Artifacts and grounded run context.</dd></div><div><dt>Memory</dt><dd>Durable owner-controlled knowledge.</dd></div><div><dt>Apps & models</dt><dd>Connected runtimes and truthful blockers.</dd></div></dl></section>
     </div>`;
-  window.requestAnimationFrame(renderLivingOSMap);
 }
 function renderPortfolio() {
-  const cards = state.data.businesses.map((business, index2) => `<article class="entity-card">
-    <div class="entity-top"><span class="entity-index">B-${String(index2 + 1).padStart(2, "0")}</span>${status(business.status)}</div>
+  const cards = state.data.businesses.map((business, index) => `<article class="entity-card">
+    <div class="entity-top"><span class="entity-index">B-${String(index + 1).padStart(2, "0")}</span>${status(business.status)}</div>
     <h2>${esc(business.name)}</h2><p>${esc(business.mission)}</p>
     <footer class="entity-footer"><span>${business.department_count} departments</span><span>Owner \xB7 ${esc(titleCase(business.owner_agent_id))}</span></footer>
   </article>`).join("");
@@ -31368,7 +29940,7 @@ function runComposer(agent, mode) {
   const preferredRuntime = state.runtimePreferences[agent.id] || "hermes";
   let models = modelsForAgent(agent);
   if (isWorkspace) models = models.filter((model) => ["openai-codex", "deepseek"].includes(model.provider));
-  const runtimes = state.runtimeAdapters.filter((runtime) => ["hermes", "codex"].includes(runtime.id) && runtime.execution_enabled && runtime.actions?.some((action) => action.startsWith("workspace")));
+  const runtimes = state.runtimeAdapters.filter((runtime) => ["hermes", "codex", "opencode"].includes(runtime.id) && runtime.execution_enabled && runtime.actions?.some((action) => action.startsWith("workspace")));
   const workspaceOptions = state.workspaces.map((workspace) => `<option value="${esc(workspace.workspace_id)}">${esc(workspace.label)} \xB7 ${esc(titleCase(workspace.data_class))}${workspace.write_allowed ? " \xB7 read/write" : " \xB7 read-only"}</option>`).join("");
   const description = isWorkspace ? "A supervised agent can inspect or change only an owner-registered Git workspace. Every run requires exact approval; external actions remain locked." : isGoal ? "Goals can research public information and maintain a plan after exact approval. Workspace tools remain available only in the dedicated Workspace lane." : isAriRouter ? "Ari is the front door, not a model-only chat box. Simple questions stay conversational; research, links, files, builds and multi-step requests become a visible supervised route." : "Chat is model-only: shared memory, selected skills, voice and image understanding are available, but no workspace tools can run.";
   const ariContract = isAriRouter ? `<div class="ari-route-contract"><span><b>QUESTION</b> Direct answer</span><i>or</i><span><b>WORK</b> Research / workspace plan</span><i>then</i><span><b>YOU</b> Review & approve</span></div>` : "";
@@ -31439,7 +30011,7 @@ function osReadinessSurface(compact = false) {
     ["CLOCK", "Schedules and events", state.data.schedules.length ? "ready" : "attention", `${state.data.schedules.length} registered wakes`],
     ["TEAM", "Specialist workforce", state.data.summary.available_agents ? "ready" : "attention", `${state.data.summary.available_agents}/${state.data.summary.agents} ready`]
   ];
-  return `<section class="os-readiness ${compact ? "is-compact" : ""}"><header><div><p class="eyebrow">COMPOUND OS</p><h2>Home. Brain. Memory. Skills. Clock. Team.</h2></div><span>LIVE READINESS</span></header><div>${parts.map(([label, name, readiness, note], index2) => `<article class="readiness-${readiness}"><b>${index2 + 1}</b><div><small>${label}</small><strong>${name}</strong><span>${note}</span></div><em>${readiness === "ready" ? "Ready" : "Needs setup"}</em></article>`).join("")}</div><footer>Use the fewest capable workers for the job. Add a specialist only when a distinct recurring responsibility justifies one.</footer></section>`;
+  return `<section class="os-readiness ${compact ? "is-compact" : ""}"><header><div><p class="eyebrow">COMPOUND OS</p><h2>Home. Brain. Memory. Skills. Clock. Team.</h2></div><span>LIVE READINESS</span></header><div>${parts.map(([label, name, readiness, note], index) => `<article class="readiness-${readiness}"><b>${index + 1}</b><div><small>${label}</small><strong>${name}</strong><span>${note}</span></div><em>${readiness === "ready" ? "Ready" : "Needs setup"}</em></article>`).join("")}</div><footer>Use the fewest capable workers for the job. Add a specialist only when a distinct recurring responsibility justifies one.</footer></section>`;
 }
 function renderPaperclip() {
   const liveRuns = state.runs.filter((run) => ["queued", "running", "awaiting_approval"].includes(run.status));
@@ -31458,7 +30030,8 @@ function renderPaperclip() {
     ${status(agent.state)}
   </button>`).join("");
   const activity = liveRuns.length ? liveRuns.slice(0, 5).map((run) => `<button class="paperclip-dispatch" data-agent="${esc(run.agent_id)}"><span>\u2197</span><div><strong>${esc(run.objective)}</strong><small>${esc(titleCase(run.agent_id))} \xB7 ${esc(titleCase(run.mode))}</small></div>${status(run.status)}</button>`).join("") : `<div class="paperclip-empty"><span>\u2713</span><div><strong>No workers are consuming tokens</strong><small>Registered agents remain ready until a ticket, schedule or event wakes them.</small></div></div>`;
-  page.innerHTML = `${heading("Paperclip", "Build the team. Hand off the outcome.", "Paperclip is the supervised orchestration desk: it turns a business outcome into a governed AGIOS ticket, assigns the right professional workers and follows the handoff into the live board.", `<button class="launch-goal compact" data-open-directive>New ticket \uFF0B</button>`)}
+  page.innerHTML = `${heading("Orchestration desk", "Build the team. Hand off the outcome.", "AGIOS turns a business outcome into a governed ticket, assigns the right professional workers and follows the handoff into the live board.", `<button class="launch-goal compact" data-open-directive>New ticket \uFF0B</button>`)}
+    <div class="boundary-note orchestration-boundary"><strong>External Paperclip is not installed.</strong><span>AGIOS keeps one source of truth and adopts only verified patterns: explicit ownership, conflict-safe handoffs, approval gates, bounded runtimes and evidence-backed completion.</span></div>
     <section class="paperclip-command">
       <div class="paperclip-pulse"><p class="eyebrow">ORCHESTRATION STATUS</p><h2>${liveRuns.length ? `${liveRuns.length} handoff${liveRuns.length === 1 ? "" : "s"} in motion` : "The studio is ready"}</h2><p>Every dispatch keeps the selected business, data class, model route, memory scope and approval boundary attached.</p><div class="paperclip-statline"><span><strong>${readyAgents.length}</strong> workers ready</span><span><strong>${state.data.departments.length}</strong> departments</span><span><strong>${state.data.schedules.length}</strong> scheduled wakes</span><span><strong>${state.directiveDrafts.length}</strong> local drafts</span></div></div>
       <div class="paperclip-route"><span>OUTCOME</span><i>\u2192</i><span>TEAM</span><i>\u2192</i><span>APPROVAL</span><i>\u2192</i><span>DELIVERY</span></div>
@@ -31469,15 +30042,88 @@ function renderPaperclip() {
       <section class="workspace-card paperclip-section paperclip-activity"><div class="paperclip-section-head"><div><p class="eyebrow">LIVE HANDOFFS</p><h3>Current orchestration</h3></div><button data-view="work">Open board</button></div><div>${activity}</div></section>
     </div>`;
 }
+function runDuration(run) {
+  const start2 = new Date(run.started_at || run.created_at).valueOf();
+  const end = run.completed_at ? new Date(run.completed_at).valueOf() : Date.now();
+  if (!Number.isFinite(start2) || !Number.isFinite(end) || end < start2) return "Unavailable";
+  const seconds = Math.round((end - start2) / 1e3);
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}m ${remainder}s`;
+}
+function workRunInspector(run) {
+  if (!run) return "";
+  const workspace = state.workspaces.find((item) => item.workspace_id === run.workspace_id);
+  const active = ["queued", "running"].includes(run.status);
+  const progressOutput = String(run.progress_output || "").trim();
+  const finalOutput = String(run.response || "").trim();
+  const showRuntimeOutput = active || progressOutput && progressOutput !== finalOutput;
+  const runtimeOutput = showRuntimeOutput ? `<article class="work-message runtime-message" aria-live="polite"><header><span>Live runtime output</span><time>${run.progress_updated_at ? new Date(run.progress_updated_at).toLocaleString() : "Waiting"}</time></header>${progressOutput ? `<pre>${esc(progressOutput)}</pre>` : `<div class="work-run-waiting"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "Runtime started \xB7 waiting for the first stdout line"}</span></div>`}</article>` : "";
+  const trace = state.runTraces[run.run_id];
+  const traceEvents = trace?.events || [];
+  const traceMarkup = trace === void 0 ? `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>Loading safe Hermes events</small></div><p>Checking the runtime session for persisted tool and progress events.</p></section>` : !trace.available ? `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>Not available</small></div><p>${esc(trace.reason || "This runtime did not expose a safe event trace.")}</p></section>` : `<section class="work-run-trace"><div class="work-run-section-heading"><span>Verified activity</span><small>${traceEvents.length} persisted event${traceEvents.length === 1 ? "" : "s"} \xB7 ${trace.binding === "run_source" ? "run-bound" : "legacy session-bound"}</small></div><ol>${traceEvents.map((event) => event.kind === "tool" ? `<li class="trace-tool"><header><strong>${esc(titleCase(event.tool || "tool"))}</strong><span>${esc(titleCase(event.effect || "recorded"))}</span></header>${event.input ? `<div><small>INPUT</small><pre>${esc(event.input)}</pre></div>` : ""}${event.output ? `<div><small>OUTPUT</small><pre>${esc(event.output)}</pre></div>` : ""}</li>` : `<li class="trace-commentary"><header><strong>Runtime update</strong></header><p>${esc(event.text || "")}</p></li>`).join("") || `<li class="trace-empty">No tool or commentary events were persisted for this session.</li>`}</ol></section>`;
+  const result = run.response ? `<pre>${esc(run.response)}</pre>` : run.status === "failed" ? runError(run) : active ? `<div class="work-run-waiting"><i></i><span>${run.status === "queued" ? "Waiting for the supervised worker" : "Worker is running \xB7 this record refreshes automatically"}</span></div>` : `<p class="work-run-empty-result">No final response was produced for this run.</p>`;
+  const steps = [
+    ["Prepared", run.created_at, "Exact context recorded"],
+    ["Worker started", run.started_at, run.started_at ? `${titleCase(run.runtime_id || "hermes")} accepted the run` : "Waiting for approval or dispatch"],
+    [run.status === "completed" ? "Completed" : titleCase(run.status), run.completed_at, run.completed_at ? "Final state persisted" : "Not finished"]
+  ];
+  const timeline = steps.map(([label, time, note], index) => `<li class="${time ? "is-recorded" : "is-pending"}"><i>${index + 1}</i><div><strong>${esc(label)}</strong><span>${esc(note)}</span></div><time>${time ? new Date(time).toLocaleString() : "\u2014"}</time></li>`).join("");
+  const provenance = [
+    ["Agent", titleCase(run.agent_id)],
+    ["Runtime", titleCase(run.runtime_id || "hermes")],
+    ["Provider", titleCase(run.provider || "profile route")],
+    ["Model", run.model || "Profile default"],
+    ["Workspace", run.workspace_id ? `${workspace?.label || "Registered workspace"} \xB7 ${titleCase(run.workspace_access)} access` : "No workspace access"],
+    ["Data class", titleCase(run.data_class)],
+    ["Duration", run.started_at ? runDuration(run) : "Not started"],
+    ["Output capture", progressOutput ? "Bounded runtime stdout" : "Final result only"],
+    ["Session", run.hermes_session_id || "No runtime session ID"]
+  ].map(([label, value]) => `<div><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`).join("");
+  return `<section class="work-run-inspector" id="work-run-inspector" tabindex="-1" aria-label="Selected run details">
+    <header><div><p class="eyebrow">RUN RECORD \xB7 ${esc(run.run_id.slice(0, 8))}</p><h2>${esc(run.objective)}</h2></div><div class="work-run-header-actions">${status(run.status)}<button type="button" data-work-run-close aria-label="Close run details">Close</button></div></header>
+    <div class="work-run-layout">
+      <div class="work-run-main">
+        <section class="work-run-timeline"><div class="work-run-section-heading"><span>Run timeline</span><small>Persisted lifecycle</small></div><ol>${timeline}</ol></section>
+        <section class="work-run-transcript" aria-label="Run conversation">
+          <article class="work-message owner-message"><header><span>Owner request</span><time>${new Date(run.created_at).toLocaleString()}</time></header><p>${esc(run.objective)}</p></article>
+          ${runtimeOutput}
+          ${traceMarkup}
+          <article class="work-message agent-message"><header><span>Final result \xB7 ${esc(titleCase(run.agent_id))}</span>${run.response ? `<button type="button" data-speak-run="${esc(run.run_id)}">Listen</button>` : ""}</header>${result}</article>
+        </section>
+      </div>
+      <aside class="work-run-provenance"><div class="work-run-section-heading"><span>Execution provenance</span><small>Exact approved route</small></div>${provenance}${evidenceChips(run)}<p class="work-run-capture-note">${progressOutput ? "Runtime stdout was captured during execution, bounded locally, and stored separately from the final result. Stderr is never streamed." : "Detailed runtime stream was not captured for this run. This record shows the complete final output and the lifecycle AGIOS actually persisted\u2014no invented steps."}</p></aside>
+    </div>
+  </section>`;
+}
+async function loadWorkRunTrace(runId) {
+  if (!runId) return;
+  try {
+    const payload = await api(`/api/v1/hermes/runs/${encodeURIComponent(runId)}/events`);
+    state.runTraces[runId] = payload.trace || { available: false, events: [], reason: "No safe runtime trace was returned." };
+  } catch (error) {
+    state.runTraces[runId] = { available: false, events: [], reason: error.message || "The safe runtime trace is unavailable." };
+  }
+  if (state.view === "work" && state.selectedWorkRunId === runId) renderWork();
+}
 function renderWork() {
   const boardDrafts = state.directiveDrafts;
   const approvalRuns = state.runs.filter((run) => run.status === "awaiting_approval");
   const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status));
   const reviewRuns = state.runs.filter((run) => ["completed", "failed", "interrupted", "canceled"].includes(run.status));
-  const runTask = (run) => `<article class="kanban-task"><header><span>${esc(titleCase(run.mode))}</span>${status(run.status)}</header><h3>${esc(run.objective)}</h3><footer><button data-agent="${esc(run.agent_id)}">${esc(titleCase(run.agent_id))}</button><time>${new Date(run.created_at).toLocaleString()}</time></footer></article>`;
+  if (!state.workRunAutoOpened && state.runs.length) {
+    state.selectedWorkRunId = (activeRuns[0] || reviewRuns[0] || approvalRuns[0] || state.runs[0]).run_id;
+    state.workRunAutoOpened = true;
+  }
+  const selectedRun = state.runs.find((run) => run.run_id === state.selectedWorkRunId) || null;
+  const runTask = (run) => `<article class="kanban-task ${selectedRun?.run_id === run.run_id ? "is-selected" : ""}"><header><span>${esc(titleCase(run.mode))}</span>${status(run.status)}</header><h3>${esc(run.objective)}</h3><div class="kanban-task-meta"><span>${esc(titleCase(run.agent_id))}</span><time>${new Date(run.created_at).toLocaleString()}</time></div><button class="kanban-task-open" type="button" data-work-run="${esc(run.run_id)}">${run.response ? "Open result" : "Open run"} \u2192</button></article>`;
   const draftTask = (draft) => `<article class="kanban-task is-draft"><header><span>LOCAL DRAFT</span>${status("planned")}</header><h3>${esc(draft.outcome)}</h3><footer><span>${esc(titleCase(draft.business))}</span><time>${new Date(draft.createdAt).toLocaleString()}</time></footer></article>`;
   const lane = (id2, title, items, empty2) => `<section class="kanban-lane lane-${id2}"><header><div><span></span><h2>${esc(title)}</h2></div><strong>${items.length}</strong></header><div>${items.join("") || `<p class="kanban-empty">${esc(empty2)}</p>`}</div></section>`;
-  page.innerHTML = `${heading("Agent Kanban", "File a ticket. Watch the workers move it forward.", "Every card is a real AGIOS draft or runtime session. Goals continue in the local worker while this board updates their verified state.", `<button class="launch-goal compact" data-open-directive>New ticket \uFF0B</button>`)}<div class="kanban-summary"><span><strong>${boardDrafts.length}</strong> inbox</span><span><strong>${approvalRuns.length}</strong> awaiting approval</span><span><strong>${activeRuns.length}</strong> active</span><span><strong>${reviewRuns.length}</strong> review & done</span></div><div class="agent-kanban">${lane("inbox", "Inbox", boardDrafts.map(draftTask), "Create a governed ticket.")}${lane("approval", "Approval", approvalRuns.map(runTask), "No decisions waiting.")}${lane("active", "Building", activeRuns.map(runTask), "No workers running.")}${lane("review", "Review & done", reviewRuns.map(runTask), "Completed work appears here.")}</div>`;
+  const summaryMarkup = `<div class="kanban-summary"><span><strong>${boardDrafts.length}</strong> inbox</span><span><strong>${approvalRuns.length}</strong> awaiting approval</span><span><strong>${activeRuns.length}</strong> active</span><span><strong>${reviewRuns.length}</strong> review & done</span></div>`;
+  const boardMarkup = `<div class="agent-kanban">${lane("inbox", "Inbox", boardDrafts.map(draftTask), "Create a governed ticket.")}${lane("approval", "Approval", approvalRuns.map(runTask), "No decisions waiting.")}${lane("active", "Building", activeRuns.map(runTask), "No workers running.")}${lane("review", "Review & done", reviewRuns.map(runTask), "No completed work yet.")}</div>`;
+  const introMarkup = heading("Agent Kanban", "File a ticket. Watch the workers move it forward.", "Every card is a real AGIOS draft or runtime session. Open a run to inspect its request, final output, approved route and persisted evidence.", `<button class="launch-goal compact" data-open-directive>New ticket \uFF0B</button>`);
+  page.innerHTML = selectedRun ? `${workRunInspector(selectedRun)}${summaryMarkup}${boardMarkup}` : `${introMarkup}${summaryMarkup}${boardMarkup}`;
   return;
   const drafts = state.directiveDrafts.map((draft) => `<article class="entity-card"><div class="entity-top"><span class="entity-index">LOCAL DRAFT</span>${status("planned")}</div><h2>${esc(draft.outcome)}</h2><p>${esc(titleCase(draft.business))} \xB7 ${esc(draft.dataClass)}</p><footer class="entity-footer"><span>Not dispatched</span><span>${new Date(draft.createdAt).toLocaleString()}</span></footer></article>`).join("");
   const runs = state.runs.filter((run) => run.mode === "goal");
@@ -31490,16 +30136,59 @@ function renderArtifacts() {
   const imageCards = state.visionAssets.map((asset) => `<article class="artifact-card image-artifact"><header><span>PRIVATE IMAGE INPUT</span>${status(asset.status)}</header><h3>${esc(asset.label || "Image")}</h3><p>${esc(titleCase(asset.mime_type))} \xB7 ${Math.max(1, Math.round(Number(asset.byte_count || 0) / 1024))} KB \xB7 ${esc(titleCase(asset.data_class))}</p><footer><span>${esc(titleCase(asset.retention))} retention</span><time>${new Date(asset.created_at).toLocaleString()}</time></footer></article>`).join("");
   page.innerHTML = `${heading("Artifact Library", "Every result has a place, a source, and a status.", "Browse real AGIOS run outputs and private vision metadata without exposing workspace paths, credentials, or raw customer files.")}<div class="artifact-summary"><span><small>VERIFIED RESULTS</small><strong>${completed.length}</strong></span><span><small>REVIEWABLE RUNS</small><strong>${resultRuns.length}</strong></span><span><small>PRIVATE IMAGE INPUTS</small><strong>${state.visionAssets.length}</strong></span><span><small>ACTIVE WORK</small><strong>${state.runs.filter((run) => ["queued", "running"].includes(run.status)).length}</strong></span></div><section class="artifact-section"><header><div><p class="eyebrow">RUN OUTPUTS</p><h2>Evidence returned by the workforce</h2></div><button data-system="hermes">Open Hermes Sessions \u2192</button></header><div class="artifact-grid">${evidenceCards || `<div class="workspace-empty workspace-card large"><b>\u25A3</b><strong>No result artifacts yet</strong><span>Completed and stopped runs will appear here from the private AGIOS session store.</span></div>`}</div></section><section class="artifact-section"><header><div><p class="eyebrow">PRIVATE INPUTS</p><h2>Vision assets under retention policy</h2></div><span>METADATA ONLY</span></header><div class="artifact-grid">${imageCards || `<div class="workspace-empty workspace-card"><b>\u25C9</b><strong>No retained image inputs</strong><span>Images are listed only when their real private metadata exists.</span></div>`}</div></section>`;
 }
+function routePlanCard(plan) {
+  const department = state.data.departments.find((item) => item.id === plan.department_id);
+  const lead = state.data.agents.find((item) => item.id === plan.lead_agent_id);
+  const model = state.data.models.find((item) => item.id === plan.model_id);
+  const workspaceRoute = plan.execution_mode === "workspace";
+  const dataRanks = { public: 0, internal: 1, private_business: 2, customer_restricted: 3 };
+  const eligibleWorkspaces = state.workspaces.filter((workspace) => {
+    const classAllowed = (dataRanks[workspace.data_class] ?? 99) <= (dataRanks[plan.data_class] ?? -1);
+    const accessAllowed = plan.workspace_access !== "write" || workspace.write_allowed;
+    return classAllowed && accessAllowed;
+  });
+  const workspaceOptions = eligibleWorkspaces.map((workspace) => `<option value="${esc(workspace.workspace_id)}">${esc(workspace.label)} \xB7 ${esc(titleCase(workspace.data_class))}</option>`).join("");
+  const capabilities = plan.required_capabilities || [];
+  const runtimes = state.runtimeAdapters.filter((runtime) => {
+    if (!["hermes", "codex", "opencode"].includes(runtime.id) || !runtime.execution_enabled) return false;
+    if (!runtime.actions?.some((action) => action.startsWith("workspace"))) return false;
+    if (capabilities.includes("research_web") && runtime.id !== "hermes") return false;
+    if (capabilities.includes("vision") && runtime.id === "opencode") return false;
+    return true;
+  });
+  const runtimeOptions = runtimes.map((runtime) => `<option value="${esc(runtime.id)}">${esc(runtime.name)} \xB7 ${esc(titleCase(runtime.status))}</option>`).join("");
+  return `<article class="route-plan-card"><header><div><small>ARI ROUTE \xB7 ${esc(new Date(plan.created_at).toLocaleString())}</small><h3>${esc(plan.objective)}</h3></div>${status(plan.status)}</header>
+    <div class="route-plan-path"><span><small>DEPARTMENT</small><strong>${esc(department?.name || titleCase(plan.department_id))}</strong></span><b>\u2192</b><span><small>LEAD</small><strong>${esc(lead?.name || titleCase(plan.lead_agent_id))}</strong></span><b>\u2192</b><span><small>MODEL</small><strong>${esc(plan.model_id)}</strong></span></div>
+    <div class="route-plan-evidence"><span>${esc(titleCase(plan.data_class))} data</span><span>${esc(titleCase(plan.execution_mode))} lane</span><span>${esc(titleCase(plan.workspace_access))} workspace</span>${capabilities.map((item) => `<span>${esc(titleCase(item))}</span>`).join("")}</div>
+    <p class="route-cost-note"><strong>Cost:</strong> ${esc(model?.cost_note || "vendor cost not reported")}</p>
+    <form class="route-plan-action" data-dispatch-form data-plan-id="${esc(plan.plan_id)}" data-plan-digest="${esc(plan.plan_digest)}">
+      ${workspaceRoute ? `<label>Workspace<select name="workspaceId" required><option value="">Choose registered workspace</option>${workspaceOptions}</select></label><label>Runtime<select name="runtimeId" required>${runtimeOptions}</select></label>` : ""}
+      <button type="submit" ${workspaceRoute && (!eligibleWorkspaces.length || !runtimes.length) ? "disabled" : ""}>Prepare exact run approval \u2192</button>
+      ${workspaceRoute && !eligibleWorkspaces.length ? `<small>No compatible workspace is registered. <button class="route-plan-workspace-link" type="button" data-view-link="repositories">Manage workspaces \u2192</button></small>` : ""}
+    </form></article>`;
+}
 function renderApprovals() {
+  const plans = state.orchestrationPlans.filter((plan) => plan.status === "planned");
   const pending = state.runs.filter((run) => run.status === "awaiting_approval");
   const proposals = state.skillProposals.filter((item) => item.status === "awaiting_owner_review");
   const proposalCards = proposals.map((item) => `<article class="skill-approval-card"><header><div><small>${esc(item.agent_id)} \xB7 ${esc(titleCase(item.change_kind))}</small><h3>${esc(item.skill_name)}</h3></div>${status(item.status)}</header><p>${esc(item.rationale)}</p><footer><span>${item.evidence_run_ids.length} verified run${item.evidence_run_ids.length === 1 ? "" : "s"}</span><button data-approve-skill="${esc(item.proposal_id)}">Approve authoring</button></footer></article>`).join("");
-  page.innerHTML = `${heading("Approval center", "Your judgment is a system boundary.", "Goals, sensitive model routes and agent-authored skill improvements stop here until their exact evidence and scope are approved.")}${pending.length || proposals.length ? `<div class="approval-sections">${pending.length ? `<section><p class="eyebrow">Runtime decisions</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">Skill evolution</p><div class="runtime-session-list">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-stage"><div class="seal">\u2713</div><h2>No decisions waiting</h2><p>The queue is clear. External messages, publishing, deployment, purchases, customer delivery and account changes remain prohibited even after a goal starts.</p><div class="foundation-roadmap"><span>Exact scope</span><span>Context bound</span><span>CSRF protected</span><span>Journaled</span></div></div>`}`;
+  page.innerHTML = `${heading("Approval center", "Your judgment is a system boundary.", "First review Ari's route. Preparing it creates a digest-bound runtime decision; only your second exact approval starts model work.")}${plans.length || pending.length || proposals.length ? `<div class="approval-sections">${plans.length ? `<section><p class="eyebrow">ROUTES TO REVIEW</p><div class="route-plan-list">${plans.map(routePlanCard).join("")}</div></section>` : ""}${pending.length ? `<section><p class="eyebrow">EXACT RUN APPROVALS</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">PROFESSIONAL GROWTH</p><div class="skill-approval-grid">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-state large"><b>\u2713</b><strong>Nothing needs approval</strong><span>Planned routes, consequential runs and shared skill changes stop here.</span></div>`}`;
 }
 function renderAutomations() {
   page.innerHTML = `${heading("Automations", "Work wakes when it is needed.", "Schedules and events activate specialized agents, collect evidence and return them to ready state. This is persistent operation without continuous token use.")}
     <section class="automation-contract"><article><small>NOTIFY</small><strong>Change only</strong><p>Prefer a meaningful delta over a repeated \u201Cnothing changed\u201D message.</p></article><article><small>FAILURES</small><strong>Visible and reviewable</strong><p>Failed jobs belong in Sessions and Artifacts; they never count as completed work.</p></article><article><small>AUTHORITY</small><strong>Never inherited</strong><p>A schedule can wake a worker, but publishing, messaging, deployment, and spending stay approval-gated.</p></article></section>
     <div class="data-panel"><div class="data-head columns-integrations"><span>Automation</span><span>State</span><span>Cadence</span><span>Next wake</span></div>${scheduleTable()}</div>`;
+}
+function notebookLMBridge() {
+  const connector = state.notebooklm;
+  if (!connector) {
+    return `<section class="notebooklm-bridge is-loading"><p class="eyebrow">PERSONAL NOTEBOOKLM</p><h2>Loading approved vault sources\u2026</h2><p>No account token or note content is exposed to the browser while AGIOS reads the local catalog.</p></section>`;
+  }
+  const sources = connector.sources || [];
+  const selectable = sources.filter((source) => !source.blocked);
+  const sourceRows = sources.map((source) => `<label class="notebooklm-source ${source.blocked ? "is-blocked" : ""}"><input type="checkbox" name="sourcePath" value="${esc(source.path)}" ${source.blocked ? "disabled" : ""}/><span><strong>${esc(source.title)}</strong><small>${esc(source.path)} \xB7 ${Math.max(1, Math.round(source.bytes / 1024))} KB</small></span><em>${source.blocked ? "Blocked: credential-like content" : "Local Markdown"}</em></label>`).join("");
+  const prepared = state.notebooklmPack ? `<div class="notebooklm-prepared"><small>LOCAL PACK READY \xB7 NOT UPLOADED</small><strong>${esc(state.notebooklmPack.title)}</strong><p>${state.notebooklmPack.sources.length} selected source${state.notebooklmPack.sources.length === 1 ? "" : "s"}; manifest and SHA-256 provenance included.</p><div><a class="primary-action" href="${esc(state.notebooklmPack.download_url)}" download>Download source pack</a><button type="button" data-notebooklm-open>Open NotebookLM \u2192</button></div></div>` : `<div class="notebooklm-empty"><strong>No source pack prepared</strong><p>Preparing a pack is local. AGIOS never signs in to Google, reads browser cookies, or uploads automatically.</p></div>`;
+  return `<section class="notebooklm-bridge"><header><div><p class="eyebrow">PERSONAL NOTEBOOKLM \xB7 OWNER-MEDIATED</p><h2>Turn approved Obsidian notes into a cited notebook source pack.</h2><p>The video\u2019s useful pattern is the five-file context pack. AGIOS implements the real boundary: select local notes, inspect them, prepare a verifiable ZIP, then you decide what to upload.</p></div>${status("ready")}</header><div class="notebooklm-boundary"><span><small>ACCOUNT</small><strong>Owner browser only</strong></span><span><small>TRANSFER</small><strong>No automatic upload</strong></span><span><small>PROVENANCE</small><strong>Path + SHA-256 manifest</strong></span><span><small>AUTHORITY</small><strong>Owner uploads manually</strong></span></div><div class="notebooklm-grid"><form data-notebooklm-form><label>PACK TITLE<input name="title" required maxlength="160" value="AGIOS core context"/></label><fieldset><legend>APPROVED OBSIDIAN SOURCES \xB7 ${selectable.length} AVAILABLE</legend><div class="notebooklm-sources">${sourceRows || `<p>No Markdown notes were found in the approved vault.</p>`}</div></fieldset><label class="notebooklm-ack"><input type="checkbox" name="externalUploadAcknowledged" required/><span>I understand selected notes leave this PC only after I upload them to Google NotebookLM.</span></label><button class="primary-action" type="submit" ${selectable.length ? "" : "disabled"}>Prepare local source pack</button></form><aside><ol>${(connector.workflow || []).map((step) => `<li>${esc(step)}</li>`).join("")}</ol>${prepared}</aside></div></section>`;
 }
 function renderIntegrations() {
   const rows = state.data.integrations.map((integration) => `<div class="data-row columns-integrations"><div><strong>${esc(integration.name)}</strong><p>${esc(integration.id)}</p></div><span>${esc(titleCase(integration.kind))}</span><span>${status(integration.status === "connected" ? "registered" : integration.status)}</span><span>${integration.status === "connected" ? "Cataloged \xB7 direct AGIOS action locked" : "Adapter required"}</span></div>`).join("");
@@ -31518,8 +30207,22 @@ function renderIntegrations() {
   }).join("");
   const retrieval = state.data.operational?.retrieval || {};
   const a2a = state.data.operational?.a2a || {};
-  page.innerHTML = `${heading("Models & tools", "One control plane, many replaceable capabilities.", "Registry entries describe intended connections; only runtime-verified adapters receive executable controls. Hermes remains the primary supervised execution runtime.")}
+  const opencodeRuntime = runtimeForSystem("opencode");
+  const connectionDecisions = [
+    ["OpenCode", opencodeRuntime.execution_enabled ? "ready" : "blocked", opencodeRuntime.execution_enabled ? "Executable + local auth state detected" : "Local auth state not detected", opencodeRuntime.execution_enabled ? "Supervised workspace adapter; deny-by-default tools, no auto mode." : "Install and authenticate the audited CLI."],
+    ["Gemini / NotebookLM", state.notebooklm ? "ready" : "approval", state.notebooklm ? "Local source-pack bridge ready" : "Owner source approval required", state.notebooklm ? "AGIOS does not inspect account auth; local preparation only, with no cookies, unofficial API, or automatic Google upload." : "Load the approved vault catalog before preparing a source pack."],
+    ["Cline", "hold", "Overlap + authority risk", "Standalone CLI defaults need a separate least-privilege policy before installation."],
+    ["Pokee", "hold", "Enterprise/API setup", "External sandbox service; no approved account or measurable advantage over current routes."],
+    ["OpenClaw", "hold", "Broad device/chat authority", "Large overlap with Hermes; not granted access to this workstation."],
+    ["Antigravity", "planned", "Callable interface unverified", "Remains registry-only until a local auditable adapter exists."],
+    ["Paperclip", "hold", "Second control plane not needed", "AGIOS adopts verified ownership, bounded-runtime and handoff patterns natively; external Paperclip stays uninstalled to avoid split approvals and task state."],
+    ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."]
+  ];
+  const decisionRows = connectionDecisions.map(([name, stateName, gate, reason]) => `<div class="connection-decision"><div><strong>${esc(name)}</strong><small>${esc(gate)}</small></div>${status(stateName)}<p>${esc(reason)}</p></div>`).join("");
+  page.innerHTML = `${heading("Apps & models", "Callable means executable, auth state detected and bounded.", "AGIOS exposes only executable adapters with explicit policy boundaries. Registry entries remain visibly blocked until their role, local authentication state and least-privilege boundary are proven.")}
     <div class="protocol-strip"><article><small>KNOWLEDGE</small><strong>${esc(retrieval.mode || "Unavailable")}</strong><span>Citation-ready scoped retrieval</span></article><article><small>AGENT INTEROP</small><strong>${esc(a2a.protocol || "A2A")} ${esc(a2a.protocol_version || "")}</strong><span>Authenticated local ${esc(a2a.binding || "gateway")}</span></article><article><small>OUTBOUND PEERS</small><strong>${esc(titleCase(a2a.outbound_peers || "locked"))}</strong><span>Explicit trust and credentials required</span></article></div>
+    ${notebookLMBridge()}
+    <section class="connection-decisions"><header><div><p class="eyebrow">CONNECTION DECISIONS</p><h2>One governed runtime; explicit integration gates.</h2></div><span>No decorative \u201Cconnected\u201D states</span></header>${decisionRows}</section>
     <section class="tool-router"><header><div><p class="eyebrow">CAPABILITY ROUTER</p><h2>Preferred route, health, fallback, and permission.</h2></div><span>${routes.length} REGISTERED ROUTES</span></header><div class="route-card-grid">${routeCards}</div></section>
     <div class="data-panel"><div class="data-head columns-integrations"><span>Integration</span><span>Kind</span><span>Registry</span><span>Execution boundary</span></div>${rows}</div>`;
 }
@@ -31543,7 +30246,7 @@ function modelsForSystem(system) {
   if (system.id === "codex") return state.data.models.filter((model) => model.provider === "openai-codex");
   if (system.id === "deepseek") return state.data.models.filter((model) => model.provider === "deepseek");
   if (system.id === "ollama") return state.data.models.filter((model) => model.location === "local");
-  if (system.id === "opencode") return state.data.models.filter((model) => model.provider === "opencode");
+  if (system.id === "opencode") return state.data.models.filter((model) => ["gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "deepseek-v4-flash", "deepseek-v4-pro"].includes(model.id));
   return state.data.models.filter((model) => model.provider === system.id);
 }
 function runtimeForSystem(systemId) {
@@ -31561,13 +30264,14 @@ function routedModelForSystem(system) {
   const models = modelsForSystem(system).filter((model) => !model.id.includes("embedding"));
   if (system.id === "deepseek") return models.find((model) => model.provider === "deepseek") || null;
   if (system.id === "ollama") return models.find((model) => model.id === "qwen3.5-hermes") || models[0] || null;
-  if (system.id === "opencode") return models.find((model) => model.provider === "opencode") || null;
+  if (system.id === "opencode") return models.find((model) => model.id === "gpt-5.6-sol") || models[0] || null;
   if (system.id === "codex") return models.find((model) => model.id === "gpt-5.6-sol") || models[0] || null;
   return models[0] || null;
 }
 function systemRunMatches(run, system) {
   const modelIds = new Set(modelsForSystem(system).map((model) => model.id));
   if (system.id === "codex" && run.runtime_id === "codex") return true;
+  if (system.id === "opencode" && run.runtime_id === "opencode") return true;
   if (system.id === "hermes" && run.runtime_id === "hermes") return true;
   return modelIds.has(run.model) || run.provider === system.id;
 }
@@ -31575,7 +30279,7 @@ function routedSystemLauncher(system, action) {
   const runtime = runtimeForSystem(system.id);
   const model = routedModelForSystem(system);
   const executable = runtime.execution_enabled && (runtime.actions || []).some((item) => action === "workspace" ? item.startsWith("workspace") : item === action || action === "chat" && item === "local-inference");
-  const destination = action === "workspace" ? "the Codex workspace lane" : action === "goal" ? "Hermes Goal Mode" : "Hermes Chat";
+  const destination = action === "workspace" ? `the ${system.name} workspace lane` : action === "goal" ? "Hermes Goal Mode" : "Hermes Chat";
   return `<section class="workspace-card routed-launcher"><p class="eyebrow">GOVERNED ROUTE</p><h2>${esc(system.name)} \u2192 ${destination}</h2><p>${executable ? `AGIOS will open the live supervised composer with ${model ? esc(model.id) : "the approved profile route"} selected. Memory, skills, data classification and approval policy remain attached.` : `${esc(system.name)} is visible in the registry, but no executable ${action} adapter is installed and authenticated on this machine.`}</p><div class="control-readout"><span><small>READINESS</small><strong>${runtime.configured ? "Configured" : runtime.detected ? "Installed \xB7 auth unverified" : "Not found"}</strong></span><span><small>ADAPTER</small><strong>${esc(titleCase(runtime.adapter))}</strong></span><span><small>MODEL</small><strong>${esc(model?.id || "Unavailable")}</strong></span><span><small>AUTHORITY</small><strong>${esc(titleCase(runtime.approval))}</strong></span></div>${executable ? `<button class="primary-action routed-action" data-route-system-action="${esc(action)}" data-route-system-id="${esc(system.id)}">Open live ${esc(action)} \u2192</button>` : `<div class="boundary-note">Install and authenticate an audited adapter before this action can appear. AGIOS blocks silent provider fallback.</div>`}</section>`;
 }
 function renderModelCards(models) {
@@ -31611,9 +30315,9 @@ function memoryVaultSurface() {
   </section>`;
 }
 function renderSystems() {
-  const cards = state.data.systems.map((system, index2) => {
+  const cards = state.data.systems.map((system, index) => {
     const runtime = runtimeForSystem(system.id);
-    return `<button class="system-card" data-system="${esc(system.id)}"><div class="system-card-top"><span class="system-glyph system-${index2 % 6}">${initials(system.name)}</span>${status(runtime.status)}</div><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p><div class="system-fabric"><span class="${system.shared_memory ? "is-on" : ""}">\u2726 Memory</span><span class="${system.shared_skills ? "is-on" : ""}">\u25C7 Skills</span></div><footer><span>${runtime.actions?.length || 0} executable actions</span><span>${esc(titleCase(runtime.adapter))} \u2197</span></footer></button>`;
+    return `<button class="system-card" data-system="${esc(system.id)}"><div class="system-card-top"><span class="system-glyph system-${index % 6}">${initials(system.name)}</span>${status(runtime.status)}</div><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p><div class="system-fabric"><span class="${system.shared_memory ? "is-on" : ""}">\u2726 Memory</span><span class="${system.shared_skills ? "is-on" : ""}">\u25C7 Skills</span></div><footer><span>${runtime.actions?.length || 0} executable actions</span><span>${esc(titleCase(runtime.adapter))} \u2197</span></footer></button>`;
   }).join("");
   page.innerHTML = `${heading("Unified runtime layer", "Every AI system, one AGIOS contract.", "Hermes, Codex, Gemini, Antigravity, DeepSeek, Ollama, OpenCode and future runtimes share skills, scoped memory, governance and business context without pretending planned adapters are connected.")}<div class="system-summary"><span><strong>${state.data.summary.systems}</strong> registered systems</span><span><strong>${state.data.summary.live_or_detected_systems}</strong> live, detected or routed</span><span><strong>${state.data.summary.shared_skills}</strong> shared skills</span><span><strong>${state.data.operational?.shared_memory?.fact_count ?? 0}</strong> AGIOS shared memories</span></div><div class="system-grid">${cards}</div>`;
 }
@@ -31659,7 +30363,7 @@ function oracleRadar() {
     ...oracleSchedules.map((job) => ({ kind: "SCHEDULED WATCH", title: job.name, note: `${job.schedule || "Registered cadence"} \xB7 ${relativeTime(job.next_run_at)}`, state: job.state })),
     ...recentRuns.map((run) => ({ kind: "EVIDENCE RUN", title: run.objective, note: `${titleCase(run.mode)} \xB7 ${new Date(run.created_at).toLocaleString()}`, state: run.status }))
   ];
-  return `<section class="oracle-radar"><header><div><p class="eyebrow">INTELLIGENCE RADAR</p><h2>Rank signals. Preserve sources. Show the delta.</h2><p>Oracle scores permitted evidence by recency, relevance, authority, and change magnitude. Draft actions return for review; publishing and outreach remain locked.</p></div><span>${items.length} REAL WATCHES / RUNS</span></header><div class="radar-contract"><span>1 \xB7 COLLECT</span><i>\u2192</i><span>2 \xB7 CITE</span><i>\u2192</i><span>3 \xB7 RANK</span><i>\u2192</i><span>4 \xB7 COMPARE</span><i>\u2192</i><span>5 \xB7 PROPOSE</span></div><div class="radar-grid">${items.length ? items.map((item, index2) => `<article><b>${String(index2 + 1).padStart(2, "0")}</b><div><small>${item.kind}</small><h3>${esc(item.title)}</h3><p>${esc(item.note)}</p></div>${status(item.state)}</article>`).join("") : `<div class="workspace-empty workspace-card"><b>\u25CE</b><strong>No Oracle watch has produced evidence yet</strong><span>Create an exact-approved research goal or register a Hermes schedule; AGIOS will not invent trend signals.</span></div>`}</div></section>`;
+  return `<section class="oracle-radar"><header><div><p class="eyebrow">INTELLIGENCE RADAR</p><h2>Rank signals. Preserve sources. Show the delta.</h2><p>Oracle scores permitted evidence by recency, relevance, authority, and change magnitude. Draft actions return for review; publishing and outreach remain locked.</p></div><span>${items.length} REAL WATCHES / RUNS</span></header><div class="radar-contract"><span>1 \xB7 COLLECT</span><i>\u2192</i><span>2 \xB7 CITE</span><i>\u2192</i><span>3 \xB7 RANK</span><i>\u2192</i><span>4 \xB7 COMPARE</span><i>\u2192</i><span>5 \xB7 PROPOSE</span></div><div class="radar-grid">${items.length ? items.map((item, index) => `<article><b>${String(index + 1).padStart(2, "0")}</b><div><small>${item.kind}</small><h3>${esc(item.title)}</h3><p>${esc(item.note)}</p></div>${status(item.state)}</article>`).join("") : `<div class="workspace-empty workspace-card"><b>\u25CE</b><strong>No Oracle watch has produced evidence yet</strong><span>Create an exact-approved research goal or register a Hermes schedule; AGIOS will not invent trend signals.</span></div>`}</div></section>`;
 }
 function sessionArchive() {
   const query = state.sessionQuery.trim().toLowerCase();
@@ -31668,7 +30372,7 @@ function sessionArchive() {
 }
 function studioDesk() {
   const modules = studioModules.filter((module) => !state.hiddenStudios[module.id]);
-  return `<section class="studio-desk"><header><div><p class="eyebrow">Modular operating desk</p><h2>Keep the tools that move the business forward.</h2><p>Each visible module opens a real AGIOS workflow. Hide modules you do not need from Manage.</p></div><span>${modules.length} visible modules</span></header><div class="studio-module-grid">${modules.map((module, index2) => `<article class="studio-module module-${index2 % 4}"><div class="studio-module-icon">${initials(module.name)}</div><small>${esc(titleCase(module.status))}</small><h3>${esc(module.name)}</h3><p>${esc(module.note)}</p><footer>${status(module.status === "live" ? "ready" : "planned")}<button data-studio-mode="${esc(module.mode)}" data-studio-name="${esc(module.name)}">Open workflow \u2192</button></footer></article>`).join("") || `<div class="workspace-empty workspace-card large"><b>\u2727</b><strong>Every studio module is hidden</strong><span>Open Manage to restore the modules you need.</span></div>`}</div></section>`;
+  return `<section class="studio-desk"><header><div><p class="eyebrow">Modular operating desk</p><h2>Keep the tools that move the business forward.</h2><p>Each visible module opens a real AGIOS workflow. Hide modules you do not need from Manage.</p></div><span>${modules.length} visible modules</span></header><div class="studio-module-grid">${modules.map((module, index) => `<article class="studio-module module-${index % 4}"><div class="studio-module-icon">${initials(module.name)}</div><small>${esc(titleCase(module.status))}</small><h3>${esc(module.name)}</h3><p>${esc(module.note)}</p><footer>${status(module.status === "live" ? "ready" : "planned")}<button data-studio-mode="${esc(module.mode)}" data-studio-name="${esc(module.name)}">Open workflow \u2192</button></footer></article>`).join("") || `<div class="workspace-empty workspace-card large"><b>\u2727</b><strong>Every studio module is hidden</strong><span>Open Manage to restore the modules you need.</span></div>`}</div></section>`;
 }
 function modelManager() {
   const agentRows = state.data.agents.map((agent) => {
@@ -31791,11 +30495,23 @@ function knowledgeIntakeSurface() {
   const docs = (state.learned?.documents || []).map((doc) => `<article class="learned-doc"><header><strong>${esc(doc.title)}</strong><em>${doc.chunk_count} chunks \xB7 ${(doc.glossary || []).length} terms</em></header><p>${esc(doc.cheat_sheet || "Deterministic index only \u2014 no model summary exists.")}</p><footer><span>${esc(doc.source_name)} \xB7 ${new Date(doc.created_at).toLocaleString()}</span><span class="learned-terms">${(doc.glossary || []).slice(0, 5).map((term) => `<i>${esc(term)}</i>`).join("")}</span></footer></article>`).join("");
   return `<section class="knowledge-intake"><header><div><p class="eyebrow">KNOWLEDGE INTAKE \xB7 /LEARN STYLE</p><h2>Give AGIOS a document once. It builds a brain file.</h2><p>One deterministic index per document: real chunks, a term glossary, and a cheat sheet of opening statements. No model-generated summary, so nothing can be hallucinated.</p></div><span>${summary.documents} learned \xB7 ${summary.indexed_chunks} indexed chunks</span></header><div class="learn-grid"><form class="workspace-card learn-form" data-learn-form><label>Title<input name="title" required maxlength="160" placeholder="Perfume import compliance guide"/></label><label>Source<input name="sourceName" maxlength="160" value="pasted" placeholder="book, PDF notes, article"/></label><label>Document text<textarea name="text" required maxlength="200000" placeholder="Paste the document text. AGIOS splits it into bounded chunks, extracts frequent terms, and keeps the index \u2014 never a rewrite."></textarea></label><button type="submit">Build brain file</button></form><div class="learned-list">${docs || `<div class="workspace-empty workspace-card"><b>\u25A4</b><strong>No brain files yet</strong><span>Learned documents appear here with their real index, ready for retrieval.</span></div>`}</div></div></section>`;
 }
+function improvementRecommendationsSurface() {
+  const digest = state.dreaming;
+  if (!digest) return "";
+  const recommendations = digest.recommendations || [];
+  const evidenceDimensions = (digest.dimensions || []).filter((item) => item.status === "evidence").length;
+  const cards = recommendations.map((item) => {
+    const evidence = Object.entries(item.evidence || {}).map(([key, value]) => `<span><small>${esc(titleCase(key))}</small><strong>${esc(value)}</strong></span>`).join("");
+    const target = item.action?.target || "skills";
+    return `<article><header><span>${esc(titleCase(item.dimension))}</span>${status("evidence")}</header><h3>${esc(item.title)}</h3><p>${esc(item.detail)}</p><div class="improvement-evidence">${evidence}</div><footer><button data-dreaming-dismiss="${esc(item.id)}">Dismiss</button><button data-dreaming-accept="${esc(item.id)}" data-dreaming-target="${esc(target)}">Accept and open \u2192</button></footer></article>`;
+  }).join("");
+  return `<section class="improvement-proposals"><header><div><p class="eyebrow">VERIFIED IMPROVEMENTS</p><h2>${recommendations.length} evidence-backed proposal${recommendations.length === 1 ? "" : "s"}</h2><p>Eight local dimensions are measured. A proposal appears only when a stored count or status supports it; nothing installs itself.</p></div><span>${evidenceDimensions}/8 dimensions have evidence</span></header><div>${cards || `<div class="simple-empty">No improvement proposal currently has enough evidence.</div>`}</div></section>`;
+}
 function renderSharedSkills() {
   const registry = state.data.shared_fabric.skills;
   const categories = Object.keys(registry.categories);
   const filtered = registry.items.filter((skill) => (state.skillCategory === "all" || skill.category === state.skillCategory) && (!state.skillQuery || `${skill.name} ${skill.description}`.toLowerCase().includes(state.skillQuery.toLowerCase())));
-  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere\u2014with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>\u2315<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} \xB7 ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
+  page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere\u2014with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${improvementRecommendationsSurface()}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>\u2315<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} \xB7 ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
 }
 function operationalMemorySurface(feedless = false) {
   const summary = state.data.operational?.shared_memory || { fact_count: 0, scopes: {} };
@@ -31809,7 +30525,7 @@ function retrievalWorkbench() {
   return `<section class="retrieval-workbench"><form class="workspace-card retrieval-compose" data-retrieval-form><div><p class="eyebrow">RAG evidence console</p><h3>Search what an agent is allowed to know</h3><p>Mode: ${esc(mode)}. Results include provenance and citation IDs; no-match queries return no evidence.</p></div><div class="retrieval-fields"><label>Agent<select name="agentId">${agents}</select></label><label>Project scope<input name="projectId" maxlength="128" placeholder="Optional project ID"/></label><label>Evidence query<input name="query" required maxlength="8000" placeholder="What verified knowledge do we have about..."/></label><button type="submit">Retrieve evidence</button></div></form><div class="evidence-feed">${hits || `<div class="workspace-empty workspace-card"><b>RAG</b><strong>Evidence appears here</strong><span>Searches are local and restricted to the selected agent's authorized scopes.</span></div>`}</div></section>`;
 }
 function brainIcon() {
-  return `<svg class="memory-brain-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#63d9a5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 4.5A3.2 3.2 0 0 0 5.2 6.4c-.3 2.2 1.1 3.4-.2 5.2-1.2 1.7-.2 3.9 1.9 4.3 1.9.4 3.3-1 5.1-1.2"/><path d="M14.5 4.5A3.2 3.2 0 0 1 18.8 6.4c.3 2.2-1.1 3.4.2 5.2 1.2 1.7.2 3.9-1.9 4.3-1.9.4-3.3-1-5.1-1.2"/><path d="M12 4v15.5"/><path d="M9 19.5c.8-.6 1.6-.6 2.4 0M12 19.5c.8-.6 1.6-.6 2.4 0"/></svg>`;
+  return `<svg class="memory-brain-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 4.5A3.2 3.2 0 0 0 5.2 6.4c-.3 2.2 1.1 3.4-.2 5.2-1.2 1.7-.2 3.9 1.9 4.3 1.9.4 3.3-1 5.1-1.2"/><path d="M14.5 4.5A3.2 3.2 0 0 1 18.8 6.4c.3 2.2-1.1 3.4.2 5.2 1.2 1.7.2 3.9-1.9 4.3-1.9.4-3.3-1-5.1-1.2"/><path d="M12 4v15.5"/><path d="M9 19.5c.8-.6 1.6-.6 2.4 0M12 19.5c.8-.6 1.6-.6 2.4 0"/></svg>`;
 }
 function memoryPageHero() {
   const count = state.memories.length;
@@ -31820,13 +30536,12 @@ function memoryPanelTabs() {
   const tabs = [
     ["recent", `\u25F7 Recent ${recentCount}`],
     ["notes", "\u25A4 Notes"],
-    ["omi", "\u2726 Omi"],
-    ["graph", "\u25C9 Graph"]
+    ["omi", "\u2726 Omi"]
   ];
-  return `<div class="memory-mode-tabs">${tabs.map(([id2, label]) => `<button class="${state.memoryTab === id2 ? "is-active" : ""}" data-memory-tab="${id2}">${label}</button>`).join("")}<button class="memory-galaxy-button ${state.memoryTab === "graph" ? "is-active" : ""}" data-memory-tab="graph">Galaxy \u2726</button></div>`;
+  return `<div class="memory-mode-tabs">${tabs.map(([id2, label]) => `<button class="${state.memoryTab === id2 ? "is-active" : ""}" data-memory-tab="${id2}">${label}</button>`).join("")}</div>`;
 }
 function memoryRecentSurface() {
-  const recent = [...state.memories].sort((a2, b) => new Date(b.updated_at || 0) - new Date(a2.updated_at || 0)).slice(0, 12);
+  const recent = [...state.memories].sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0)).slice(0, 12);
   const rows = recent.map((memory) => `<button class="memory-recent-row" data-memory-note="${esc(memory.memory_id)}"><span class="memory-recent-title">${esc(memory.title)}</span><span class="memory-recent-meta">${esc(titleCase(memory.scope_kind))} \xB7 ${esc(titleCase(memory.trust))} trust</span><time>${relativeTime(memory.updated_at)}</time></button>`).join("");
   return `<div class="memory-recent-list">${rows || `<div class="memory-vault-empty"><strong>No memories yet</strong><span>Save the first durable fact and it appears here.</span></div>`}</div>`;
 }
@@ -31942,19 +30657,19 @@ function renderMemoryGalaxy() {
     return span > 0 ? 1 - position / span : 1;
   };
   const starMeshes = [];
-  memories.forEach((memory, index2) => {
-    const arm = index2 % 4;
-    const angle = index2 / memories.length * Math.PI * 4.4 + arm * (Math.PI / 2);
-    const radius = 2.4 + Math.pow(index2 / memories.length, 0.72) * 14;
-    const x3 = Math.cos(angle) * radius;
+  memories.forEach((memory, index) => {
+    const arm = index % 4;
+    const angle = index / memories.length * Math.PI * 4.4 + arm * (Math.PI / 2);
+    const radius = 2.4 + Math.pow(index / memories.length, 0.72) * 14;
+    const x = Math.cos(angle) * radius;
     const z = Math.sin(angle) * radius;
-    const y3 = (Math.sin(angle * 2.1) + Math.cos(index2 * 1.7)) * 1.35;
+    const y = (Math.sin(angle * 2.1) + Math.cos(index * 1.7)) * 1.35;
     const recency = recencyOf(memory);
     const hue = scopeHue[memory.scope_kind] ?? 0.6;
     const color2 = new Color2().setHSL(hue, 0.5 + recency * 0.35, 0.48 + recency * 0.48);
     const mesh = new Mesh(starGeometry, new MeshBasicMaterial({ color: color2, transparent: true, opacity: 0.6 + recency * 0.4 }));
     mesh.scale.setScalar(0.8 + recency * 2.4);
-    mesh.position.set(x3, y3, z);
+    mesh.position.set(x, y, z);
     mesh.userData = { memory, baseOpacity: 0.6 + recency * 0.4 };
     starGroup.add(mesh);
     starMeshes.push(mesh);
@@ -31980,8 +30695,8 @@ function renderMemoryGalaxy() {
     const nodePositions = /* @__PURE__ */ new Map();
     starMeshes.forEach((mesh) => nodePositions.set(mesh.userData.memory.memory_id, mesh.position.clone()));
     const segments = [];
-    pairs.forEach(([a2, b]) => {
-      const pa = nodePositions.get(a2.memory_id);
+    pairs.forEach(([a, b]) => {
+      const pa = nodePositions.get(a.memory_id);
       const pb = nodePositions.get(b.memory_id);
       if (!pa || !pb) return;
       const middle = pa.clone().add(pb).multiplyScalar(0.5);
@@ -32113,6 +30828,23 @@ function repositorySurface() {
 function renderRepositories() {
   page.innerHTML = `${heading("Repository fabric", "Every workspace can be operated without losing its boundary.", "AGIOS registers repositories and project workspaces for agents and systems, while customer paths and contents remain hidden from the browser.")}<div class="system-summary"><span><strong>${state.data.summary.repositories}</strong> registered repositories</span><span><strong>${state.workspaces.length}</strong> approved workspaces</span><span><strong>${state.data.summary.shared_skills}</strong> reusable skills</span></div>${workspaceRegistryCard()}${repositorySurface()}`;
 }
+async function loadLiveWork({ render = false } = {}) {
+  try {
+    const snapshot = await api("/api/v1/live-work");
+    const current = liveMetricSnapshot(snapshot);
+    const previous = state.liveMetrics;
+    state.liveWork = snapshot;
+    state.liveMetrics = current;
+    state.changedLiveMetrics = previous ? Object.keys(current).filter((key) => current[key] !== previous[key]) : [];
+    if (render && state.view === "command") {
+      renderCommand();
+      window.requestAnimationFrame(animateLiveMetricChanges);
+    }
+  } catch {
+    state.changedLiveMetrics = [];
+    if (!state.liveWork) state.liveWork = { schema_version: 1, synthetic: false, sources: {}, improvements: [] };
+  }
+}
 async function loadCosts() {
   try {
     state.costs = await api("/api/v1/costs");
@@ -32152,7 +30884,7 @@ function renderPerformance() {
     if (["failed", "interrupted"].includes(run.status)) current.failed += 1;
     byRoute.set(route, current);
   }
-  const routeRows = [...byRoute.entries()].sort((a2, b) => b[1].total - a2[1].total).map(([route, counts]) => `<div class="data-row columns-integrations"><div><strong>${esc(route)}</strong><p>Observed AGIOS runs</p></div><span>${counts.total}</span><span>${counts.completed} completed</span><span>${counts.failed} failed</span></div>`).join("");
+  const routeRows = [...byRoute.entries()].sort((a, b) => b[1].total - a[1].total).map(([route, counts]) => `<div class="data-row columns-integrations"><div><strong>${esc(route)}</strong><p>Observed AGIOS runs</p></div><span>${counts.total}</span><span>${counts.completed} completed</span><span>${counts.failed} failed</span></div>`).join("");
   const recent = runs.slice(0, 12).map((run) => `<div class="data-row columns-integrations"><div><strong>${esc(run.objective.slice(0, 72))}</strong><p>${new Date(run.created_at).toLocaleString()}</p></div><span>${esc(titleCase(run.agent_id))}</span><span>${status(run.status)}</span><span>${esc(run.model || run.provider || run.runtime_id)}</span></div>`).join("");
   page.innerHTML = `${heading("Performance", "Measured work, not agent theatre.", "Run metrics use real AGIOS records; provider costs below are vendor-reported and never guessed.", periodControl())}
     ${costSurface()}
@@ -32171,7 +30903,7 @@ function renderMesh() {
   const nodes = state.data.mesh || [];
   const agents = nodes.filter((node) => node.kind === "agent");
   const systems = nodes.filter((node) => node.kind === "system");
-  const cards = nodes.map((node, index2) => {
+  const cards = nodes.map((node, index) => {
     const collaboration = node.collaboration || {};
     const badges = [
       collaboration.a2a ? "A2A" : null,
@@ -32179,7 +30911,7 @@ function renderMesh() {
       collaboration.shared_skills ? "Skills" : null
     ].filter(Boolean);
     const stateLabel = esc(String(node.state || "planned"));
-    return `<article class="mesh-card mesh-${index2 % 6}"><header><span class="mesh-glyph">${esc(initials(node.name || node.id))}</span>${status(node.state)}</header><h3>${esc(node.name || titleCase(node.id))}</h3><small>${esc(node.kind)} \xB7 ${esc(node.id)}${node.provider ? ` \xB7 ${esc(node.provider)}` : ""}</small><p>${esc(node.description || node.biography || "")}</p><div class="mesh-capabilities">${(node.capabilities || []).slice(0, 5).map((cap) => `<span>${esc(cap)}</span>`).join("")}</div><footer><div class="mesh-badges">${badges.map((badge) => `<span class="is-on">${badge}</span>`).join("") || `<span>isolated</span>`}</div><em>${esc(stateLabel)}</em></footer></article>`;
+    return `<article class="mesh-card mesh-${index % 6}"><header><span class="mesh-glyph">${esc(initials(node.name || node.id))}</span>${status(node.state)}</header><h3>${esc(node.name || titleCase(node.id))}</h3><small>${esc(node.kind)} \xB7 ${esc(node.id)}${node.provider ? ` \xB7 ${esc(node.provider)}` : ""}</small><p>${esc(node.description || node.biography || "")}</p><div class="mesh-capabilities">${(node.capabilities || []).slice(0, 5).map((cap) => `<span>${esc(cap)}</span>`).join("")}</div><footer><div class="mesh-badges">${badges.map((badge) => `<span class="is-on">${badge}</span>`).join("") || `<span>isolated</span>`}</div><em>${esc(stateLabel)}</em></footer></article>`;
   }).join("");
   page.innerHTML = `${heading("Agent Mesh", "Every AI in your operating system, one registry.", "Hermes specialists, Codex, OpenClaw, Gemini, Claude and future runtimes share one governance contract. Each node shows what it can do, what it shares, and whether it can collaborate through the local A2A gateway.")}<div class="mesh-summary"><span><strong>${agents.length}</strong> specialist agents</span><span><strong>${systems.length}</strong> AI systems</span><span><strong>${nodes.filter((node) => node.collaboration?.a2a).length}</strong> A2A-ready</span><span><strong>${nodes.filter((node) => node.collaboration?.shared_memory).length}</strong> shared memory</span></div><div class="mesh-grid">${cards}</div><section class="mesh-note"><p class="eyebrow">COLLABORATION CONTRACT</p><h3>Agents work together when needed \u2014 never silently.</h3><p>The local A2A gateway lets agents exchange governed tasks. Shared memory and skills are scoped by business and data class. No agent can wake another, spend tokens, or reach an external system without an exact owner-approved route.</p></section>`;
 }
@@ -32355,7 +31087,31 @@ function systemTerminalSurface(surface) {
   const statusValue = probe.status || "unknown";
   return `<section class="surface-stage system-terminal-stage">${renderSurfaceContent(surface)}</section><footer class="surface-footer"><span>${esc(surfaceStatusLabel(statusValue))}</span><span>Real ${esc(surface.name)} process \xB7 local PTY \xB7 loopback only</span></footer>`;
 }
-var renderers = { command: renderCommand, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
+var renderers = { command: renderCommand, guide: renderGuide, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
+function motionAllowed() {
+  return typeof Element.prototype.animate === "function" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+function animateViewEntry() {
+  if (!motionAllowed() || !page.firstElementChild) return;
+  page.firstElementChild.animate(
+    [{ opacity: 0.72, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }],
+    { duration: 120, easing: "cubic-bezier(.2,.8,.2,1)" }
+  );
+}
+function animateLiveMetricChanges() {
+  if (!motionAllowed()) return;
+  for (const key of state.changedLiveMetrics) {
+    const target = page.querySelector(`[data-live-key="${CSS.escape(key)}"]`);
+    if (!target) continue;
+    target.animate(
+      [
+        { opacity: 0.72, transform: "translateY(3px)", boxShadow: "0 0 0 1px rgba(224,162,83,.42)" },
+        { opacity: 1, transform: "translateY(0)", boxShadow: "0 0 0 1px rgba(224,162,83,0)" }
+      ],
+      { duration: 160, easing: "cubic-bezier(.2,.8,.2,1)" }
+    );
+  }
+}
 function setView(view) {
   if (!state.data || !viewLabels[view]) return;
   state.view = view;
@@ -32363,13 +31119,20 @@ function setView(view) {
   document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
   if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
   if (view !== "memory") disposeMemoryGalaxy();
+  if (view !== "command") {
+    state.executionSpineCleanup?.();
+    state.executionSpineCleanup = null;
+  }
   if (view === "performance" && !state.costs) void loadCosts().then(() => state.view === "performance" && renderPerformance());
   (renderers[view] || (() => renderFuture(view)))();
+  const advanced = document.querySelector(".advanced-nav");
+  if (advanced && ["portfolio", "departments", "agents", "skills", "repositories", "automations", "paperclip", "network", "performance", "settings"].includes(view)) advanced.open = true;
   renderAgentNavigation();
   renderSystemNavigation();
   history.replaceState(null, "", view === "command" ? "/" : `/${view}`);
   sidebar.classList.remove("is-open");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
+  window.requestAnimationFrame(animateViewEntry);
   window.setTimeout(() => void loadOperationalSurface(), 0);
 }
 function showToast(message) {
@@ -32438,7 +31201,7 @@ function operationalAgentId() {
   return null;
 }
 function rerenderOperationalView() {
-  document.querySelector("#approval-count").textContent = state.runs.filter((run) => run.status === "awaiting_approval").length + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
+  document.querySelector("#approval-count").textContent = state.orchestrationPlans.filter((plan) => plan.status === "planned").length + state.runs.filter((run) => run.status === "awaiting_approval").length + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
   if (state.view === "agent") renderAgent();
   else if (state.view === "system") renderSystem();
   else if (state.view === "memory") renderSharedMemory();
@@ -32449,6 +31212,7 @@ function rerenderOperationalView() {
   else if (state.view === "repositories") renderRepositories();
   else if (state.view === "command") renderCommand();
   else if (state.view === "network") renderAgentNetwork();
+  else if (state.view === "integrations") renderIntegrations();
 }
 async function loadOperationalSurface() {
   if (!state.data?.operational || state.operationalLoading) return;
@@ -32457,10 +31221,11 @@ async function loadOperationalSurface() {
   const needsVision = ["artifacts", "memory"].includes(state.view);
   const needsA2A = state.view === "network";
   const needsGrowth = ["command", "approvals", "skills"].includes(state.view) || state.view === "agent" && state.agentMode === "growth";
-  const needsWorkspaces = ["command", "repositories"].includes(state.view) || state.view === "agent" && state.agentMode === "workspace";
-  const needsRuntimes = ["command", "systems", "system"].includes(state.view) || state.view === "agent" && state.agentMode === "workspace";
-  const needsPlans = state.view === "command";
-  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans) return;
+  const needsWorkspaces = ["command", "approvals", "work", "repositories"].includes(state.view) || state.view === "agent" && state.agentMode === "workspace";
+  const needsRuntimes = ["command", "approvals", "systems", "system"].includes(state.view) || state.view === "agent" && state.agentMode === "workspace";
+  const needsPlans = ["command", "approvals"].includes(state.view);
+  const needsNotebookLM = state.view === "integrations";
+  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans && !needsNotebookLM) return;
   state.operationalLoading = true;
   try {
     if (needsRuns) {
@@ -32498,9 +31263,16 @@ async function loadOperationalSurface() {
       const payload = await api("/api/v1/runtimes");
       state.runtimeAdapters = payload.items || [];
     }
+    if (needsNotebookLM) {
+      state.notebooklm = await api("/api/v1/notebooklm/sources");
+    }
     const bannerDetail = document.querySelector("#ops-banner-detail");
     if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers \xB7 ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories \xB7 ${state.data.summary.systems} AI systems`;
     rerenderOperationalView();
+    if (state.view === "work" && state.selectedWorkRunId) {
+      const selected = state.runs.find((run) => run.run_id === state.selectedWorkRunId);
+      if (selected && (["queued", "running"].includes(selected.status) || !Object.hasOwn(state.runTraces, selected.run_id))) void loadWorkRunTrace(selected.run_id);
+    }
   } catch (error) {
     showToast(error.message);
   } finally {
@@ -32746,6 +31518,9 @@ document.addEventListener("click", (event) => {
   const surfaceLaunch = event.target.closest("[data-surface-launch]");
   const surfaceRestart = event.target.closest("[data-surface-restart]");
   const surfaceOpen = event.target.closest("[data-surface-open]");
+  const workRun = event.target.closest("[data-work-run]");
+  const workRunClose = event.target.closest("[data-work-run-close]");
+  const notebookOpen = event.target.closest("[data-notebooklm-open]");
   if (nav) setView(nav.dataset.view);
   if (link) setView(link.dataset.viewLink);
   if (business) setView("portfolio");
@@ -32767,6 +31542,17 @@ document.addEventListener("click", (event) => {
     state.period = period.dataset.period;
     state.view === "performance" ? renderPerformance() : renderCommand();
   }
+  if (workRun) {
+    state.selectedWorkRunId = workRun.dataset.workRun;
+    renderWork();
+    void loadWorkRunTrace(state.selectedWorkRunId);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }
+  if (workRunClose) {
+    state.selectedWorkRunId = null;
+    renderWork();
+  }
+  if (notebookOpen) window.open("https://notebooklm.google.com/", "_blank", "noopener");
   if (directive) openModal();
   if (system) {
     state.selectedSystem = system.dataset.system;
@@ -32867,7 +31653,8 @@ document.addEventListener("submit", async (event) => {
   const workspaceForm = event.target.closest("[data-workspace-form]");
   const skillDraftForm = event.target.closest("[data-skill-draft-form]");
   const modelPreferenceForm = event.target.closest("[data-model-preference-form]");
-  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm) return;
+  const notebookForm = event.target.closest("[data-notebooklm-form]");
+  if (!chiefForm && !runForm && !dispatchForm && !memoryForm && !retrievalForm && !a2aForm && !skillProposalForm && !workspaceForm && !skillDraftForm && !modelPreferenceForm && !notebookForm) return;
   event.preventDefault();
   const submit = event.target.querySelector("button[type=submit]");
   if (submit) submit.disabled = true;
@@ -32875,6 +31662,20 @@ document.addEventListener("submit", async (event) => {
     const values = new FormData(event.target);
     if (dispatchForm) {
       await dispatchOrchestrationPlan(dispatchForm);
+    } else if (notebookForm) {
+      const selected = values.getAll("sourcePath");
+      if (!selected.length) throw new Error("Choose at least one approved source note");
+      const payload = await api("/api/v1/notebooklm/packs", {
+        method: "POST",
+        body: JSON.stringify({
+          title: values.get("title"),
+          source_paths: selected,
+          external_upload_acknowledged: values.get("externalUploadAcknowledged") === "on"
+        })
+      });
+      state.notebooklmPack = payload.pack;
+      renderIntegrations();
+      showToast("Local NotebookLM source pack prepared \xB7 nothing uploaded");
     } else if (chiefForm) {
       const payload = await api("/api/v1/orchestrator/plans", {
         method: "POST",
@@ -32886,7 +31687,7 @@ document.addEventListener("submit", async (event) => {
       });
       state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
       event.target.reset();
-      renderCommand();
+      setView("approvals");
       showToast("Ari mapped the route \xB7 review it before dispatch");
     } else if (runForm?.hasAttribute("data-ari-router")) {
       const objective = values.get("objective");
@@ -32902,7 +31703,7 @@ document.addEventListener("submit", async (event) => {
       if (payload.decision.kind === "work") {
         state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
         event.target.reset();
-        setView("command");
+        setView("approvals");
         showToast(`Ari routed this to ${titleCase(payload.decision.execution_mode)} \xB7 review the plan`);
       } else {
         const skills = values.getAll("skill");
@@ -33094,7 +31895,7 @@ document.querySelector("#directive-form").addEventListener("submit", async (even
     form.reset();
     closeModal();
     state.orchestrationPlans = [payload.plan, ...state.orchestrationPlans.filter((item) => item.plan_id !== payload.plan.plan_id)];
-    setView("command");
+    setView("approvals");
     showToast("Ari mapped the route \xB7 review it before dispatch");
     await loadOperationalSurface();
   } catch (error) {
@@ -33125,6 +31926,9 @@ window.setInterval(() => {
     void loadDreaming();
   }
 }, 1600);
+window.setInterval(() => {
+  if (!document.hidden) void loadLiveWork({ render: state.view === "command" });
+}, 1e4);
 async function loadLearning() {
   try {
     state.learned = await api("/api/v1/learn");
@@ -33176,6 +31980,7 @@ async function loadDreaming() {
     state.dreaming = null;
   }
   if (state.view === "command") renderCommand();
+  if (state.view === "skills") renderSharedSkills();
 }
 async function acceptDreaming(button) {
   const id2 = button.dataset.dreamingAccept;
@@ -33186,6 +31991,7 @@ async function acceptDreaming(button) {
     showToast(target ? `Accepted \xB7 opening ${viewLabels[target] || target}` : "Recommendation accepted");
     await loadDreaming();
     if (state.view === "command") renderCommand();
+    if (state.view === "skills") renderSharedSkills();
     if (target && viewLabels[target]) setView(target);
   } catch (error) {
     showToast(error.message);
@@ -33199,6 +32005,7 @@ async function dismissDreaming(button) {
     await api(`/api/v1/dreaming/${encodeURIComponent(id2)}/dismiss`, { method: "POST" });
     await loadDreaming();
     if (state.view === "command") renderCommand();
+    if (state.view === "skills") renderSharedSkills();
   } catch (error) {
     showToast(error.message);
     button.disabled = false;
@@ -33222,6 +32029,7 @@ async function boot() {
     } catch {
       state.voice = { status: "unavailable", input: { enabled: false }, output: { enabled: false } };
     }
+    await loadLiveWork();
     await loadDreaming();
     await loadLearning();
     void loadCosts();

@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0b0d0e" />
-    <meta name="description" content="AGIOS — Ruben's supervised AI business operating system." />
-    <title>AGIOS — Command Center</title>
+    <meta name="theme-color" content="#07080b" />
+    <meta name="description" content="AGIOS - Ruben's supervised AI operating system." />
+    <title>AGIOS - Signal Room</title>
     <link rel="stylesheet" href="/assets/style.css?v=a71a50f" />
     <link rel="stylesheet" href="/assets/app.css?v=a71a50f" />
+    <link rel="stylesheet" href="/assets/signal-room.css?v=01" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to command center</a>
@@ -15,71 +16,66 @@
       <aside class="sidebar" id="sidebar" aria-label="AGIOS navigation">
         <div class="brand">
           <div class="brand-mark" aria-hidden="true"><span>A</span></div>
-          <div><small>LOCAL · STUDIO</small><strong>AGIOS</strong></div>
+          <div><small>SUPERVISED OS</small><strong>AGIOS</strong></div>
           <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation">×</button>
         </div>
 
         <div class="owner-chip">
           <div class="avatar">RM</div>
-          <div><strong>Ruben</strong><small>Owner · supervised</small></div>
+          <div><strong>Ruben</strong><small>Owner control</small></div>
           <span class="presence" title="Local control plane online"></span>
         </div>
 
         <nav class="nav-groups">
-          <section>
-            <p class="nav-label">Workspace</p>
-            <button class="nav-item is-active" data-view="command"><span>⌂</span>Mission Control<kbd>1</kbd></button>
-            <button class="nav-item" data-view="paperclip"><span>▥</span>Paperclip</button>
-            <button class="nav-item" data-view="network"><span>▱</span>AI Agent Mastermind</button>
-            <button class="nav-item" data-view="portfolio"><span>↗</span>Pipeline<kbd>2</kbd></button>
-            <button class="nav-item" data-view="work"><span>▦</span>Agent Kanban</button>
-            <button class="nav-item" data-view="artifacts"><span>▣</span>Artifacts</button>
-            <button class="nav-item" data-view="memory" aria-label="Shared Memory"><span>✦</span>Memory</button>
+          <section class="essential-nav">
+            <p class="nav-label">Operate</p>
+            <button class="nav-item is-active" data-view="command"><span>HM</span>Home<kbd>1</kbd></button>
+            <button class="nav-item" data-view="work"><span>WK</span>Work</button>
+            <button class="nav-item" data-view="approvals"><span>AP</span>Approvals <em id="approval-count">0</em></button>
+            <button class="nav-item" data-view="artifacts"><span>EV</span>Evidence</button>
+            <button class="nav-item" data-view="memory" aria-label="Shared Memory"><span>MY</span>Memory</button>
+            <button class="nav-item" data-view="integrations"><span>SY</span>Systems</button>
+            <button class="nav-item" data-view="guide"><span>?</span>Operator guide</button>
           </section>
-          <section>
-            <p class="nav-label">Organization</p>
-            <button class="nav-item" data-view="departments"><span>▦</span>Departments<kbd>3</kbd></button>
-            <button class="nav-item" data-view="agents"><span>◉</span>Agent Fleet<kbd>4</kbd></button>
-            <button class="nav-item" data-view="mesh"><span>◈</span>Agent Mesh</button>
-            <button class="nav-item" data-view="approvals"><span>✓</span>Approvals <em id="approval-count">0</em></button>
-            <button class="nav-item" data-view="skills"><span>◇</span>Shared Skills</button>
-            <button class="nav-item" data-view="repositories"><span>▱</span>Repositories</button>
-            <button class="nav-item" data-view="automations"><span>↻</span>Automations</button>
-          </section>
-          <section>
-            <p class="nav-label">AI systems</p>
-            <div class="system-nav" id="system-nav"><span class="nav-placeholder">Loading systems…</span></div>
-          </section>
-          <section>
-            <p class="nav-label">Agent workspaces</p>
-            <div class="agent-nav" id="agent-nav"><span class="nav-placeholder">Loading fleet…</span></div>
-          </section>
-          <section>
-            <p class="nav-label">System</p>
-            <button class="nav-item" data-view="integrations"><span>⌘</span>Models & Tools</button>
-            <button class="nav-item" data-view="network"><span>A2A</span>Agent Network</button>
-            <button class="nav-item" data-view="performance"><span>∿</span>Performance</button>
-            <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
-          </section>
+          <details class="advanced-nav">
+            <summary>Advanced system</summary>
+            <div class="advanced-nav-body">
+              <p class="nav-label">Organization</p>
+              <button class="nav-item" data-view="portfolio"><span>↗</span>Portfolio</button>
+              <button class="nav-item" data-view="departments"><span>▦</span>Departments</button>
+              <button class="nav-item" data-view="agents"><span>◉</span>Agent fleet</button>
+              <button class="nav-item" data-view="skills"><span>◇</span>Skills & improvements</button>
+              <button class="nav-item" data-view="repositories"><span>▱</span>Repositories</button>
+              <button class="nav-item" data-view="automations"><span>↻</span>Automations</button>
+              <button class="nav-item" data-view="paperclip"><span>▥</span>Orchestration</button>
+              <button class="nav-item" data-view="network"><span>A2A</span>Agent network</button>
+              <button class="nav-item" data-view="performance"><span>∿</span>Cost & performance</button>
+              <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
+              <p class="nav-label">AI systems</p>
+              <div class="system-nav" id="system-nav"><span class="nav-placeholder">Loading systems…</span></div>
+              <p class="nav-label">Agent workspaces</p>
+              <div class="agent-nav" id="agent-nav"><span class="nav-placeholder">Loading fleet…</span></div>
+            </div>
+          </details>
         </nav>
 
         <div class="sidebar-runtime">
-          <div class="runtime-title"><span class="signal-dot"></span><strong>Hermes runtime</strong></div>
+          <div class="runtime-title"><span class="signal-dot"></span><strong>Local control plane</strong></div>
           <p id="runtime-caption">Connecting to local execution layer…</p>
           <div class="meter"><span id="runtime-meter"></span></div>
         </div>
-        <div class="build-tag"><span>AGIOS / F01</span><span>LOCAL</span></div>
+        <div class="build-tag"><span>PRIVATE</span><span>LOOPBACK</span></div>
       </aside>
 
       <main id="main-content" tabindex="-1">
         <header class="topbar">
           <button class="icon-button menu-button" id="menu-button" aria-label="Open navigation">☰</button>
-          <div class="breadcrumb"><span>Ruben's Portfolio</span><b>/</b><strong id="view-name">Command Center</strong></div>
-          <button class="search-trigger" id="search-trigger"><span>⌕</span><span>Search AGIOS</span><kbd>Ctrl K</kbd></button>
+          <div class="breadcrumb"><span>AGIOS</span><b>/</b><strong id="view-name">Home</strong></div>
+          <button class="search-trigger" id="search-trigger"><span>⌕</span><span>Find anything in the operating system</span><kbd>Ctrl K</kbd></button>
           <div class="topbar-actions">
             <div class="system-clock"><strong id="clock-time">--:--</strong><small>Yerevan</small></div>
-            <button class="systems-button" id="all-systems"><i></i><i></i><i></i><span>All systems</span></button>
-            <button class="directive-button" id="new-directive">New directive <span>＋</span></button>
+            <button class="systems-button" id="all-systems"><i></i><i></i><i></i><span>Systems</span></button>
+            <button class="directive-button" id="new-directive">Ask Ari <span>＋</span></button>
           </div>
         </header>
 

@@ -10,7 +10,7 @@ import subprocess
 import threading
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -33,10 +33,17 @@ RUN_MODES = {"chat", "goal", "workspace"}
 ACTIVE_RUN_STATES = {"queued", "running"}
 SECRET_TEXT = re.compile(
     r"(?:sk|pk|api)[-_][A-Za-z0-9_-]{12,}|"
-    r"(?:password|passwd|api[_ -]?key|access[_ -]?token|bearer)\s*[:=]\s*\S+",
+    r"(?:password|passwd|api[_ -]?key|access[_ -]?token|token|secret|bearer)\s*[:=]\s*\S+",
     re.IGNORECASE,
 )
 SESSION_ID = re.compile(r"session_id:\s*([A-Za-z0-9._:-]{1,160})", re.IGNORECASE)
+OPENCODE_MODELS = {
+    "deepseek-v4-flash": "opencode/deepseek-v4-flash",
+    "deepseek-v4-pro": "opencode/deepseek-v4-pro",
+    "gpt-5.6-luna": "opencode/gpt-5.6-luna",
+    "gpt-5.6-sol": "opencode/gpt-5.6-sol",
+    "gpt-5.6-terra": "opencode/gpt-5.6-terra",
+}
 
 
 class OperationalError(RuntimeError):
@@ -54,6 +61,18 @@ def default_state_dir() -> Path:
     if state_root:
         return Path(state_root) / "agios"
     return Path.home() / ".local" / "state" / "agios"
+
+
+def default_hermes_profile_dir(agent_id: str) -> Path:
+    """Resolve the Hermes profile that executed an AGIOS run."""
+
+    try:
+        from hermes_cli.profiles import get_profile_dir
+
+        return Path(get_profile_dir(str(agent_id))).expanduser().absolute()
+    except (ImportError, OSError, RuntimeError, TypeError, ValueError):
+        root = Path(os.environ.get("HERMES_HOME") or (Path.home() / ".hermes"))
+        return root if str(agent_id) == "default" else root / "profiles" / str(agent_id)
 
 
 def _digest(value: str) -> str:
@@ -299,9 +318,12 @@ class RuntimeSessionStore:
                     objective_digest TEXT NOT NULL,
                     response TEXT,
                     response_digest TEXT,
+                    progress_output TEXT NOT NULL DEFAULT '',
+                    progress_updated_at TEXT,
                     error_code TEXT,
                     skill_ids_json TEXT NOT NULL,
                     memory_ids_json TEXT NOT NULL,
+                    requested_memory_ids_json TEXT NOT NULL DEFAULT '[]',
                     model TEXT,
                     provider TEXT,
                     runtime_id TEXT NOT NULL DEFAULT 'hermes',
@@ -343,6 +365,9 @@ class RuntimeSessionStore:
                 "workspace_access": "TEXT NOT NULL DEFAULT 'none'",
                 "required_capabilities_json": "TEXT NOT NULL DEFAULT '[]'",
                 "vision_asset_ids_json": "TEXT NOT NULL DEFAULT '[]'",
+                "requested_memory_ids_json": "TEXT NOT NULL DEFAULT '[]'",
+                "progress_output": "TEXT NOT NULL DEFAULT ''",
+                "progress_updated_at": "TEXT",
             }.items():
                 if name not in columns:
                     connection.execute(
@@ -354,6 +379,9 @@ class RuntimeSessionStore:
         item = dict(row)
         item["skill_ids"] = json.loads(item.pop("skill_ids_json"))
         item["memory_ids"] = json.loads(item.pop("memory_ids_json"))
+        item["requested_memory_ids"] = json.loads(
+            item.pop("requested_memory_ids_json")
+        )
         item["required_capabilities"] = json.loads(
             item.pop("required_capabilities_json")
         )
@@ -371,6 +399,7 @@ class RuntimeSessionStore:
         objective: str,
         skill_ids: Iterable[str],
         memory_ids: Iterable[str],
+        requested_memory_ids: Iterable[str],
         model: str | None,
         provider: str | None,
         runtime_id: str,
@@ -393,6 +422,9 @@ class RuntimeSessionStore:
         )
         selected_skills = tuple(dict.fromkeys(str(item) for item in skill_ids))[:3]
         selected_memories = tuple(dict.fromkeys(str(item) for item in memory_ids))[:12]
+        selected_requested_memories = tuple(
+            dict.fromkeys(str(item) for item in requested_memory_ids)
+        )[:12]
         selected_capabilities = tuple(
             dict.fromkeys(str(item) for item in required_capabilities)
         )
@@ -409,6 +441,7 @@ class RuntimeSessionStore:
                 "objective_digest": objective_digest,
                 "skill_ids": selected_skills,
                 "memory_ids": selected_memories,
+                "requested_memory_ids": selected_requested_memories,
                 "model": model,
                 "provider": provider,
                 "runtime_id": runtime_id,
@@ -430,11 +463,12 @@ class RuntimeSessionStore:
                 INSERT INTO runtime_sessions(
                     run_id, mode, agent_id, status, data_class, project_id,
                     objective, objective_digest, skill_ids_json, memory_ids_json,
+                    requested_memory_ids_json,
                     model, provider, runtime_id, workspace_id, workspace_access,
                     required_capabilities_json, vision_asset_ids_json,
                     approval_required, approval_digest,
                     memory_context_digest, skill_context_digest, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     run_id,
@@ -447,6 +481,7 @@ class RuntimeSessionStore:
                     objective_digest,
                     json.dumps(selected_skills),
                     json.dumps(selected_memories),
+                    json.dumps(selected_requested_memories),
                     model,
                     provider,
                     runtime_id,
@@ -522,6 +557,28 @@ class RuntimeSessionStore:
             if cursor.rowcount != 1:
                 raise OperationalError("runtime session cannot be started")
 
+    def append_progress(self, run_id: str, chunk: str) -> None:
+        selected = SECRET_TEXT.sub("[REDACTED]", str(chunk or "").replace("\x00", ""))
+        if not selected:
+            return
+        selected = selected[:10000]
+        with _database(self.path) as connection:
+            row = connection.execute(
+                "SELECT status, progress_output FROM runtime_sessions WHERE run_id=?",
+                (run_id,),
+            ).fetchone()
+            if row is None:
+                raise OperationalError("runtime session was not found")
+            if row["status"] != "running":
+                return
+            combined = f"{row['progress_output'] or ''}{selected}"
+            if len(combined) > 50000:
+                combined = "[Earlier runtime output truncated]\n" + combined[-49960:]
+            connection.execute(
+                "UPDATE runtime_sessions SET progress_output=?, progress_updated_at=? WHERE run_id=?",
+                (combined, utc_now(), run_id),
+            )
+
     def finish(
         self,
         run_id: str,
@@ -580,6 +637,67 @@ def load_shared_skill_context(skill_ids: Iterable[str]) -> tuple[str, tuple[str,
     return str(prompt or "")[:4500], tuple(str(item) for item in loaded)
 
 
+def _run_runtime_process(
+    command: list[str],
+    *,
+    progress: Callable[[str], None] | None = None,
+    **kwargs: Any,
+) -> subprocess.CompletedProcess[str]:
+    """Stream stdout when a supervised run provides a progress sink."""
+
+    if not callable(progress):
+        return subprocess.run(command, **kwargs)
+    options = dict(kwargs)
+    input_text = options.pop("input", None)
+    timeout = options.pop("timeout", None)
+    options.pop("capture_output", None)
+    options.pop("check", None)
+    options["stdout"] = subprocess.PIPE
+    options["stderr"] = subprocess.PIPE
+    options["stdin"] = subprocess.PIPE if input_text is not None else subprocess.DEVNULL
+    process = subprocess.Popen(command, **options)
+    stdout_chunks: list[str] = []
+    stderr_chunks: list[str] = []
+
+    def drain(pipe: Any, sink: list[str], publish: bool) -> None:
+        try:
+            for chunk in iter(pipe.readline, ""):
+                text = str(chunk or "")
+                sink.append(text)
+                if publish and text:
+                    try:
+                        progress(text)
+                    except (OSError, OperationalError, sqlite3.Error):
+                        pass
+        finally:
+            pipe.close()
+
+    stdout_thread = threading.Thread(
+        target=drain, args=(process.stdout, stdout_chunks, True), daemon=True
+    )
+    stderr_thread = threading.Thread(
+        target=drain, args=(process.stderr, stderr_chunks, False), daemon=True
+    )
+    stdout_thread.start()
+    stderr_thread.start()
+    if input_text is not None and process.stdin is not None:
+        process.stdin.write(str(input_text))
+        process.stdin.close()
+    try:
+        return_code = process.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+        stdout_thread.join(timeout=2)
+        stderr_thread.join(timeout=2)
+        raise
+    stdout_thread.join(timeout=2)
+    stderr_thread.join(timeout=2)
+    return subprocess.CompletedProcess(
+        command, return_code, "".join(stdout_chunks), "".join(stderr_chunks)
+    )
+
+
 def run_hermes_cli(
     run: Mapping[str, Any], shared_context: str, skill_context: str, workspace: Path
 ) -> HermesExecutionResult:
@@ -627,7 +745,7 @@ def run_hermes_cli(
         "-t",
         toolsets,
         "--source",
-        "tool",
+        f"agios:{str(run.get('run_id') or 'unknown')[:128]}",
         "--max-turns",
         max_turns,
         "--pass-session-id",
@@ -650,8 +768,9 @@ def run_hermes_cli(
     if startup is not None:
         startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-        completed = subprocess.run(
+        completed = _run_runtime_process(
             command,
+            progress=run.get("_progress"),
             cwd=workspace,
             env=environment,
             capture_output=True,
@@ -731,8 +850,9 @@ def run_codex_cli(
     if startup is not None:
         startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     try:
-        completed = subprocess.run(
+        completed = _run_runtime_process(
             command,
+            progress=run.get("_progress"),
             cwd=workspace,
             input=prompt,
             capture_output=True,
@@ -760,6 +880,108 @@ def run_codex_cli(
     return HermesExecutionResult("failed", response, error_code, None)
 
 
+def _opencode_response(stdout: str) -> str:
+    text_parts: list[str] = []
+    for line in str(stdout or "").splitlines():
+        try:
+            event = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        if event.get("type") != "text" or not isinstance(event.get("part"), Mapping):
+            continue
+        text = str(event["part"].get("text") or "").strip()
+        if text:
+            text_parts.append(text)
+    return "\n".join(text_parts).strip()[:50000]
+
+
+def run_opencode_cli(
+    run: Mapping[str, Any], shared_context: str, skill_context: str, workspace: Path
+) -> HermesExecutionResult:
+    """Run OpenCode inside one approved workspace with a deny-by-default tool policy."""
+
+    model = OPENCODE_MODELS.get(str(run.get("model") or ""))
+    if not model:
+        return HermesExecutionResult("failed", "", "model_unavailable", None)
+    write_allowed = str(run.get("workspace_access") or "none") == "write"
+    permission = {
+        "*": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "edit": "allow" if write_allowed else "deny",
+        "bash": "deny",
+        "task": "deny",
+        "skill": "deny",
+        "question": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+        "external_directory": "deny",
+        "doom_loop": "deny",
+    }
+    prompt_blocks = [
+        "You are running as a supervised AGIOS workspace adapter. Stay inside the registered Git workspace. Preserve unrelated changes. Never send messages, publish, deploy, purchase, change accounts, reveal credentials, or bypass the configured permissions. Return concrete verification evidence and stop when additional authority is required.",
+        shared_context[:4500],
+        skill_context[:4500],
+        f"Owner-approved task:\n{run['objective']}",
+    ]
+    prompt = "\n\n".join(block for block in prompt_blocks if block).strip()
+    executable = os.environ.get("AGIOS_OPENCODE_EXECUTABLE") or "opencode"
+    command = [
+        executable,
+        "run",
+        "--pure",
+        "--format",
+        "json",
+        "--model",
+        model,
+        "--dir",
+        workspace.as_posix(),
+        prompt,
+    ]
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "OPENCODE_PERMISSION": json.dumps(permission, separators=(",", ":")),
+            "OPENCODE_DISABLE_DEFAULT_PLUGINS": "true",
+            "OPENCODE_DISABLE_CLAUDE_CODE": "true",
+            "OPENCODE_DISABLE_LSP_DOWNLOAD": "true",
+        }
+    )
+    startup = subprocess.STARTUPINFO() if os.name == "nt" else None
+    if startup is not None:
+        startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    try:
+        completed = _run_runtime_process(
+            command,
+            progress=run.get("_progress"),
+            cwd=workspace,
+            env=environment,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=1800,
+            shell=False,
+            startupinfo=startup,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return HermesExecutionResult("failed", "", "timeout", None)
+    except (OSError, subprocess.SubprocessError):
+        return HermesExecutionResult("failed", "", "runtime_unavailable", None)
+    response = _opencode_response(str(completed.stdout or ""))
+    if completed.returncode == 0 and response:
+        return HermesExecutionResult("completed", response, None, None)
+    diagnostic = f"{completed.stderr or ''}\n{completed.stdout or ''}"[-12000:]
+    error_code = _runtime_error_code(diagnostic)
+    if error_code == "runtime_failed" and (
+        "permission" in diagnostic.lower() or "denied" in diagnostic.lower()
+    ):
+        error_code = "sandbox_denied"
+    return HermesExecutionResult("failed", response, error_code, None)
+
+
 def run_runtime_cli(
     run: Mapping[str, Any], shared_context: str, skill_context: str, workspace: Path
 ) -> HermesExecutionResult:
@@ -768,6 +990,8 @@ def run_runtime_cli(
         return run_hermes_cli(run, shared_context, skill_context, workspace)
     if runtime_id == "codex":
         return run_codex_cli(run, shared_context, skill_context, workspace)
+    if runtime_id == "opencode":
+        return run_opencode_cli(run, shared_context, skill_context, workspace)
     return HermesExecutionResult("failed", "", "adapter_unavailable", None)
 
 
@@ -826,6 +1050,7 @@ class OperationalService:
         )
         self.runner = runner
         self.skill_loader = skill_loader
+        self.profile_dir_resolver = default_hermes_profile_dir
         self.executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="agios-runtime")
         self._submitted: set[str] = set()
         self._lock = threading.Lock()
@@ -847,7 +1072,7 @@ class OperationalService:
     def _run_model(
         self, agent_id: str, data_class: str, model_id: str | None, runtime_id: str
     ) -> tuple[str | None, str | None, bool]:
-        if runtime_id not in {"hermes", "codex"}:
+        if runtime_id not in {"hermes", "codex", "opencode"}:
             raise OperationalError("runtime adapter is not executable")
         if not model_id and runtime_id == "hermes":
             return self._profile_runtime(agent_id)
@@ -868,7 +1093,7 @@ class OperationalService:
                 None,
             )
             if not model_id:
-                raise OperationalError("no Codex model route is approved for this agent and data class")
+                raise OperationalError("no workspace model route is approved for this agent and data class")
         model = self.config.models.get(model_id)
         if model is None:
             raise OperationalError("selected model route is not registered")
@@ -885,6 +1110,10 @@ class OperationalService:
         provider = str(model.get("provider") or "").strip() or None
         if runtime_id == "codex" and provider not in {"openai-codex", "deepseek"}:
             raise OperationalError("selected model is not supported by the Codex adapter")
+        if runtime_id == "opencode":
+            if model_id not in OPENCODE_MODELS:
+                raise OperationalError("selected model is not supported by the OpenCode adapter")
+            provider = "opencode"
         external = model.get("location") != "local"
         return model_id, provider, external
 
@@ -946,6 +1175,9 @@ class OperationalService:
         if agent_id not in self.config.agents:
             raise OperationalError("agent is not registered")
         selected_runtime = str(runtime_id or "hermes")
+        requested_memory_ids = tuple(
+            dict.fromkeys(str(item) for item in memory_ids)
+        )[:12]
         agent = self.config.agents[agent_id]
         selected_capabilities = tuple(
             dict.fromkeys(str(item) for item in required_capabilities)
@@ -990,9 +1222,9 @@ class OperationalService:
                 raise OperationalError("run data class cannot downgrade the workspace classification")
         elif workspace_id or workspace_access != "none":
             raise OperationalError("workspace access is available only in workspace mode")
-        if selected_runtime == "codex" and mode != "workspace":
-            raise OperationalError("Codex execution requires a registered workspace run")
-        if selected_runtime == "codex" and "research_web" in selected_capabilities:
+        if selected_runtime in {"codex", "opencode"} and mode != "workspace":
+            raise OperationalError("workspace runtime execution requires a registered workspace run")
+        if selected_runtime in {"codex", "opencode"} and "research_web" in selected_capabilities:
             raise OperationalError(
                 "web research in a workspace route currently requires the Hermes runtime"
             )
@@ -1005,11 +1237,13 @@ class OperationalService:
             agent_id=agent_id,
             project_id=project_id,
             query=objective,
-            selected_ids=memory_ids,
+            selected_ids=requested_memory_ids,
         )
         selected_vision_ids = tuple(
             dict.fromkeys(str(item) for item in vision_asset_ids)
         )[:3]
+        if selected_runtime == "opencode" and selected_vision_ids:
+            raise OperationalError("OpenCode workspace runs do not support images")
         try:
             vision_items = self.vision.resolve_many(selected_vision_ids)
         except ValueError as exc:
@@ -1029,6 +1263,7 @@ class OperationalService:
             objective=objective,
             skill_ids=loaded_skills,
             memory_ids=loaded_memories,
+            requested_memory_ids=requested_memory_ids,
             model=model,
             provider=provider,
             runtime_id=selected_runtime,
@@ -1077,7 +1312,7 @@ class OperationalService:
             agent_id=str(run["agent_id"]),
             project_id=run.get("project_id"),
             query=str(run["objective"]),
-            selected_ids=run["memory_ids"],
+            selected_ids=run["requested_memory_ids"],
         )
         skill_context, loaded_skills = self._load_skill_context(run["skill_ids"])
         try:
@@ -1086,13 +1321,20 @@ class OperationalService:
                 self.workspaces.resolve(str(run["workspace_id"]))
         except ValueError as exc:
             raise OperationalError("approved runtime context changed before dispatch") from exc
-        if (
-            tuple(loaded_memories) != tuple(run["memory_ids"])
-            or tuple(loaded_skills) != tuple(run["skill_ids"])
-            or _digest(memory_context) != run["memory_context_digest"]
-            or _digest(skill_context) != run["skill_context_digest"]
-        ):
-            raise OperationalError("approved context changed before dispatch")
+        changed_fields = []
+        if tuple(loaded_memories) != tuple(run["memory_ids"]):
+            changed_fields.append("memory selection")
+        if _digest(memory_context) != run["memory_context_digest"]:
+            changed_fields.append("memory content")
+        if tuple(loaded_skills) != tuple(run["skill_ids"]):
+            changed_fields.append("skill selection")
+        if _digest(skill_context) != run["skill_context_digest"]:
+            changed_fields.append("skill content")
+        if changed_fields:
+            raise OperationalError(
+                "approved context changed before dispatch: "
+                f"{', '.join(changed_fields)}; review and approve a new run"
+            )
         run = self.sessions.approve(run_id, approval_digest)
         with EventJournal(self.journal_path) as journal:
             journal.append(
@@ -1119,6 +1361,200 @@ class OperationalService:
             )
         return run
 
+    def run_trace(self, run_id: str) -> Mapping[str, Any]:
+        """Return bounded, redacted Hermes execution events for one AGIOS run."""
+
+        run = self.sessions.get(run_id)
+        session_id = str(run.get("hermes_session_id") or "").strip()
+        if str(run.get("runtime_id") or "hermes") != "hermes" or not session_id:
+            return {
+                "available": False,
+                "binding": "none",
+                "events": [],
+                "reason": "This run has no Hermes session trace.",
+            }
+        try:
+            profile_dir = Path(
+                self.profile_dir_resolver(str(run.get("agent_id") or "default"))
+            ).expanduser().absolute()
+        except (OSError, RuntimeError, TypeError, ValueError):
+            return {
+                "available": False,
+                "binding": "none",
+                "events": [],
+                "reason": "The Hermes profile trace is unavailable.",
+            }
+        database = profile_dir / "state.db"
+        if not database.is_file() or database.is_symlink():
+            return {
+                "available": False,
+                "binding": "none",
+                "events": [],
+                "reason": "The Hermes profile trace is unavailable.",
+            }
+
+        workspace_roots = {
+            self.state_dir / "runs" / run_id,
+            profile_dir,
+            Path.home().expanduser().absolute(),
+        }
+        if run.get("workspace_id"):
+            try:
+                _, registered_workspace = self.workspaces.resolve(str(run["workspace_id"]))
+                workspace_roots.add(registered_workspace)
+            except (OSError, ValueError):
+                pass
+
+        def safe_text(value: object, *, limit: int = 6000) -> str:
+            text = str(value or "").replace("\x00", "")
+            text = SECRET_TEXT.sub("[REDACTED]", text)
+            for root in workspace_roots:
+                for private_path in {str(root), root.as_posix()}:
+                    if private_path:
+                        text = text.replace(private_path, "[WORKSPACE]")
+            return text[:limit]
+
+        def safe_tool_input(value: object) -> str:
+            try:
+                parsed = json.loads(str(value))
+            except (json.JSONDecodeError, TypeError, ValueError):
+                return safe_text(value)
+
+            def scrub(item: object) -> object:
+                if isinstance(item, Mapping):
+                    cleaned: dict[str, object] = {}
+                    for key, child in item.items():
+                        safe_key = safe_text(key, limit=120)
+                        if re.search(r"password|passwd|api[_ -]?key|token|secret|bearer", safe_key, re.IGNORECASE):
+                            cleaned[safe_key] = "[REDACTED]"
+                        else:
+                            cleaned[safe_key] = scrub(child)
+                    return cleaned
+                if isinstance(item, list):
+                    return [scrub(child) for child in item[:100]]
+                if isinstance(item, str):
+                    return safe_text(item)
+                return item
+
+            return json.dumps(scrub(parsed), ensure_ascii=False, separators=(",", ":"))[:6000]
+
+        try:
+            uri = f"{database.resolve().as_uri()}?mode=ro"
+            with closing(sqlite3.connect(uri, uri=True, timeout=2)) as connection:
+                connection.row_factory = sqlite3.Row
+                session_columns = {
+                    str(row[1]) for row in connection.execute("PRAGMA table_info(sessions)")
+                }
+                message_columns = {
+                    str(row[1]) for row in connection.execute("PRAGMA table_info(messages)")
+                }
+                if not {"id", "source"}.issubset(session_columns) or "session_id" not in message_columns:
+                    raise sqlite3.DatabaseError("unsupported Hermes trace schema")
+                session = connection.execute(
+                    "SELECT id, source FROM sessions WHERE id=? LIMIT 1", (session_id,)
+                ).fetchone()
+                if session is None:
+                    raise sqlite3.DatabaseError("Hermes trace session was not found")
+                expected_source = f"agios:{run_id}"
+                actual_source = str(session["source"] or "")
+                if actual_source not in {expected_source, "tool"}:
+                    raise sqlite3.DatabaseError("Hermes trace provenance does not match")
+
+                allowed_columns = (
+                    "id",
+                    "role",
+                    "content",
+                    "tool_call_id",
+                    "tool_calls",
+                    "tool_name",
+                    "effect_disposition",
+                    "timestamp",
+                )
+                selects = [
+                    column if column in message_columns else f"NULL AS {column}"
+                    for column in allowed_columns
+                ]
+                active_clause = " AND active=1" if "active" in message_columns else ""
+                order = "timestamp DESC, id DESC" if "timestamp" in message_columns else "id DESC"
+                rows = connection.execute(
+                    f"SELECT {', '.join(selects)} FROM messages "
+                    f"WHERE session_id=?{active_clause} ORDER BY {order} LIMIT 240",
+                    (session_id,),
+                ).fetchall()
+                rows = list(reversed(rows))
+        except (OSError, sqlite3.Error):
+            return {
+                "available": False,
+                "binding": "none",
+                "events": [],
+                "reason": "The Hermes session trace could not be read safely.",
+            }
+
+        events: list[dict[str, Any]] = []
+        pending_tools: dict[str, dict[str, Any]] = {}
+        final_response = str(run.get("response") or "").strip()
+        for row in rows:
+            role = str(row["role"] or "").lower()
+            timestamp = row["timestamp"]
+            raw_tool_calls = row["tool_calls"]
+            if role == "assistant" and raw_tool_calls:
+                try:
+                    tool_calls = json.loads(str(raw_tool_calls))
+                except (json.JSONDecodeError, TypeError, ValueError):
+                    tool_calls = []
+                if isinstance(tool_calls, Mapping):
+                    tool_calls = [tool_calls]
+                for call in tool_calls if isinstance(tool_calls, list) else []:
+                    if not isinstance(call, Mapping):
+                        continue
+                    function = call.get("function") if isinstance(call.get("function"), Mapping) else {}
+                    tool = str(function.get("name") or call.get("name") or "tool")[:100]
+                    arguments = function.get("arguments") or call.get("arguments") or ""
+                    event = {
+                        "kind": "tool",
+                        "tool": safe_text(tool, limit=100),
+                        "input": safe_tool_input(arguments),
+                        "output": "",
+                        "effect": "recorded",
+                        "timestamp": timestamp,
+                    }
+                    events.append(event)
+                    call_id = str(call.get("id") or "")
+                    if call_id:
+                        pending_tools[call_id] = event
+            if role == "tool":
+                call_id = str(row["tool_call_id"] or "")
+                event = pending_tools.get(call_id)
+                if event is None:
+                    event = {
+                        "kind": "tool",
+                        "tool": safe_text(row["tool_name"] or "tool", limit=100),
+                        "input": "",
+                        "output": "",
+                        "effect": "recorded",
+                        "timestamp": timestamp,
+                    }
+                    events.append(event)
+                event["output"] = safe_text(row["content"])
+                event["effect"] = safe_text(row["effect_disposition"] or "recorded", limit=80)
+                continue
+            content = str(row["content"] or "").strip()
+            if role == "assistant" and content and content != final_response:
+                events.append(
+                    {
+                        "kind": "assistant",
+                        "text": safe_text(content),
+                        "timestamp": timestamp,
+                    }
+                )
+
+        return {
+            "available": True,
+            "binding": "run_source" if actual_source == f"agios:{run_id}" else "legacy_session_id",
+            "events": events[-100:],
+            "reason": "",
+        }
+
     def _submit(self, run_id: str, memory_context: str, skill_context: str) -> None:
         with self._lock:
             if run_id in self._submitted:
@@ -1136,9 +1572,18 @@ class OperationalService:
                 workspace = self.state_dir / "runs" / run_id
                 workspace.mkdir(parents=True, exist_ok=True)
             vision_items = self.vision.resolve_many(run["vision_asset_ids"])
+
+            def publish_progress(chunk: str) -> None:
+                safe_chunk = str(chunk or "")
+                for private_root in {str(workspace), workspace.as_posix()}:
+                    if private_root:
+                        safe_chunk = safe_chunk.replace(private_root, "[WORKSPACE]")
+                self.sessions.append_progress(run_id, safe_chunk)
+
             runtime_run = {
                 **run,
                 "_vision_paths": tuple(str(path) for _, path in vision_items),
+                "_progress": publish_progress,
             }
             result = self.runner(runtime_run, memory_context, skill_context, workspace)
             self.sessions.finish(

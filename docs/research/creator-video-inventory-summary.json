@@ -1,0 +1,41 @@
+{
+  "source_channels": [
+    "https://www.youtube.com/@Itssssss_Jack",
+    "https://www.youtube.com/@JulianGoldieSEO"
+  ],
+  "raw_entries": 6610,
+  "unique_channel_video_entries": 6610,
+  "by_channel": {
+    "Jack Roberts": 284,
+    "Julian Goldie SEO": 6326
+  },
+  "by_surface": {
+    "shorts": 1822,
+    "videos": 4788
+  },
+  "review_depth": {
+    "title_inventory_only": 6598,
+    "transcript_reviewed": 12
+  },
+  "categories": {
+    "coding_models": 708,
+    "other": 3243,
+    "notebook_knowledge": 498,
+    "seo_outreach": 1018,
+    "business_content": 47,
+    "agent_os_orchestration": 1344,
+    "design_motion": 8
+  },
+  "safety_disposition": {
+    "candidate_for_evidence_review": 2256,
+    "out_of_scope_for_agios": 3112,
+    "source_review_before_install": 201,
+    "external_action_owner_approval": 1020,
+    "reject_or_manual_security_review": 21
+  },
+  "limitations": [
+    "Title inventory is not a transcript or visual review.",
+    "Counts are a point-in-time yt-dlp enumeration and channels can change.",
+    "Auto-generated captions are imperfect and require source verification before implementation."
+  ]
+}
