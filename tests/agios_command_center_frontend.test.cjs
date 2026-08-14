@@ -133,7 +133,7 @@ test("Phase 4 exposes real voice, model routing, professional agents, growth, an
   assert.match(js, /new WebGLRenderer/);
   assert.match(js, /OrbitControls/);
   assert.match(js, /brighter &amp; whiter = more recently touched/);
-  assert.match(js, /Galaxy ✦/);
+  assert.match(js, /Galaxy \\u2726/);
   assert.match(js, /memory-galaxy-stats/);
   assert.match(js, /data-memory-galaxy-filter/);
   assert.match(js, /hover a star to trace its links/);
