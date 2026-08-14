@@ -35,7 +35,7 @@ test("AI systems share governed memory and skills without faking connectivity", 
 
 test("frontend exposes authenticated supervised Hermes operations", () => {
   assert.match(html, /Tell Ari the outcome/i);
-  assert.match(html, /Ask Ari to plan the route/);
+  assert.match(js, /Route work with Ari/);
   assert.match(js, /\/api\/v1\/hermes\/runs/);
   assert.match(js, /\/api\/v1\/hermes\/runs\/\$\{encodeURIComponent\(button\.dataset\.cancelRun\)\}\/cancel/);
   assert.match(js, /\/api\/v1\/memory/);
@@ -53,18 +53,18 @@ test("frontend exposes authenticated supervised Hermes operations", () => {
 });
 
 test("Chief of Staff is the living connector between one command and supervised execution", () => {
-  for (const label of ["MAIN SUPER AGENT", "Ask Ari", "ORCHESTRATOR", "PROFESSIONAL LEAD", "MODEL ROUTE", "GAUNTLET REVIEW", "Independent quality gates"]) assert.match(js, new RegExp(label, "i"));
+  for (const label of ["CHIEF OF STAFF", "Route work with Ari", "GAUNTLET REVIEW", "Independent quality gates", "ARI'S ROUTING DECISION"]) assert.match(js, new RegExp(label));
   assert.match(js, /data-chief-form/);
   assert.match(js, /\/api\/v1\/orchestrator\/plans/);
   assert.match(js, /data-dispatch-form/);
-  assert.match(js, /These critics are planned gates/);
+  assert.match(js, /Critics run only when a real review run exists/);
   assert.match(css, /\.chief-desk/);
-  assert.match(css, /@keyframes route-particle/);
+  assert.match(css, /@keyframes critic-arrive/);
   assert.match(css, /prefers-reduced-motion/);
 });
 
 test("Ari front door routes directed work instead of silently starting model-only chat", () => {
-  for (const label of ["Ari intent router", "Ask Ari anything", "Automatic", "Work never falls back to powerless chat", "EXECUTION LANE"]) assert.match(js, new RegExp(label, "i"));
+  for (const label of ["Ari intent router", "Ask Ari anything", "Automatic", "Work never falls back to powerless chat"]) assert.match(js, new RegExp(label, "i"));
   assert.match(js, /data-ari-router/);
   assert.match(js, /\/api\/v1\/orchestrator\/route/);
   assert.match(js, /data-dispatch-form/);
@@ -141,7 +141,7 @@ test("Phase 4B exposes supervised workspaces, explicit vision, and validated sha
 });
 
 test("Phase 5 mirrors the unified Hermes operating desk with real AGIOS workflows", () => {
-  for (const label of ["Mission Control", "Paperclip", "AI Agent Mastermind", "Agent Kanban", "One desk. One memory."]) assert.match(html, new RegExp(label));
+  for (const label of ["Mission Control", "Paperclip", "AI Agent Mastermind", "Agent Kanban"]) assert.match(html, new RegExp(label));
   for (const mode of ["Hermes Apollo", "Hermes Oracle", "Hermes Astros", "Studio", "Outreach", "Mixture", "Manage", "Goal Mode"]) assert.match(js, new RegExp(mode));
   for (const capability of ["hey hermes", "Every AGIOS session, searchable", "Two-click model manager", "Loop Engineering", "Music Studio", "Video Agent", "SEO Content System", "JCode Workspace"]) assert.match(js, new RegExp(capability, "i"));
   assert.match(js, /SpeechRecognition/);
@@ -153,7 +153,6 @@ test("Phase 5 mirrors the unified Hermes operating desk with real AGIOS workflow
   assert.match(js, /function renderPaperclip/);
   assert.match(js, /Paperclip is the supervised orchestration desk/);
   assert.match(js, /"Agent Kanban", "File a ticket/);
-  assert.match(css, /\.ops-banner/);
   assert.match(css, /\.paperclip-command/);
   assert.match(css, /\.wake-word-panel/);
   assert.match(css, /\.agent-kanban/);

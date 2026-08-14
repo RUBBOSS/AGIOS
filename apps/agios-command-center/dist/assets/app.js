@@ -9942,8 +9942,6 @@ function renderChiefOfStaffBoard() {
   const ari = d.agents.find((item) => item.id === "default");
   const department = plan ? d.departments.find((item) => item.id === plan.department_id) : null;
   const lead = plan ? d.agents.find((item) => item.id === plan.lead_agent_id) : null;
-  const business = plan ? d.businesses.find((item) => item.id === plan.business_id) : null;
-  const model = plan ? d.models.find((item) => item.id === plan.model_id) : null;
   const linkedRun = plan?.run_id ? state.runs.find((item) => item.run_id === plan.run_id) : null;
   const routeState = linkedRun?.status || plan?.status || "listening";
   const businessOptions = d.businesses.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}</option>`).join("");
@@ -9965,10 +9963,9 @@ function renderChiefOfStaffBoard() {
   const runtimeOptions = state.runtimeAdapters.filter((runtime) => ["hermes", "codex"].includes(runtime.id) && runtime.execution_enabled && (!requiredCapabilities.includes("research_web") || runtime.id === "hermes")).map((runtime) => `<option value="${esc(runtime.id)}">${esc(runtime.name)} \xB7 ${esc(titleCase(runtime.status))}</option>`).join("");
   const workspaceRoute = plan?.execution_mode === "workspace";
   const dispatch2 = !plan ? "" : plan.status === "planned" ? `<form class="chief-dispatch-form" data-dispatch-form data-plan-id="${esc(plan.plan_id)}" data-plan-digest="${esc(plan.plan_digest)}">${workspaceRoute ? `<label>REGISTERED WORKSPACE<select name="workspaceId" required><option value="">Choose workspace</option>${workspaceOptions}</select></label><label>WORKER RUNTIME<select name="runtimeId" required>${runtimeOptions}</select></label>` : ""}<button class="chief-dispatch" type="submit" ${workspaceRoute && !eligibleWorkspaces.length ? "disabled" : ""}><span>${workspaceRoute ? "Bind the approved workspace" : "Prepare supervised run"}</span><b>Approval next \u2192</b></button>${workspaceRoute && !eligibleWorkspaces.length ? `<small>No compatible write-approved workspace is registered. Open Repositories to add a clean worktree first.</small>` : ""}</form>` : `<button class="chief-dispatch is-ready" type="button" data-view-link="${destination[0]}"><span>${destination[1]}</span><b>${destination[2]}</b></button>`;
-  return `<section class="chief-desk route-${esc(routeState)}" aria-label="Ari Vale Chief of Staff connector board">
-    <div class="chief-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  return `<section class="chief-desk route-${esc(routeState)}" aria-label="Ari Vale Chief of Staff">
     <header class="chief-header">
-      <div class="chief-identity"><div class="ari-orb" aria-hidden="true"><span>AV</span><i></i><i></i></div><div><p class="eyebrow">MAIN SUPER AGENT \xB7 CHIEF OF STAFF</p><h1>Ask Ari. <em>AGIOS routes the work.</em></h1><p>One command enters here. Ari chooses the business, department, professional agents and approved model\u2014then shows you the complete route before anything runs.</p></div></div>
+      <div class="chief-identity"><p class="eyebrow">CHIEF OF STAFF \xB7 ARI VALE</p><h1>Route work with Ari.</h1><p>One outcome in. Ari chooses business, department, lead and model \u2014 you approve before anything runs.</p></div>
       <div class="chief-presence"><i></i><span><strong>${esc(ari?.name || "Ari Vale")}</strong><small>${plan ? esc(titleCase(plan.status)) : "Listening for your outcome"}</small></span></div>
     </header>
     <form class="chief-command" data-chief-form>
@@ -9976,22 +9973,8 @@ function renderChiefOfStaffBoard() {
       <div class="chief-command-actions">${chiefVoiceControl()}<label><span>Business</span><select name="businessId"><option value="">Ari decides</option>${businessOptions}</select></label><label><span>Data</span><select name="dataClass"><option value="internal">Internal</option><option value="public">Public</option><option value="private_business">Private business</option><option value="customer_restricted">Customer restricted</option></select></label><button class="chief-plan" type="submit"><span>Route with Ari</span><b>\u2301</b></button></div>
       <p class="chief-command-note">Planning is local and starts no model. Voice always becomes editable text first.</p>
     </form>
-    <div class="connector-stage ${plan ? "has-plan" : "is-awaiting"}">
-      <div class="connector-flow" aria-label="Chief of Staff route">
-        <article class="connector-node owner-node"><small>01 \xB7 YOU</small><strong>Outcome</strong><span>${plan ? "Received" : "Waiting"}</span></article>
-        <i class="route-beam beam-one" aria-hidden="true"><b></b></i>
-        <article class="connector-node ari-node"><div class="mini-orbit"><span>AV</span></div><small>02 \xB7 ORCHESTRATOR</small><strong>${esc(ari?.name || "Ari Vale")}</strong><span>Policy \xB7 delegation \xB7 memory</span></article>
-        <i class="route-beam beam-two" aria-hidden="true"><b></b></i>
-        <div class="route-destinations">
-          <article class="connector-node"><small>03 \xB7 BUSINESS</small><strong>${esc(business?.name || "Ari decides")}</strong><span>${plan ? "Selected" : "Portfolio context"}</span></article>
-          <article class="connector-node"><small>04 \xB7 DEPARTMENT</small><strong>${esc(department?.name || "Best department")}</strong><span>${plan ? esc(plan.workload.replace(/_/g, " ")) : "Capability match"}</span></article>
-          <article class="connector-node"><small>05 \xB7 PROFESSIONAL LEAD</small><strong>${esc(lead?.name || "Best specialist")}</strong><span>${esc(lead?.profession || "Experience matched")}</span></article>
-          <article class="connector-node"><small>06 \xB7 EXECUTION LANE</small><strong>${plan ? esc(titleCase(plan.execution_mode || "goal")) : "Capability-matched lane"}</strong><span>${plan ? `${esc((plan.required_capabilities || []).map(titleCase).join(" \xB7 ") || "Model only")} \xB7 ${esc(model?.id || plan.model_id)}` : "Research, workspace and model policy checked"}</span></article>
-        </div>
-      </div>
-      <aside class="critic-rail"><header><div><small>GAUNTLET REVIEW</small><strong>Independent quality gates</strong></div><span>${plan ? "PLANNED" : "STANDBY"}</span></header>${critics}<p class="critic-truth">These critics are planned gates. They are not shown as running until a real review run exists.</p></aside>
-    </div>
-    ${plan ? `<div class="route-review"><div><small>ARI'S ROUTING DECISION</small><h2>${esc(department?.name || plan.department_id)} \u2192 ${esc(lead?.name || plan.lead_agent_id)} \u2192 ${esc(plan.model_id)}</h2><ul>${rationale}</ul></div>${dispatch2}</div>` : `<footer class="chief-empty-route"><i></i><span><strong>The connector board is ready.</strong><small>Your first route will light up from Ari to the chosen team.</small></span></footer>`}
+    ${plan ? `<div class="route-review"><div><small>ARI'S ROUTING DECISION</small><h2>${esc(department?.name || plan.department_id)} \u2192 ${esc(lead?.name || plan.lead_agent_id)} \u2192 ${esc(plan.model_id)}</h2><ul>${rationale}</ul></div>${dispatch2}</div>` : ""}
+    <aside class="critic-rail"><header><div><small>GAUNTLET REVIEW</small><strong>Independent quality gates</strong></div><span>${plan ? "PLANNED" : "STANDBY"}</span></header>${critics}<p class="critic-truth">Critics run only when a real review run exists.</p></aside>
   </section>`;
 }
 function osMapRegistry() {
@@ -10729,6 +10712,11 @@ function retrievalWorkbench() {
   return `<section class="retrieval-workbench"><form class="workspace-card retrieval-compose" data-retrieval-form><div><p class="eyebrow">RAG evidence console</p><h3>Search what an agent is allowed to know</h3><p>Mode: ${esc(mode)}. Results include provenance and citation IDs; no-match queries return no evidence.</p></div><div class="retrieval-fields"><label>Agent<select name="agentId">${agents}</select></label><label>Project scope<input name="projectId" maxlength="128" placeholder="Optional project ID"/></label><label>Evidence query<input name="query" required maxlength="8000" placeholder="What verified knowledge do we have about..."/></label><button type="submit">Retrieve evidence</button></div></form><div class="evidence-feed">${hits || `<div class="workspace-empty workspace-card"><b>RAG</b><strong>Evidence appears here</strong><span>Searches are local and restricted to the selected agent's authorized scopes.</span></div>`}</div></section>`;
 }
 function renderSharedMemory() {
+  if (!state.memories.length) {
+    const compose2 = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
+    page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">\uFF0B Save first memory</button></div></div>${compose2}`;
+    return;
+  }
   const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
   const search = state.memorySearchOpen ? retrievalWorkbench() : "";
   page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-toolbar"><button data-memory-toggle="compose">\uFF0B New memory</button><button data-memory-toggle="search">\u2315 Search</button></div>${memoryVaultSurface()}${compose}${search}`;
@@ -11844,7 +11832,8 @@ async function boot() {
     const runtime = state.data.runtime;
     document.querySelector("#runtime-caption").textContent = runtime.gateway_running ? `${state.data.summary.available_agents} agents registered \xB7 gateway online` : `${state.data.summary.available_agents} agents registered \xB7 gateway standing by`;
     document.querySelector("#runtime-meter").style.width = `${Math.max(12, state.data.summary.available_agents / state.data.summary.agents * 100)}%`;
-    document.querySelector("#ops-banner-detail").textContent = `${state.data.summary.agents} workers \xB7 ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories \xB7 ${state.data.summary.systems} AI systems`;
+    const bannerDetail = document.querySelector("#ops-banner-detail");
+    if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers \xB7 ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories \xB7 ${state.data.summary.systems} AI systems`;
     const route = location.pathname.slice(1);
     setView(viewLabels[route] ? route : "command");
   } catch {

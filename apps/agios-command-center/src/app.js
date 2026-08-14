@@ -208,8 +208,6 @@ function renderChiefOfStaffBoard() {
   const ari = d.agents.find((item) => item.id === "default");
   const department = plan ? d.departments.find((item) => item.id === plan.department_id) : null;
   const lead = plan ? d.agents.find((item) => item.id === plan.lead_agent_id) : null;
-  const business = plan ? d.businesses.find((item) => item.id === plan.business_id) : null;
-  const model = plan ? d.models.find((item) => item.id === plan.model_id) : null;
   const linkedRun = plan?.run_id ? state.runs.find((item) => item.run_id === plan.run_id) : null;
   const routeState = linkedRun?.status || plan?.status || "listening";
   const businessOptions = d.businesses.map((item) => `<option value="${esc(item.id)}">${esc(item.name)}</option>`).join("");
@@ -234,10 +232,9 @@ function renderChiefOfStaffBoard() {
     ? `<form class="chief-dispatch-form" data-dispatch-form data-plan-id="${esc(plan.plan_id)}" data-plan-digest="${esc(plan.plan_digest)}">${workspaceRoute ? `<label>REGISTERED WORKSPACE<select name="workspaceId" required><option value="">Choose workspace</option>${workspaceOptions}</select></label><label>WORKER RUNTIME<select name="runtimeId" required>${runtimeOptions}</select></label>` : ""}<button class="chief-dispatch" type="submit" ${workspaceRoute && !eligibleWorkspaces.length ? "disabled" : ""}><span>${workspaceRoute ? "Bind the approved workspace" : "Prepare supervised run"}</span><b>Approval next →</b></button>${workspaceRoute && !eligibleWorkspaces.length ? `<small>No compatible write-approved workspace is registered. Open Repositories to add a clean worktree first.</small>` : ""}</form>`
     : `<button class="chief-dispatch is-ready" type="button" data-view-link="${destination[0]}"><span>${destination[1]}</span><b>${destination[2]}</b></button>`;
 
-  return `<section class="chief-desk route-${esc(routeState)}" aria-label="Ari Vale Chief of Staff connector board">
-    <div class="chief-aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  return `<section class="chief-desk route-${esc(routeState)}" aria-label="Ari Vale Chief of Staff">
     <header class="chief-header">
-      <div class="chief-identity"><div class="ari-orb" aria-hidden="true"><span>AV</span><i></i><i></i></div><div><p class="eyebrow">MAIN SUPER AGENT · CHIEF OF STAFF</p><h1>Ask Ari. <em>AGIOS routes the work.</em></h1><p>One command enters here. Ari chooses the business, department, professional agents and approved model—then shows you the complete route before anything runs.</p></div></div>
+      <div class="chief-identity"><p class="eyebrow">CHIEF OF STAFF · ARI VALE</p><h1>Route work with Ari.</h1><p>One outcome in. Ari chooses business, department, lead and model — you approve before anything runs.</p></div>
       <div class="chief-presence"><i></i><span><strong>${esc(ari?.name || "Ari Vale")}</strong><small>${plan ? esc(titleCase(plan.status)) : "Listening for your outcome"}</small></span></div>
     </header>
     <form class="chief-command" data-chief-form>
@@ -245,22 +242,8 @@ function renderChiefOfStaffBoard() {
       <div class="chief-command-actions">${chiefVoiceControl()}<label><span>Business</span><select name="businessId"><option value="">Ari decides</option>${businessOptions}</select></label><label><span>Data</span><select name="dataClass"><option value="internal">Internal</option><option value="public">Public</option><option value="private_business">Private business</option><option value="customer_restricted">Customer restricted</option></select></label><button class="chief-plan" type="submit"><span>Route with Ari</span><b>⌁</b></button></div>
       <p class="chief-command-note">Planning is local and starts no model. Voice always becomes editable text first.</p>
     </form>
-    <div class="connector-stage ${plan ? "has-plan" : "is-awaiting"}">
-      <div class="connector-flow" aria-label="Chief of Staff route">
-        <article class="connector-node owner-node"><small>01 · YOU</small><strong>Outcome</strong><span>${plan ? "Received" : "Waiting"}</span></article>
-        <i class="route-beam beam-one" aria-hidden="true"><b></b></i>
-        <article class="connector-node ari-node"><div class="mini-orbit"><span>AV</span></div><small>02 · ORCHESTRATOR</small><strong>${esc(ari?.name || "Ari Vale")}</strong><span>Policy · delegation · memory</span></article>
-        <i class="route-beam beam-two" aria-hidden="true"><b></b></i>
-        <div class="route-destinations">
-          <article class="connector-node"><small>03 · BUSINESS</small><strong>${esc(business?.name || "Ari decides")}</strong><span>${plan ? "Selected" : "Portfolio context"}</span></article>
-          <article class="connector-node"><small>04 · DEPARTMENT</small><strong>${esc(department?.name || "Best department")}</strong><span>${plan ? esc(plan.workload.replace(/_/g, " ")) : "Capability match"}</span></article>
-          <article class="connector-node"><small>05 · PROFESSIONAL LEAD</small><strong>${esc(lead?.name || "Best specialist")}</strong><span>${esc(lead?.profession || "Experience matched")}</span></article>
-          <article class="connector-node"><small>06 · EXECUTION LANE</small><strong>${plan ? esc(titleCase(plan.execution_mode || "goal")) : "Capability-matched lane"}</strong><span>${plan ? `${esc((plan.required_capabilities || []).map(titleCase).join(" · ") || "Model only")} · ${esc(model?.id || plan.model_id)}` : "Research, workspace and model policy checked"}</span></article>
-        </div>
-      </div>
-      <aside class="critic-rail"><header><div><small>GAUNTLET REVIEW</small><strong>Independent quality gates</strong></div><span>${plan ? "PLANNED" : "STANDBY"}</span></header>${critics}<p class="critic-truth">These critics are planned gates. They are not shown as running until a real review run exists.</p></aside>
-    </div>
-    ${plan ? `<div class="route-review"><div><small>ARI'S ROUTING DECISION</small><h2>${esc(department?.name || plan.department_id)} → ${esc(lead?.name || plan.lead_agent_id)} → ${esc(plan.model_id)}</h2><ul>${rationale}</ul></div>${dispatch}</div>` : `<footer class="chief-empty-route"><i></i><span><strong>The connector board is ready.</strong><small>Your first route will light up from Ari to the chosen team.</small></span></footer>`}
+    ${plan ? `<div class="route-review"><div><small>ARI'S ROUTING DECISION</small><h2>${esc(department?.name || plan.department_id)} → ${esc(lead?.name || plan.lead_agent_id)} → ${esc(plan.model_id)}</h2><ul>${rationale}</ul></div>${dispatch}</div>` : ""}
+    <aside class="critic-rail"><header><div><small>GAUNTLET REVIEW</small><strong>Independent quality gates</strong></div><span>${plan ? "PLANNED" : "STANDBY"}</span></header>${critics}<p class="critic-truth">Critics run only when a real review run exists.</p></aside>
   </section>`;
 }
 
@@ -1069,6 +1052,11 @@ function retrievalWorkbench() {
 
 
 function renderSharedMemory() {
+  if (!state.memories.length) {
+    const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
+    page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">＋ Save first memory</button></div></div>${compose}`;
+    return;
+  }
   const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
   const search = state.memorySearchOpen ? retrievalWorkbench() : "";
   page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-toolbar"><button data-memory-toggle="compose">＋ New memory</button><button data-memory-toggle="search">⌕ Search</button></div>${memoryVaultSurface()}${compose}${search}`;
@@ -2148,7 +2136,8 @@ async function boot() {
     const runtime = state.data.runtime;
     document.querySelector("#runtime-caption").textContent = runtime.gateway_running ? `${state.data.summary.available_agents} agents registered · gateway online` : `${state.data.summary.available_agents} agents registered · gateway standing by`;
     document.querySelector("#runtime-meter").style.width = `${Math.max(12, state.data.summary.available_agents / state.data.summary.agents * 100)}%`;
-    document.querySelector("#ops-banner-detail").textContent = `${state.data.summary.agents} workers · ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories · ${state.data.summary.systems} AI systems`;
+    const bannerDetail = document.querySelector("#ops-banner-detail");
+    if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers · ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories · ${state.data.summary.systems} AI systems`;
     const route = location.pathname.slice(1);
     setView(viewLabels[route] ? route : "command");
   } catch {
