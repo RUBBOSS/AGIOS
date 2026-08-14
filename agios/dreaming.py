@@ -190,7 +190,7 @@ def build_dreaming_digest(
             "write-memory",
             "memory-health",
             "Write the first durable fact",
-            "Shared memory has zero scoped facts. One written fact makes it available to every authorized worker.",
+            "Start with the five notes that make the OS remember you: your goals, your offer, your last three decisions, customer questions, and brand voice. Each saved as one scoped fact.",
             {"fact_count": 0},
             {"type": "navigate", "label": "Open Memory", "target": "memory"},
         )
