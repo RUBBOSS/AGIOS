@@ -1477,3 +1477,8 @@ body { background: #090a0f; }
 .cost-balances { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .cost-balances span { font: 400 11px var(--mono, Consolas); color: var(--gold, #d9b46a); border: 1px solid rgba(217,180,106,.25); border-radius: 8px; padding: 4px 8px; }
 .cost-honesty { margin-top: 10px; font: 400 10px var(--mono, Consolas); color: var(--faint, #5c726a); }
+
+/* ---- Memory toolbar (minimal toggles) ---- */
+.memory-toolbar { display: flex; gap: 8px; margin-bottom: 14px; }
+.memory-toolbar button { padding: 8px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; transition: border-color .12s ease, background .12s ease; }
+.memory-toolbar button:hover { border-color: var(--dim); background: rgba(255,255,255,.03); }

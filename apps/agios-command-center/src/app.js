@@ -43,6 +43,8 @@ const state = {
   dreaming: null,
   memoryFolder: "all",
   memoryNote: null,
+  memoryComposeOpen: false,
+  memorySearchOpen: false,
   learned: null,
   costs: null,
   selectedAgent: "default",
@@ -832,7 +834,7 @@ function memoryVaultSurface() {
     ? `<article class="memory-vault-reader"><small>${esc(titleCase(selected.scope_kind))} / ${esc(selected.scope_id)} · ${esc(titleCase(selected.trust))} trust · by ${esc(titleCase(selected.created_by))}</small><h3>${esc(selected.title)}</h3><p>${esc(selected.body)}</p></article>`
     : `<article class="memory-vault-reader is-empty"><h3>No note selected</h3><p>${memories.length ? "Choose a memory from the list to read it." : "The vault is empty. Save the first durable fact from the form below."}</p></article>`;
   return `<section class="memory-vault">
-    <header><div><p class="eyebrow">SHARED VAULT · OBSIDIAN-STYLE</p><h2>${memories.length} durable memor${memories.length === 1 ? "y" : "ies"}, plain and readable.</h2><p>Folders mirror authorization scopes. Reading is direct; nothing animates, nothing is synthetic.</p></div><span>${state.data.agents.length} authorized agents</span></header>
+    <header><div><p class="eyebrow">MEMORY VAULT</p><h2>${memories.length} durable memor${memories.length === 1 ? "y" : "ies"}</h2><p>Folders are authorization scopes. Select a note to read it.</p></div><span>${state.data.agents.length} authorized agents</span></header>
     <div class="memory-vault-body">
       <aside class="memory-vault-tree">${folderButtons}</aside>
       <div class="memory-vault-list">${rows || `<div class="memory-vault-empty"><strong>Empty ${state.memoryFolder === "all" ? "vault" : esc(titleCase(state.memoryFolder))} folder</strong><span>Facts saved under this scope will appear here.</span></div>`}</div>
@@ -1052,10 +1054,10 @@ function renderSharedSkills() {
   page.innerHTML = `${heading("Shared capability fabric", "Install once. Use everywhere—with policy.", "Hermes, Codex, Gemini, Antigravity, DeepSeek and future workers discover skills through one live AGIOS registry. Skill bodies remain runtime-side.")}${knowledgeIntakeSurface()}${skillHygieneSurface()}<div class="fabric-summary"><div><small>LIVE SKILLS</small><strong>${registry.inventory}</strong></div><div><small>CATEGORIES</small><strong>${categories.length}</strong></div><div><small>AGENTS ATTACHED</small><strong>${registry.attached_agents}</strong></div><div><small>ELIGIBLE SYSTEMS</small><strong>${registry.eligible_systems}</strong></div></div><div class="catalog-toolbar"><label>⌕<input id="skill-search" value="${esc(state.skillQuery)}" placeholder="Search skills and techniques" /></label><div class="category-strip"><button class="${state.skillCategory === "all" ? "is-active" : ""}" data-skill-category="all">All</button>${categories.slice(0, 8).map((category) => `<button class="${state.skillCategory === category ? "is-active" : ""}" data-skill-category="${esc(category)}">${esc(titleCase(category))} · ${registry.categories[category]}</button>`).join("")}</div></div><div class="skill-catalog">${filtered.slice(0, 60).map((skill) => `<article><header><span>${esc(skill.category)}</span><em>SHARED</em></header><h3>${esc(titleCase(skill.name))}</h3><p>${esc(skill.description || "No description provided")}</p><footer><span>All authorized agents</span><span>Available</span></footer></article>`).join("")}</div>${filtered.length > 60 ? `<p class="catalog-note">Showing 60 of ${filtered.length} matches. Refine the search to narrow the live registry.</p>` : ""}`;
 }
 
-function operationalMemorySurface() {
+function operationalMemorySurface(feedless = false) {
   const summary = state.data.operational?.shared_memory || { fact_count: 0, scopes: {} };
   const entries = state.memories.map((memory) => `<article class="shared-memory-card"><header><span>${esc(titleCase(memory.scope_kind))} · ${esc(memory.scope_id)}</span><em>${esc(titleCase(memory.trust))} trust</em></header><h3>${esc(memory.title)}</h3><p>${esc(memory.body)}</p><footer><span>${esc(titleCase(memory.created_by))}</span><time>${new Date(memory.updated_at).toLocaleString()}</time></footer></article>`).join("");
-  return `<div class="operational-memory-grid"><form class="memory-compose workspace-card" data-memory-form><div class="compose-title"><div><p class="eyebrow">AGIOS shared store</p><h3>Add durable knowledge</h3></div>${status(state.data.operational?.status || "unavailable")}</div><p>This is the real cross-agent memory layer. Saved facts become retrievable by every agent authorized for the selected scope.</p><label>Title<input name="title" required maxlength="160" placeholder="A concise, stable fact"/></label><label>Memory<textarea name="body" required maxlength="4000" placeholder="Record the verified knowledge, decision, or operating preference. Never include credentials."></textarea></label><div class="operational-options"><label>Scope<select name="scopeKind"><option value="portfolio">Portfolio · all agents</option><option value="business">Business</option><option value="department">Department</option><option value="project">Project</option><option value="private">Private agent</option></select></label><label>Scope ID<input name="scopeId" required maxlength="128" value="portfolio"/></label></div><div class="compose-submit"><span>${summary.fact_count} shared memories currently stored</span><button type="submit">Save to shared memory</button></div></form><section class="shared-memory-feed"><div class="run-feed-heading"><div><p class="eyebrow">Authorized view · Default agent</p><h3>${state.memories.length} readable memories</h3></div><span>LIVE</span></div>${entries || `<div class="workspace-empty workspace-card"><b>✦</b><strong>The shared store is ready</strong><span>Add the first portfolio memory to make it available to all seven agents.</span></div>`}</section></div>`;
+  return `<div class="operational-memory-grid"><form class="memory-compose workspace-card" data-memory-form><div class="compose-title"><div><p class="eyebrow">AGIOS shared store</p><h3>Add durable knowledge</h3></div>${status(state.data.operational?.status || "unavailable")}</div><p>This is the real cross-agent memory layer. Saved facts become retrievable by every agent authorized for the selected scope.</p><label>Title<input name="title" required maxlength="160" placeholder="A concise, stable fact"/></label><label>Memory<textarea name="body" required maxlength="4000" placeholder="Record the verified knowledge, decision, or operating preference. Never include credentials."></textarea></label><div class="operational-options"><label>Scope<select name="scopeKind"><option value="portfolio">Portfolio · all agents</option><option value="business">Business</option><option value="department">Department</option><option value="project">Project</option><option value="private">Private agent</option></select></label><label>Scope ID<input name="scopeId" required maxlength="128" value="portfolio"/></label></div><div class="compose-submit"><span>${summary.fact_count} shared memories currently stored</span><button type="submit">Save to shared memory</button></div></form>${feedless ? "" : `<section class="shared-memory-feed"><div class="run-feed-heading"><div><p class="eyebrow">Authorized view · Default agent</p><h3>${state.memories.length} readable memories</h3></div><span>LIVE</span></div>${entries || `<div class="workspace-empty workspace-card"><b>✦</b><strong>The shared store is ready</strong><span>Add the first portfolio memory to make it available to all seven agents.</span></div>`}</section>`}</div>`;
 }
 
 function retrievalWorkbench() {
@@ -1065,19 +1067,11 @@ function retrievalWorkbench() {
   return `<section class="retrieval-workbench"><form class="workspace-card retrieval-compose" data-retrieval-form><div><p class="eyebrow">RAG evidence console</p><h3>Search what an agent is allowed to know</h3><p>Mode: ${esc(mode)}. Results include provenance and citation IDs; no-match queries return no evidence.</p></div><div class="retrieval-fields"><label>Agent<select name="agentId">${agents}</select></label><label>Project scope<input name="projectId" maxlength="128" placeholder="Optional project ID"/></label><label>Evidence query<input name="query" required maxlength="8000" placeholder="What verified knowledge do we have about..."/></label><button type="submit">Retrieve evidence</button></div></form><div class="evidence-feed">${hits || `<div class="workspace-empty workspace-card"><b>RAG</b><strong>Evidence appears here</strong><span>Searches are local and restricted to the selected agent's authorized scopes.</span></div>`}</div></section>`;
 }
 
-function memoryLayerSurface() {
-  const layers = [
-    ["IDENTITY", "Standing context", state.data.shared_fabric.memory.fact_count, "Small, stable profile facts"],
-    ["EPISODIC", "Sessions", state.runs.length, "Searchable work history"],
-    ["KNOWLEDGE", "Durable facts", state.memories.length, "Verified scoped records"],
-    ["PROJECT", "Repositories", state.data.repositories.length, "Code and workspace boundaries"],
-    ["WORKING", "Temporary assets", state.visionAssets.length, "Retention-controlled task context"],
-  ];
-  return `<section class="memory-layers"><header><div><p class="eyebrow">MEMORY ARCHITECTURE</p><h2>One studio, five distinct memory layers.</h2><p>Agents see one authorized experience; AGIOS keeps identity, history, knowledge, projects, and temporary context separate underneath.</p></div><span>SCOPED BY POLICY</span></header><div>${layers.map(([kind, name, count, note]) => `<article><small>${kind}</small><strong>${count}</strong><h3>${name}</h3><p>${note}</p></article>`).join("")}</div><footer><strong>Promotion gate:</strong> imported text and completed work become durable knowledge only with a source, scope, trust level, and explicit save. Contradictions remain visible for review.</footer></section>`;
-}
 
 function renderSharedMemory() {
-  page.innerHTML = `${heading("Memory", "One live memory, safely shared across every agent.", "Explore, read and curate durable knowledge in one place. Every runtime reads through AGIOS scope policy; credentials never enter model context.")}${memoryLayerSurface()}<div class="scope-strip">${state.data.shared_fabric.memory.scopes.map((scope) => `<span><i></i><strong>${esc(scope.label)}</strong><small>${esc(titleCase(scope.policy))}</small></span>`).join("")}</div>${memoryVaultSurface()}${retrievalWorkbench()}${operationalMemorySurface()}`;
+  const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
+  const search = state.memorySearchOpen ? retrievalWorkbench() : "";
+  page.innerHTML = `${heading("Memory", "Facts agents can read.", "")}<div class="memory-toolbar"><button data-memory-toggle="compose">＋ New memory</button><button data-memory-toggle="search">⌕ Search</button></div>${memoryVaultSurface()}${compose}${search}`;
 }
 
 function repositorySurface() {
@@ -1786,6 +1780,12 @@ document.addEventListener("click", (event) => {
   const memoryNote = event.target.closest("[data-memory-note]");
   if (memoryFolder) { state.memoryFolder = memoryFolder.dataset.memoryFolder; state.memoryNote = null; renderSharedMemory(); }
   if (memoryNote) { state.memoryNote = memoryNote.dataset.memoryNote; renderSharedMemory(); }
+  const memoryToggle = event.target.closest("[data-memory-toggle]");
+  if (memoryToggle) {
+    if (memoryToggle.dataset.memoryToggle === "compose") state.memoryComposeOpen = !state.memoryComposeOpen;
+    if (memoryToggle.dataset.memoryToggle === "search") state.memorySearchOpen = !state.memorySearchOpen;
+    renderSharedMemory();
+  }
   const learnForm = event.target.closest("[data-learn-form]");
   if (learnForm) void submitLearnForm(learnForm);
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();
