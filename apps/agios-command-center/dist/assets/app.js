@@ -28626,6 +28626,259 @@ var CanvasTexture = class extends Texture {
     this.needsUpdate = true;
   }
 };
+var Curve = class {
+  constructor() {
+    this.type = "Curve";
+    this.arcLengthDivisions = 200;
+  }
+  // Virtual base class method to overwrite and implement in subclasses
+  //	- t [0 .. 1]
+  getPoint() {
+    console.warn("THREE.Curve: .getPoint() not implemented.");
+    return null;
+  }
+  // Get point at relative position in curve according to arc length
+  // - u [0 .. 1]
+  getPointAt(u, optionalTarget) {
+    const t = this.getUtoTmapping(u);
+    return this.getPoint(t, optionalTarget);
+  }
+  // Get sequence of points using getPoint( t )
+  getPoints(divisions = 5) {
+    const points = [];
+    for (let d = 0; d <= divisions; d++) {
+      points.push(this.getPoint(d / divisions));
+    }
+    return points;
+  }
+  // Get sequence of points using getPointAt( u )
+  getSpacedPoints(divisions = 5) {
+    const points = [];
+    for (let d = 0; d <= divisions; d++) {
+      points.push(this.getPointAt(d / divisions));
+    }
+    return points;
+  }
+  // Get total curve arc length
+  getLength() {
+    const lengths = this.getLengths();
+    return lengths[lengths.length - 1];
+  }
+  // Get list of cumulative segment lengths
+  getLengths(divisions = this.arcLengthDivisions) {
+    if (this.cacheArcLengths && this.cacheArcLengths.length === divisions + 1 && !this.needsUpdate) {
+      return this.cacheArcLengths;
+    }
+    this.needsUpdate = false;
+    const cache = [];
+    let current, last = this.getPoint(0);
+    let sum = 0;
+    cache.push(0);
+    for (let p = 1; p <= divisions; p++) {
+      current = this.getPoint(p / divisions);
+      sum += current.distanceTo(last);
+      cache.push(sum);
+      last = current;
+    }
+    this.cacheArcLengths = cache;
+    return cache;
+  }
+  updateArcLengths() {
+    this.needsUpdate = true;
+    this.getLengths();
+  }
+  // Given u ( 0 .. 1 ), get a t to find p. This gives you points which are equidistant
+  getUtoTmapping(u, distance) {
+    const arcLengths = this.getLengths();
+    let i = 0;
+    const il = arcLengths.length;
+    let targetArcLength;
+    if (distance) {
+      targetArcLength = distance;
+    } else {
+      targetArcLength = u * arcLengths[il - 1];
+    }
+    let low = 0, high = il - 1, comparison;
+    while (low <= high) {
+      i = Math.floor(low + (high - low) / 2);
+      comparison = arcLengths[i] - targetArcLength;
+      if (comparison < 0) {
+        low = i + 1;
+      } else if (comparison > 0) {
+        high = i - 1;
+      } else {
+        high = i;
+        break;
+      }
+    }
+    i = high;
+    if (arcLengths[i] === targetArcLength) {
+      return i / (il - 1);
+    }
+    const lengthBefore = arcLengths[i];
+    const lengthAfter = arcLengths[i + 1];
+    const segmentLength = lengthAfter - lengthBefore;
+    const segmentFraction = (targetArcLength - lengthBefore) / segmentLength;
+    const t = (i + segmentFraction) / (il - 1);
+    return t;
+  }
+  // Returns a unit vector tangent at t
+  // In case any sub curve does not implement its tangent derivation,
+  // 2 points a small delta apart will be used to find its gradient
+  // which seems to give a reasonable approximation
+  getTangent(t, optionalTarget) {
+    const delta = 1e-4;
+    let t1 = t - delta;
+    let t2 = t + delta;
+    if (t1 < 0) t1 = 0;
+    if (t2 > 1) t2 = 1;
+    const pt1 = this.getPoint(t1);
+    const pt2 = this.getPoint(t2);
+    const tangent = optionalTarget || (pt1.isVector2 ? new Vector2() : new Vector3());
+    tangent.copy(pt2).sub(pt1).normalize();
+    return tangent;
+  }
+  getTangentAt(u, optionalTarget) {
+    const t = this.getUtoTmapping(u);
+    return this.getTangent(t, optionalTarget);
+  }
+  computeFrenetFrames(segments, closed) {
+    const normal = new Vector3();
+    const tangents = [];
+    const normals = [];
+    const binormals = [];
+    const vec = new Vector3();
+    const mat = new Matrix4();
+    for (let i = 0; i <= segments; i++) {
+      const u = i / segments;
+      tangents[i] = this.getTangentAt(u, new Vector3());
+    }
+    normals[0] = new Vector3();
+    binormals[0] = new Vector3();
+    let min2 = Number.MAX_VALUE;
+    const tx = Math.abs(tangents[0].x);
+    const ty = Math.abs(tangents[0].y);
+    const tz = Math.abs(tangents[0].z);
+    if (tx <= min2) {
+      min2 = tx;
+      normal.set(1, 0, 0);
+    }
+    if (ty <= min2) {
+      min2 = ty;
+      normal.set(0, 1, 0);
+    }
+    if (tz <= min2) {
+      normal.set(0, 0, 1);
+    }
+    vec.crossVectors(tangents[0], normal).normalize();
+    normals[0].crossVectors(tangents[0], vec);
+    binormals[0].crossVectors(tangents[0], normals[0]);
+    for (let i = 1; i <= segments; i++) {
+      normals[i] = normals[i - 1].clone();
+      binormals[i] = binormals[i - 1].clone();
+      vec.crossVectors(tangents[i - 1], tangents[i]);
+      if (vec.length() > Number.EPSILON) {
+        vec.normalize();
+        const theta = Math.acos(clamp(tangents[i - 1].dot(tangents[i]), -1, 1));
+        normals[i].applyMatrix4(mat.makeRotationAxis(vec, theta));
+      }
+      binormals[i].crossVectors(tangents[i], normals[i]);
+    }
+    if (closed === true) {
+      let theta = Math.acos(clamp(normals[0].dot(normals[segments]), -1, 1));
+      theta /= segments;
+      if (tangents[0].dot(vec.crossVectors(normals[0], normals[segments])) > 0) {
+        theta = -theta;
+      }
+      for (let i = 1; i <= segments; i++) {
+        normals[i].applyMatrix4(mat.makeRotationAxis(tangents[i], theta * i));
+        binormals[i].crossVectors(tangents[i], normals[i]);
+      }
+    }
+    return {
+      tangents,
+      normals,
+      binormals
+    };
+  }
+  clone() {
+    return new this.constructor().copy(this);
+  }
+  copy(source) {
+    this.arcLengthDivisions = source.arcLengthDivisions;
+    return this;
+  }
+  toJSON() {
+    const data = {
+      metadata: {
+        version: 4.6,
+        type: "Curve",
+        generator: "Curve.toJSON"
+      }
+    };
+    data.arcLengthDivisions = this.arcLengthDivisions;
+    data.type = this.type;
+    return data;
+  }
+  fromJSON(json) {
+    this.arcLengthDivisions = json.arcLengthDivisions;
+    return this;
+  }
+};
+function QuadraticBezierP0(t, p) {
+  const k2 = 1 - t;
+  return k2 * k2 * p;
+}
+function QuadraticBezierP1(t, p) {
+  return 2 * (1 - t) * t * p;
+}
+function QuadraticBezierP2(t, p) {
+  return t * t * p;
+}
+function QuadraticBezier(t, p0, p1, p2) {
+  return QuadraticBezierP0(t, p0) + QuadraticBezierP1(t, p1) + QuadraticBezierP2(t, p2);
+}
+var QuadraticBezierCurve3 = class extends Curve {
+  constructor(v0 = new Vector3(), v1 = new Vector3(), v2 = new Vector3()) {
+    super();
+    this.isQuadraticBezierCurve3 = true;
+    this.type = "QuadraticBezierCurve3";
+    this.v0 = v0;
+    this.v1 = v1;
+    this.v2 = v2;
+  }
+  getPoint(t, optionalTarget = new Vector3()) {
+    const point = optionalTarget;
+    const v0 = this.v0, v1 = this.v1, v2 = this.v2;
+    point.set(
+      QuadraticBezier(t, v0.x, v1.x, v2.x),
+      QuadraticBezier(t, v0.y, v1.y, v2.y),
+      QuadraticBezier(t, v0.z, v1.z, v2.z)
+    );
+    return point;
+  }
+  copy(source) {
+    super.copy(source);
+    this.v0.copy(source.v0);
+    this.v1.copy(source.v1);
+    this.v2.copy(source.v2);
+    return this;
+  }
+  toJSON() {
+    const data = super.toJSON();
+    data.v0 = this.v0.toArray();
+    data.v1 = this.v1.toArray();
+    data.v2 = this.v2.toArray();
+    return data;
+  }
+  fromJSON(json) {
+    super.fromJSON(json);
+    this.v0.fromArray(json.v0);
+    this.v1.fromArray(json.v1);
+    this.v2.fromArray(json.v2);
+    return this;
+  }
+};
 var SphereGeometry = class _SphereGeometry extends BufferGeometry {
   constructor(radius = 1, widthSegments = 32, heightSegments = 16, phiStart = 0, phiLength = Math.PI * 2, thetaStart = 0, thetaLength = Math.PI) {
     super();
@@ -30632,6 +30885,7 @@ var state = {
   memorySearchOpen: false,
   memoryTab: "notes",
   memoryGalaxy: null,
+  memoryGalaxyFilter: "all",
   learned: null,
   costs: null,
   selectedAgent: "default",
@@ -31569,7 +31823,7 @@ function memoryPanelTabs() {
     ["omi", "\u2726 Omi"],
     ["graph", "\u25C9 Graph"]
   ];
-  return `<div class="memory-mode-tabs">${tabs.map(([id2, label]) => `<button class="${state.memoryTab === id2 ? "is-active" : ""}" data-memory-tab="${id2}">${label}</button>`).join("")}</div>`;
+  return `<div class="memory-mode-tabs">${tabs.map(([id2, label]) => `<button class="${state.memoryTab === id2 ? "is-active" : ""}" data-memory-tab="${id2}">${label}</button>`).join("")}<button class="memory-galaxy-button ${state.memoryTab === "graph" ? "is-active" : ""}" data-memory-tab="graph">Galaxy \u2726</button></div>`;
 }
 function memoryRecentSurface() {
   const recent = [...state.memories].sort((a2, b) => new Date(b.updated_at || 0) - new Date(a2.updated_at || 0)).slice(0, 12);
@@ -31581,15 +31835,29 @@ function memoryOmiSurface() {
   return `<div class="memory-omi-list"><p class="memory-omi-note">Open memory items readable by every authorized agent. ${state.memories.length} stored.</p>${rows}</div>`;
 }
 function memoryGalaxySurface() {
-  const memories = state.memories || [];
-  const linkCount = memories.reduce((total, memory) => total + memories.filter((other) => other.memory_id !== memory.memory_id && other.scope_kind === memory.scope_kind).length, 0) / 2;
-  const newest = memories.reduce((latest, memory) => Math.max(latest, new Date(memory.updated_at || 0).getTime()), 0);
-  const oldest = memories.reduce((oldest2, memory) => Math.min(oldest2, new Date(memory.updated_at || Date.now()).getTime()), Infinity);
+  const all = state.memories || [];
+  const filtered = state.memoryGalaxyFilter === "all" ? all : all.filter((memory) => memory.scope_kind === state.memoryGalaxyFilter);
+  const linkCount = filtered.reduce((total, memory) => total + filtered.filter((other) => other.memory_id !== memory.memory_id && other.scope_kind === memory.scope_kind).length, 0) / 2;
+  const weekAgo = Date.now() - 7 * 864e5;
+  const activeCount = filtered.filter((memory) => new Date(memory.updated_at || 0).getTime() >= weekAgo).length;
+  const scopeKinds = ["portfolio", "business", "department", "project", "private"];
+  const presentKinds = new Set(all.map((memory) => memory.scope_kind));
+  const missingKinds = scopeKinds.filter((kind) => !presentKinds.has(kind)).length;
+  const filters = [["all", "All", all.length], ...scopeKinds.map((kind) => [kind, titleCase(kind), all.filter((memory) => memory.scope_kind === kind).length])];
   return `<div class="memory-galaxy" aria-label="Memory galaxy - real durable facts as stars">
-    <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories">
-      <div class="memory-galaxy-overlay"><strong>MEMORY GALAXY</strong><span>${memories.length} stars \xB7 ${linkCount} links</span><p>drag to orbit \xB7 scroll to zoom \xB7 click a star \xB7 double-click to pause flight</p><p class="memory-galaxy-hint">\u2726 brighter &amp; whiter = more recently touched</p></div>
+    <div class="memory-galaxy-controls">
+      <div class="memory-galaxy-stats">
+        <span><small>ACTIVE</small><strong>${activeCount}</strong></span>
+        <span><small>ACTIVATED</small><strong>${filtered.length}</strong></span>
+        <span><small>DATA SOURCE</small><strong>${presentKinds.size}</strong></span>
+        <span class="${missingKinds ? "is-missing" : ""}"><small>MISSING</small><strong>${missingKinds}</strong></span>
+      </div>
+      <div class="memory-galaxy-filters">${filters.map(([id2, label, count]) => `<button class="${state.memoryGalaxyFilter === id2 ? "is-active" : ""} scope-${id2}" data-memory-galaxy-filter="${id2}"><i></i>${esc(label)} \xB7 ${count}</button>`).join("")}</div>
+      <div class="memory-galaxy-legend"><span><i class="portfolio"></i>Portfolio</span><span><i class="business"></i>Business</span><span><i class="department"></i>Department</span><span><i class="project"></i>Project</span><span><i class="private"></i>Private</span></div>
     </div>
-    <footer><span>${memories.length} real facts \xB7 links = shared scope</span><span>span ${newest > oldest ? `${Math.ceil((newest - oldest) / 864e5)} days` : "today"}</span></footer>
+    <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories">
+      <div class="memory-galaxy-overlay"><strong>MEMORY GALAXY</strong><span>${filtered.length} stars \xB7 ${linkCount} links</span><p>drag to orbit \xB7 scroll to zoom \xB7 click a star \xB7 double-click to pause flight \xB7 hover a star to trace its links</p><p class="memory-galaxy-hint">\u2726 brighter &amp; whiter = more recently touched</p></div>
+    </div>
   </div>`;
 }
 function renderSharedMemory() {
@@ -31597,7 +31865,7 @@ function renderSharedMemory() {
   const compose = state.memoryComposeOpen ? operationalMemorySurface(true) : "";
   const search = state.memorySearchOpen ? retrievalWorkbench() : "";
   if (!count) {
-    page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count} OMI</span></header>${memoryPanelTabs()}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">\uFF0B Save first memory</button></div></div></section>${compose}${search}`;
+    page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count + state.runs.length} OMI \xB7 ${count} NOTES</span></header>${memoryPanelTabs()}<div class="memory-vault is-empty"><div class="memory-vault-empty-state"><h3>No memories yet</h3><p>Save the first durable fact and every authorized agent can read it.</p><button data-memory-toggle="compose">\uFF0B Save first memory</button></div></div></section>${compose}${search}`;
     return;
   }
   let body = "";
@@ -31605,7 +31873,7 @@ function renderSharedMemory() {
   else if (state.memoryTab === "omi") body = memoryOmiSurface();
   else if (state.memoryTab === "graph") body = memoryGalaxySurface();
   else body = `<div class="memory-toolbar"><button data-memory-toggle="compose">\uFF0B New memory</button><button data-memory-toggle="search">\u2315 Search</button></div>${memoryVaultSurface()}`;
-  page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count} OMI</span></header>${memoryPanelTabs()}${body}</section>${compose}${search}`;
+  page.innerHTML = `${memoryPageHero()}<section class="memory-panel"><header class="memory-panel-header"><span class="memory-panel-mark"></span>${brainIcon()}<h2>Memory \u2014 Obsidian Vault</h2><span class="memory-omi-pill">${count + state.runs.length} OMI \xB7 ${count} NOTES</span></header>${memoryPanelTabs()}${body}</section>${compose}${search}`;
   if (state.memoryTab === "graph") window.requestAnimationFrame(renderMemoryGalaxy);
 }
 function disposeMemoryGalaxy() {
@@ -31624,14 +31892,28 @@ function disposeMemoryGalaxy() {
   });
   state.memoryGalaxy = null;
 }
+function glowTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const context = canvas.getContext("2d");
+  const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gradient.addColorStop(0, "rgba(255,255,255,0.85)");
+  gradient.addColorStop(0.25, "rgba(255,255,255,0.32)");
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+  return new CanvasTexture(canvas);
+}
 function renderMemoryGalaxy() {
   const host = document.querySelector("#memory-galaxy-canvas");
   if (!host) return;
   disposeMemoryGalaxy();
-  const memories = state.memories || [];
+  const all = state.memories || [];
+  const memories = state.memoryGalaxyFilter === "all" ? all : all.filter((memory) => memory.scope_kind === state.memoryGalaxyFilter);
   if (!memories.length) return;
   const width = Math.max(480, host.clientWidth || 800);
-  const height = Math.max(420, host.clientHeight || 560);
+  const height = Math.max(440, host.clientHeight || 560);
   const newest = memories.reduce((latest, memory) => Math.max(latest, new Date(memory.updated_at || 0).getTime()), 0);
   const oldest = memories.reduce((oldest2, memory) => Math.min(oldest2, new Date(memory.updated_at || Date.now()).getTime()), Infinity);
   const renderer = new WebGLRenderer({ antialias: true, alpha: true });
@@ -31650,13 +31932,16 @@ function renderMemoryGalaxy() {
   controls.autoRotateSpeed = 0.3;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scopeHue = { portfolio: 0.48, business: 0.11, department: 0.75, project: 0.55, private: 0.93 };
+  const scopeTint = { portfolio: 10148290, business: 14132573, department: 9403088, project: 7587535, private: 13205408 };
   const starGeometry = new SphereGeometry(0.11, 14, 14);
   const starGroup = new Group();
+  const glowMaterial = new SpriteMaterial({ map: glowTexture(), transparent: true, opacity: 0.5, depthWrite: false, blending: AdditiveBlending });
   const recencyOf = (memory) => {
     const span = newest - oldest;
     const position = newest - new Date(memory.updated_at || oldest).getTime();
     return span > 0 ? 1 - position / span : 1;
   };
+  const starMeshes = [];
   memories.forEach((memory, index2) => {
     const arm = index2 % 4;
     const angle = index2 / memories.length * Math.PI * 4.4 + arm * (Math.PI / 2);
@@ -31670,8 +31955,17 @@ function renderMemoryGalaxy() {
     const mesh = new Mesh(starGeometry, new MeshBasicMaterial({ color: color2, transparent: true, opacity: 0.6 + recency * 0.4 }));
     mesh.scale.setScalar(0.8 + recency * 2.4);
     mesh.position.set(x3, y3, z);
-    mesh.userData = { memory };
+    mesh.userData = { memory, baseOpacity: 0.6 + recency * 0.4 };
     starGroup.add(mesh);
+    starMeshes.push(mesh);
+    const glow = new Sprite(glowMaterial.clone());
+    glow.material.color.set(color2);
+    glow.material.opacity = 0.16 + recency * 0.4;
+    const glowScale = (1.6 + recency * 4.4) * (0.8 + recency * 2.4);
+    glow.scale.set(glowScale, glowScale, 1);
+    glow.position.copy(mesh.position);
+    glow.userData = { memory, baseOpacity: glow.material.opacity };
+    starGroup.add(glow);
   });
   const coreGlow = new Mesh(new SphereGeometry(1.9, 22, 22), new MeshBasicMaterial({ color: 12363775, transparent: true, opacity: 0.34 }));
   starGroup.add(coreGlow);
@@ -31683,75 +31977,98 @@ function renderMemoryGalaxy() {
     }
   }
   if (pairs.length) {
-    const linkPositions = new Float32Array(pairs.length * 6);
     const nodePositions = /* @__PURE__ */ new Map();
-    starGroup.children.forEach((child) => {
-      if (child.userData?.memory) nodePositions.set(child.userData.memory.memory_id, [child.position.x, child.position.y, child.position.z]);
-    });
-    pairs.forEach(([a2, b], index2) => {
+    starMeshes.forEach((mesh) => nodePositions.set(mesh.userData.memory.memory_id, mesh.position.clone()));
+    const segments = [];
+    pairs.forEach(([a2, b]) => {
       const pa = nodePositions.get(a2.memory_id);
       const pb = nodePositions.get(b.memory_id);
       if (!pa || !pb) return;
-      linkPositions[index2 * 6] = pa[0];
-      linkPositions[index2 * 6 + 1] = pa[1];
-      linkPositions[index2 * 6 + 2] = pa[2];
-      linkPositions[index2 * 6 + 3] = pb[0];
-      linkPositions[index2 * 6 + 4] = pb[1];
-      linkPositions[index2 * 6 + 5] = pb[2];
+      const middle = pa.clone().add(pb).multiplyScalar(0.5);
+      middle.y += pa.distanceTo(pb) * 0.22;
+      const curve = new QuadraticBezierCurve3(pa, middle, pb);
+      const samples = curve.getPoints(22);
+      for (let k2 = 0; k2 < samples.length - 1; k2 += 1) {
+        segments.push(samples[k2].x, samples[k2].y, samples[k2].z, samples[k2 + 1].x, samples[k2 + 1].y, samples[k2 + 1].z);
+      }
     });
-    const linkGeometry = new BufferGeometry();
-    linkGeometry.setAttribute("position", new BufferAttribute(linkPositions, 3));
-    const links = new LineSegments(linkGeometry, new LineBasicMaterial({ color: 6971296, transparent: true, opacity: 0.3 }));
-    scene.add(links);
+    if (segments.length) {
+      const linkGeometry = new BufferGeometry();
+      linkGeometry.setAttribute("position", new BufferAttribute(new Float32Array(segments), 3));
+      const links = new LineSegments(linkGeometry, new LineBasicMaterial({ color: 6971296, transparent: true, opacity: 0.3 }));
+      scene.add(links);
+    }
   }
   const labelObjects = [];
-  starGroup.children.forEach((child) => {
-    const memory = child.userData?.memory;
-    if (!memory) return;
+  starMeshes.forEach((mesh) => {
+    const memory = mesh.userData.memory;
     const text = memory.title.length > 24 ? `${memory.title.slice(0, 23)}\u2026` : memory.title;
     const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
     const font = "11px sans-serif";
-    context.font = font;
-    const textWidth = Math.ceil(context.measureText(text).width);
+    const probe = canvas.getContext("2d");
+    probe.font = font;
+    const textWidth = Math.ceil(probe.measureText(text).width);
     canvas.width = textWidth + 22;
     canvas.height = 30;
-    const context2 = canvas.getContext("2d");
-    context2.font = font;
+    const context = canvas.getContext("2d");
+    context.font = font;
     const radius = 9;
     const w2 = canvas.width;
     const h2 = canvas.height;
-    context2.fillStyle = "rgba(13,15,24,.86)";
-    context2.beginPath();
-    context2.moveTo(radius, 0);
-    context2.lineTo(w2 - radius, 0);
-    context2.quadraticCurveTo(w2, 0, w2, radius);
-    context2.lineTo(w2, h2 - radius);
-    context2.quadraticCurveTo(w2, h2, w2 - radius, h2);
-    context2.lineTo(radius, h2);
-    context2.quadraticCurveTo(0, h2, 0, h2 - radius);
-    context2.lineTo(0, radius);
-    context2.quadraticCurveTo(0, 0, radius, 0);
-    context2.closePath();
-    context2.fill();
-    context2.fillStyle = "#d8d3ea";
-    context2.fillText(text, 11, 20);
+    context.fillStyle = "rgba(13,15,24,.88)";
+    context.beginPath();
+    context.moveTo(radius, 0);
+    context.lineTo(w2 - radius, 0);
+    context.quadraticCurveTo(w2, 0, w2, radius);
+    context.lineTo(w2, h2 - radius);
+    context.quadraticCurveTo(w2, h2, w2 - radius, h2);
+    context.lineTo(radius, h2);
+    context.quadraticCurveTo(0, h2, 0, h2 - radius);
+    context.lineTo(0, radius);
+    context.quadraticCurveTo(0, 0, radius, 0);
+    context.closePath();
+    context.fill();
+    context.fillStyle = "#d8d3ea";
+    context.fillText(text, 11, 20);
     const texture = new CanvasTexture(canvas);
     const sprite = new Sprite(new SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
     sprite.scale.set(w2 / 52, h2 / 52, 1);
-    sprite.position.copy(child.position).add(new Vector3(0, 1.15, 0));
+    sprite.position.copy(mesh.position).add(new Vector3(0, 1.15, 0));
     sprite.userData = { memory };
     scene.add(sprite);
     labelObjects.push(sprite);
   });
   const raycaster = new Raycaster();
   const pointer = new Vector2();
+  const setHover = (hoveredMemory) => {
+    starMeshes.forEach((mesh) => {
+      const memory = mesh.userData.memory;
+      const connected = hoveredMemory && (memory.memory_id === hoveredMemory.memory_id || memory.scope_kind === hoveredMemory.scope_kind);
+      mesh.material.opacity = hoveredMemory && !connected ? 0.14 : mesh.userData.baseOpacity;
+    });
+    starGroup.children.forEach((child) => {
+      if (!(child instanceof Sprite) || !child.userData?.memory) return;
+      const memory = child.userData.memory;
+      const connected = hoveredMemory && (memory.memory_id === hoveredMemory.memory_id || memory.scope_kind === hoveredMemory.scope_kind);
+      child.material.opacity = hoveredMemory && !connected ? 0.08 : child.userData.baseOpacity;
+    });
+  };
+  const move = (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(starMeshes, false);
+    const hit = hits.find((item) => item.object.userData?.memory);
+    setHover(hit ? hit.object.userData.memory : null);
+    renderer.domElement.style.cursor = hit ? "pointer" : "";
+  };
   const pick = (event) => {
     const rect = renderer.domElement.getBoundingClientRect();
     pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(pointer, camera);
-    const hits = raycaster.intersectObjects(starGroup.children, false);
+    const hits = raycaster.intersectObjects(starMeshes, false);
     const hit = hits.find((item) => item.object.userData?.memory);
     if (hit) {
       const memory = hit.object.userData.memory;
@@ -31763,6 +32080,7 @@ function renderMemoryGalaxy() {
     return false;
   };
   renderer.domElement.addEventListener("click", pick);
+  renderer.domElement.addEventListener("pointermove", move);
   renderer.domElement.addEventListener("dblclick", () => {
     if (reducedMotion) return;
     controls.autoRotate = !controls.autoRotate;
@@ -32526,6 +32844,11 @@ document.addEventListener("click", (event) => {
   const memoryTab = event.target.closest("[data-memory-tab]");
   if (memoryTab) {
     state.memoryTab = memoryTab.dataset.memoryTab;
+    renderSharedMemory();
+  }
+  const galaxyFilter = event.target.closest("[data-memory-galaxy-filter]");
+  if (galaxyFilter) {
+    state.memoryGalaxyFilter = galaxyFilter.dataset.memoryGalaxyFilter;
     renderSharedMemory();
   }
   const learnForm = event.target.closest("[data-learn-form]");
