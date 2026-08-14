@@ -9785,6 +9785,8 @@ var state = {
   data: null,
   view: "command",
   dreaming: null,
+  memoryFolder: "all",
+  memoryNote: null,
   learned: null,
   costs: null,
   selectedAgent: "default",
@@ -9814,7 +9816,6 @@ var state = {
   voiceTimer: null,
   wakeRecognition: null,
   wakeArmed: false,
-  memorySimulation: null,
   osMapSimulation: null,
   osMapLayer: "all",
   operationalLoading: false,
@@ -10498,71 +10499,34 @@ function routedSystemLauncher(system, action) {
 function renderModelCards(models) {
   return models.length ? `<div class="model-card-grid">${models.map((model) => `<article class="model-card"><header><span>${esc(model.provider)}</span>${status(model.location === "local" ? "ready" : "routed")}</header><h3>${esc(model.id)}</h3><p>${esc(titleCase(model.trust))} trust \xB7 ${esc(titleCase(model.cost_status))}</p><div class="data-class-row">${model.allowed_data_classes.map((item) => `<span>${esc(titleCase(item))}</span>`).join("")}</div></article>`).join("")}</div>` : `<div class="workspace-empty workspace-card large"><b>\u25C7</b><strong>No governed model routes connected</strong><span>The system exists in the AGIOS registry, but its model adapter is not installed.</span></div>`;
 }
-function memoryStudioSurface() {
-  const summary = state.data.operational?.shared_memory || { fact_count: 0, scopes: {} };
-  return `<section class="memory-studio"><header><div><p class="eyebrow">Memory Studio</p><h2>Living knowledge map</h2><p>Explore how durable decisions, facts and preferences connect to their authorization scopes. This is the single visualization surface for every agent and runtime.</p></div><div class="memory-studio-legend"><span><i class="portfolio"></i>Portfolio</span><span><i class="scope"></i>Scope</span><span><i class="fact"></i>Memory</span></div></header><div class="memory-studio-grid"><div id="memory-studio-graph" class="memory-studio-graph" role="img" aria-label="Interactive graph of authorized AGIOS memories"></div><aside id="memory-inspector" class="memory-inspector"><small>SELECT A NODE</small><h3>${summary.fact_count} durable memories</h3><p>Drag nodes to reorganize the map, pan the canvas and scroll to zoom. Select a memory to inspect its authorized content and provenance.</p><div class="memory-inspector-stats"><span><strong>${state.data.agents.length}</strong> agents</span><span><strong>${Object.keys(summary.scopes || {}).length}</strong> active scopes</span></div></aside></div></section>`;
-}
-function renderMemoryStudioGraph() {
-  const host = document.querySelector("#memory-studio-graph");
-  if (!host) return;
-  if (state.memorySimulation) state.memorySimulation.stop();
-  const width = Math.max(620, host.clientWidth || 900);
-  const height = Math.max(460, host.clientHeight || 520);
+function memoryVaultSurface() {
+  const memories = state.memories || [];
   const scopeKinds = ["portfolio", "business", "department", "project", "private"];
-  const nodes = [{ id: "agios-memory", label: "AGIOS MEMORY", kind: "core", radius: 32 }];
-  const links = [];
-  for (const kind of scopeKinds) {
-    nodes.push({ id: `scope:${kind}`, label: titleCase(kind), kind: "scope", radius: 18 });
-    links.push({ source: "agios-memory", target: `scope:${kind}` });
-  }
-  for (const memory of state.memories) {
-    nodes.push({ id: `memory:${memory.memory_id}`, label: memory.title, kind: "memory", radius: 9, memory });
-    links.push({ source: `scope:${scopeKinds.includes(memory.scope_kind) ? memory.scope_kind : "portfolio"}`, target: `memory:${memory.memory_id}` });
-  }
-  const svg = select_default2(host).append("svg").attr("viewBox", [0, 0, width, height]).attr("aria-hidden", "true");
-  const stage = svg.append("g");
-  svg.call(zoom_default2().scaleExtent([0.55, 2.8]).on("zoom", (event) => stage.attr("transform", event.transform)));
-  const line = stage.append("g").attr("class", "memory-links").selectAll("line").data(links).join("line");
-  const node = stage.append("g").selectAll("g").data(nodes).join("g").attr("class", (item) => `memory-graph-node is-${item.kind}`).attr("tabindex", 0);
-  node.append("circle").attr("r", (item) => item.radius);
-  node.filter((item) => item.kind !== "memory").append("text").attr("text-anchor", "middle").attr("dy", (item) => item.kind === "core" ? 50 : 34).text((item) => item.label);
-  node.filter((item) => item.kind === "memory").append("title").text((item) => item.label);
-  const inspect = (_event, item) => {
-    const panel = document.querySelector("#memory-inspector");
-    if (!panel) return;
-    if (item.memory) {
-      panel.innerHTML = `<small>${esc(titleCase(item.memory.scope_kind))} \xB7 ${esc(item.memory.scope_id)}</small><h3>${esc(item.memory.title)}</h3><p>${esc(item.memory.body)}</p><div class="memory-inspector-stats"><span><strong>${esc(titleCase(item.memory.trust))}</strong> trust</span><span><strong>${esc(titleCase(item.memory.created_by))}</strong> author</span></div>`;
-    } else {
-      const count = item.kind === "core" ? state.memories.length : state.memories.filter((memory) => `scope:${memory.scope_kind}` === item.id).length;
-      panel.innerHTML = `<small>${esc(item.kind === "core" ? "SHARED FABRIC" : "AUTHORIZATION SCOPE")}</small><h3>${esc(item.label)}</h3><p>${count} readable ${count === 1 ? "memory is" : "memories are"} connected here. Scope policy determines which agents may retrieve the content.</p>`;
-    }
-  };
-  node.on("click", inspect).on("keydown", (event, item) => {
-    if (event.key === "Enter" || event.key === " ") inspect(event, item);
-  });
-  node.call(drag_default().on("start", (event, item) => {
-    if (!event.active) state.memorySimulation.alphaTarget(0.2).restart();
-    item.fx = item.x;
-    item.fy = item.y;
-  }).on("drag", (event, item) => {
-    item.fx = event.x;
-    item.fy = event.y;
-  }).on("end", (event, item) => {
-    if (!event.active) state.memorySimulation.alphaTarget(0);
-    item.fx = null;
-    item.fy = null;
-  }));
-  state.memorySimulation = simulation_default(nodes).force("link", link_default(links).id((item) => item.id).distance((linkItem) => linkItem.target.kind === "memory" ? 68 : 125).strength(0.72)).force("charge", manyBody_default().strength((item) => item.kind === "core" ? -650 : item.kind === "scope" ? -220 : -45)).force("collide", collide_default().radius((item) => item.radius + 10)).force("center", center_default(width / 2, height / 2)).on("tick", () => {
-    line.attr("x1", (item) => item.source.x).attr("y1", (item) => item.source.y).attr("x2", (item) => item.target.x).attr("y2", (item) => item.target.y);
-    node.attr("transform", (item) => `translate(${item.x},${item.y})`);
-  });
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  node.each(function animateNode(_item, index2) {
-    this.animate(
-      [{ opacity: 0 }, { opacity: 1 }],
-      { duration: reducedMotion ? 1 : 360, delay: reducedMotion ? 0 : index2 * 14, easing: "ease-out", fill: "both" }
-    );
-  });
+  const folders = [
+    { id: "all", label: "All memories" },
+    ...scopeKinds.map((kind) => ({ id: kind, label: titleCase(kind) }))
+  ];
+  const filtered = state.memoryFolder === "all" ? memories : memories.filter((memory) => memory.scope_kind === state.memoryFolder);
+  const selected = filtered.find((memory) => memory.memory_id === state.memoryNote) || filtered[0] || null;
+  const rows = filtered.map((memory) => `
+    <button class="memory-vault-note${selected && selected.memory_id === memory.memory_id ? " is-active" : ""}" data-memory-note="${esc(memory.memory_id)}">
+      <span class="memory-vault-note-title">${esc(memory.title)}</span>
+      <span class="memory-vault-note-excerpt">${esc((memory.body || "").slice(0, 110))}</span>
+      <span class="memory-vault-note-meta">${esc(titleCase(memory.scope_kind))} \xB7 ${esc(titleCase(memory.trust))} trust</span>
+    </button>`).join("");
+  const folderButtons = folders.map((folder) => {
+    const count = folder.id === "all" ? memories.length : memories.filter((memory) => memory.scope_kind === folder.id).length;
+    return `<button class="${state.memoryFolder === folder.id ? "is-active" : ""}" data-memory-folder="${esc(folder.id)}"><span>${folder.id === "all" ? "\u25A4" : "\u25B8"}</span>${esc(folder.label)}<em>${count}</em></button>`;
+  }).join("");
+  const reader = selected ? `<article class="memory-vault-reader"><small>${esc(titleCase(selected.scope_kind))} / ${esc(selected.scope_id)} \xB7 ${esc(titleCase(selected.trust))} trust \xB7 by ${esc(titleCase(selected.created_by))}</small><h3>${esc(selected.title)}</h3><p>${esc(selected.body)}</p></article>` : `<article class="memory-vault-reader is-empty"><h3>No note selected</h3><p>${memories.length ? "Choose a memory from the list to read it." : "The vault is empty. Save the first durable fact from the form below."}</p></article>`;
+  return `<section class="memory-vault">
+    <header><div><p class="eyebrow">SHARED VAULT \xB7 OBSIDIAN-STYLE</p><h2>${memories.length} durable memor${memories.length === 1 ? "y" : "ies"}, plain and readable.</h2><p>Folders mirror authorization scopes. Reading is direct; nothing animates, nothing is synthetic.</p></div><span>${state.data.agents.length} authorized agents</span></header>
+    <div class="memory-vault-body">
+      <aside class="memory-vault-tree">${folderButtons}</aside>
+      <div class="memory-vault-list">${rows || `<div class="memory-vault-empty"><strong>Empty ${state.memoryFolder === "all" ? "vault" : esc(titleCase(state.memoryFolder))} folder</strong><span>Facts saved under this scope will appear here.</span></div>`}</div>
+      ${reader}
+    </div>
+  </section>`;
 }
 function renderSystems() {
   const cards = state.data.systems.map((system, index2) => {
@@ -10773,8 +10737,7 @@ function memoryLayerSurface() {
   return `<section class="memory-layers"><header><div><p class="eyebrow">MEMORY ARCHITECTURE</p><h2>One studio, five distinct memory layers.</h2><p>Agents see one authorized experience; AGIOS keeps identity, history, knowledge, projects, and temporary context separate underneath.</p></div><span>SCOPED BY POLICY</span></header><div>${layers.map(([kind, name, count, note]) => `<article><small>${kind}</small><strong>${count}</strong><h3>${name}</h3><p>${note}</p></article>`).join("")}</div><footer><strong>Promotion gate:</strong> imported text and completed work become durable knowledge only with a source, scope, trust level, and explicit save. Contradictions remain visible for review.</footer></section>`;
 }
 function renderSharedMemory() {
-  page.innerHTML = `${heading("Memory Studio", "One live memory, safely shared across every agent.", "Explore, search and curate durable knowledge in one place. Every runtime reads through AGIOS scope policy; credentials never enter model context.")}${memoryLayerSurface()}<div class="scope-strip">${state.data.shared_fabric.memory.scopes.map((scope) => `<span><i></i><strong>${esc(scope.label)}</strong><small>${esc(titleCase(scope.policy))}</small></span>`).join("")}</div>${memoryStudioSurface()}${retrievalWorkbench()}${operationalMemorySurface()}`;
-  window.requestAnimationFrame(renderMemoryStudioGraph);
+  page.innerHTML = `${heading("Memory", "One live memory, safely shared across every agent.", "Explore, read and curate durable knowledge in one place. Every runtime reads through AGIOS scope policy; credentials never enter model context.")}${memoryLayerSurface()}<div class="scope-strip">${state.data.shared_fabric.memory.scopes.map((scope) => `<span><i></i><strong>${esc(scope.label)}</strong><small>${esc(titleCase(scope.policy))}</small></span>`).join("")}</div>${memoryVaultSurface()}${retrievalWorkbench()}${operationalMemorySurface()}`;
 }
 function repositorySurface() {
   return `<div class="repository-grid">${state.data.repositories.map((repo) => `<article><header><span>\u25B1</span>${status(repo.status)}</header><h3>${esc(repo.name)}</h3><p>${esc(titleCase(repo.visibility))} \xB7 owner ${esc(titleCase(repo.owner_agent_id))}</p><div class="boundary-note">Repository paths and customer contents stay server-side. External actions require explicit approval.</div></article>`).join("")}</div>`;
@@ -11492,6 +11455,17 @@ document.addEventListener("click", (event) => {
   const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");
   if (dreamingAccept) void acceptDreaming(dreamingAccept);
   if (dreamingDismiss) void dismissDreaming(dreamingDismiss);
+  const memoryFolder = event.target.closest("[data-memory-folder]");
+  const memoryNote = event.target.closest("[data-memory-note]");
+  if (memoryFolder) {
+    state.memoryFolder = memoryFolder.dataset.memoryFolder;
+    state.memoryNote = null;
+    renderSharedMemory();
+  }
+  if (memoryNote) {
+    state.memoryNote = memoryNote.dataset.memoryNote;
+    renderSharedMemory();
+  }
   const learnForm = event.target.closest("[data-learn-form]");
   if (learnForm) void submitLearnForm(learnForm);
   if (event.target.matches("[data-close-modal]") || event.target === modal) closeModal();

@@ -115,14 +115,15 @@ test("frontend exposes scoped RAG evidence and the governed A2A gateway", () => 
 });
 
 test("Phase 4 exposes real voice, model routing, professional agents, growth, and one Memory Studio", () => {
-  for (const label of ["Push to talk", "Model route", "Professional identity", "Governed skill evolution", "Memory Studio", "Living knowledge map"]) assert.match(js, new RegExp(label));
+  for (const label of ["Push to talk", "Model route", "Professional identity", "Governed skill evolution", "Memory Studio", "SHARED VAULT", "plain and readable"]) assert.match(js, new RegExp(label));
   assert.match(js, /Chat \+ Voice/);
   assert.match(js, /\/api\/v1\/voice\/transcribe/);
   assert.match(js, /\/api\/v1\/voice\/synthesize/);
   assert.match(js, /model_id/);
   assert.match(js, /skill-proposals/);
   assert.match(js, /simulation_default/);
-  assert.match(css, /\.memory-studio-graph/);
+  assert.match(css, /\.memory-vault/);
+  assert.match(css, /\.memory-vault-tree/);
   assert.doesNotMatch(js, /Profile memory telemetry/);
 });
 

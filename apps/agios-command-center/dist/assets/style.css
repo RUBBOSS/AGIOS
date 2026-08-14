@@ -689,32 +689,34 @@ body { background: #090a0f; }
 .skill-approval-card footer { border-top: 1px solid var(--line-soft); color: var(--dim); font-size: 7px; }
 .skill-approval-card footer button { min-height: 31px; padding: 0 10px; border: 1px solid #6d552f; border-radius: 7px; background: #322414; color: #e2bc7a; font-size: 7px; cursor: pointer; }
 .approval-sections { display: grid; gap: 22px; }
-.memory-studio { margin-bottom: 18px; overflow: hidden; border: 1px solid #2d3938; border-radius: 13px; background: #0e1213; }
-.memory-studio > header { min-height: 84px; padding: 17px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line-soft); }
-.memory-studio h2 { margin: 3px 0 5px; font-size: 19px; }
-.memory-studio header p:not(.eyebrow) { max-width: 680px; margin: 0; color: var(--muted); font-size: 8px; line-height: 1.45; }
-.memory-studio-legend { display: flex; flex-wrap: wrap; gap: 10px; color: var(--dim); font-size: 7px; }
-.memory-studio-legend span { display: flex; align-items: center; gap: 5px; }
-.memory-studio-legend i { width: 8px; height: 8px; border-radius: 50%; background: #7ab9a6; }
-.memory-studio-legend i.scope { background: #d7a55d; }
-.memory-studio-legend i.fact { width: 6px; height: 6px; background: #9aa6a3; }
-.memory-studio-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .45fr); min-height: 520px; }
-.memory-studio-graph { min-height: 520px; overflow: hidden; background: radial-gradient(circle at 45% 48%, rgba(35,67,60,.55), #0a0e0f 64%); }
-.memory-studio-graph svg { width: 100%; height: 100%; min-height: 520px; cursor: grab; }
-.memory-studio-graph svg:active { cursor: grabbing; }
-.memory-links line { stroke: #39504b; stroke-width: .8; opacity: .65; }
-.memory-graph-node { cursor: pointer; }
-.memory-graph-node circle { fill: #a7b0ae; stroke: #d7ddda; stroke-width: .7; }
-.memory-graph-node.is-scope circle { fill: #b17c3d; stroke: #e1b879; }
-.memory-graph-node.is-core circle { fill: #2b6656; stroke: #91d0bb; stroke-width: 1.4; filter: drop-shadow(0 0 14px rgba(102,190,159,.4)); }
-.memory-graph-node text { fill: #8e9b98; font-size: 7px; letter-spacing: .08em; pointer-events: none; }
-.memory-graph-node.is-core text { fill: #b9d9ce; font-weight: 700; }
-.memory-inspector { padding: 24px; border-left: 1px solid var(--line-soft); background: #101516; }
-.memory-inspector small { color: var(--good); font-size: 7px; letter-spacing: .12em; }
-.memory-inspector h3 { margin: 16px 0 9px; font-size: 20px; line-height: 1.25; }
-.memory-inspector p { color: var(--muted); font-size: 9px; line-height: 1.65; white-space: pre-wrap; }
-.memory-inspector-stats { margin-top: 22px; padding-top: 14px; display: flex; gap: 18px; border-top: 1px solid var(--line-soft); color: var(--dim); font-size: 8px; }
-.memory-inspector-stats strong { color: var(--text); }
+.memory-vault { margin-bottom: 18px; overflow: hidden; border: 1px solid #2d3938; border-radius: 13px; background: #0e1213; }
+.memory-vault > header { min-height: 74px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line-soft); }
+.memory-vault > header h2 { margin: 3px 0 5px; font-size: 17px; }
+.memory-vault > header p:not(.eyebrow) { max-width: 680px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.memory-vault > header > span { flex: none; color: var(--dim); font-size: 10px; letter-spacing: .06em; }
+.memory-vault-body { display: grid; grid-template-columns: 210px minmax(0, 1.1fr) minmax(0, 1.25fr); min-height: 420px; }
+.memory-vault-tree { padding: 14px 10px; border-right: 1px solid var(--line-soft); background: #0b0f10; display: flex; flex-direction: column; gap: 3px; }
+.memory-vault-tree button { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 6px; color: var(--dim); font-size: 12px; text-align: left; transition: background .12s ease, color .12s ease; }
+.memory-vault-tree button span { font-size: 11px; }
+.memory-vault-tree button em { font-style: normal; font-size: 10px; color: var(--faint, #5c726a); }
+.memory-vault-tree button:hover { background: rgba(255,255,255,.04); color: var(--text); }
+.memory-vault-tree button.is-active { background: rgba(99,217,165,.08); color: var(--accent, #63d9a5); }
+.memory-vault-list { border-right: 1px solid var(--line-soft); max-height: 640px; overflow-y: auto; }
+.memory-vault-note { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 13px 16px; border-bottom: 1px solid var(--line-soft); text-align: left; transition: background .12s ease; }
+.memory-vault-note:hover { background: rgba(255,255,255,.025); }
+.memory-vault-note.is-active { background: rgba(99,217,165,.07); box-shadow: inset 2px 0 0 var(--accent, #63d9a5); }
+.memory-vault-note-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.memory-vault-note-excerpt { font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+.memory-vault-note-meta { font-size: 10px; color: var(--faint, #5c726a); letter-spacing: .03em; }
+.memory-vault-empty { padding: 26px 18px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.memory-vault-empty strong { display: block; color: var(--text); margin-bottom: 4px; }
+.memory-vault-reader { padding: 22px 24px; background: #101516; }
+.memory-vault-reader small { color: var(--good, #63d9a5); font-size: 10px; letter-spacing: .08em; }
+.memory-vault-reader h3 { margin: 12px 0 10px; font-size: 18px; line-height: 1.3; }
+.memory-vault-reader p { color: var(--muted); font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+.memory-vault-reader.is-empty { display: grid; place-content: center; justify-items: center; text-align: center; }
+.memory-vault-reader.is-empty h3 { color: var(--dim); }
+.memory-vault-reader.is-empty p { max-width: 34ch; }
 .memory-route { min-height: 180px; margin-bottom: 0; }
 .protocol-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
 .protocol-strip article { min-height: 92px; padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
@@ -987,8 +989,8 @@ body { background: #090a0f; }
   .model-card-grid, .skill-catalog, .repository-grid { grid-template-columns: repeat(2, 1fr); }
   .skill-preview-grid, .tool-catalog { grid-template-columns: repeat(3, 1fr); }
   .memory-layout, .memory-layout.is-compact { grid-template-columns: 1fr; }
-  .operational-grid, .operational-memory-grid, .network-grid, .growth-grid, .memory-studio-grid { grid-template-columns: 1fr; }
-  .memory-inspector { border-left: 0; border-top: 1px solid var(--line-soft); }
+  .operational-grid, .operational-memory-grid, .network-grid, .growth-grid, .memory-vault-body { grid-template-columns: 1fr; }
+  .memory-vault-reader { border-top: 1px solid var(--line-soft); }
   .operational-options.three, .operational-options.four { grid-template-columns: 1fr 1fr; }
   .workspace-registry form { grid-template-columns: 1fr 1fr; }
   .operational-compose, .memory-compose, .a2a-compose { position: static; }
@@ -1106,7 +1108,7 @@ body { background: #090a0f; }
   .operational-options, .operational-options.three, .operational-options.four { grid-template-columns: 1fr; }
   .workspace-registry form, .workspace-registry-list { grid-template-columns: 1fr; }
   .career-stats { grid-template-columns: 1fr; }
-  .memory-studio > header { align-items: flex-start; flex-direction: column; }
+  .memory-vault > header { align-items: flex-start; flex-direction: column; }
   .voice-controls small { width: 100%; text-align: left; }
   .retrieval-fields, .evidence-feed { grid-template-columns: 1fr; }
   .compose-submit, .approval-gate, .provider-memory-label { align-items: stretch; flex-direction: column; }
