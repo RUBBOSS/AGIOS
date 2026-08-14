@@ -24,6 +24,7 @@ from .dreaming import DreamingStore, build_dreaming_digest
 from .gauntlet import build_gauntlet_prompt
 from .learning import LearningStore, LearningStoreError, build_brain_file
 from .operational import OperationalError, OperationalService, default_state_dir
+from .training import TrainingCollector
 from .adapters.runtimes import collect_runtime_catalog
 from .orchestration import OrchestrationError, build_routing_plan, classify_ari_intent
 from .surfaces import (
@@ -185,6 +186,7 @@ def create_app(
     )
     selected_journal = journal_path or service.journal_path
     dreaming_store = DreamingStore(Path(service.state_dir) / "dreaming.json")
+    training_collector = TrainingCollector(Path(service.state_dir) / "training" / "routes.jsonl")
     learning_store = LearningStore(service.state_dir)
     a2a = A2AService(
         config=config,
@@ -974,6 +976,7 @@ def create_app(
                 service.orchestration.release_dispatch(plan_id, body.plan_digest)
                 raise
             saved = service.orchestration.bind_run(plan_id, body.plan_digest, str(run["run_id"]))
+            training_collector.record_route(plan, mode=mode, runtime_id=runtime_id)
             return {"schema_version": 1, "plan": saved, "run": run}
         except OrchestrationError as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
