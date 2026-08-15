@@ -313,7 +313,10 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /AI SYSTEM/);
   assert.match(js, /Start chat/);
   assert.match(js, /Open \$\{esc\(surface.name\)\} inside AGIOS/);
-  assert.match(js, /data-surface-embed/);
+  assert.match(js, /models run inside its own app/);
+  assert.match(js, /HOW YOU USE/);
+  assert.match(js, /Open live terminal/);
+  assert.match(js, /openclaw: "openclaw-cli"/);
   assert.match(js, /Live balance:/);
   assert.match(js, /Load live balance/);
   assert.match(js, /agy 1\.1\.13/);

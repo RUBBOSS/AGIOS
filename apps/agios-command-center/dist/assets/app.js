@@ -30618,8 +30618,11 @@ function systemOverview(system) {
   const chatAction = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal") ? `<button class="primary-action routed-action" data-route-system-action="chat" data-route-system-id="${esc(system.id)}">Start chat \xB7 ${esc(model.id)} \u2192</button>` : "";
   const surface = state.surfaces?.find((item) => item.id === surfaceBySystem[system.id]);
   const webUiButton = surface ? `<button class="primary-action" data-surface-embed="${esc(surface.id)}">Open ${esc(surface.name)} inside AGIOS \u2192</button><button class="surface-launch compact" data-surface-open="${esc(surface.id)}">Open in browser \u2197</button>` : "";
-  const modelChips = models.length ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("") : `<span class="model-chip"><i class="status-dot status-blocked"></i>no governed models registered</span>`;
-  return `<div class="system-overview"><section class="workspace-card system-hero-card"><p class="eyebrow">AI SYSTEM</p><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p>${status(runtime.status)}<div class="hero-actions">${chatAction}${webUiButton}</div><div class="model-chip-row">${modelChips}</div><p class="system-status-line">${statusLine} \xB7 adapter ${esc(runtime.adapter)}</p></section>${renderModelCards(models)}</div>`;
+  const modelChips = models.length ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("") : `<span class="model-chip"><i class="status-dot status-routed"></i>models run inside its own app</span>`;
+  const terminalSurface = terminalSurfaceForSystem(system.id);
+  const nativeSurface = state.surfaces?.find((item) => item.id === system.id + "-cli" && item.kind === "native");
+  const ownModelsCard = models.length ? renderModelCards(models) : `<section class="workspace-card own-models-card"><p class="eyebrow">HOW YOU USE ${esc(system.name.toUpperCase())}</p><h3>${esc(system.name)} runs its own models inside its own app.</h3><p>AGIOS does not route models through it \u2014 that would be fake. What AGIOS does is open and supervise the real tool:</p><div class="hero-actions">${terminalSurface ? `<button class="primary-action" data-system-mode="terminal">Open live terminal \u2192</button>` : ""}${nativeSurface ? `<button class="primary-action" data-surface-launch="${esc(nativeSurface.id)}">Launch ${esc(nativeSurface.name)}</button>` : ""}${webUiButton}</div>${terminalSurface ? `<p class="system-status-line">The real ${esc(system.name)} CLI runs in this tab through a local PTY \u2014 same shell, same session.</p>` : ""}</section>`;
+  return `<div class="system-overview"><section class="workspace-card system-hero-card"><p class="eyebrow">AI SYSTEM</p><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p>${status(runtime.status)}<div class="hero-actions">${chatAction}${webUiButton}</div><div class="model-chip-row">${modelChips}</div><p class="system-status-line">${statusLine} \xB7 adapter ${esc(runtime.adapter)}</p></section>${ownModelsCard}</div>`;
 }
 function systemModeContent(system) {
   const models = modelsForSystem(system);
@@ -31366,7 +31369,7 @@ function hermesWebSurface() {
   return `<div class="surface-frame-wrap"><iframe class="surface-frame" title="Hermes" src="http://127.0.0.1:9119" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-modals"></iframe></div><footer class="surface-footer"><span>Embedded in AGIOS</span><span>Hermes dashboard \xB7 loopback</span></footer>`;
 }
 function terminalSurfaceForSystem(systemId) {
-  const map = { hermes: "hermes-cli", codex: "codex-cli", opencode: "opencode-cli" };
+  const map = { hermes: "hermes-cli", codex: "codex-cli", opencode: "opencode-cli", openclaw: "openclaw-cli", cline: "cline-cli" };
   const surfaceId = map[systemId];
   if (!surfaceId) return null;
   return state.surfaces.find((surface) => surface.id === surfaceId) || null;
