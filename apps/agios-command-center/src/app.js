@@ -1302,21 +1302,28 @@ function systemOverview(system) {
   const runtime = runtimeForSystem(system.id);
   const model = routedModelForSystem(system);
   const providerIdBySystem = { deepseek: "deepseek", gemini: "gemini", pokee: "pokee", openrouter: "openrouter", glm: "openrouter", kimi: "openrouter", mistral: "openrouter" };
+  const surfaceBySystem = { deepseek: "deepseek-harness", paperclip: "paperclip" };
   const provider = state.costs?.providers?.find((item) => item.id === providerIdBySystem[system.id]);
-  const balanceHtml = !state.costs
-    ? `<button class="primary-action" data-cost-load>Load live balance</button>`
+  const statusLine = !state.costs
+    ? `<button class="link-action" data-cost-load>Load live balance</button>`
     : provider && provider.status === "reported" && provider.balances?.length
-      ? provider.balances.map((balance) => `<span><small>LIVE BALANCE</small><strong>${esc(String(balance.currency || "?"))} ${esc(String(balance.total_balance ?? "n/a"))}</strong><em>${provider.available ? "available" : "unavailable"}</em></span>`).join("")
+      ? `Live balance: ${esc(String(provider.balances[0].currency || ""))} ${esc(String(provider.balances[0].total_balance ?? "n/a"))} · ${provider.available ? "available" : "unavailable"}`
       : provider && provider.status === "reported-empty"
-        ? `<span><small>KEY CHECK</small><strong>${provider.tier === "free" ? "Free tier verified" : "Verified"}</strong><em>${esc((provider.models || []).join(", ") || "key ok")}</em></span>`
-        : `<span><small>PROVIDER</small><strong>${esc(provider?.status || "not-configured")}</strong><em>${esc(provider?.reason || "No cost adapter for this system.")}</em></span>`;
+        ? `Key verified · ${provider.tier === "free" ? "free tier" : "active"} · ${esc((provider.models || []).join(", ") || "ok")}`
+        : provider
+          ? `${esc(provider.status)} · ${esc(provider.reason || provider.note || "")}`
+          : "No cost adapter for this system.";
+  const chatAction = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal")
+    ? `<button class="primary-action routed-action" data-route-system-action="chat" data-route-system-id="${esc(system.id)}">Start chat · ${esc(model.id)} →</button>`
+    : "";
+  const surface = state.surfaces?.find((item) => item.id === surfaceBySystem[system.id]);
+  const webUiButton = surface
+    ? `<button class="surface-launch" data-surface-open="${esc(surface.id)}">Open ${esc(surface.name)} web UI ↗</button>`
+    : "";
   const modelChips = models.length
     ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("")
     : `<span class="model-chip"><i class="status-dot status-blocked"></i>no governed models registered</span>`;
-  const chatAction = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal")
-    ? `<button class="primary-action routed-action" data-route-system-action="chat" data-route-system-id="${esc(system.id)}">Open live chat · ${esc(model.id)} →</button>`
-    : "";
-  return `<div class="system-overview"><section class="workspace-card"><p class="eyebrow">WHAT THIS IS</p><h3>${esc(system.name)}</h3><p>${esc(system.description)}</p><div class="control-readout"><span><small>ADAPTER</small><strong>${esc(titleCase(runtime.adapter))}</strong></span><span><small>READINESS</small><strong>${runtime.execution_enabled ? "Executable" : "Governed route"}</strong></span><span><small>MODELS</small><strong>${models.length}</strong></span>${balanceHtml}</div></section><section class="workspace-card"><p class="eyebrow">MODELS YOU CAN USE</p><div class="model-chip-row">${modelChips}</div><p>Models are policy-approved routes: the data class you choose decides which model may receive the request. Open the Models tab for each model's exact trust and data-class contract.</p><div class="overview-actions">${chatAction}<button data-system-mode="models">Inspect model contracts →</button></div></section></div>`;
+  return `<div class="system-overview"><section class="workspace-card system-hero-card"><p class="eyebrow">AI SYSTEM</p><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p>${status(runtime.status)}<div class="hero-actions">${chatAction}${webUiButton}</div><div class="model-chip-row">${modelChips}</div><p class="system-status-line">${statusLine} · adapter ${esc(runtime.adapter)}</p></section>${renderModelCards(models)}</div>`;
 }
 
 function systemModeContent(system) {
