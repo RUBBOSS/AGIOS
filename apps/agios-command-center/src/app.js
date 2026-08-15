@@ -1030,10 +1030,10 @@ function renderIntegrations() {
   const connectionDecisions = [
     ["OpenCode", opencodeRuntime.execution_enabled ? "ready" : "blocked", opencodeRuntime.execution_enabled ? "Executable + local auth state detected" : "Local auth state not detected", opencodeRuntime.execution_enabled ? "Supervised workspace adapter; deny-by-default tools, no auto mode." : "Install and authenticate the audited CLI."],
     ["Gemini / NotebookLM", state.notebooklm ? "ready" : "approval", state.notebooklm ? "Local source-pack bridge ready" : "Owner source approval required", state.notebooklm ? "AGIOS does not inspect account auth; local preparation only, with no cookies, unofficial API, or automatic Google upload." : "Load the approved vault catalog before preparing a source pack."],
-    ["Cline", "hold", "Overlap + authority risk", "Standalone CLI defaults need a separate least-privilege policy before installation."],
-    ["Pokee", "hold", "Enterprise/API setup", "External sandbox service; no approved account or measurable advantage over current routes."],
-    ["OpenClaw", "hold", "Broad device/chat authority", "Large overlap with Hermes; not granted access to this workstation."],
-    ["Antigravity", "planned", "Callable interface unverified", "Remains registry-only until a local auditable adapter exists."],
+    ["Cline", "ready", "Installed · supervised terminal surface", "Cline CLI opens in an AGIOS terminal tab. Runtime dispatch stays locked until a deny-by-default workspace adapter is added."],
+    ["Pokee", "hold", "Account required", "Free tier exists at pokee.ai. AGIOS never creates accounts on your behalf — sign up, then provide an API key and the sandbox route can be wired."],
+    ["OpenClaw", "ready", "Installed · gateway onboarding pending", "OpenClaw CLI is installed and callable from AGIOS; channel and gateway onboarding remain your step. Direct dispatch stays locked."],
+    ["Antigravity", "approval", "Installer awaiting your approval", "The agy CLI installer downloads a signed Google binary. Approve the installer prompt (or tell me to proceed) and it will be wired as a supervised surface."],
     ["Paperclip", "ready", "Local loopback dashboard · 127.0.0.1:3100", "Installed with the official installer in private loopback mode. AGIOS attaches it as a supervised surface; approvals, task state and credentials stay in AGIOS."],
     ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."],
   ];

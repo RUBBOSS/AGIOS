@@ -608,13 +608,13 @@
     },
     {
       "id": "openclaw",
-      "status": "planned",
-      "adapter": "planned"
+      "status": "installed",
+      "adapter": "supervised-surface"
     },
     {
       "id": "cline",
-      "status": "planned",
-      "adapter": "planned"
+      "status": "installed",
+      "adapter": "supervised-surface"
     },
     {
       "id": "pokee",
@@ -876,13 +876,13 @@
       "id": "openclaw",
       "name": "OpenClaw",
       "kind": "runtime",
-      "status": "planned"
+      "status": "connected"
     },
     {
       "id": "cline",
       "name": "Cline",
       "kind": "runtime",
-      "status": "planned"
+      "status": "connected"
     },
     {
       "id": "pokee",
@@ -1179,6 +1179,30 @@
         "https://registry.npmjs.org",
         "paperclipai",
         "run"
+      ]
+    },
+    {
+      "id": "cline-cli",
+      "name": "Cline",
+      "kind": "terminal",
+      "command": [
+        "cline"
+      ]
+    },
+    {
+      "id": "openclaw-cli",
+      "name": "OpenClaw",
+      "kind": "terminal",
+      "command": [
+        "openclaw"
+      ]
+    },
+    {
+      "id": "antigravity-cli",
+      "name": "Antigravity CLI",
+      "kind": "native",
+      "launch": [
+        "C:/Users/Acer/AppData/Local/agy/bin/agy.exe"
       ]
     }
   ]

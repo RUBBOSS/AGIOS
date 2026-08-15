@@ -95,7 +95,17 @@ class SurfaceValidationTests(unittest.TestCase):
         self.assertGreaterEqual(len(config.surfaces), 3)
         ids = {surface["id"] for surface in config.surfaces}
         self.assertEqual(
-            {"hermes-cli", "codex-cli", "opencode-cli", "local-shell", "paperclip"}, ids
+            {
+                "hermes-cli",
+                "codex-cli",
+                "opencode-cli",
+                "local-shell",
+                "paperclip",
+                "cline-cli",
+                "openclaw-cli",
+                "antigravity-cli",
+            },
+            ids,
         )
 
 
@@ -220,8 +230,17 @@ class SurfaceServerTests(unittest.TestCase):
                 payload = response.json()
                 self.assertEqual(1, payload["schema_version"])
                 ids = {item["id"] for item in payload["items"]}
-                # Expect the four terminal surfaces plus the Paperclip web surface
-                expected = {"hermes-cli", "codex-cli", "opencode-cli", "local-shell", "paperclip"}
+                # Terminal surfaces, the Paperclip web surface, and the Antigravity native surface
+                expected = {
+                    "hermes-cli",
+                    "codex-cli",
+                    "opencode-cli",
+                    "local-shell",
+                    "paperclip",
+                    "cline-cli",
+                    "openclaw-cli",
+                    "antigravity-cli",
+                }
                 self.assertEqual(ids, expected)
 
     def test_launch_endpoint_denies_terminal_surfaces_and_unknown_ids(self):
