@@ -83,6 +83,7 @@ class ProviderKeyResolverTests(unittest.TestCase):
         with mock.patch.dict("os.environ", {}, clear=False):
             os.environ.pop("DEEPSEEK_API_KEY", None)
             os.environ.pop("OPENROUTER_API_KEY", None)
+            os.environ.pop("POKEE_API_KEY", None)
             missing = load_provider_keys(
                 auth_path=Path(temp_dir) / "nope.json",
                 env_path=Path(temp_dir) / "nope.env",

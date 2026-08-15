@@ -422,6 +422,18 @@
       "cost_note": "vendor-reported: Gemini API free tier (input and output free); rate limited by provider"
     },
     {
+      "id": "pokee-isaac",
+      "provider": "pokee",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "metered-unknown",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ],
+      "cost_note": "vendor-reported: Pokee agent model; pricing lives on the pokee.ai plan page"
+    },
+    {
       "id": "nemotron-hosted",
       "provider": "nvidia",
       "location": "external",
@@ -900,7 +912,7 @@
       "id": "pokee",
       "name": "Pokee",
       "kind": "runtime",
-      "status": "planned"
+      "status": "connected"
     },
     {
       "id": "antigravity",

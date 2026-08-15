@@ -56,7 +56,7 @@ class HermesAdapterTests(unittest.TestCase):
         self.assertEqual(7, result["summary"]["businesses"])
         self.assertEqual(7, result["summary"]["departments"])
         self.assertEqual(9, result["summary"]["agents"])
-        self.assertEqual(14, result["summary"]["model_routes"])
+        self.assertEqual(15, result["summary"]["model_routes"])
         self.assertEqual("unavailable", result["usage"]["cost_status"])
         self.assertEqual([], result["sessions"]["items"])
         self.assertFalse(result["privacy"]["customer_content_included"])

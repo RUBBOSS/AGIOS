@@ -26,6 +26,7 @@ from typing import Any
 _POOL_TO_ENV: dict[str, str] = {
     "openrouter": "OPENROUTER_API_KEY",
     "deepseek": "DEEPSEEK_API_KEY",
+    "pokee": "POKEE_API_KEY",
 }
 
 

@@ -184,6 +184,46 @@ def _gemini_snapshot() -> dict[str, Any]:
     }
 
 
+def _pokee_snapshot() -> dict[str, Any]:
+    key = os.environ.get("POKEE_API_KEY")
+    if not key:
+        return {
+            "id": "pokee",
+            "label": "Pokee (pokee-isaac)",
+            "status": "not-configured",
+            "reason": "Set POKEE_API_KEY in the local .env.local file and restart AGIOS.",
+        }
+    request = urllib.request.Request(
+        "https://api.pokee.ai/v1/models",
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Accept": "application/json",
+            "User-Agent": "AGIOS/0.5 (local operator)",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            payload = json.loads(response.read(64_000).decode("utf-8", errors="replace"))
+        if not isinstance(payload, dict):
+            raise ValueError("provider returned a non-object payload")
+    except (urllib.error.URLError, OSError, ValueError, json.JSONDecodeError) as exc:
+        return {
+            "id": "pokee",
+            "label": "Pokee (pokee-isaac)",
+            "status": "error",
+            "reason": "key check failed",
+            "detail": str(exc)[:160],
+        }
+    models = [str(item.get("id")) for item in payload.get("data", []) if isinstance(item, dict)][:8]
+    return {
+        "id": "pokee",
+        "label": "Pokee (pokee-isaac)",
+        "status": "reported-empty",
+        "models": models,
+        "note": "key verified via /v1/models; Pokee exposes no balance endpoint, so no figures are shown",
+    }
+
+
 def _codex_snapshot() -> dict[str, Any]:
     return {
         "id": "codex",
@@ -214,6 +254,7 @@ def build_cost_snapshot(force: bool = False) -> dict[str, Any]:
         _openrouter_snapshot(),
         _deepseek_snapshot(),
         _gemini_snapshot(),
+        _pokee_snapshot(),
         _codex_snapshot(),
         _local_snapshot(),
     ]
@@ -231,6 +272,7 @@ def build_cost_snapshot(force: bool = False) -> dict[str, Any]:
                 "OpenRouter auth/key endpoint",
                 "DeepSeek balance endpoint",
                 "Gemini models endpoint (key check only)",
+                "Pokee models endpoint (key check only)",
             ],
         },
         "providers": providers,

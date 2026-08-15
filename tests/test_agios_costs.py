@@ -123,6 +123,24 @@ class CostAdapterTests(unittest.TestCase):
         self.assertEqual("free", snapshot["tier"])
         self.assertIn("no balance", snapshot["note"])
 
+    def test_pokee_reports_not_configured_without_key(self) -> None:
+        with mock.patch.dict("os.environ", {}, clear=False):
+            os.environ.pop("POKEE_API_KEY", None)
+            snapshot = costs._pokee_snapshot()
+        self.assertEqual("not-configured", snapshot["status"])
+        self.assertIn("POKEE_API_KEY", snapshot["reason"])
+
+    @mock.patch(
+        "agios.costs.urllib.request.urlopen",
+        return_value=FakeResponse({"data": [{"id": "pokee-isaac", "object": "model"}]}),
+    )
+    def test_pokee_verifies_key_and_lists_models_without_figures(self, _mock_urlopen):
+        with mock.patch.dict("os.environ", {"POKEE_API_KEY": "pk-test"}, clear=False):
+            snapshot = costs._pokee_snapshot()
+        self.assertEqual("reported-empty", snapshot["status"])
+        self.assertEqual(["pokee-isaac"], snapshot["models"])
+        self.assertIn("no balance", snapshot["note"])
+
 
 class CostServerTests(unittest.TestCase):
     def test_costs_endpoint_requires_session(self):
@@ -141,7 +159,7 @@ class CostServerTests(unittest.TestCase):
                 payload = response.json()
                 self.assertEqual(1, payload["schema_version"])
                 self.assertIn("keys_handled", payload["privacy"])
-                self.assertEqual(5, len(payload["providers"]))
+                self.assertEqual(6, len(payload["providers"]))
 
 
 if __name__ == "__main__":
