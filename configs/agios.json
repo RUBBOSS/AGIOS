@@ -1204,6 +1204,17 @@
       "launch": [
         "C:/Users/Acer/AppData/Local/agy/bin/agy.exe"
       ]
+    },
+    {
+      "id": "freebuff-web",
+      "name": "Freebuff Web",
+      "kind": "native",
+      "launch": [
+        "cmd",
+        "/c",
+        "start",
+        "https://freebuff.com/web"
+      ]
     }
   ]
 }

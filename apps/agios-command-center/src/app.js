@@ -1035,6 +1035,7 @@ function renderIntegrations() {
     ["OpenClaw", "ready", "Installed · gateway onboarding pending", "OpenClaw CLI is installed and callable from AGIOS; channel and gateway onboarding remain your step. Direct dispatch stays locked."],
     ["Antigravity", "approval", "Installer awaiting your approval", "The agy CLI installer downloads a signed Google binary. Approve the installer prompt (or tell me to proceed) and it will be wired as a supervised surface."],
     ["Paperclip", "ready", "Local loopback dashboard · 127.0.0.1:3100", "Installed with the official installer in private loopback mode. AGIOS attaches it as a supervised surface; approvals, task state and credentials stay in AGIOS."],
+    ["Freebuff Web", "ready", "External hosted app builder", "Opens freebuff.com/web in your browser from AGIOS. AGIOS sends nothing; free models and regional limits are Freebuff's."],
     ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."],
   ];
   const decisionRows = connectionDecisions.map(([name, stateName, gate, reason]) => `<div class="connection-decision"><div><strong>${esc(name)}</strong><small>${esc(gate)}</small></div>${status(stateName)}<p>${esc(reason)}</p></div>`).join("");
