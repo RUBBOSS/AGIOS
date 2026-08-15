@@ -159,11 +159,13 @@ Honesty rules: the model, endpoint, and listed price are vendor-reported constan
 A tool is marked connected only when its executable, authentication, permission boundary, and measurable role are verified.
 
 - OpenCode is connected as a supervised workspace adapter.
-- Cline remains unconnected because its default autonomous/auto-approval posture overlaps with existing coding runtimes and needs a separate least-privilege design.
+- Cline's CLI is installed as a supervised terminal surface; runtime dispatch stays locked until a deny-by-default workspace adapter is added.
 - Gemini/NotebookLM has a local owner-mediated source-pack bridge. AGIOS does not inspect Google authentication and does not describe the personal account as API-connected.
 - Pokee requires an approved enterprise/API setup and is not a local runtime.
-- OpenClaw overlaps heavily with Hermes and requests broad device/chat authority; it is not connected without a separate security decision.
-- Antigravity remains planned until a callable, auditable local interface is verified.
+- OpenClaw's CLI is installed and callable as a supervised terminal surface; gateway/channel onboarding remains an owner step and direct dispatch stays locked.
+- Antigravity's agy CLI is installed (1.1.13) and launchable as a supervised surface; the full Antigravity IDE remains an optional separate installer.
+- Freebuff Web opens in the owner's browser and the Freebuff CLI opens in an AGIOS terminal; both are external hosted tools and AGIOS sends nothing to them.
+- DeepSeek needs a platform.deepseek.com API key (the stored credential is empty). Gemini needs a free aistudio.google.com key before either can act as a governed model runtime.
 - Paperclip is installed with the official installer in private loopback mode and attached as a supervised web surface (http://127.0.0.1:3100). AGIOS remains the approval source of truth: Paperclip never receives AGIOS credentials, and its board is opened from AGIOS surfaces, not granted dispatch authority.
 - Buzz remains on hold. Its developer-preview collaboration model overlaps with AGIOS, while its development MCP and shell runner would add broad local authority.
 

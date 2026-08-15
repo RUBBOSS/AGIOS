@@ -298,7 +298,10 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /https:\/\/notebooklm\.google\.com\//);
   assert.match(js, /selected notes leave this PC only after I upload them/i);
   assert.match(js, /Local loopback dashboard/);
-  assert.match(js, /Freebuff Web/);
+  assert.match(js, /freebuff CLI/);
+  assert.match(js, /DeepSeek API/);
+  assert.match(js, /Gemini API/);
+  assert.match(js, /agy 1\.1\.13/);
   assert.match(js, /Developer preview \+ broad local tooling/);
   assert.match(css, /\.notebooklm-bridge/);
   assert.match(css, /prefers-reduced-motion/);

@@ -105,6 +105,7 @@ class SurfaceValidationTests(unittest.TestCase):
                 "openclaw-cli",
                 "antigravity-cli",
                 "freebuff-web",
+                "freebuff-cli",
             },
             ids,
         )
@@ -242,6 +243,7 @@ class SurfaceServerTests(unittest.TestCase):
                     "openclaw-cli",
                     "antigravity-cli",
                     "freebuff-web",
+                    "freebuff-cli",
                 }
                 self.assertEqual(ids, expected)
 

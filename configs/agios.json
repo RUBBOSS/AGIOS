@@ -889,6 +889,12 @@
       "name": "Pokee",
       "kind": "runtime",
       "status": "planned"
+    },
+    {
+      "id": "antigravity",
+      "name": "Antigravity",
+      "kind": "runtime",
+      "status": "connected"
     }
   ],
   "systems": [
@@ -955,7 +961,7 @@
       "id": "antigravity",
       "name": "Antigravity",
       "kind": "development-runtime",
-      "status": "planned",
+      "status": "detected",
       "adapter": "planned",
       "description": "Future development and project workspace integrated through the common AGIOS contracts.",
       "capabilities": [
@@ -1214,6 +1220,14 @@
         "/c",
         "start",
         "https://freebuff.com/web"
+      ]
+    },
+    {
+      "id": "freebuff-cli",
+      "name": "Freebuff CLI",
+      "kind": "terminal",
+      "command": [
+        "freebuff"
       ]
     }
   ]

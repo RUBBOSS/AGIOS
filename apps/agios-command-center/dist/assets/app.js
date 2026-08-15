@@ -30373,9 +30373,11 @@ function renderIntegrations() {
     ["Cline", "ready", "Installed \xB7 supervised terminal surface", "Cline CLI opens in an AGIOS terminal tab. Runtime dispatch stays locked until a deny-by-default workspace adapter is added."],
     ["Pokee", "hold", "Account required", "Free tier exists at pokee.ai. AGIOS never creates accounts on your behalf \u2014 sign up, then provide an API key and the sandbox route can be wired."],
     ["OpenClaw", "ready", "Installed \xB7 gateway onboarding pending", "OpenClaw CLI is installed and callable from AGIOS; channel and gateway onboarding remain your step. Direct dispatch stays locked."],
-    ["Antigravity", "approval", "Installer awaiting your approval", "The agy CLI installer downloads a signed Google binary. Approve the installer prompt (or tell me to proceed) and it will be wired as a supervised surface."],
+    ["Antigravity", "ready", "CLI installed \xB7 agy 1.1.13", "The agy CLI is installed and launchable from AGIOS. The full Antigravity IDE is a separate Google installer at antigravity.google/download."],
+    ["DeepSeek API", "hold", "API key required", "No usable DeepSeek key exists on this machine (the stored credential is empty). Add one from platform.deepseek.com and the AGIOS cost and routing adapters light up."],
+    ["Gemini API", "hold", "Free key required", "Get a free key at aistudio.google.com (Gemini 3.7 Flash free tier). Once provided, AGIOS can route Gemini as a governed model runtime."],
     ["Paperclip", "ready", "Local loopback dashboard \xB7 127.0.0.1:3100", "Installed with the official installer in private loopback mode. AGIOS attaches it as a supervised surface; approvals, task state and credentials stay in AGIOS."],
-    ["Freebuff Web", "ready", "External hosted app builder", "Opens freebuff.com/web in your browser from AGIOS. AGIOS sends nothing; free models and regional limits are Freebuff's."],
+    ["Freebuff", "ready", "Web surface + CLI installed", "Opens freebuff.com/web in your browser and the freebuff CLI (0.0.149) in an AGIOS terminal. AGIOS sends nothing; free models and regional limits are Freebuff's."],
     ["Buzz", "hold", "Developer preview + broad local tooling", "Its repository-writing MCP and shell runner are not approved for this workstation or client data."]
   ];
   const decisionRows = connectionDecisions.map(([name, stateName, gate, reason]) => `<div class="connection-decision"><div><strong>${esc(name)}</strong><small>${esc(gate)}</small></div>${status(stateName)}<p>${esc(reason)}</p></div>`).join("");
