@@ -27300,6 +27300,123 @@ var LineSegments = class extends Line {
     return this;
   }
 };
+var PointsMaterial = class extends Material {
+  static get type() {
+    return "PointsMaterial";
+  }
+  constructor(parameters) {
+    super();
+    this.isPointsMaterial = true;
+    this.color = new Color2(16777215);
+    this.map = null;
+    this.alphaMap = null;
+    this.size = 1;
+    this.sizeAttenuation = true;
+    this.fog = true;
+    this.setValues(parameters);
+  }
+  copy(source) {
+    super.copy(source);
+    this.color.copy(source.color);
+    this.map = source.map;
+    this.alphaMap = source.alphaMap;
+    this.size = source.size;
+    this.sizeAttenuation = source.sizeAttenuation;
+    this.fog = source.fog;
+    return this;
+  }
+};
+var _inverseMatrix = /* @__PURE__ */ new Matrix4();
+var _ray = /* @__PURE__ */ new Ray();
+var _sphere = /* @__PURE__ */ new Sphere();
+var _position$2 = /* @__PURE__ */ new Vector3();
+var Points = class extends Object3D {
+  constructor(geometry = new BufferGeometry(), material = new PointsMaterial()) {
+    super();
+    this.isPoints = true;
+    this.type = "Points";
+    this.geometry = geometry;
+    this.material = material;
+    this.updateMorphTargets();
+  }
+  copy(source, recursive) {
+    super.copy(source, recursive);
+    this.material = Array.isArray(source.material) ? source.material.slice() : source.material;
+    this.geometry = source.geometry;
+    return this;
+  }
+  raycast(raycaster, intersects) {
+    const geometry = this.geometry;
+    const matrixWorld = this.matrixWorld;
+    const threshold = raycaster.params.Points.threshold;
+    const drawRange = geometry.drawRange;
+    if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
+    _sphere.copy(geometry.boundingSphere);
+    _sphere.applyMatrix4(matrixWorld);
+    _sphere.radius += threshold;
+    if (raycaster.ray.intersectsSphere(_sphere) === false) return;
+    _inverseMatrix.copy(matrixWorld).invert();
+    _ray.copy(raycaster.ray).applyMatrix4(_inverseMatrix);
+    const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
+    const localThresholdSq = localThreshold * localThreshold;
+    const index = geometry.index;
+    const attributes = geometry.attributes;
+    const positionAttribute = attributes.position;
+    if (index !== null) {
+      const start2 = Math.max(0, drawRange.start);
+      const end = Math.min(index.count, drawRange.start + drawRange.count);
+      for (let i = start2, il = end; i < il; i++) {
+        const a = index.getX(i);
+        _position$2.fromBufferAttribute(positionAttribute, a);
+        testPoint(_position$2, a, localThresholdSq, matrixWorld, raycaster, intersects, this);
+      }
+    } else {
+      const start2 = Math.max(0, drawRange.start);
+      const end = Math.min(positionAttribute.count, drawRange.start + drawRange.count);
+      for (let i = start2, l2 = end; i < l2; i++) {
+        _position$2.fromBufferAttribute(positionAttribute, i);
+        testPoint(_position$2, i, localThresholdSq, matrixWorld, raycaster, intersects, this);
+      }
+    }
+  }
+  updateMorphTargets() {
+    const geometry = this.geometry;
+    const morphAttributes = geometry.morphAttributes;
+    const keys = Object.keys(morphAttributes);
+    if (keys.length > 0) {
+      const morphAttribute = morphAttributes[keys[0]];
+      if (morphAttribute !== void 0) {
+        this.morphTargetInfluences = [];
+        this.morphTargetDictionary = {};
+        for (let m = 0, ml = morphAttribute.length; m < ml; m++) {
+          const name = morphAttribute[m].name || String(m);
+          this.morphTargetInfluences.push(0);
+          this.morphTargetDictionary[name] = m;
+        }
+      }
+    }
+  }
+};
+function testPoint(point, index, localThresholdSq, matrixWorld, raycaster, intersects, object) {
+  const rayPointDistanceSq = _ray.distanceSqToPoint(point);
+  if (rayPointDistanceSq < localThresholdSq) {
+    const intersectPoint = new Vector3();
+    _ray.closestPointToPoint(point, intersectPoint);
+    intersectPoint.applyMatrix4(matrixWorld);
+    const distance = raycaster.ray.origin.distanceTo(intersectPoint);
+    if (distance < raycaster.near || distance > raycaster.far) return;
+    intersects.push({
+      distance,
+      distanceToRay: Math.sqrt(rayPointDistanceSq),
+      point: intersectPoint,
+      index,
+      face: null,
+      faceIndex: null,
+      barycoord: null,
+      object
+    });
+  }
+}
 var CanvasTexture = class extends Texture {
   constructor(canvas, mapping, wrapS, wrapT, magFilter, minFilter, format, type2, anisotropy) {
     super(canvas, mapping, wrapS, wrapT, magFilter, minFilter, format, type2, anisotropy);
@@ -27628,6 +27745,26 @@ var SphereGeometry = class _SphereGeometry extends BufferGeometry {
   }
   static fromJSON(data) {
     return new _SphereGeometry(data.radius, data.widthSegments, data.heightSegments, data.phiStart, data.phiLength, data.thetaStart, data.thetaLength);
+  }
+};
+var LineDashedMaterial = class extends LineBasicMaterial {
+  static get type() {
+    return "LineDashedMaterial";
+  }
+  constructor(parameters) {
+    super();
+    this.isLineDashedMaterial = true;
+    this.scale = 1;
+    this.dashSize = 3;
+    this.gapSize = 1;
+    this.setValues(parameters);
+  }
+  copy(source) {
+    super.copy(source);
+    this.scale = source.scale;
+    this.dashSize = source.dashSize;
+    this.gapSize = source.gapSize;
+    return this;
   }
 };
 function convertArray(array2, type2, forceClone) {
@@ -28742,7 +28879,7 @@ if (typeof window !== "undefined") {
 var _changeEvent = { type: "change" };
 var _startEvent = { type: "start" };
 var _endEvent = { type: "end" };
-var _ray = new Ray();
+var _ray2 = new Ray();
 var _plane = new Plane();
 var _TILT_LIMIT = Math.cos(70 * MathUtils.DEG2RAD);
 var _v = new Vector3();
@@ -28980,13 +29117,13 @@ var OrbitControls = class extends Controls {
         if (this.screenSpacePanning) {
           this.target.set(0, 0, -1).transformDirection(this.object.matrix).multiplyScalar(newRadius).add(this.object.position);
         } else {
-          _ray.origin.copy(this.object.position);
-          _ray.direction.set(0, 0, -1).transformDirection(this.object.matrix);
-          if (Math.abs(this.object.up.dot(_ray.direction)) < _TILT_LIMIT) {
+          _ray2.origin.copy(this.object.position);
+          _ray2.direction.set(0, 0, -1).transformDirection(this.object.matrix);
+          if (Math.abs(this.object.up.dot(_ray2.direction)) < _TILT_LIMIT) {
             this.object.lookAt(this.target);
           } else {
             _plane.setFromNormalAndCoplanarPoint(this.object.up, this.target);
-            _ray.intersectPlane(_plane, this.target);
+            _ray2.intersectPlane(_plane, this.target);
           }
         }
       }
@@ -29568,7 +29705,7 @@ var state = {
   memoryNote: null,
   memoryComposeOpen: false,
   memorySearchOpen: false,
-  memoryTab: "notes",
+  memoryTab: "graph",
   memoryGalaxy: null,
   executionSpineCleanup: null,
   memoryGalaxyFilter: "all",
@@ -30558,6 +30695,7 @@ function memoryPageHero() {
 function memoryPanelTabs() {
   const recentCount = Math.min(12, state.memories.length);
   const tabs = [
+    ["graph", "\u25C9 Memory map"],
     ["recent", `\u25F7 Recent ${recentCount}`],
     ["notes", "\u25A4 Notes"],
     ["omi", "\u2726 Omi"]
@@ -30582,6 +30720,11 @@ function memoryGalaxySurface() {
   const scopeKinds = ["portfolio", "business", "department", "project", "private"];
   const presentKinds = new Set(all.map((memory) => memory.scope_kind));
   const missingKinds = scopeKinds.filter((kind) => !presentKinds.has(kind)).length;
+  const trustCounts = filtered.reduce((counts, memory) => {
+    counts[memory.trust] = (counts[memory.trust] || 0) + 1;
+    return counts;
+  }, {});
+  const trustSplit = `${trustCounts.high || 0}\xB7${trustCounts.medium || 0}\xB7${trustCounts.low || 0}`;
   const filters = [["all", "All", all.length], ...scopeKinds.map((kind) => [kind, titleCase(kind), all.filter((memory) => memory.scope_kind === kind).length])];
   return `<div class="memory-galaxy" aria-label="Memory galaxy - real durable facts as stars">
     <div class="memory-galaxy-controls">
@@ -30589,13 +30732,14 @@ function memoryGalaxySurface() {
         <span><small>ACTIVE</small><strong>${activeCount}</strong></span>
         <span><small>ACTIVATED</small><strong>${filtered.length}</strong></span>
         <span><small>DATA SOURCE</small><strong>${presentKinds.size}</strong></span>
+        <span><small>TRUST H\xB7M\xB7L</small><strong>${trustSplit}</strong></span>
         <span class="${missingKinds ? "is-missing" : ""}"><small>MISSING</small><strong>${missingKinds}</strong></span>
       </div>
       <div class="memory-galaxy-filters">${filters.map(([id2, label, count]) => `<button class="${state.memoryGalaxyFilter === id2 ? "is-active" : ""} scope-${id2}" data-memory-galaxy-filter="${id2}"><i></i>${esc(label)} \xB7 ${count}</button>`).join("")}</div>
       <div class="memory-galaxy-legend"><span><i class="portfolio"></i>Portfolio</span><span><i class="business"></i>Business</span><span><i class="department"></i>Department</span><span><i class="project"></i>Project</span><span><i class="private"></i>Private</span></div>
     </div>
     <div id="memory-galaxy-canvas" class="memory-galaxy-canvas" aria-label="3D galaxy of shared memories">
-      <div class="memory-galaxy-overlay"><strong>MEMORY GALAXY</strong><span>${filtered.length} stars \xB7 ${linkCount} links</span><p>drag to orbit \xB7 scroll to zoom \xB7 click a star \xB7 double-click to pause flight \xB7 hover a star to trace its links</p><p class="memory-galaxy-hint">\u2726 brighter &amp; whiter = more recently touched</p></div>
+      <div class="memory-galaxy-overlay"><strong>MEMORY MAP \xB7 LIVE DATA</strong><span>${filtered.length} real notes \xB7 ${linkCount} real links</span><p>drag to orbit 360\xB0 \xB7 scroll to zoom \xB7 click a note to read it \xB7 hover a note to light its links</p><p class="memory-galaxy-hint">\u2726 every node is a saved memory \xB7 every link is a shared scope \xB7 brighter = recently touched \xB7 motion only follows your interaction</p></div>
     </div>
   </div>`;
 }
@@ -30625,6 +30769,15 @@ function disposeMemoryGalaxy() {
   galaxy.renderer?.domElement?.remove();
   galaxy.stars?.geometry?.dispose?.();
   galaxy.links?.geometry?.dispose?.();
+  galaxy.dust?.geometry?.dispose?.();
+  galaxy.dust?.material?.dispose?.();
+  const flow = galaxy.flow?.();
+  if (flow) {
+    flow.traverse((object) => {
+      if (object.geometry) object.geometry.dispose();
+      if (object.material) object.material.dispose();
+    });
+  }
   galaxy.labels?.forEach((label) => {
     label.material.map?.dispose?.();
     label.material.dispose?.();
@@ -30681,6 +30834,7 @@ function renderMemoryGalaxy() {
     return span > 0 ? 1 - position / span : 1;
   };
   const starMeshes = [];
+  const nodeColors = /* @__PURE__ */ new Map();
   memories.forEach((memory, index) => {
     const arm = index % 4;
     const angle = index / memories.length * Math.PI * 4.4 + arm * (Math.PI / 2);
@@ -30691,10 +30845,12 @@ function renderMemoryGalaxy() {
     const recency = recencyOf(memory);
     const hue = scopeHue[memory.scope_kind] ?? 0.6;
     const color2 = new Color2().setHSL(hue, 0.5 + recency * 0.35, 0.48 + recency * 0.48);
+    nodeColors.set(memory.memory_id, color2.clone());
     const mesh = new Mesh(starGeometry, new MeshBasicMaterial({ color: color2, transparent: true, opacity: 0.6 + recency * 0.4 }));
-    mesh.scale.setScalar(0.8 + recency * 2.4);
+    const baseScale = 0.8 + recency * 2.4;
+    mesh.scale.setScalar(baseScale);
     mesh.position.set(x, y, z);
-    mesh.userData = { memory, baseOpacity: 0.6 + recency * 0.4 };
+    mesh.userData = { memory, baseOpacity: 0.6 + recency * 0.4, baseScale, targetScale: baseScale };
     starGroup.add(mesh);
     starMeshes.push(mesh);
     const glow = new Sprite(glowMaterial.clone());
@@ -30709,6 +30865,27 @@ function renderMemoryGalaxy() {
   const coreGlow = new Mesh(new SphereGeometry(1.9, 22, 22), new MeshBasicMaterial({ color: 12363775, transparent: true, opacity: 0.34 }));
   starGroup.add(coreGlow);
   scene.add(starGroup);
+  const dustCount = 340;
+  const dustPositions = new Float32Array(dustCount * 3);
+  for (let i = 0; i < dustCount; i += 1) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const radius = 9 + Math.pow(Math.random(), 0.6) * 26;
+    dustPositions[i * 3] = Math.sin(phi) * Math.cos(theta) * radius;
+    dustPositions[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * radius;
+    dustPositions[i * 3 + 2] = Math.cos(phi) * radius;
+  }
+  const dustGeometry = new BufferGeometry();
+  dustGeometry.setAttribute("position", new BufferAttribute(dustPositions, 3));
+  const dust = new Points(dustGeometry, new PointsMaterial({
+    color: 9406153,
+    size: 0.055,
+    transparent: true,
+    opacity: 0.42,
+    blending: AdditiveBlending,
+    depthWrite: false
+  }));
+  scene.add(dust);
   const pairs = [];
   for (let i = 0; i < memories.length; i += 1) {
     for (let j = i + 1; j < memories.length; j += 1) {
@@ -30719,22 +30896,27 @@ function renderMemoryGalaxy() {
     const nodePositions = /* @__PURE__ */ new Map();
     starMeshes.forEach((mesh) => nodePositions.set(mesh.userData.memory.memory_id, mesh.position.clone()));
     const segments = [];
+    const segmentColors = [];
     pairs.forEach(([a, b]) => {
       const pa = nodePositions.get(a.memory_id);
       const pb = nodePositions.get(b.memory_id);
       if (!pa || !pb) return;
+      const ca = nodeColors.get(a.memory_id) || new Color2(9406153);
+      const cb = nodeColors.get(b.memory_id) || new Color2(9406153);
       const middle = pa.clone().add(pb).multiplyScalar(0.5);
       middle.y += pa.distanceTo(pb) * 0.22;
       const curve = new QuadraticBezierCurve3(pa, middle, pb);
       const samples = curve.getPoints(22);
       for (let k2 = 0; k2 < samples.length - 1; k2 += 1) {
         segments.push(samples[k2].x, samples[k2].y, samples[k2].z, samples[k2 + 1].x, samples[k2 + 1].y, samples[k2 + 1].z);
+        segmentColors.push(ca.r, ca.g, ca.b, cb.r, cb.g, cb.b);
       }
     });
     if (segments.length) {
       const linkGeometry = new BufferGeometry();
       linkGeometry.setAttribute("position", new BufferAttribute(new Float32Array(segments), 3));
-      const links = new LineSegments(linkGeometry, new LineBasicMaterial({ color: 6971296, transparent: true, opacity: 0.3 }));
+      linkGeometry.setAttribute("color", new BufferAttribute(new Float32Array(segmentColors), 3));
+      const links = new LineSegments(linkGeometry, new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.5 }));
       scene.add(links);
     }
   }
@@ -30779,11 +30961,13 @@ function renderMemoryGalaxy() {
   });
   const raycaster = new Raycaster();
   const pointer = new Vector2();
+  let flowLines = null;
   const setHover = (hoveredMemory) => {
     starMeshes.forEach((mesh) => {
       const memory = mesh.userData.memory;
       const connected = hoveredMemory && (memory.memory_id === hoveredMemory.memory_id || memory.scope_kind === hoveredMemory.scope_kind);
       mesh.material.opacity = hoveredMemory && !connected ? 0.14 : mesh.userData.baseOpacity;
+      mesh.userData.targetScale = hoveredMemory && memory.memory_id === hoveredMemory.memory_id ? mesh.userData.baseScale * 1.9 : mesh.userData.baseScale;
     });
     starGroup.children.forEach((child) => {
       if (!(child instanceof Sprite) || !child.userData?.memory) return;
@@ -30791,6 +30975,42 @@ function renderMemoryGalaxy() {
       const connected = hoveredMemory && (memory.memory_id === hoveredMemory.memory_id || memory.scope_kind === hoveredMemory.scope_kind);
       child.material.opacity = hoveredMemory && !connected ? 0.08 : child.userData.baseOpacity;
     });
+    if (flowLines) {
+      scene.remove(flowLines);
+      flowLines.traverse((object) => {
+        if (object.geometry) object.geometry.dispose();
+        if (object.material) object.material.dispose();
+      });
+      flowLines = null;
+    }
+    if (hoveredMemory && !reducedMotion) {
+      const flowSegments = [];
+      const hoveredMesh = starMeshes.find((mesh) => mesh.userData.memory.memory_id === hoveredMemory.memory_id);
+      if (hoveredMesh) {
+        starMeshes.forEach((mesh) => {
+          if (mesh === hoveredMesh || mesh.userData.memory.scope_kind !== hoveredMemory.scope_kind) return;
+          const start2 = mesh.position.clone().add(hoveredMesh.position.clone().sub(mesh.position).normalize().multiplyScalar(mesh.userData.baseScale * 0.9));
+          const end = hoveredMesh.position.clone();
+          flowSegments.push(start2.x, start2.y, start2.z, end.x, end.y, end.z);
+        });
+      }
+      if (flowSegments.length) {
+        const flowGeometry = new BufferGeometry();
+        flowGeometry.setAttribute("position", new BufferAttribute(new Float32Array(flowSegments), 3));
+        const flowMaterial = new LineDashedMaterial({
+          color: nodeColors.get(hoveredMemory.memory_id) || new Color2(16777215),
+          dashSize: 0.35,
+          gapSize: 0.28,
+          transparent: true,
+          opacity: 0.95,
+          blending: AdditiveBlending,
+          depthWrite: false
+        });
+        flowLines = new LineSegments(flowGeometry, flowMaterial);
+        flowLines.computeLineDistances();
+        scene.add(flowLines);
+      }
+    }
   };
   const move = (event) => {
     const rect = renderer.domElement.getBoundingClientRect();
@@ -30829,13 +31049,20 @@ function renderMemoryGalaxy() {
     frame2 = requestAnimationFrame(animate);
     controls.update();
     if (!reducedMotion) starGroup.rotation.y += controls.autoRotate ? 28e-4 : 0;
+    starMeshes.forEach((mesh) => {
+      const current = mesh.scale.x;
+      const target = mesh.userData.targetScale ?? mesh.userData.baseScale;
+      const next = reducedMotion ? target : current + (target - current) * 0.16;
+      mesh.scale.setScalar(next);
+    });
+    if (flowLines && !reducedMotion) flowLines.material.dashOffset -= 0.012;
     labelObjects.forEach((sprite) => {
       sprite.material.rotation = 0;
     });
     renderer.render(scene, camera);
   };
   animate();
-  state.memoryGalaxy = { frame: frame2, controls, renderer, stars: starGroup, links: scene, labels: labelObjects, hovered: null };
+  state.memoryGalaxy = { frame: frame2, controls, renderer, stars: starGroup, links: scene, labels: labelObjects, hovered: null, dust, flow: () => flowLines };
   const resize = () => {
     const w2 = host.clientWidth || width;
     const h2 = host.clientHeight || height;

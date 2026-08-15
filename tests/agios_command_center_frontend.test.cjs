@@ -317,3 +317,17 @@ test("systems view guides the owner to NotebookLM and the governed Image Studio"
   assert.match(js, /Local artifacts only/);
   assert.match(css, /\.image-studio-gallery/);
 });
+
+test("memory map is the default real-data visualization with event-driven motion", () => {
+  assert.match(js, /"graph"\s*,\s*"[^"]*Memory map"/);
+  assert.match(js, /memoryTab: "graph"/);
+  assert.match(js, /MEMORY MAP/);
+  assert.match(js, /LIVE DATA/);
+  assert.match(js, /real notes/);
+  assert.match(js, /real links/);
+  assert.match(js, /every node is a saved memory/);
+  assert.match(js, /TRUST H/);
+  assert.match(js, /orbit 360/);
+  assert.match(js, /vertexColors: true/);
+  assert.match(js, /dashOffset/);
+});
