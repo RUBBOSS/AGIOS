@@ -1253,6 +1253,22 @@
       "command": [
         "freebuff"
       ]
+    },
+    {
+      "id": "deepseek-harness",
+      "name": "DeepSeek Harness",
+      "kind": "web",
+      "url": "http://127.0.0.1:3457",
+      "launch": [
+        "npx",
+        "--yes",
+        "@deepseek-ai/dsh",
+        "web",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "3457"
+      ]
     }
   ]
 }

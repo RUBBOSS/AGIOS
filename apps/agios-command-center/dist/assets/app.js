@@ -30373,6 +30373,7 @@ function renderIntegrations() {
     ["Cline", "ready", "Installed \xB7 supervised terminal surface", "Cline CLI opens in an AGIOS terminal tab. Runtime dispatch stays locked until a deny-by-default workspace adapter is added."],
     ["Pokee", "ready", "Key wired \xB7 pokee-isaac registered", "Verified with your live key: the pokee-isaac model answered a real request. Registered as a governed model route candidate; the cost panel verifies the key without figures."],
     ["Sakana AI", "hold", "Paid-only API \xB7 no free tier", "Fugu is pay-as-you-go ($5/M in \xB7 $30/M out) plus $20\u2013$200 plans at console.sakana.ai. Connect it when you want to fund an account; AGIOS will not fake a free state."],
+    ["DeepSeek Harness", "ready", "MIT free \xB7 developer preview v0.1.0-rc.6", "Everything-is-a-plugin harness: one command boots a local web UI on 127.0.0.1:3457. Configure its model inside the Harness itself; AGIOS supplies no credentials. Breaking changes expected in the preview."],
     ["OpenClaw", "ready", "Installed \xB7 gateway onboarding pending", "OpenClaw CLI is installed and callable from AGIOS; channel and gateway onboarding remain your step. Direct dispatch stays locked."],
     ["Antigravity", "ready", "CLI installed \xB7 agy 1.1.13", "The agy CLI is installed and launchable from AGIOS. The full Antigravity IDE is a separate Google installer at antigravity.google/download."],
     ["DeepSeek API", "ready", "Key wired \xB7 balance live in Cost & performance", "Verified with your platform.deepseek.com key; the vendor balance is shown in the cost panel and never stored or logged."],
@@ -30606,9 +30607,21 @@ function renderHermesSystem(system) {
   }
   renderSystemNavigation();
 }
+function systemOverview(system) {
+  const models = modelsForSystem(system);
+  const runtime = runtimeForSystem(system.id);
+  const model = routedModelForSystem(system);
+  const providerIdBySystem = { deepseek: "deepseek", gemini: "gemini", pokee: "pokee", openrouter: "openrouter", glm: "openrouter", kimi: "openrouter", mistral: "openrouter" };
+  const provider = state.costs?.providers?.find((item) => item.id === providerIdBySystem[system.id]);
+  const balanceHtml = !state.costs ? `<button class="primary-action" data-cost-load>Load live balance</button>` : provider && provider.status === "reported" && provider.balances?.length ? provider.balances.map((balance) => `<span><small>LIVE BALANCE</small><strong>${esc(String(balance.currency || "?"))} ${esc(String(balance.total_balance ?? "n/a"))}</strong><em>${provider.available ? "available" : "unavailable"}</em></span>`).join("") : provider && provider.status === "reported-empty" ? `<span><small>KEY CHECK</small><strong>${provider.tier === "free" ? "Free tier verified" : "Verified"}</strong><em>${esc((provider.models || []).join(", ") || "key ok")}</em></span>` : `<span><small>PROVIDER</small><strong>${esc(provider?.status || "not-configured")}</strong><em>${esc(provider?.reason || "No cost adapter for this system.")}</em></span>`;
+  const modelChips = models.length ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("") : `<span class="model-chip"><i class="status-dot status-blocked"></i>no governed models registered</span>`;
+  const chatAction = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal") ? `<button class="primary-action routed-action" data-route-system-action="chat" data-route-system-id="${esc(system.id)}">Open live chat \xB7 ${esc(model.id)} \u2192</button>` : "";
+  return `<div class="system-overview"><section class="workspace-card"><p class="eyebrow">WHAT THIS IS</p><h3>${esc(system.name)}</h3><p>${esc(system.description)}</p><div class="control-readout"><span><small>ADAPTER</small><strong>${esc(titleCase(runtime.adapter))}</strong></span><span><small>READINESS</small><strong>${runtime.execution_enabled ? "Executable" : "Governed route"}</strong></span><span><small>MODELS</small><strong>${models.length}</strong></span>${balanceHtml}</div></section><section class="workspace-card"><p class="eyebrow">MODELS YOU CAN USE</p><div class="model-chip-row">${modelChips}</div><p>Models are policy-approved routes: the data class you choose decides which model may receive the request. Open the Models tab for each model's exact trust and data-class contract.</p><div class="overview-actions">${chatAction}<button data-system-mode="models">Inspect model contracts \u2192</button></div></section></div>`;
+}
 function systemModeContent(system) {
   const models = modelsForSystem(system);
   const runtime = runtimeForSystem(system.id);
+  if (state.systemMode === "overview") return systemOverview(system);
   if (state.systemMode === "chat") return routedSystemLauncher(system, "chat");
   if (state.systemMode === "goals") return routedSystemLauncher(system, "goal");
   if (state.systemMode === "workspace") return routedSystemLauncher(system, "workspace");
@@ -31795,6 +31808,7 @@ document.addEventListener("click", (event) => {
   const workRun = event.target.closest("[data-work-run]");
   const workRunClose = event.target.closest("[data-work-run-close]");
   const notebookOpen = event.target.closest("[data-notebooklm-open]");
+  const costLoad = event.target.closest("[data-cost-load]");
   if (nav) setView(nav.dataset.view);
   if (link) setView(link.dataset.viewLink);
   if (business) setView("portfolio");
@@ -31827,6 +31841,14 @@ document.addEventListener("click", (event) => {
     renderWork();
   }
   if (notebookOpen) window.open("https://notebooklm.google.com/", "_blank", "noopener");
+  if (costLoad) {
+    costLoad.disabled = true;
+    costLoad.textContent = "Loading live balance\u2026";
+    void loadCosts().then(() => {
+      if (state.view === "system") renderSystem();
+      else if (state.view === "performance") renderPerformance();
+    });
+  }
   if (directive) openModal();
   if (system) {
     state.selectedSystem = system.dataset.system;

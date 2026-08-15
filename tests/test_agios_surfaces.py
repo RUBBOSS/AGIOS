@@ -106,6 +106,7 @@ class SurfaceValidationTests(unittest.TestCase):
                 "antigravity-cli",
                 "freebuff-web",
                 "freebuff-cli",
+                "deepseek-harness",
             },
             ids,
         )
@@ -244,6 +245,7 @@ class SurfaceServerTests(unittest.TestCase):
                     "antigravity-cli",
                     "freebuff-web",
                     "freebuff-cli",
+                "deepseek-harness",
                 }
                 self.assertEqual(ids, expected)
 
