@@ -6,6 +6,8 @@ AGIOS is a supervised operating system. Its daily loop is:
 
 You do not need the Advanced screens for normal work.
 
+**Scope boundary:** AGIOS is a control plane and brand product, not a second Hermes. Hermes owns execution (chat, voice, memory, skills, delegation); AGIOS owns visibility, governance, cost truth, the surface registry, and the bridges Hermes lacks. See `docs/AGIOS_SCOPE.md` for the approved boundary and the 2026-08-15 audit.
+
 ## Quick start
 
 Open: <http://127.0.0.1:9120>
