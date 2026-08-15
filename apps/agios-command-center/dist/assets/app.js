@@ -30617,7 +30617,7 @@ function systemOverview(system) {
   const statusLine = !state.costs ? `<button class="link-action" data-cost-load>Load live balance</button>` : provider && provider.status === "reported" && provider.balances?.length ? `Live balance: ${esc(String(provider.balances[0].currency || ""))} ${esc(String(provider.balances[0].total_balance ?? "n/a"))} \xB7 ${provider.available ? "available" : "unavailable"}` : provider && provider.status === "reported-empty" ? `Key verified \xB7 ${provider.tier === "free" ? "free tier" : "active"} \xB7 ${esc((provider.models || []).join(", ") || "ok")}` : provider ? `${esc(provider.status)} \xB7 ${esc(provider.reason || provider.note || "")}` : "No cost adapter for this system.";
   const chatAction = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal") ? `<button class="primary-action routed-action" data-route-system-action="chat" data-route-system-id="${esc(system.id)}">Start chat \xB7 ${esc(model.id)} \u2192</button>` : "";
   const surface = state.surfaces?.find((item) => item.id === surfaceBySystem[system.id]);
-  const webUiButton = surface ? `<button class="surface-launch" data-surface-open="${esc(surface.id)}">Open ${esc(surface.name)} web UI \u2197</button>` : "";
+  const webUiButton = surface ? `<button class="primary-action" data-surface-embed="${esc(surface.id)}">Open ${esc(surface.name)} inside AGIOS \u2192</button><button class="surface-launch compact" data-surface-open="${esc(surface.id)}">Open in browser \u2197</button>` : "";
   const modelChips = models.length ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("") : `<span class="model-chip"><i class="status-dot status-blocked"></i>no governed models registered</span>`;
   return `<div class="system-overview"><section class="workspace-card system-hero-card"><p class="eyebrow">AI SYSTEM</p><h2>${esc(system.name)}</h2><p>${esc(system.description)}</p>${status(runtime.status)}<div class="hero-actions">${chatAction}${webUiButton}</div><div class="model-chip-row">${modelChips}</div><p class="system-status-line">${statusLine} \xB7 adapter ${esc(runtime.adapter)}</p></section>${renderModelCards(models)}</div>`;
 }
@@ -31808,6 +31808,7 @@ document.addEventListener("click", (event) => {
   const surfaceLaunch = event.target.closest("[data-surface-launch]");
   const surfaceRestart = event.target.closest("[data-surface-restart]");
   const surfaceOpen = event.target.closest("[data-surface-open]");
+  const surfaceEmbed = event.target.closest("[data-surface-embed]");
   const workRun = event.target.closest("[data-work-run]");
   const workRunClose = event.target.closest("[data-work-run-close]");
   const notebookOpen = event.target.closest("[data-notebooklm-open]");
@@ -31904,6 +31905,10 @@ document.addEventListener("click", (event) => {
   if (surfaceOpen) {
     const openSurface = state.surfaces.find((surface) => surface.id === surfaceOpen.dataset.surfaceOpen);
     if (openSurface && openSurface.url) window.open(openSurface.url, "_blank", "noopener");
+  }
+  if (surfaceEmbed) {
+    state.activeSurface = surfaceEmbed.dataset.surfaceEmbed;
+    setView("surfaces");
   }
   const dreamingAccept = event.target.closest("[data-dreaming-accept]");
   const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");

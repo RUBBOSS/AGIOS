@@ -1318,7 +1318,7 @@ function systemOverview(system) {
     : "";
   const surface = state.surfaces?.find((item) => item.id === surfaceBySystem[system.id]);
   const webUiButton = surface
-    ? `<button class="surface-launch" data-surface-open="${esc(surface.id)}">Open ${esc(surface.name)} web UI ↗</button>`
+    ? `<button class="primary-action" data-surface-embed="${esc(surface.id)}">Open ${esc(surface.name)} inside AGIOS →</button><button class="surface-launch compact" data-surface-open="${esc(surface.id)}">Open in browser ↗</button>`
     : "";
   const modelChips = models.length
     ? models.map((item) => `<span class="model-chip"><i class="status-dot status-${item.location === "local" ? "ready" : "routed"}"></i>${esc(item.id)}</span>`).join("")
@@ -2567,6 +2567,7 @@ document.addEventListener("click", (event) => {
   const surfaceLaunch = event.target.closest("[data-surface-launch]");
   const surfaceRestart = event.target.closest("[data-surface-restart]");
   const surfaceOpen = event.target.closest("[data-surface-open]");
+  const surfaceEmbed = event.target.closest("[data-surface-embed]");
   const workRun = event.target.closest("[data-work-run]");
   const workRunClose = event.target.closest("[data-work-run-close]");
   const notebookOpen = event.target.closest("[data-notebooklm-open]");
@@ -2619,6 +2620,10 @@ document.addEventListener("click", (event) => {
   if (surfaceOpen) {
     const openSurface = state.surfaces.find((surface) => surface.id === surfaceOpen.dataset.surfaceOpen);
     if (openSurface && openSurface.url) window.open(openSurface.url, "_blank", "noopener");
+  }
+  if (surfaceEmbed) {
+    state.activeSurface = surfaceEmbed.dataset.surfaceEmbed;
+    setView("surfaces");
   }
   const dreamingAccept = event.target.closest("[data-dreaming-accept]");
   const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");
