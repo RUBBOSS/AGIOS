@@ -304,6 +304,11 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /Free-tier key wired/);
   assert.match(js, /Key wired/);
   assert.match(js, /pokee-isaac registered/);
+  assert.match(js, /Sakana AI/);
+  assert.match(js, /Paid-only API/);
+  assert.match(js, /Routed via Hermes/);
+  assert.match(js, /"glm-5.2"\]/);
+  assert.match(js, /"kimi-k3"\]/);
   assert.match(js, /agy 1\.1\.13/);
   assert.match(js, /Developer preview \+ broad local tooling/);
   assert.match(css, /\.notebooklm-bridge/);

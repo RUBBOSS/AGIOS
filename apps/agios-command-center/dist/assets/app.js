@@ -30372,6 +30372,7 @@ function renderIntegrations() {
     ["Gemini / NotebookLM", state.notebooklm ? "ready" : "approval", state.notebooklm ? "Local source-pack bridge ready" : "Owner source approval required", state.notebooklm ? "AGIOS does not inspect account auth; local preparation only, with no cookies, unofficial API, or automatic Google upload." : "Load the approved vault catalog before preparing a source pack."],
     ["Cline", "ready", "Installed \xB7 supervised terminal surface", "Cline CLI opens in an AGIOS terminal tab. Runtime dispatch stays locked until a deny-by-default workspace adapter is added."],
     ["Pokee", "ready", "Key wired \xB7 pokee-isaac registered", "Verified with your live key: the pokee-isaac model answered a real request. Registered as a governed model route candidate; the cost panel verifies the key without figures."],
+    ["Sakana AI", "hold", "Paid-only API \xB7 no free tier", "Fugu is pay-as-you-go ($5/M in \xB7 $30/M out) plus $20\u2013$200 plans at console.sakana.ai. Connect it when you want to fund an account; AGIOS will not fake a free state."],
     ["OpenClaw", "ready", "Installed \xB7 gateway onboarding pending", "OpenClaw CLI is installed and callable from AGIOS; channel and gateway onboarding remain your step. Direct dispatch stays locked."],
     ["Antigravity", "ready", "CLI installed \xB7 agy 1.1.13", "The agy CLI is installed and launchable from AGIOS. The full Antigravity IDE is a separate Google installer at antigravity.google/download."],
     ["DeepSeek API", "ready", "Key wired \xB7 balance live in Cost & performance", "Verified with your platform.deepseek.com key; the vendor balance is shown in the cost panel and never stored or logged."],
@@ -30403,6 +30404,18 @@ function renderAgentNetwork() {
     <div class="network-grid"><form class="workspace-card a2a-compose" data-a2a-form><p class="eyebrow">Local A2A client</p><h3>Send a governed agent task</h3><p>Knowledge queries return citations. Planning tasks stop in Approvals before Hermes can run.</p><label>Task type<select name="skillId"><option value="scoped-knowledge-retrieval">Scoped knowledge retrieval</option><option value="supervised-research-planning">Supervised research planning</option></select></label><label>Agent<select name="agentId">${agents}</select></label><label>Request<textarea name="objective" required maxlength="8000" placeholder="Ask for evidence or describe a research outcome."></textarea></label><div class="operational-options"><label>Data class<select name="dataClass"><option value="internal">Internal</option><option value="public">Public</option><option value="private_business">Private business</option><option value="customer_restricted">Customer restricted</option></select></label><label>Project scope<input name="projectId" maxlength="128" placeholder="Optional project ID"/></label></div><div class="compose-submit"><span>A2A never grants authority. AGIOS policy and approvals still control execution.</span><button type="submit">Send local task</button></div></form><section class="a2a-feed"><div class="run-feed-heading"><div><p class="eyebrow">Inter-agent tasks</p><h3>${state.a2aTasks.length} local tasks</h3></div><span>A2A 1.0</span></div>${state.a2aTasks.length ? state.a2aTasks.map(a2aTaskCard).join("") : `<div class="workspace-empty workspace-card"><b>A2A</b><strong>No inter-agent tasks yet</strong><span>The gateway is ready; outbound peers remain locked.</span></div>`}</section></div>`;
 }
 function modelsForSystem(system) {
+  const systemModelIds = {
+    glm: ["glm-5.2"],
+    kimi: ["kimi-k3"],
+    mistral: ["mistral-large"],
+    openrouter: ["glm-5.2", "kimi-k3", "mistral-large"],
+    gemini: ["gemini-3.7-flash"],
+    pokee: ["pokee-isaac"],
+    sakana: []
+  };
+  if (Object.hasOwn(systemModelIds, system.id)) {
+    return state.data.models.filter((model) => systemModelIds[system.id].includes(model.id));
+  }
   if (system.id === "hermes") {
     const routedModelIds = new Set(Object.values(state.data.routes || {}).flat());
     return state.data.models.filter((model) => routedModelIds.has(model.id));
@@ -30442,9 +30455,12 @@ function systemRunMatches(run, system) {
 function routedSystemLauncher(system, action) {
   const runtime = runtimeForSystem(system.id);
   const model = routedModelForSystem(system);
-  const executable = runtime.execution_enabled && (runtime.actions || []).some((item) => action === "workspace" ? item.startsWith("workspace") : item === action || action === "chat" && item === "local-inference");
-  const destination = action === "workspace" ? `the ${system.name} workspace lane` : action === "goal" ? "Hermes Goal Mode" : "Hermes Chat";
-  return `<section class="workspace-card routed-launcher"><p class="eyebrow">GOVERNED ROUTE</p><h2>${esc(system.name)} \u2192 ${destination}</h2><p>${executable ? `AGIOS will open the live supervised composer with ${model ? esc(model.id) : "the approved profile route"} selected. Memory, skills, data classification and approval policy remain attached.` : `${esc(system.name)} is visible in the registry, but no executable ${action} adapter is installed and authenticated on this machine.`}</p><div class="control-readout"><span><small>READINESS</small><strong>${runtime.configured ? "Configured" : runtime.detected ? "Installed \xB7 auth unverified" : "Not found"}</strong></span><span><small>ADAPTER</small><strong>${esc(titleCase(runtime.adapter))}</strong></span><span><small>MODEL</small><strong>${esc(model?.id || "Unavailable")}</strong></span><span><small>AUTHORITY</small><strong>${esc(titleCase(runtime.approval))}</strong></span></div>${executable ? `<button class="primary-action routed-action" data-route-system-action="${esc(action)}" data-route-system-id="${esc(system.id)}">Open live ${esc(action)} \u2192</button>` : `<div class="boundary-note">Install and authenticate an audited adapter before this action can appear. AGIOS blocks silent provider fallback.</div>`}</section>`;
+  const routeableModel = model && !model.id.includes("embedding") && (model.allowed_data_classes || []).includes("internal");
+  const nativeExecutable = runtime.execution_enabled && (runtime.actions || []).some((item) => action === "workspace" ? item.startsWith("workspace") : item === action || action === "chat" && item === "local-inference");
+  const hermesRoute = action === "chat" && routeableModel;
+  const executable = nativeExecutable || hermesRoute;
+  const destination = action === "workspace" ? `the ${system.name} workspace lane` : action === "goal" ? "Hermes Goal Mode" : hermesRoute ? `Hermes Chat \xB7 ${model.id}` : "Hermes Chat";
+  return `<section class="workspace-card routed-launcher"><p class="eyebrow">GOVERNED ROUTE</p><h2>${esc(system.name)} \u2192 ${destination}</h2><p>${executable ? `AGIOS will open the live supervised composer with ${model ? esc(model.id) : "the approved profile route"} selected. Memory, skills, data classification and approval policy remain attached.${hermesRoute ? " The request runs through Hermes as the supervised runtime for this governed model route." : ""}` : `${esc(system.name)} is visible in the registry, but no executable ${action} adapter is installed and authenticated on this machine.`}</p><div class="control-readout"><span><small>READINESS</small><strong>${hermesRoute ? "Routed via Hermes" : runtime.configured ? "Configured" : runtime.detected ? "Installed \xB7 auth unverified" : "Not found"}</strong></span><span><small>ADAPTER</small><strong>${esc(titleCase(hermesRoute ? "hermes" : runtime.adapter))}</strong></span><span><small>MODEL</small><strong>${esc(model?.id || "Unavailable")}</strong></span><span><small>AUTHORITY</small><strong>${esc(titleCase(hermesRoute ? "policy-checked" : runtime.approval))}</strong></span></div>${executable ? `<button class="primary-action routed-action" data-route-system-action="${esc(action)}" data-route-system-id="${esc(system.id)}">Open live ${esc(action)} \u2192</button>` : `<div class="boundary-note">Install and authenticate an audited adapter before this action can appear. AGIOS blocks silent provider fallback.</div>`}</section>`;
 }
 function renderModelCards(models) {
   return models.length ? `<div class="model-card-grid">${models.map((model) => `<article class="model-card"><header><span>${esc(model.provider)}</span>${status(model.location === "local" ? "ready" : "routed")}</header><h3>${esc(model.id)}</h3><p>${esc(titleCase(model.trust))} trust \xB7 ${esc(titleCase(model.cost_status))}</p><div class="data-class-row">${model.allowed_data_classes.map((item) => `<span>${esc(titleCase(item))}</span>`).join("")}</div></article>`).join("")}</div>` : `<div class="workspace-empty workspace-card large"><b>\u25C7</b><strong>No governed model routes connected</strong><span>The system exists in the AGIOS registry, but its model adapter is not installed.</span></div>`;
@@ -30633,6 +30649,9 @@ function renderSystem() {
   if (actions.includes("chat") || actions.includes("local-inference")) modes.push(["chat", "Chat"]);
   if (actions.includes("goal")) modes.push(["goals", "Goals"]);
   if (actions.some((action) => action.startsWith("workspace"))) modes.push(["workspace", "Workspace"]);
+  if (!modes.some(([id2]) => id2 === "chat") && modelsForSystem(system).some((model) => !model.id.includes("embedding"))) {
+    modes.push(["chat", "Chat"]);
+  }
   if (runtime.execution_enabled) modes.push(["sessions", "Sessions"]);
   modes.push(["models", "Models"], ["skills", "Skills"], ["memory", "Memory"], ["control", "Control Room"]);
   if (terminalSurfaceForSystem(system.id)) modes.push(["terminal", "Terminal"]);
