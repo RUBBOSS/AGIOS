@@ -410,6 +410,18 @@
       "cost_note": "vendor-reported: cheapest DeepSeek tier, built for high-volume agent loops (unverified)"
     },
     {
+      "id": "gemini-3.7-flash",
+      "provider": "gemini",
+      "location": "external",
+      "trust": "restricted",
+      "cost_status": "promotional-unpriced",
+      "allowed_data_classes": [
+        "public",
+        "internal"
+      ],
+      "cost_note": "vendor-reported: Gemini API free tier (input and output free); rate limited by provider"
+    },
+    {
       "id": "nemotron-hosted",
       "provider": "nvidia",
       "location": "external",
@@ -945,8 +957,8 @@
       "id": "gemini",
       "name": "Gemini",
       "kind": "model-runtime",
-      "status": "planned",
-      "adapter": "planned",
+      "status": "routed",
+      "adapter": "governed-model-route",
       "description": "Google model and research runtime prepared for a governed AGIOS adapter.",
       "capabilities": [
         "chat",

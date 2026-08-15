@@ -301,6 +301,9 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /freebuff CLI/);
   assert.match(js, /DeepSeek API/);
   assert.match(js, /Gemini API/);
+  assert.match(js, /Free-tier key wired/);
+  assert.match(js, /Key wired/);
+  assert.match(js, /API key pending/);
   assert.match(js, /agy 1\.1\.13/);
   assert.match(js, /Developer preview \+ broad local tooling/);
   assert.match(css, /\.notebooklm-bridge/);

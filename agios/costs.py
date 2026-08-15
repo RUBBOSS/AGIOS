@@ -145,6 +145,45 @@ def _deepseek_snapshot() -> dict[str, Any]:
     return snapshot
 
 
+def _gemini_snapshot() -> dict[str, Any]:
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        return {
+            "id": "gemini",
+            "label": "Gemini API (AI Studio)",
+            "status": "not-configured",
+            "reason": "Set GEMINI_API_KEY in the local .env.local file and restart AGIOS.",
+        }
+    request = urllib.request.Request(
+        "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1",
+        headers={
+            "x-goog-api-key": key,
+            "Accept": "application/json",
+            "User-Agent": "AGIOS/0.5 (local operator)",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT) as response:
+            payload = json.loads(response.read(64_000).decode("utf-8", errors="replace"))
+        if not isinstance(payload, dict):
+            raise ValueError("provider returned a non-object payload")
+    except (urllib.error.URLError, OSError, ValueError, json.JSONDecodeError) as exc:
+        return {
+            "id": "gemini",
+            "label": "Gemini API (AI Studio)",
+            "status": "error",
+            "reason": "key check failed",
+            "detail": str(exc)[:160],
+        }
+    return {
+        "id": "gemini",
+        "label": "Gemini API (AI Studio)",
+        "status": "reported-empty",
+        "tier": "free",
+        "note": "key verified via the models endpoint; Gemini exposes no balance or usage endpoint, so no figures are shown",
+    }
+
+
 def _codex_snapshot() -> dict[str, Any]:
     return {
         "id": "codex",
@@ -174,6 +213,7 @@ def build_cost_snapshot(force: bool = False) -> dict[str, Any]:
     providers = [
         _openrouter_snapshot(),
         _deepseek_snapshot(),
+        _gemini_snapshot(),
         _codex_snapshot(),
         _local_snapshot(),
     ]
@@ -187,7 +227,11 @@ def build_cost_snapshot(force: bool = False) -> dict[str, Any]:
         "privacy": {
             "synthetic": False,
             "keys_handled": "environment only; never stored, logged, or returned",
-            "sources": ["OpenRouter auth/key endpoint", "DeepSeek balance endpoint"],
+            "sources": [
+                "OpenRouter auth/key endpoint",
+                "DeepSeek balance endpoint",
+                "Gemini models endpoint (key check only)",
+            ],
         },
         "providers": providers,
         "total": {

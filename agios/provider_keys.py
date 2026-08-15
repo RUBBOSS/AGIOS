@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -33,7 +34,41 @@ def _hermes_auth_path() -> Path:
     return Path(local_appdata) / "hermes" / "auth.json"
 
 
-def load_provider_keys(auth_path: str | Path | None = None) -> dict[str, dict[str, Any]]:
+def _agios_env_path() -> Path:
+    return Path(__file__).resolve().parents[1] / ".env.local"
+
+
+def load_env_file(env_path: str | Path | None = None) -> dict[str, str]:
+    """Load KEY=VALUE lines from the AGIOS local secrets file into env.
+
+    Values use setdefault: an explicitly exported environment variable always
+    wins. Returns the loaded variable names only, never values.
+    """
+    path = Path(env_path) if env_path else _agios_env_path()
+    loaded: dict[str, str] = {}
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return loaded
+    for line in lines:
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if "=" not in stripped:
+            continue
+        name, _, value = stripped.partition("=")
+        name = name.strip()
+        if not name or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name):
+            continue
+        os.environ.setdefault(name, value.strip())
+        loaded[name] = name
+    return loaded
+
+
+def load_provider_keys(
+    auth_path: str | Path | None = None,
+    env_path: str | Path | None = None,
+) -> dict[str, dict[str, Any]]:
     """Load authorized API keys from Hermes' local credential pool into env.
 
     Returns metadata (provider name, loaded flag, provider-reported status)
@@ -41,6 +76,10 @@ def load_provider_keys(auth_path: str | Path | None = None) -> dict[str, dict[st
     """
     path = Path(auth_path) if auth_path else _hermes_auth_path()
     meta: dict[str, dict[str, Any]] = {}
+    load_env_file(env_path=env_path)
+    for pool_name, env_name in _POOL_TO_ENV.items():
+        if os.environ.get(env_name):
+            meta.setdefault(pool_name, {"loaded": True, "source": "agios-env"})
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError, json.JSONDecodeError):

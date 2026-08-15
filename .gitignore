@@ -3,3 +3,9 @@ node_modules/
 __pycache__/
 *.pyc
 .worktrees/
+
+# local secrets (never committed)
+.env
+.env.local
+.env.*
+!.env.example
