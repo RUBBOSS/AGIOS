@@ -4,59 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#07080b" />
-    <meta name="description" content="AGIOS - Ruben's supervised AI operating system." />
-    <title>AGIOS - Signal Room</title>
+    <meta name="description" content="Hermes OS — Ruben's private AI workspace and app hub." />
+    <title>Hermes OS</title>
     <link rel="stylesheet" href="/assets/style.css?v=a71a50f" />
     <link rel="stylesheet" href="/assets/app.css?v=a71a50f" />
     <link rel="stylesheet" href="/assets/signal-room.css?v=01" />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to command center</a>
+    <a class="skip-link" href="#main-content">Skip to apps</a>
     <div class="app-shell">
-      <aside class="sidebar" id="sidebar" aria-label="AGIOS navigation">
+      <aside class="sidebar" id="sidebar" aria-label="Hermes OS navigation">
         <div class="brand">
-          <div class="brand-mark" aria-hidden="true"><span>A</span></div>
-          <div><small>SUPERVISED OS</small><strong>AGIOS</strong></div>
+          <div class="brand-mark" aria-hidden="true"><span>H</span></div>
+          <div><small>PRIVATE AI WORKSPACE</small><strong>Hermes OS</strong></div>
           <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation">×</button>
         </div>
 
         <div class="owner-chip">
           <div class="avatar">RM</div>
-          <div><strong>Ruben</strong><small>Owner control</small></div>
+          <div><strong>KlarerNorden</strong><small>Owner control</small></div>
           <span class="presence" title="Local control plane online"></span>
         </div>
 
         <nav class="nav-groups">
           <section class="essential-nav">
-            <p class="nav-label">Operate</p>
-            <button class="nav-item is-active" data-view="command"><span>HM</span>Home<kbd>1</kbd></button>
-            <button class="nav-item" data-view="work"><span>WK</span>Work</button>
-            <button class="nav-item" data-view="approvals"><span>AP</span>Approvals <em id="approval-count">0</em></button>
-            <button class="nav-item" data-view="artifacts"><span>EV</span>Evidence</button>
-            <button class="nav-item" data-view="memory" aria-label="Shared Memory"><span>MY</span>Memory</button>
-            <button class="nav-item" data-view="integrations"><span>SY</span>Systems</button>
-            <button class="nav-item" data-view="guide"><span>?</span>Operator guide</button>
+            <p class="nav-label">Workspace</p>
+            <button class="nav-item is-active" data-view="command" data-primary-view="apps"><span>▣</span>Apps<kbd>1</kbd></button>
+            <button class="nav-item" data-view="work" data-primary-view="work"><span>✓</span>Work<em id="approval-count">0</em></button>
+            <button class="nav-item" data-view="memory" data-primary-view="memory" aria-label="Memory"><span>✦</span>Memory<kbd>3</kbd></button>
+            <button class="nav-item" data-view="graphify" data-primary-view="graphify" aria-label="Graphify"><span>⌬</span>Graphify<kbd>4</kbd></button>
+            <button class="nav-item" data-view="settings" data-primary-view="settings"><span>⚙</span>Settings<kbd>5</kbd></button>
           </section>
-          <details class="advanced-nav">
-            <summary>Advanced system</summary>
-            <div class="advanced-nav-body">
-              <p class="nav-label">Organization</p>
-              <button class="nav-item" data-view="portfolio"><span>↗</span>Portfolio</button>
-              <button class="nav-item" data-view="departments"><span>▦</span>Departments</button>
-              <button class="nav-item" data-view="agents"><span>◉</span>Agent fleet</button>
-              <button class="nav-item" data-view="skills"><span>◇</span>Skills & improvements</button>
-              <button class="nav-item" data-view="repositories"><span>▱</span>Repositories</button>
-              <button class="nav-item" data-view="automations"><span>↻</span>Automations</button>
-              <button class="nav-item" data-view="paperclip"><span>▥</span>Orchestration</button>
-              <button class="nav-item" data-view="network"><span>A2A</span>Agent network</button>
-              <button class="nav-item" data-view="performance"><span>∿</span>Cost & performance</button>
-              <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
-              <p class="nav-label">AI systems</p>
-              <div class="system-nav" id="system-nav"><span class="nav-placeholder">Loading systems…</span></div>
-              <p class="nav-label">Agent workspaces</p>
-              <div class="agent-nav" id="agent-nav"><span class="nav-placeholder">Loading fleet…</span></div>
-            </div>
-          </details>
         </nav>
 
         <div class="sidebar-runtime">
@@ -70,19 +48,18 @@
       <main id="main-content" tabindex="-1">
         <header class="topbar">
           <button class="icon-button menu-button" id="menu-button" aria-label="Open navigation">☰</button>
-          <div class="breadcrumb"><span>AGIOS</span><b>/</b><strong id="view-name">Home</strong></div>
-          <button class="search-trigger" id="search-trigger"><span>⌕</span><span>Find anything in the operating system</span><kbd>Ctrl K</kbd></button>
+          <div class="breadcrumb"><span>Hermes OS</span><b>/</b><strong id="view-name">Apps</strong></div>
+          <button class="search-trigger" id="search-trigger"><span>⌕</span><span>Find apps, work, memory, graph, or settings</span><kbd>Ctrl K</kbd></button>
           <div class="topbar-actions">
             <div class="system-clock"><strong id="clock-time">--:--</strong><small>Yerevan</small></div>
-            <button class="systems-button" id="all-systems"><i></i><i></i><i></i><span>Systems</span></button>
-            <button class="directive-button" id="new-directive">Ask Ari <span>＋</span></button>
+            <button class="directive-button" id="new-directive">Ask Hermes <span>＋</span></button>
           </div>
         </header>
 
         <div class="page" id="page" aria-live="polite">
           <div class="loading-state">
-            <div class="loading-mark">A</div>
-            <p>Connecting the command system</p>
+            <div class="loading-mark">H</div>
+            <p>Connecting Hermes</p>
             <span></span>
           </div>
         </div>
@@ -92,24 +69,24 @@
     <div class="modal-backdrop" id="directive-modal" hidden>
       <section class="modal" role="dialog" aria-modal="true" aria-labelledby="directive-title">
         <button class="modal-close" data-close-modal aria-label="Close">×</button>
-        <p class="eyebrow">Governed intake</p>
-        <h2 id="directive-title">Create a directive</h2>
-        <p>Tell Ari the outcome. The Chief of Staff chooses the right business, department, specialist and model, then shows you the route before any model work begins.</p>
+        <p class="eyebrow">Supervised request</p>
+        <h2 id="directive-title">Ask Hermes</h2>
+        <p>Tell Hermes the outcome. Ari Vale chooses the specialist and model, then shows you the route before work begins.</p>
         <form id="directive-form">
-          <label>Outcome<textarea name="outcome" required maxlength="600" placeholder="What should AGIOS achieve?"></textarea></label>
+          <label>Outcome<textarea name="outcome" required maxlength="600" placeholder="What should Hermes do?"></textarea></label>
           <div class="form-row">
             <label>Business<select name="business" id="directive-business"></select></label>
             <label>Routing<select name="agent" id="directive-agent" disabled><option value="default">Ari Vale · Chief of Staff decides</option></select></label>
             <label>Data class<select name="dataClass"><option>internal</option><option>public</option><option>private_business</option><option>customer_restricted</option></select></label>
           </div>
           <div class="safety-note"><span>⌾</span><div><strong>Approval required</strong><small>Creating this directive does not run it. The exact agent, outcome, data class, memory, skills and model remain bound for your approval.</small></div></div>
-          <button class="primary-action" type="submit">Ask Ari to plan the route</button>
+          <button class="primary-action" type="submit">Review the route</button>
         </form>
       </section>
     </div>
 
     <div class="command-palette" id="command-palette" hidden>
-      <div class="palette-panel" role="dialog" aria-modal="true" aria-label="Search AGIOS">
+      <div class="palette-panel" role="dialog" aria-modal="true" aria-label="Search Hermes OS">
         <label><span>⌕</span><input id="palette-input" autocomplete="off" placeholder="Go to a view or business…" /></label>
         <div id="palette-results"></div>
         <footer><span>↑↓ navigate</span><span>Enter open</span><span>Esc close</span></footer>

@@ -23,6 +23,7 @@ from .a2a import A2AService, A2A_VERSION
 from .costs import build_cost_snapshot
 from .dreaming import DreamingStore, build_dreaming_digest
 from .gauntlet import build_gauntlet_prompt
+from .graphify import GraphifyArtifacts
 from .image_studio import ImageStudioError, ImageStudioService
 from .learning import LearningStore, LearningStoreError, build_brain_file
 from .live_work import collect_live_work
@@ -43,6 +44,7 @@ from .surfaces import (
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG = ROOT / "configs" / "agios.json"
 DEFAULT_FRONTEND = ROOT / "apps" / "agios-command-center" / "dist"
+DEFAULT_GRAPHIFY_ROOT = ROOT.parent / "HermesOS" / "graphify-out"
 
 
 class RunRequest(BaseModel):
@@ -190,6 +192,7 @@ def create_app(
     operational_service: OperationalService | None = None,
     notebooklm_service: NotebookLMSourcePackService | None = None,
     image_studio_service: ImageStudioService | None = None,
+    graphify_root: str | Path = DEFAULT_GRAPHIFY_ROOT,
 ) -> FastAPI:
     config = load_config(config_path)
     provider_meta = load_provider_keys()
@@ -217,6 +220,7 @@ def create_app(
     image_studio = image_studio_service or ImageStudioService(
         artifact_root=Path(service.state_dir) / "artifacts"
     )
+    graphify_artifacts = GraphifyArtifacts(graphify_root)
     a2a = A2AService(
         config=config,
         operational=service,
@@ -244,12 +248,13 @@ def create_app(
     app.state.a2a_service = a2a
     app.state.notebooklm_service = notebooklm
     app.state.image_studio_service = image_studio
+    app.state.graphify_artifacts = graphify_artifacts
     app.state.provider_meta = provider_meta
 
     @app.middleware("http")
     async def private_runtime_headers(request: Request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/api/v1/live-work", "/api/v1/notebooklm", "/api/v1/image-studio", "/a2a/")):
+        if request.url.path.startswith(("/api/v1/hermes", "/api/v1/orchestrator", "/api/v1/memory", "/api/v1/retrieval", "/api/v1/a2a", "/api/v1/voice", "/api/v1/vision", "/api/v1/workspaces", "/api/v1/runtimes", "/api/v1/agents", "/api/v1/growth", "/api/v1/surfaces", "/api/v1/dreaming", "/api/v1/learn", "/api/v1/gauntlet", "/api/v1/costs", "/api/v1/live-work", "/api/v1/notebooklm", "/api/v1/image-studio", "/api/v1/graphify", "/a2a/")):
             response.headers["Cache-Control"] = "no-store"
             response.headers["X-Frame-Options"] = "DENY"
         return response
@@ -282,6 +287,45 @@ def create_app(
     @app.get("/api/v1/health")
     def health() -> dict[str, object]:
         return {"schema_version": 1, "status": "healthy", "product": "agios"}
+
+    @app.get("/api/v1/graphify")
+    def graphify_status(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> dict[str, Any]:
+        require_local_session(request, agios_session, x_agios_csrf)
+        return graphify_artifacts.status()
+
+    @app.get("/graphify/view")
+    def graphify_view(
+        request: Request,
+        agios_session: str | None = Cookie(default=None),
+        x_agios_csrf: str | None = Header(default=None),
+    ) -> Response:
+        require_local_session(request, agios_session, x_agios_csrf)
+        nonce = secrets.token_urlsafe(18)
+        try:
+            artifact = graphify_artifacts.view_html(nonce)
+            style_hashes = " ".join(graphify_artifacts.style_attribute_hashes())
+            style_element_hashes = " ".join(graphify_artifacts.style_element_hashes())
+        except FileNotFoundError as exc:
+            raise HTTPException(status_code=404, detail="Graphify view unavailable") from exc
+        response = Response(content=artifact, media_type="text/html")
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["Content-Security-Policy"] = (
+            "sandbox allow-scripts; default-src 'none'; "
+            f"script-src 'nonce-{nonce}'; "
+            f"style-src-elem 'nonce-{nonce}' {style_element_hashes}; "
+            f"style-src-attr 'unsafe-hashes' {style_hashes}; "
+            "img-src data:; connect-src 'none'; "
+            "object-src 'none'; base-uri 'none'; form-action 'none'; "
+            "frame-ancestors 'self'"
+        )
+        return response
 
     @app.get("/api/v1/notebooklm/sources")
     def notebooklm_sources(

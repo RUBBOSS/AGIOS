@@ -10,15 +10,46 @@ const css = ["style.css", "signal-room.css"].map((file) => fs.readFileSync(path.
 const buildScript = fs.readFileSync(path.join(root, "scripts/build_agios_frontend.mjs"), "utf8");
 const packageJson = fs.readFileSync(path.join(root, "package.json"), "utf8");
 const guide = fs.readFileSync(path.join(root, "docs/USER_GUIDE.md"), "utf8");
+const sourceJs = fs.readFileSync(path.join(root, "apps/agios-command-center/src/app.js"), "utf8");
+const sourceCss = fs.readFileSync(path.join(root, "apps/agios-command-center/src/style.css"), "utf8");
 
-test("standalone AGIOS shell exposes core operating surfaces", () => {
-  for (const label of ["Home", "Work", "Approvals", "Evidence", "Memory", "Operator guide", "Systems", "Advanced system", "Portfolio", "Departments", "Agent fleet", "Skills & improvements", "Repositories", "AI systems"]) assert.match(html, new RegExp(label));
-  assert.match(html, /Create a directive/);
+test("Hermes OS exposes Graphify as its fifth primary section", () => {
+  assert.match(html, /<strong>Hermes OS<\/strong>/);
+  assert.match(html, /<strong>KlarerNorden<\/strong>/);
+  for (const label of ["Apps", "Work", "Memory", "Graphify", "Settings"]) assert.match(html, new RegExp(`data-primary-view="[^"]+"[^>]*>[^<]*(?:<[^>]+>[^<]*<\\/[^>]+>)*${label}`, "i"));
+  assert.equal((html.match(/data-primary-view=/g) || []).length, 5);
+  for (const oldPrimary of ["Advanced system", "Portfolio", "Departments", "Agent fleet", "AI systems"]) assert.doesNotMatch(html, new RegExp(oldPrimary));
+  assert.match(html, /Ask Hermes/);
+  assert.match(html, /Find apps, work, memory, graph, or settings/);
   assert.match(js, /\/api\/v1\/command-center/);
   for (const mode of ["Chat", "Goal Mode", "Workspace", "Skills", "Sessions", "Control Room"]) assert.match(js, new RegExp(mode));
   assert.match(js, /cost.*Unavailable|Unavailable.*price/is);
   assert.match(html, /assets\/app\.js\?v=[a-f0-9]{7}/);
   assert.match(html, /assets\/style\.css\?v=[a-f0-9]{7}/);
+});
+
+test("Graphify's live iframe survives operational polling", () => {
+  assert.match(sourceJs, /const needsGraphify = \["command", "graphify"\]\.includes\(state\.view\) && !state\.graphify;/);
+  assert.match(sourceJs, /function rerenderOperationalView\(\{ graphifyChanged = false \} = \{\}\)/);
+  assert.match(sourceJs, /state\.view === "graphify" && graphifyChanged/);
+});
+
+test("Graphify keeps mobile status readable and controls tappable", () => {
+  assert.match(sourceJs, /const shortCommit = String\(graph\.built_at_commit \|\| "No commit"\)\.slice\(0, 8\);/);
+  assert.match(sourceJs, /<small>\$\{esc\(shortCommit\)\}<\/small>/);
+  assert.match(sourceCss, /@media \(max-width: 720px\)[\s\S]*\.graphify-stage > header a \{[^}]*min-height: 44px;/);
+});
+
+test("Apps is the simple default and Settings keeps advanced capabilities reachable", () => {
+  assert.match(js, /function renderAppsHome/);
+  assert.match(js, /One window\. Every tool\./);
+  assert.match(js, /opens inside Hermes OS/);
+  assert.doesNotMatch(js, /opens inside AGIOS/);
+  assert.match(js, /CURRENT ACTIVITY/i);
+  assert.match(js, /function settingsToolGrid/);
+  for (const label of ["Models & tools", "Costs & usage", "Approvals & safety", "Evidence", "Workspaces", "Skills", "Agents", "Automations", "Orchestration"]) assert.match(js, new RegExp(label));
+  assert.match(css, /\.settings-tool-grid/);
+  assert.doesNotMatch(js, /<button class="primary-action" data-open-directive>Ask Hermes/);
 });
 
 test("AI systems share governed memory and skills without faking connectivity", () => {
@@ -37,7 +68,8 @@ test("AI systems share governed memory and skills without faking connectivity", 
 });
 
 test("frontend exposes authenticated supervised Hermes operations", () => {
-  assert.match(html, /Tell Ari the outcome/i);
+  assert.match(html, /Tell Hermes the outcome/i);
+  assert.match(html, /Ask Hermes/);
   assert.match(js, /Ask Ari anything/);
   assert.match(js, /\/api\/v1\/hermes\/runs/);
   assert.match(js, /\/api\/v1\/hermes\/runs\/\$\{encodeURIComponent\(button\.dataset\.cancelRun\)\}\/cancel/);
@@ -56,16 +88,20 @@ test("frontend exposes authenticated supervised Hermes operations", () => {
 });
 
 test("simple owner workflow connects one request to supervised execution", () => {
-  for (const label of ["Execution spine", "Intent", "Route", "Approve", "Runtime", "Evidence", "Learn", "Open operator guide"]) assert.match(js, new RegExp(label, "i"));
+  for (const label of ["Your apps", "Needs approval", "Working now", "Latest result", "Runs", "Approvals", "Evidence"]) assert.match(js, new RegExp(label, "i"));
   assert.match(js, /function renderGuide/);
-  assert.match(js, /function renderExecutionSpine/);
+  assert.match(js, /heading\("How to use Hermes OS"/);
+  assert.match(js, /The five sections/);
+  assert.doesNotMatch(js, /four sections/i);
+  assert.doesNotMatch(js, /The six useful screens|heading\("How to use AGIOS"/);
+  assert.match(js, /function workSectionNav/);
   assert.match(js, /\/api\/v1\/orchestrator\/plans/);
   assert.match(js, /data-dispatch-form/);
   assert.match(js, /\/api\/v1\/live-work/);
   assert.match(js, /loadLiveWork/);
   assert.match(js, /animateLiveMetricChanges/);
-  assert.match(css, /\.signal-hero/);
-  assert.match(css, /\.execution-spine-card/);
+  assert.match(css, /\.apps-home-header/);
+  assert.match(css, /\.work-section-nav/);
   assert.doesNotMatch(packageJson, /"gsap"|"motion"/);
   assert.match(css, /prefers-reduced-motion/);
 });
@@ -106,15 +142,20 @@ test("Ari front door routes directed work instead of silently starting model-onl
   assert.match(css, /\.ari-route-contract/);
 });
 
-test("home shows real local work sources instead of a decorative operating map", () => {
-  for (const label of ["SOURCE MATRIX", "Four runtimes", "Runs & evidence", "Recent activity", "Repository improvements", "Hermes", "Codex", "OpenCode", "AGIOS"]) assert.match(js, new RegExp(label, "i"));
-  assert.match(js, /function liveSourceCard/);
-  assert.match(js, /data-live-key/);
-  assert.match(js, /Safe local metadata only/);
-  assert.match(js, /Repository improvements/i);
-  assert.match(css, /\.live-source-grid/);
-  assert.match(css, /\.live-source-card/);
-  assert.match(css, /\.home-two-column/);
+test("Apps home shows real launchers and only essential activity", () => {
+  for (const label of ["One window. Every tool.", "Web apps embed here", "Needs approval", "Working now", "Latest result"]) assert.match(js, new RegExp(label, "i"));
+  assert.match(js, /function appLauncherGrid/);
+  assert.match(js, /state\.surfaces/);
+  assert.match(js, /data-surface-embed/);
+  assert.match(js, /data-app-terminal/);
+  assert.match(css, /\.app-grid/);
+  assert.match(css, /\.current-activity-grid/);
+  assert.match(js, /data-view-link="graphify"/);
+  assert.match(js, /function renderGraphify/);
+  assert.match(js, /\/api\/v1\/graphify/);
+  assert.match(js, /\/graphify\/view/);
+  assert.match(css, /\.graphify-workspace/);
+  assert.doesNotMatch(js, /SOURCE MATRIX|Four runtimes\. One truthful view/);
 });
 
 test("self-improvement preserves evidence, validation, ROI and owner approval gates", () => {
@@ -129,7 +170,8 @@ test("self-improvement preserves evidence, validation, ROI and owner approval ga
 });
 
 test("frontend exposes scoped RAG evidence and the governed A2A gateway", () => {
-  assert.match(html, /Agent network/);
+  assert.doesNotMatch(html, />Agent network</);
+  assert.match(js, /Agent network/);
   assert.match(js, /RAG evidence console/);
   assert.match(js, /\/api\/v1\/retrieval\/query/);
   assert.match(js, /scoped-lexical-v1/);
@@ -174,7 +216,8 @@ test("Phase 4B exposes supervised workspaces, explicit vision, and validated sha
 });
 
 test("advanced tools remain available without crowding the owner workflow", () => {
-  for (const label of ["Advanced", "Orchestration", "Agent network", "Cost & performance", "Settings"]) assert.match(html, new RegExp(label));
+  assert.doesNotMatch(html, /Advanced system|>Orchestration<|>Agent network</);
+  for (const label of ["Advanced tools", "Orchestration", "Agent network", "Costs & usage", "Settings"]) assert.match(js, new RegExp(label));
   for (const mode of ["Hermes Apollo", "Hermes Oracle", "Hermes Astros", "Studio", "Outreach", "Mixture", "Manage", "Goal Mode"]) assert.match(js, new RegExp(mode));
   for (const capability of ["hey hermes", "Every AGIOS session, searchable", "Two-click model manager", "Loop Engineering", "Music Studio", "Video Agent", "SEO Content System", "JCode Workspace"]) assert.match(js, new RegExp(capability, "i"));
   assert.match(js, /SpeechRecognition/);
@@ -195,12 +238,13 @@ test("advanced tools remain available without crowding the owner workflow", () =
 });
 
 test("research pass adds a guide, live-source evidence and honest connection decisions", () => {
-  assert.match(html, /Evidence/);
+  assert.doesNotMatch(html, />Evidence</);
+  assert.match(js, /Evidence/);
   for (const capability of [
-    "Execution spine",
-    "Four runtimes. One truthful view",
-    "Recent activity",
-    "Repository improvements",
+    "One window. Every tool.",
+    "CURRENT ACTIVITY",
+    "Models & tools",
+    "Costs & usage",
     "Vault Mode",
     "CAPABILITY ROUTER",
     "CONNECTION DECISIONS",
@@ -210,8 +254,8 @@ test("research pass adds a guide, live-source evidence and honest connection dec
   assert.match(guide, /OpenCode/);
   assert.match(js, /\/api\/v1\/vision\/assets/);
   assert.match(js, /No implicit downgrade/);
-  assert.match(css, /\.signal-hero/);
-  assert.match(css, /\.live-source-grid/);
+  assert.match(css, /\.apps-home-header/);
+  assert.match(css, /\.current-activity-grid/);
   assert.match(css, /\.connection-decisions/);
   assert.match(css, /\.artifact-grid/);
   assert.match(buildScript, /preserveSymlinks:\s*true/);

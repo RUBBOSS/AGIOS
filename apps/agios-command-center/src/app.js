@@ -16,18 +16,19 @@ const sidebar = document.querySelector("#sidebar");
 const toast = document.querySelector("#toast");
 
 const viewLabels = {
-  command: "Home",
+  command: "Apps",
   portfolio: "Portfolio",
   departments: "Departments",
   agents: "Agent Fleet",
   mesh: "Agent Mesh",
-  work: "Goals & Work",
+  work: "Work",
   artifacts: "Artifact Library",
   paperclip: "Orchestration",
   approvals: "Approvals",
   systems: "All Systems",
   system: "AI System",
-  memory: "Shared Memory",
+  memory: "Memory",
+  graphify: "Graphify",
   skills: "Shared Skills",
   repositories: "Repositories",
   automations: "Automations",
@@ -37,7 +38,7 @@ const viewLabels = {
   settings: "Settings",
   agent: "Agent Workspace",
   surfaces: "Live Apps",
-  guide: "How to use AGIOS",
+  guide: "How to use Hermes OS",
 };
 
 const state = {
@@ -55,6 +56,7 @@ const state = {
   memoryGalaxy: null,
   executionSpineCleanup: null,
   memoryGalaxyFilter: "all",
+  graphify: null,
   learned: null,
   costs: null,
   selectedAgent: "default",
@@ -533,16 +535,78 @@ function appLauncherGrid() {
     else if (surface.kind === "terminal") action = `data-surface-embed="${esc(surface.id)}"`;
     else if (surface.id === "freebuff-web") action = `data-surface-open="${esc(surface.id)}"`;
     else action = `data-surface-launch="${esc(surface.id)}"`;
-    cards.push(`<button class="app-card" ${action}><span class="app-card-glyph">${glyph}</span><strong>${esc(surface.name)}</strong><small>${surface.kind === "web" ? "opens inside AGIOS" : surface.kind === "terminal" ? "live terminal" : "launches app"}</small><i class="surface-tab-status is-${esc(statusValue)}"></i></button>`);
+    cards.push(`<button class="app-card" ${action}><span class="app-card-glyph">${glyph}</span><strong>${esc(surface.name)}</strong><small>${surface.kind === "web" ? "opens inside Hermes OS" : surface.kind === "terminal" ? "live terminal" : "launches app"}</small><i class="surface-tab-status is-${esc(statusValue)}"></i></button>`);
   });
   cards.push(
+    `<button class="app-card" data-view-link="graphify"><span class="app-card-glyph">⌬</span><strong>Graphify</strong><small>${state.graphify?.status === "ready" ? `${Number(state.graphify.nodes || 0).toLocaleString()} nodes · ${Number(state.graphify.links || 0).toLocaleString()} links` : "local code map"}</small><i class="surface-tab-status is-${state.graphify?.status === "ready" ? state.graphify.freshness === "current" ? "ready" : "stale" : state.graphify?.status || "checking"}"></i></button>`,
     `<button class="app-card" data-view-link="integrations"><span class="app-card-glyph">◫</span><strong>NotebookLM</strong><small>source pack · owner upload</small><i class="surface-tab-status is-ready"></i></button>`,
     `<button class="app-card" data-view-link="integrations"><span class="app-card-glyph">◐</span><strong>Image Studio</strong><small>MAI-Image-2.5 · generate</small><i class="surface-tab-status is-ready"></i></button>`
   );
   return `<div class="section-heading signal-section-heading"><div><p class="eyebrow">YOUR APPS</p><h2>One window. Every tool.</h2></div><span>Web apps embed here · terminals attach live · natives launch</span></div><section class="app-grid">${cards.join("")}</section>`;
 }
 
+function renderAppsHome() {
+  const activeRuns = state.runs.filter((run) => ["queued", "running"].includes(run.status));
+  const pendingApprovals = state.orchestrationPlans.filter((plan) => plan.status === "planned").length
+    + state.runs.filter((run) => run.status === "awaiting_approval").length
+    + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
+  const latestRun = state.runs.find((run) => ["completed", "failed", "interrupted", "canceled"].includes(run.status));
+  page.innerHTML = `<div class="apps-home">
+    <header class="apps-home-header">
+      <div><p class="eyebrow">HERMES OS</p><h1>Your apps</h1><p>Open web apps, live terminals, and desktop tools from one place. Hermes works underneath; you stay in control here.</p></div>
+    </header>
+    ${appLauncherGrid()}
+    <section class="current-activity">
+      <header><div><p class="eyebrow">CURRENT ACTIVITY</p><h2>Only what needs attention</h2></div><button class="quiet-action" data-view-link="work">Open work →</button></header>
+      <div class="current-activity-grid">
+        <button data-view-link="approvals"><span>Needs approval</span><strong>${pendingApprovals}</strong><small>${pendingApprovals ? "Review before anything consequential runs" : "Nothing is waiting"}</small></button>
+        <button data-view-link="work"><span>Working now</span><strong>${activeRuns.length}</strong><small>${activeRuns.length ? esc(activeRuns[0].objective) : "No worker is consuming tokens"}</small></button>
+        <button data-view-link="artifacts"><span>Latest result</span><strong>${latestRun ? esc(titleCase(latestRun.status)) : "None"}</strong><small>${latestRun ? esc(latestRun.objective) : "Completed work will appear here"}</small></button>
+      </div>
+    </section>
+  </div>`;
+}
+
 function renderCommand() {
+  renderAppsHome();
+}
+
+function renderGraphify() {
+  const graph = state.graphify;
+  if (!graph) {
+    page.innerHTML = `<div class="graphify-workspace"><header class="graphify-header"><div><p class="eyebrow">CODEBASE MAP</p><h1>HermesOS graph</h1><p>Reading the local Graphify artifact…</p></div></header><div class="graphify-empty">Checking the local graph</div></div>`;
+    return;
+  }
+  if (graph.status !== "ready" || !graph.view_url) {
+    page.innerHTML = `<div class="graphify-workspace"><header class="graphify-header"><div><p class="eyebrow">CODEBASE MAP</p><h1>HermesOS graph</h1><p>The graph is read-only and stays on this machine.</p></div><span class="graphify-freshness is-unavailable">Unavailable</span></header><div class="graphify-empty"><strong>No local graph is ready</strong><p>${esc(graph.reason || "Build the HermesOS graph, then reopen this section.")}</p><button class="quiet-action" data-view-link="command">Back to Apps</button></div></div>`;
+    return;
+  }
+  const project = esc(graph.project || "HermesOS");
+  const viewUrl = esc(graph.view_url || "/graphify/view");
+  const generatedAt = graph.generated_at ? new Date(graph.generated_at).toLocaleString() : "Unknown";
+  const freshness = graph.freshness === "current" ? "Current" : graph.freshness === "stale" ? "Stale" : "Unknown";
+  const freshnessNote = graph.freshness === "current" ? "Matches the current repository commit" : graph.freshness === "stale" ? "Rebuild before using this graph for current code" : "Repository commit could not be compared";
+  const shortCommit = String(graph.built_at_commit || "No commit").slice(0, 8);
+  page.innerHTML = `<div class="graphify-workspace">
+    <header class="graphify-header">
+      <div><p class="eyebrow">CODEBASE MAP</p><h1>${project} graph</h1><p>Real symbols and relationships extracted from the local repository. Drag to move, scroll to zoom, and select a node for details.</p></div>
+      <span class="graphify-freshness is-${esc(graph.freshness || "unknown")}">${freshness}</span>
+    </header>
+    <section class="graphify-metrics" aria-label="Graph status">
+      <article><span>Nodes</span><strong>${Number(graph.nodes || 0).toLocaleString()}</strong></article>
+      <article><span>Links</span><strong>${Number(graph.links || 0).toLocaleString()}</strong></article>
+      <article><span>Communities</span><strong>${Number(graph.communities || 0).toLocaleString()}</strong></article>
+      <article><span>Index</span><strong>${freshness}</strong><small>${esc(shortCommit)}</small></article>
+    </section>
+    <section class="graphify-stage">
+      <header><div><strong>Interactive graph</strong><small>${esc(freshnessNote)} · generated ${esc(generatedAt)}</small></div><a href="${viewUrl}" target="_blank" rel="noopener">Open full screen ↗</a></header>
+      <div class="graphify-frame-wrap"><iframe class="graphify-frame" title="Interactive ${project} Graphify graph" src="${viewUrl}" sandbox="allow-scripts"></iframe></div>
+      <footer>Read-only local artifact · sandboxed from Hermes OS sessions</footer>
+    </section>
+  </div>`;
+}
+
+function renderAdvancedCommand() {
   const sources = state.liveWork?.sources || {};
   const agios = sources.agios || {};
   const hermes = sources.hermes || {};
@@ -606,9 +670,9 @@ function renderCommand() {
 }
 
 function renderGuide() {
-  page.innerHTML = `${heading("How to use AGIOS", "One outcome in. Evidence out.", "Use this page as the operating manual. Advanced screens are optional; the five-step loop is enough for daily work.")}
+  page.innerHTML = `${heading("How to use Hermes OS", "One outcome in. Evidence out.", "The five main sections cover daily work and codebase intelligence. This five-step loop is enough to operate the system safely.")}
     <section class="guide-steps">
-      <article id="guide-ask"><b>1</b><div><p class="eyebrow">ASK</p><h2>Tell Ari the outcome</h2><p>Use plain language: what should be true when the work is done? Add the data class and project only when relevant. Do not choose agents or models unless you have a reason.</p><div class="guide-example"><strong>Example</strong><span>“Inspect the AGIOS dashboard tests and propose a simpler home page. Do not edit yet.”</span></div><button data-open-directive>Ask Ari →</button></div></article>
+      <article id="guide-ask"><b>1</b><div><p class="eyebrow">ASK</p><h2>Tell Hermes the outcome</h2><p>Use plain language: what should be true when the work is done? Add the data class and project only when relevant. Hermes routes the right specialist and model.</p><div class="guide-example"><strong>Example</strong><span>“Inspect the Hermes OS interface tests and propose a simpler Apps page. Do not edit yet.”</span></div><button data-open-directive>Ask Hermes →</button></div></article>
       <article><b>2</b><div><p class="eyebrow">APPROVE</p><h2>Read the route before it runs</h2><p>Check the exact objective, specialist, runtime, model, data class, workspace access, memories and skills. Approve only that bound route. If anything is wrong, cancel and ask again.</p><button data-view-link="approvals">Open approvals →</button></div></article>
       <article><b>3</b><div><p class="eyebrow">WATCH</p><h2>Follow the real status</h2><p><strong>Queued</strong> means accepted, <strong>running</strong> means the runtime is working, <strong>completed</strong> means a response exists, and <strong>failed</strong> includes a bounded reason. A completed answer is not proof by itself.</p><button data-view-link="work">Open work →</button></div></article>
       <article><b>4</b><div><p class="eyebrow">VERIFY</p><h2>Review evidence, not claims</h2><p>Check attached memories and skills, generated files, repository changes, tests, screenshots and reviewer findings. External delivery still requires your exact approval.</p><button data-view-link="artifacts">Open evidence →</button></div></article>
@@ -617,7 +681,7 @@ function renderGuide() {
     <div class="guide-grid">
       <section class="plain-panel"><p class="eyebrow">WHICH RUNTIME?</p><h2>Let routing choose by default</h2><dl class="guide-definitions"><div><dt>Hermes</dt><dd>Main orchestration, research, memory, tools and private/local routes.</dd></div><div><dt>Codex</dt><dd>Difficult approved coding in a registered workspace with its sandbox.</dd></div><div><dt>OpenCode</dt><dd>Second workspace coding runtime; deny-by-default tools, no auto mode.</dd></div><div><dt>Local workers</dt><dd>Private extraction, coding and first drafts with no hosted fallback.</dd></div></dl></section>
       <section class="plain-panel"><p class="eyebrow">ALWAYS STOPS FOR YOU</p><h2>Consequential actions</h2><ul class="guide-boundaries"><li>Sending messages, bids, applications or forms</li><li>Publishing, production deployment or final delivery</li><li>Payments, subscriptions, pricing or contracts</li><li>Account changes, credentials or broader data access</li><li>Scope, deadline or legal commitments</li></ul></section>
-      <section class="plain-panel"><p class="eyebrow">WHERE THINGS LIVE</p><h2>The six useful screens</h2><dl class="guide-definitions"><div><dt>Home</dt><dd>Live status and your next action.</dd></div><div><dt>Work</dt><dd>Requests, routes, status and responses.</dd></div><div><dt>Approvals</dt><dd>Exact decisions waiting for you.</dd></div><div><dt>Evidence</dt><dd>Artifacts and grounded run context.</dd></div><div><dt>Memory</dt><dd>Durable owner-controlled knowledge.</dd></div><div><dt>Apps & models</dt><dd>Connected runtimes and truthful blockers.</dd></div></dl></section>
+      <section class="plain-panel"><p class="eyebrow">WHERE THINGS LIVE</p><h2>The five sections</h2><dl class="guide-definitions"><div><dt>Apps</dt><dd>Web apps, live terminals and desktop launchers.</dd></div><div><dt>Work</dt><dd>Runs, approvals and verified evidence.</dd></div><div><dt>Memory</dt><dd>Durable owner-controlled knowledge.</dd></div><div><dt>Graphify</dt><dd>The real local HermesOS code graph.</dd></div><div><dt>Settings</dt><dd>Models, costs, connections and advanced tools.</dd></div></dl></section>
     </div>`;
 }
 
@@ -913,6 +977,15 @@ async function loadWorkRunTrace(runId) {
   if (state.view === "work" && state.selectedWorkRunId === runId) renderWork();
 }
 
+function workSectionNav(active) {
+  const items = [
+    ["work", "Runs"],
+    ["approvals", "Approvals"],
+    ["artifacts", "Evidence"],
+  ];
+  return `<nav class="work-section-nav" aria-label="Work sections">${items.map(([view, label]) => `<button class="${active === view ? "is-active" : ""}" data-view-link="${view}">${label}</button>`).join("")}</nav>`;
+}
+
 function renderWork() {
   const boardDrafts = state.directiveDrafts;
   const approvalRuns = state.runs.filter((run) => run.status === "awaiting_approval");
@@ -930,8 +1003,8 @@ function renderWork() {
   const boardMarkup = `<div class="agent-kanban">${lane("inbox", "Inbox", boardDrafts.map(draftTask), "Create a governed ticket.")}${lane("approval", "Approval", approvalRuns.map(runTask), "No decisions waiting.")}${lane("active", "Building", activeRuns.map(runTask), "No workers running.")}${lane("review", "Review & done", reviewRuns.map(runTask), "No completed work yet.")}</div>`;
   const introMarkup = heading("Agent Kanban", "File a ticket. Watch the workers move it forward.", "Every card is a real AGIOS draft or runtime session. Open a run to inspect its request, final output, approved route and persisted evidence.", `<button class="launch-goal compact" data-open-directive>New ticket ＋</button>`);
   page.innerHTML = selectedRun
-    ? `${workRunInspector(selectedRun)}${summaryMarkup}${boardMarkup}`
-    : `${introMarkup}${summaryMarkup}${boardMarkup}`;
+    ? `${workSectionNav("work")}${workRunInspector(selectedRun)}${summaryMarkup}${boardMarkup}`
+    : `${workSectionNav("work")}${introMarkup}${summaryMarkup}${boardMarkup}`;
   return;
   const drafts = state.directiveDrafts.map((draft) => `<article class="entity-card"><div class="entity-top"><span class="entity-index">LOCAL DRAFT</span>${status("planned")}</div><h2>${esc(draft.outcome)}</h2><p>${esc(titleCase(draft.business))} · ${esc(draft.dataClass)}</p><footer class="entity-footer"><span>Not dispatched</span><span>${new Date(draft.createdAt).toLocaleString()}</span></footer></article>`).join("");
   const runs = state.runs.filter((run) => run.mode === "goal");
@@ -943,7 +1016,7 @@ function renderArtifacts() {
   const completed = resultRuns.filter((run) => run.status === "completed");
   const evidenceCards = resultRuns.map((run) => `<article class="artifact-card"><header><span>${esc(titleCase(run.mode))} · ${esc(titleCase(run.agent_id))}</span>${status(run.status)}</header><h3>${esc(run.objective)}</h3>${run.response ? `<p>${esc(run.response.slice(0, 360))}${run.response.length > 360 ? "…" : ""}</p>` : `<p>No response artifact was produced. Open Sessions to inspect the verified stop reason.</p>`}<footer><span>${run.skill_ids.length} skills · ${run.memory_ids.length} memories</span><time>${new Date(run.created_at).toLocaleString()}</time></footer></article>`).join("");
   const imageCards = state.visionAssets.map((asset) => `<article class="artifact-card image-artifact"><header><span>PRIVATE IMAGE INPUT</span>${status(asset.status)}</header><h3>${esc(asset.label || "Image")}</h3><p>${esc(titleCase(asset.mime_type))} · ${Math.max(1, Math.round(Number(asset.byte_count || 0) / 1024))} KB · ${esc(titleCase(asset.data_class))}</p><footer><span>${esc(titleCase(asset.retention))} retention</span><time>${new Date(asset.created_at).toLocaleString()}</time></footer></article>`).join("");
-  page.innerHTML = `${heading("Artifact Library", "Every result has a place, a source, and a status.", "Browse real AGIOS run outputs and private vision metadata without exposing workspace paths, credentials, or raw customer files.")}<div class="artifact-summary"><span><small>VERIFIED RESULTS</small><strong>${completed.length}</strong></span><span><small>REVIEWABLE RUNS</small><strong>${resultRuns.length}</strong></span><span><small>PRIVATE IMAGE INPUTS</small><strong>${state.visionAssets.length}</strong></span><span><small>ACTIVE WORK</small><strong>${state.runs.filter((run) => ["queued", "running"].includes(run.status)).length}</strong></span></div><section class="artifact-section"><header><div><p class="eyebrow">RUN OUTPUTS</p><h2>Evidence returned by the workforce</h2></div><button data-system="hermes">Open Hermes Sessions →</button></header><div class="artifact-grid">${evidenceCards || `<div class="workspace-empty workspace-card large"><b>▣</b><strong>No result artifacts yet</strong><span>Completed and stopped runs will appear here from the private AGIOS session store.</span></div>`}</div></section><section class="artifact-section"><header><div><p class="eyebrow">PRIVATE INPUTS</p><h2>Vision assets under retention policy</h2></div><span>METADATA ONLY</span></header><div class="artifact-grid">${imageCards || `<div class="workspace-empty workspace-card"><b>◉</b><strong>No retained image inputs</strong><span>Images are listed only when their real private metadata exists.</span></div>`}</div></section>`;
+  page.innerHTML = `${workSectionNav("artifacts")}${heading("Artifact Library", "Every result has a place, a source, and a status.", "Browse real AGIOS run outputs and private vision metadata without exposing workspace paths, credentials, or raw customer files.")}<div class="artifact-summary"><span><small>VERIFIED RESULTS</small><strong>${completed.length}</strong></span><span><small>REVIEWABLE RUNS</small><strong>${resultRuns.length}</strong></span><span><small>PRIVATE IMAGE INPUTS</small><strong>${state.visionAssets.length}</strong></span><span><small>ACTIVE WORK</small><strong>${state.runs.filter((run) => ["queued", "running"].includes(run.status)).length}</strong></span></div><section class="artifact-section"><header><div><p class="eyebrow">RUN OUTPUTS</p><h2>Evidence returned by the workforce</h2></div><button data-system="hermes">Open Hermes Sessions →</button></header><div class="artifact-grid">${evidenceCards || `<div class="workspace-empty workspace-card large"><b>▣</b><strong>No result artifacts yet</strong><span>Completed and stopped runs will appear here from the private AGIOS session store.</span></div>`}</div></section><section class="artifact-section"><header><div><p class="eyebrow">PRIVATE INPUTS</p><h2>Vision assets under retention policy</h2></div><span>METADATA ONLY</span></header><div class="artifact-grid">${imageCards || `<div class="workspace-empty workspace-card"><b>◉</b><strong>No retained image inputs</strong><span>Images are listed only when their real private metadata exists.</span></div>`}</div></section>`;
 }
 
 function routePlanCard(plan) {
@@ -983,7 +1056,7 @@ function renderApprovals() {
   const pending = state.runs.filter((run) => run.status === "awaiting_approval");
   const proposals = state.skillProposals.filter((item) => item.status === "awaiting_owner_review");
   const proposalCards = proposals.map((item) => `<article class="skill-approval-card"><header><div><small>${esc(item.agent_id)} · ${esc(titleCase(item.change_kind))}</small><h3>${esc(item.skill_name)}</h3></div>${status(item.status)}</header><p>${esc(item.rationale)}</p><footer><span>${item.evidence_run_ids.length} verified run${item.evidence_run_ids.length === 1 ? "" : "s"}</span><button data-approve-skill="${esc(item.proposal_id)}">Approve authoring</button></footer></article>`).join("");
-  page.innerHTML = `${heading("Approval center", "Your judgment is a system boundary.", "First review Ari's route. Preparing it creates a digest-bound runtime decision; only your second exact approval starts model work.")}${plans.length || pending.length || proposals.length ? `<div class="approval-sections">${plans.length ? `<section><p class="eyebrow">ROUTES TO REVIEW</p><div class="route-plan-list">${plans.map(routePlanCard).join("")}</div></section>` : ""}${pending.length ? `<section><p class="eyebrow">EXACT RUN APPROVALS</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">PROFESSIONAL GROWTH</p><div class="skill-approval-grid">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-state large"><b>✓</b><strong>Nothing needs approval</strong><span>Planned routes, consequential runs and shared skill changes stop here.</span></div>`}`;
+  page.innerHTML = `${workSectionNav("approvals")}${heading("Approval center", "Your judgment is a system boundary.", "First review Ari's route. Preparing it creates a digest-bound runtime decision; only your second exact approval starts model work.")}${plans.length || pending.length || proposals.length ? `<div class="approval-sections">${plans.length ? `<section><p class="eyebrow">ROUTES TO REVIEW</p><div class="route-plan-list">${plans.map(routePlanCard).join("")}</div></section>` : ""}${pending.length ? `<section><p class="eyebrow">EXACT RUN APPROVALS</p><div class="runtime-session-list">${pending.map((run) => runCard(run)).join("")}</div></section>` : ""}${proposals.length ? `<section><p class="eyebrow">PROFESSIONAL GROWTH</p><div class="skill-approval-grid">${proposalCards}</div></section>` : ""}</div>` : `<div class="empty-state large"><b>✓</b><strong>Nothing needs approval</strong><span>Planned routes, consequential runs and shared skill changes stop here.</span></div>`}`;
 }
 
 function renderAutomations() {
@@ -1950,7 +2023,32 @@ function renderPerformance() {
     <section class="panel"><header class="panel-header"><div><h2>Recent runtime evidence</h2><p>Requests, status and selected route from the private AGIOS session store</p></div><button data-view-link="artifacts">Open artifacts →</button></header><div class="data-panel"><div class="data-head columns-integrations"><span>Run</span><span>Agent</span><span>Status</span><span>Route</span></div>${recent || `<div class="workspace-empty"><strong>No runs in this period</strong></div>`}</div></section>`;
 }
 
+function settingsToolGrid() {
+  const primaryTools = [
+    ["integrations", "Models & tools", "Model routes, provider status, NotebookLM and Image Studio"],
+    ["performance", "Costs & usage", "Live provider balances and real runtime evidence"],
+    ["approvals", "Approvals & safety", "Exact decisions waiting for owner review"],
+    ["artifacts", "Evidence", "Outputs, images and verified results"],
+  ];
+  const advancedTools = [
+    ["repositories", "Workspaces"],
+    ["skills", "Skills"],
+    ["agents", "Agents"],
+    ["automations", "Automations"],
+    ["paperclip", "Orchestration"],
+    ["network", "Agent network"],
+    ["guide", "Operator guide"],
+  ];
+  const primary = primaryTools.map(([view, label, note]) => `<button data-view-link="${view}"><strong>${label}</strong><small>${note}</small><span>Open →</span></button>`).join("");
+  const advanced = advancedTools.map(([view, label]) => `<button data-view-link="${view}">${label}<span>→</span></button>`).join("");
+  return `<section class="settings-tool-grid">${primary}</section><details class="settings-advanced-tools"><summary>Advanced tools</summary><div>${advanced}</div></details>`;
+}
+
 function renderSettings() {
+  page.innerHTML = `${heading("Settings", "Models, costs, and connections.", "Everyday navigation stays in five sections. Everything technical remains available here when you need it.")}${settingsToolGrid()}<details class="settings-policy-details"><summary>Policies and system readiness</summary>${osReadinessSurface()}</details>`;
+}
+
+function renderLegacySettings() {
   page.innerHTML = `${heading("System settings", "Policies before power.", "See whether the complete Agent OS foundation is present and which boundaries remain non-negotiable.")}${osReadinessSurface()}<div class="settings-grid"><section class="workspace-card"><p class="eyebrow">OPERATING PRINCIPLE</p><h2>One studio, not one unrestricted super-agent.</h2><p>AGIOS connects every approved model, CLI, MCP, application, repository, skill, memory, schedule, and artifact while retaining the authority boundary of each route.</p><div class="policy-row"><span>Agents improve from verified work</span><em>Proposal only</em></div><div class="policy-row"><span>New specialist roles</span><em>Distinct recurring job</em></div><div class="policy-row"><span>Unused workers</span><em>Ready, no token use</em></div></section><section class="workspace-card"><p class="eyebrow">NON-NEGOTIABLE</p><h2>Human judgment remains part of the OS.</h2><div class="policy-row"><span>Publishing, outreach, delivery, and deployment</span><em>Exact approval</em></div><div class="policy-row"><span>Purchases and financial actions</span><em>Transaction approval</em></div><div class="policy-row"><span>Skill or code self-modification</span><em>Review and validation</em></div><div class="policy-row"><span>Customer/private data fallback</span><em>No downgrade</em></div></section></div>`;
 }
 
@@ -2166,7 +2264,7 @@ function systemTerminalSurface(surface) {
   return `<section class="surface-stage system-terminal-stage">${renderSurfaceContent(surface)}</section><footer class="surface-footer"><span>${esc(surfaceStatusLabel(statusValue))}</span><span>Real ${esc(surface.name)} process · local PTY · loopback only</span></footer>`;
 }
 
-const renderers = { command: renderCommand, guide: renderGuide, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
+const renderers = { command: renderCommand, guide: renderGuide, portfolio: renderPortfolio, departments: renderDepartments, agents: renderAgents, agent: renderAgent, mesh: renderMesh, systems: renderSystems, system: renderSystem, memory: renderSharedMemory, graphify: renderGraphify, skills: renderSharedSkills, repositories: renderRepositories, work: renderWork, artifacts: renderArtifacts, paperclip: renderPaperclip, approvals: renderApprovals, automations: renderAutomations, integrations: renderIntegrations, network: renderAgentNetwork, performance: renderPerformance, settings: renderSettings, surfaces: renderSurfaces };
 
 function motionAllowed() {
   return typeof Element.prototype.animate === "function" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2195,11 +2293,20 @@ function animateLiveMetricChanges() {
   }
 }
 
+function primaryViewFor(view) {
+  if (["command", "surfaces", "system"].includes(view)) return "command";
+  if (["work", "approvals", "artifacts"].includes(view)) return "work";
+  if (view === "memory") return "memory";
+  if (view === "graphify") return "graphify";
+  return "settings";
+}
+
 function setView(view) {
   if (!state.data || !viewLabels[view]) return;
   state.view = view;
   viewName.textContent = viewLabels[view];
-  document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === view));
+  const primaryView = primaryViewFor(view);
+  document.querySelectorAll(".nav-item").forEach((item) => item.classList.toggle("is-active", item.dataset.view === primaryView));
   if (view !== "surfaces" && view !== "system") disposeSurfaceSession();
   if (view !== "memory") disposeMemoryGalaxy();
   if (view !== "command") {
@@ -2283,11 +2390,12 @@ function operationalAgentId() {
   return null;
 }
 
-function rerenderOperationalView() {
+function rerenderOperationalView({ graphifyChanged = false } = {}) {
   document.querySelector("#approval-count").textContent = state.orchestrationPlans.filter((plan) => plan.status === "planned").length + state.runs.filter((run) => run.status === "awaiting_approval").length + state.skillProposals.filter((item) => item.status === "awaiting_owner_review").length;
   if (state.view === "agent") renderAgent();
   else if (state.view === "system") renderSystem();
   else if (state.view === "memory") renderSharedMemory();
+  else if (state.view === "graphify" && graphifyChanged) renderGraphify();
   else if (state.view === "approvals") renderApprovals();
   else if (state.view === "work") renderWork();
   else if (state.view === "artifacts") renderArtifacts();
@@ -2309,8 +2417,10 @@ async function loadOperationalSurface() {
   const needsRuntimes = ["command", "approvals", "systems", "system"].includes(state.view) || (state.view === "agent" && state.agentMode === "workspace");
   const needsPlans = ["command", "approvals"].includes(state.view);
   const needsNotebookLM = state.view === "integrations";
-  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans && !needsNotebookLM) return;
+  const needsGraphify = ["command", "graphify"].includes(state.view) && !state.graphify;
+  if (!needsRuns && !needsMemory && !needsVision && !needsA2A && !needsGrowth && !needsWorkspaces && !needsRuntimes && !needsPlans && !needsNotebookLM && !needsGraphify) return;
   state.operationalLoading = true;
+  let graphifyChanged = false;
   try {
     if (needsRuns) {
       const agentId = operationalAgentId();
@@ -2351,9 +2461,13 @@ async function loadOperationalSurface() {
       state.notebooklm = await api("/api/v1/notebooklm/sources");
       state.imageStudio = await api("/api/v1/image-studio");
     }
+    if (needsGraphify) {
+      state.graphify = await api("/api/v1/graphify");
+      graphifyChanged = true;
+    }
     const bannerDetail = document.querySelector("#ops-banner-detail");
     if (bannerDetail) bannerDetail.textContent = `${state.data.summary.agents} workers · ${state.data.operational?.shared_memory?.fact_count ?? 0} shared memories · ${state.data.summary.systems} AI systems`;
-    rerenderOperationalView();
+    rerenderOperationalView({ graphifyChanged });
     if (state.view === "work" && state.selectedWorkRunId) {
       const selected = state.runs.find((run) => run.run_id === state.selectedWorkRunId);
       if (selected && (["queued", "running"].includes(selected.status) || !Object.hasOwn(state.runTraces, selected.run_id))) void loadWorkRunTrace(selected.run_id);
@@ -2883,7 +2997,8 @@ document.addEventListener("submit", async (event) => {
 });
 
 document.querySelector("#new-directive").addEventListener("click", openModal);
-document.querySelector("#all-systems").addEventListener("click", () => setView("systems"));
+const allSystemsButton = document.querySelector("#all-systems");
+if (allSystemsButton) allSystemsButton.addEventListener("click", () => setView("systems"));
 document.querySelector("#search-trigger").addEventListener("click", openPalette);
 document.querySelector("#menu-button").addEventListener("click", () => sidebar.classList.add("is-open"));
 document.querySelector("#sidebar-close").addEventListener("click", () => sidebar.classList.remove("is-open"));
@@ -2956,7 +3071,7 @@ document.querySelector("#directive-form").addEventListener("submit", async (even
 document.addEventListener("keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); palette.hidden ? openPalette() : closePalette(); }
   if (event.key === "Escape") { closeModal(); closePalette(); }
-  if (!event.ctrlKey && !event.metaKey && !event.altKey && /^[1-4]$/.test(event.key) && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) setView(["command", "portfolio", "departments", "agents"][Number(event.key) - 1]);
+  if (!event.ctrlKey && !event.metaKey && !event.altKey && /^[1-5]$/.test(event.key) && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) setView(["command", "work", "memory", "graphify", "settings"][Number(event.key) - 1]);
 });
 
 function tick() {
