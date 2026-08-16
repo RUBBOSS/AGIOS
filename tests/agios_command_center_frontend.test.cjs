@@ -317,6 +317,9 @@ test("personal NotebookLM uses a visible owner-mediated source-pack boundary", (
   assert.match(js, /HOW YOU USE/);
   assert.match(js, /Open live terminal/);
   assert.match(js, /openclaw: "openclaw-cli"/);
+  assert.match(js, /YOUR APPS/);
+  assert.match(js, /appLauncherGrid/);
+  assert.match(js, /data-app-terminal/);
   assert.match(js, /Live balance:/);
   assert.match(js, /Load live balance/);
   assert.match(js, /agy 1\.1\.13/);

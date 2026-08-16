@@ -1674,6 +1674,13 @@ body { background: #090a0f; }
 .link-action { background: none; border: none; color: var(--accent); cursor: pointer; padding: 0; font-size: inherit; }
 .model-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
 .overview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.app-card { position: relative; display: grid; gap: 6px; padding: 16px 14px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); cursor: pointer; text-align: left; }
+.app-card:hover { border-color: var(--accent); }
+.app-card-glyph { font-size: 18px; color: var(--accent); }
+.app-card strong { font-size: 13px; }
+.app-card small { color: var(--dim); font-size: 9px; }
+.app-card .surface-tab-status { position: absolute; top: 14px; right: 14px; }
 .connection-decisions { margin: 18px 0; border: 1px solid var(--line); border-radius: 11px; background: var(--surface); overflow: hidden; }
 .connection-decisions > header { min-height: 66px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid var(--line-soft); }
 .connection-decisions h2 { margin: 0; font-size: 15px; font-weight: 600; }

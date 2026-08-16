@@ -519,6 +519,29 @@ function renderExecutionSpine() {
   state.executionSpineCleanup = () => observer.disconnect();
 }
 
+function appLauncherGrid() {
+  const surfaces = state.surfaces || [];
+  const terminalSystemIds = { "hermes-cli": "hermes", "codex-cli": "codex", "opencode-cli": "opencode", "cline-cli": "cline", "openclaw-cli": "openclaw" };
+  const cards = [];
+  surfaces.forEach((surface) => {
+    const probe = state.surfaceProbes[surface.id] || {};
+    const statusValue = probe.status || "unknown";
+    const glyph = surface.kind === "web" ? "▣" : surface.kind === "terminal" ? ">_" : "▸";
+    let action = "";
+    if (surface.kind === "web") action = `data-surface-embed="${esc(surface.id)}"`;
+    else if (surface.kind === "terminal" && terminalSystemIds[surface.id]) action = `data-app-terminal="${esc(terminalSystemIds[surface.id])}"`;
+    else if (surface.kind === "terminal") action = `data-surface-embed="${esc(surface.id)}"`;
+    else if (surface.id === "freebuff-web") action = `data-surface-open="${esc(surface.id)}"`;
+    else action = `data-surface-launch="${esc(surface.id)}"`;
+    cards.push(`<button class="app-card" ${action}><span class="app-card-glyph">${glyph}</span><strong>${esc(surface.name)}</strong><small>${surface.kind === "web" ? "opens inside AGIOS" : surface.kind === "terminal" ? "live terminal" : "launches app"}</small><i class="surface-tab-status is-${esc(statusValue)}"></i></button>`);
+  });
+  cards.push(
+    `<button class="app-card" data-view-link="integrations"><span class="app-card-glyph">◫</span><strong>NotebookLM</strong><small>source pack · owner upload</small><i class="surface-tab-status is-ready"></i></button>`,
+    `<button class="app-card" data-view-link="integrations"><span class="app-card-glyph">◐</span><strong>Image Studio</strong><small>MAI-Image-2.5 · generate</small><i class="surface-tab-status is-ready"></i></button>`
+  );
+  return `<div class="section-heading signal-section-heading"><div><p class="eyebrow">YOUR APPS</p><h2>One window. Every tool.</h2></div><span>Web apps embed here · terminals attach live · natives launch</span></div><section class="app-grid">${cards.join("")}</section>`;
+}
+
 function renderCommand() {
   const sources = state.liveWork?.sources || {};
   const agios = sources.agios || {};
@@ -558,6 +581,8 @@ function renderCommand() {
         <div><span><b>${liveCount(agios.memory_facts)}</b> memories</span><span><b>${liveCount(hermes.skills)}</b> skills</span><span><b>${liveCount(agios.artifacts)}</b> artifacts</span></div>
       </aside>
     </section>
+
+    ${appLauncherGrid()}
 
     ${executionSpineSurface()}
 
@@ -2573,6 +2598,7 @@ document.addEventListener("click", (event) => {
   const surfaceRestart = event.target.closest("[data-surface-restart]");
   const surfaceOpen = event.target.closest("[data-surface-open]");
   const surfaceEmbed = event.target.closest("[data-surface-embed]");
+  const appTerminal = event.target.closest("[data-app-terminal]");
   const workRun = event.target.closest("[data-work-run]");
   const workRunClose = event.target.closest("[data-work-run-close]");
   const notebookOpen = event.target.closest("[data-notebooklm-open]");
@@ -2629,6 +2655,11 @@ document.addEventListener("click", (event) => {
   if (surfaceEmbed) {
     state.activeSurface = surfaceEmbed.dataset.surfaceEmbed;
     setView("surfaces");
+  }
+  if (appTerminal) {
+    state.selectedSystem = appTerminal.dataset.appTerminal;
+    state.systemMode = "terminal";
+    setView("system");
   }
   const dreamingAccept = event.target.closest("[data-dreaming-accept]");
   const dreamingDismiss = event.target.closest("[data-dreaming-dismiss]");
